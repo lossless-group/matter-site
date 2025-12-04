@@ -17,7 +17,7 @@
     <a href="https://astro.build" style="color: #7c3aed; text-decoration: none; font-weight: 500;">Astro</a> 
     and 
     <a href="https://tailwindcss.com" style="color: #0ea5e9; text-decoration: none; font-weight: 500;">Tailwind CSS v4</a> 
-    for <a href="https://hypernova.capital" style="color: #0ea5e9; text-decoration: none; font-weight: 500;">Hypernova</a>
+    for <a href="https://darkmatter.bio/" style="color: #0ea5e9; text-decoration: none; font-weight: 500;">Dark Matter Bio</a>
   </span>
 </p>
 

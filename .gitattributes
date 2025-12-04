@@ -1,6 +1,7 @@
 # Default behavior: normalize line endings to LF on checkin
 * text=auto
 # Explicitly declare text files to normalize
+*.afdesign filter=lfs diff=lfs merge=lfs -text
 *.md text diff=markdown
 *.mdx text diff=markdown
 *.css text diff=css
