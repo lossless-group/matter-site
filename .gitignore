@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# Confidential Information
+context-v/private/*
+
 # dependencies
 node_modules/
 .aider.*

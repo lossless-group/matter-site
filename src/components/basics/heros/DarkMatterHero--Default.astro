@@ -1,0 +1,131 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A venture-built thesis at the edge of bioscience, data, and longevity.',
+} = Astro.props as Props;
+---
+
+<section class="hero-shell relative min-h-[80vh] lg:min-h-screen flex items-center justify-center px-6 py-16 sm:px-10 lg:px-16">
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background to-background/95" />
+
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-12 lg:flex-row lg:items-start">
+    <!-- Left column: main narrative -->
+    <div class="flex-1 space-y-6">
+      <p class="text-xs sm:text-sm font-medium tracking-[0.22em] uppercase text-accent/80">
+        Dark Matter Bio
+      </p>
+
+      <h1 class="text-balance text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-foreground">
+        {title}
+      </h1>
+
+      <p class="max-w-xl text-base sm:text-lg text-foreground/80">
+        {subtitle}
+      </p>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <!-- Why Now -->
+        <article class="hero-panel rounded-2xl border p-5 backdrop-blur-sm">
+          <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+            Why Now
+          </h2>
+
+          <div class="mt-4 space-y-4 text-sm sm:text-base text-foreground/80">
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Bioscience Explosion
+              </h3>
+              <p>
+                Breakthroughs in genomics, epigenetics, proteomics, and other biosciences are enabling
+                new ways to understand and treat disease.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Unprecedented Data
+              </h3>
+              <p>
+                Newly discovered biomarkers, combined with real-time data collection, give us continuous,
+                measurable signals about biological age, risk, and response.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Leaps in Demand
+              </h3>
+              <p>
+                Consumers and institutions are demanding personalized, data-driven, future‑forward
+                health innovations, not one-size-fits-all care.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Entrepreneurial Talent
+              </h3>
+              <p>
+                Repeat founders from software and infrastructure now want to apply their company‑building
+                craft to breakthroughs in health and longevity.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Why Dark Matter -->
+        <article class="hero-panel rounded-2xl border p-5 backdrop-blur-sm">
+          <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+            Why Dark Matter
+          </h2>
+
+          <div class="mt-4 space-y-4 text-sm sm:text-base text-foreground/80">
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Cutting Edge Access
+              </h3>
+              <p>
+                Trusted networks at the intersection of Silicon Valley, bioscience research, inventors,
+                and company builders.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Eye‑Popping Track Record
+              </h3>
+              <p>
+                Investing partners with a track record several standard deviations above venture in
+                general, including biotech and health.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Profound Hustle
+              </h3>
+              <p>
+                Deep domain experience paired with the entrepreneurial energy of a modern venture firm.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-[0.8rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                Genuine Passion & Networked Support
+              </h3>
+              <p>
+                Geekery, alignment, and wide, deep relationships across the ecosystem give Dark Matter
+                the right to win the most interesting opportunities.
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

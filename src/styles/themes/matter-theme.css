@@ -3,6 +3,8 @@
   --color-ebony: #0F0923;      /* Deep background / brand base */
   --color-alabaster: #F9FAFB;  /* Primary foreground on void */
   --color-lilac: #9C85DF;      /* Accent / highlight */
+  --color-marjorelle-purple: #6643e2; /* Loud Primary color for Vibrant Mode. */
+  --color-soap-purple: #CDC4ED; /* Soft Secondary color for Vibrant Mode. */
 
   /* Aliases used by existing themes */
   --color-void: var(--color-ebony);
@@ -78,25 +80,26 @@
   --color-background: var(--color-void);
   --color-foreground: var(--color-ink);
 
-  --color-surface: radial-gradient(circle at top, rgba(156,133,223,0.18), #05030f);
+  /* Surfaces lean into cosmic gradients using brand purples */
+  --color-surface: radial-gradient(circle at top, rgba(102,67,226,0.35), #05030f);
   --color-surface-muted: #020617;
 
-  /* Use brighter accent emphasis */
-  --color-primary: var(--color-lilac);
-  --color-primary-foreground: #050516;
+  /* Use louder brand purples for primary/secondary/accent */
+  --color-primary: var(--color-marjorelle-purple);
+  --color-primary-foreground: #F9FAFB;
 
-  --color-secondary: #38BDF8;          /* cobalt-like secondary */
-  --color-secondary-foreground: #020617;
+  --color-secondary: var(--color-soap-purple);
+  --color-secondary-foreground: #050516;
 
   --color-accent: var(--color-lilac);
-  --color-accent-foreground: #020617;
+  --color-accent-foreground: #050516;
 
   --color-muted: rgba(15,9,35,0.9);
   --color-muted-foreground: #E5E7EB;
 
-  --color-border: rgba(156,133,223,0.6);
+  --color-border: rgba(102,67,226,0.7); /* marjorelle border glow */
   --color-input: rgba(15,9,35,0.9);
-  --color-ring: var(--color-lilac);
+  --color-ring: var(--color-marjorelle-purple);
 }
 
 /* Convenience theme-scoped helpers – keep thin and semantic */
@@ -120,4 +123,26 @@
 .theme-matter .btn-secondary {
   background-color: var(--color-secondary);
   color: var(--color-secondary-foreground);
+}
+
+/* Hero helpers: dark = calm, vibrant = expressive */
+.theme-matter .hero-shell {
+  background: radial-gradient(circle at top, rgba(15, 9, 35, 0.6), #05030f);
+}
+
+[data-theme="matter"][data-mode="dark"] .hero-panel {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.6);
+}
+
+[data-theme="matter"][data-mode="vibrant"] .hero-panel {
+  background:
+    radial-gradient(circle at top, rgba(102, 67, 226, 0.25), transparent),
+    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.18), transparent),
+    var(--color-surface-muted);
+  border-color: var(--color-border);
+  box-shadow:
+    0 0 25px rgba(102, 67, 226, 0.35),
+    0 0 45px rgba(56, 189, 248, 0.25);
 }
