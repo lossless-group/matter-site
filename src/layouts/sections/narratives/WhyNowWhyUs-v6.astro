@@ -1,0 +1,315 @@
+---
+/**
+ * VARIANT 6: "The Manifesto" — Bold Typographic Statement
+ *
+ * A minimalist, text-forward hero that makes the words themselves the visual.
+ * Inspired by high-end fashion/editorial design.
+ * Features:
+ * - Giant kinetic typography that demands attention
+ * - Scroll-triggered text reveals
+ * - No cards, no boxes — pure negative space
+ * - Words animate and transform on hover/scroll
+ * - Mobile-first dramatic impact
+ */
+
+interface Props {
+  manifesto?: string[];
+}
+
+const {
+  manifesto = [
+    'The future of health',
+    'is not episodic.',
+    'It is continuous.',
+    'It is compounding.',
+    'It is now.',
+  ],
+} = Astro.props as Props;
+---
+
+<section class="manifesto-hero relative min-h-[200vh] w-full bg-(--color-void)">
+  <!-- Fixed centered content - needs solid bg to prevent bleed-through -->
+  <div class="manifesto-sticky sticky top-0 min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+    <!-- Solid backdrop to prevent content bleed-through -->
+    <div class="absolute inset-0 bg-[#0F0923] -z-20"></div>
+
+    <!-- Ambient glow -->
+    <div class="ambient-glow absolute inset-0 pointer-events-none">
+      <div class="glow-orb glow-1"></div>
+      <div class="glow-orb glow-2"></div>
+    </div>
+
+    <!-- Brand mark -->
+    <div class="brand-mark absolute top-8 left-8 sm:top-12 sm:left-12">
+      <span class="text-xs font-medium tracking-[0.4em] uppercase text-(--color-lilac)/60">
+        Dark Matter
+      </span>
+    </div>
+
+    <!-- The manifesto -->
+    <div class="manifesto-text relative z-10 text-center max-w-5xl">
+      {manifesto.map((line, index) => (
+        <p
+          class:list={[
+            'manifesto-line',
+            'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl',
+            'font-bold leading-[1.1] tracking-tight',
+            index < 2 ? 'text-(--color-alabaster)/40' : '',
+            index === 2 ? 'text-(--color-lilac)' : '',
+            index === 3 ? 'text-(--color-marjorelle-purple)' : '',
+            index === 4 ? 'text-(--color-alabaster) text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl' : '',
+          ]}
+          style={`--line-index: ${index};`}
+          data-line={index}
+        >
+          {line}
+        </p>
+      ))}
+    </div>
+
+    <!-- Thesis keywords floating -->
+    <div class="thesis-words absolute inset-0 pointer-events-none overflow-hidden">
+      <span class="floating-word word-1">Bioscience</span>
+      <span class="floating-word word-2">Longevity</span>
+      <span class="floating-word word-3">Data</span>
+      <span class="floating-word word-4">Venture</span>
+      <span class="floating-word word-5">Founders</span>
+      <span class="floating-word word-6">Health</span>
+    </div>
+
+    <!-- Bottom CTA area -->
+    <div class="cta-area absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center gap-6">
+      <div class="scroll-prompt flex flex-col items-center gap-3 text-(--color-lilac)/50">
+        <span class="text-xs uppercase tracking-[0.3em]">Scroll to explore</span>
+        <div class="scroll-indicator w-6 h-10 border border-current rounded-full flex items-start justify-center p-2">
+          <span class="scroll-dot w-1 h-1 bg-current rounded-full"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corner accents -->
+    <div class="corner-accent top-left absolute top-8 left-8 w-16 h-16 border-l border-t border-(--color-marjorelle-purple)/20 hidden sm:block"></div>
+    <div class="corner-accent bottom-right absolute bottom-8 right-8 w-16 h-16 border-r border-b border-(--color-marjorelle-purple)/20 hidden sm:block"></div>
+  </div>
+
+  <!-- Second "page" - the reveal on scroll -->
+  <div class="thesis-reveal min-h-screen flex items-center justify-center px-6 py-20">
+    <div class="reveal-grid grid gap-12 md:gap-16 lg:grid-cols-3 max-w-6xl mx-auto">
+      <div class="reveal-block">
+        <div class="block-accent w-12 h-1 bg-(--color-marjorelle-purple) mb-6"></div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-(--color-alabaster) mb-4">
+          Why Now
+        </h2>
+        <p class="text-base sm:text-lg text-(--color-alabaster)/60 leading-relaxed">
+          The half-life between bioscience discovery and market application is collapsing.
+          Compute is cheap. Data is abundant. The window is open.
+        </p>
+      </div>
+
+      <div class="reveal-block">
+        <div class="block-accent w-12 h-1 bg-(--color-lilac) mb-6"></div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-(--color-alabaster) mb-4">
+          Why Health
+        </h2>
+        <p class="text-base sm:text-lg text-(--color-alabaster)/60 leading-relaxed">
+          Health is becoming a continuous data stream, not episodic snapshots.
+          This shift creates venture-scale infrastructure opportunities.
+        </p>
+      </div>
+
+      <div class="reveal-block">
+        <div class="block-accent w-12 h-1 bg-(--color-soap-purple) mb-6"></div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-(--color-alabaster) mb-4">
+          Why Us
+        </h2>
+        <p class="text-base sm:text-lg text-(--color-alabaster)/60 leading-relaxed">
+          Trusted networks. Pattern recognition from decades of venture. The willingness
+          to do the unglamorous work alongside founders.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Sticky section needs solid background */
+  .manifesto-sticky {
+    background-color: var(--color-void, #0F0923);
+  }
+
+  /* Ambient background effects */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+  }
+
+  .glow-1 {
+    width: 40vw;
+    height: 40vw;
+    max-width: 500px;
+    max-height: 500px;
+    background: var(--color-marjorelle-purple);
+    top: 10%;
+    right: -10%;
+    animation: glow-drift 20s ease-in-out infinite;
+  }
+
+  .glow-2 {
+    width: 30vw;
+    height: 30vw;
+    max-width: 400px;
+    max-height: 400px;
+    background: var(--color-lilac);
+    bottom: 20%;
+    left: -5%;
+    animation: glow-drift 25s ease-in-out infinite reverse;
+  }
+
+  @keyframes glow-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -20px) scale(1.1); }
+  }
+
+  /* Manifesto text animations */
+  .manifesto-line {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: line-reveal 0.8s ease-out forwards;
+    animation-delay: calc(var(--line-index) * 0.15s + 0.2s);
+    margin-bottom: 0.1em;
+  }
+
+  @keyframes line-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Last line special treatment */
+  .manifesto-line[data-line="4"] {
+    margin-top: 0.5em;
+    animation-delay: 1s;
+  }
+
+  /* Floating thesis words */
+  .floating-word {
+    position: absolute;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-lilac);
+    opacity: 0.15;
+  }
+
+  .word-1 { top: 15%; left: 10%; animation: float-word 15s ease-in-out infinite; }
+  .word-2 { top: 25%; right: 15%; animation: float-word 18s ease-in-out infinite 2s; }
+  .word-3 { top: 60%; left: 8%; animation: float-word 20s ease-in-out infinite 1s; }
+  .word-4 { top: 70%; right: 12%; animation: float-word 17s ease-in-out infinite 3s; }
+  .word-5 { bottom: 25%; left: 20%; animation: float-word 22s ease-in-out infinite 1.5s; }
+  .word-6 { bottom: 30%; right: 25%; animation: float-word 19s ease-in-out infinite 2.5s; }
+
+  @keyframes float-word {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(10px, -15px); }
+    50% { transform: translate(-5px, 10px); }
+    75% { transform: translate(15px, 5px); }
+  }
+
+  /* Scroll indicator */
+  .scroll-dot {
+    animation: scroll-bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-bounce {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(12px); opacity: 0.3; }
+  }
+
+  /* Corner accents subtle animation */
+  .corner-accent {
+    opacity: 0;
+    animation: corner-fade 1s ease-out 1.5s forwards;
+  }
+
+  @keyframes corner-fade {
+    to { opacity: 1; }
+  }
+
+  /* Reveal blocks on scroll section */
+  .reveal-block {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  /* Use intersection observer or scroll-based reveal */
+  @supports (animation-timeline: scroll()) {
+    .reveal-block {
+      animation: block-reveal linear forwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+  }
+
+  @keyframes block-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Fallback for browsers without scroll timeline */
+  @supports not (animation-timeline: scroll()) {
+    .thesis-reveal .reveal-block {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Hover states for manifesto lines */
+  .manifesto-line {
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+    cursor: default;
+  }
+
+  .manifesto-line:hover {
+    transform: translateX(10px);
+    text-shadow: 0 0 60px currentColor;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 640px) {
+    .floating-word {
+      display: none;
+    }
+
+    .manifesto-line {
+      margin-bottom: 0.2em;
+    }
+  }
+</style>
+
+<script>
+  // Simple intersection observer for reveal blocks
+  const revealBlocks = document.querySelectorAll('.reveal-block');
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+          const el = entry.target;
+          setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          }, index * 150);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  revealBlocks.forEach((block) => observer.observe(block));
+</script>

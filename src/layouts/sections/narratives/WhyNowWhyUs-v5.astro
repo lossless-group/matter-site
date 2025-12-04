@@ -1,0 +1,228 @@
+---
+/**
+ * VARIANT 5: "The Reveal" — Dramatic Asymmetric Split
+ *
+ * A bold, editorial-style hero with strong visual hierarchy.
+ * Features:
+ * - Massive oversized typography that breaks the grid
+ * - Asymmetric diagonal split creating tension
+ * - One side dark/mysterious, other side reveals the "why"
+ * - Text overlaps boundaries for editorial impact
+ * - Staggered entrance animations
+ */
+
+interface Props {
+  mainStatement?: string;
+}
+
+const {
+  mainStatement = 'The invisible forces shaping the future of human health',
+} = Astro.props as Props;
+---
+
+<section class="reveal-hero relative min-h-screen w-full overflow-hidden">
+  <!-- Diagonal split background -->
+  <div class="split-bg absolute inset-0">
+    <div class="split-dark"></div>
+    <div class="split-glow"></div>
+  </div>
+
+  <!-- Large background text (decorative) -->
+  <div class="bg-text absolute top-1/2 left-0 -translate-y-1/2 select-none pointer-events-none" aria-hidden="true">
+    <span class="text-[20vw] font-black leading-none text-(--color-marjorelle-purple)/4 tracking-tighter">
+      DARK
+    </span>
+  </div>
+
+  <!-- Main content grid -->
+  <div class="relative z-10 min-h-screen grid lg:grid-cols-[1.2fr_1fr] items-center">
+
+    <!-- Left: The mystery / brand presence -->
+    <div class="left-panel relative flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24 py-20 lg:py-0">
+      <div class="reveal-content">
+        <p class="eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase text-(--color-lilac) mb-6">
+          Dark Matter Bio
+        </p>
+
+        <h1 class="headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] tracking-tight">
+          <span class="block text-(--color-alabaster)">Why</span>
+          <span class="block text-(--color-alabaster)">Now<span class="text-(--color-marjorelle-purple)">.</span></span>
+          <span class="block text-(--color-lilac)/60 mt-2 text-[0.5em] font-light tracking-normal">
+            Why Us<span class="text-(--color-marjorelle-purple)">.</span>
+          </span>
+        </h1>
+
+        <p class="statement mt-8 sm:mt-12 text-lg sm:text-xl lg:text-2xl text-(--color-alabaster)/70 max-w-lg leading-relaxed font-light">
+          {mainStatement}
+        </p>
+
+        <!-- Floating stat accent -->
+        <div class="stat-accent mt-12 inline-flex items-baseline gap-3 border-l-2 border-(--color-marjorelle-purple) pl-4">
+          <span class="text-5xl sm:text-6xl font-bold text-(--color-marjorelle-purple)">10×</span>
+          <span class="text-sm text-(--color-alabaster)/60 uppercase tracking-wider">
+            compression<br/>in discovery cycles
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: The reveal / key points -->
+    <div class="right-panel relative flex flex-col justify-center px-8 sm:px-12 lg:px-16 py-20 lg:py-0 lg:border-l border-(--color-marjorelle-purple)/20">
+      <div class="reveal-points space-y-8">
+        <div class="point-card group">
+          <div class="point-number text-7xl sm:text-8xl font-black text-(--color-marjorelle-purple)/20 leading-none absolute -left-2 -top-4 transition-colors group-hover:text-(--color-marjorelle-purple)/40">
+            01
+          </div>
+          <div class="relative pl-12 sm:pl-16">
+            <h2 class="text-lg sm:text-xl font-semibold text-(--color-alabaster) mb-2">
+              The Timing Window
+            </h2>
+            <p class="text-sm sm:text-base text-(--color-alabaster)/60 leading-relaxed">
+              Bioscience, compute, and capital have converged. The half-life between discovery and application is collapsing.
+            </p>
+          </div>
+        </div>
+
+        <div class="point-card group">
+          <div class="point-number text-7xl sm:text-8xl font-black text-(--color-marjorelle-purple)/20 leading-none absolute -left-2 -top-4 transition-colors group-hover:text-(--color-marjorelle-purple)/40">
+            02
+          </div>
+          <div class="relative pl-12 sm:pl-16">
+            <h2 class="text-lg sm:text-xl font-semibold text-(--color-alabaster) mb-2">
+              Data as a Sense Organ
+            </h2>
+            <p class="text-sm sm:text-base text-(--color-alabaster)/60 leading-relaxed">
+              Health becomes a live data problem. Continuous biomarkers replace episodic snapshots.
+            </p>
+          </div>
+        </div>
+
+        <div class="point-card group">
+          <div class="point-number text-7xl sm:text-8xl font-black text-(--color-marjorelle-purple)/20 leading-none absolute -left-2 -top-4 transition-colors group-hover:text-(--color-marjorelle-purple)/40">
+            03
+          </div>
+          <div class="relative pl-12 sm:pl-16">
+            <h2 class="text-lg sm:text-xl font-semibold text-(--color-alabaster) mb-2">
+              Our Unfair Advantage
+            </h2>
+            <p class="text-sm sm:text-base text-(--color-alabaster)/60 leading-relaxed">
+              Trusted networks at the intersection of research, builders, and distribution partners who route breakthroughs to market.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12">
+        <a href="#learn-more" class="reveal-cta inline-flex items-center gap-4 text-sm uppercase tracking-[0.2em] text-(--color-lilac) hover:text-(--color-alabaster) transition-colors group">
+          <span>Discover our thesis</span>
+          <span class="cta-arrow w-12 h-px bg-current relative">
+            <span class="absolute right-0 top-1/2 w-2 h-2 border-t border-r border-current rotate-45 -translate-y-1/2 transition-transform group-hover:translate-x-1"></span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vertical accent line -->
+  <div class="accent-line absolute top-0 bottom-0 left-[55%] w-px bg-gradient-to-b from-transparent via-(--color-marjorelle-purple)/30 to-transparent hidden lg:block"></div>
+</section>
+
+<style>
+  .reveal-hero {
+    background: var(--color-void);
+  }
+
+  .split-bg {
+    overflow: hidden;
+  }
+
+  .split-dark {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, var(--color-void) 0%, rgba(15, 9, 35, 0.95) 100%);
+  }
+
+  .split-glow {
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, rgba(102, 67, 226, 0.15) 0%, transparent 70%);
+    filter: blur(80px);
+  }
+
+  /* Staggered entrance animations */
+  .reveal-content > * {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: reveal-up 0.8s ease-out forwards;
+  }
+
+  .eyebrow { animation-delay: 0.1s; }
+  .headline { animation-delay: 0.2s; }
+  .statement { animation-delay: 0.4s; }
+  .stat-accent { animation-delay: 0.6s; }
+
+  .point-card {
+    position: relative;
+    opacity: 0;
+    transform: translateX(30px);
+    animation: reveal-left 0.8s ease-out forwards;
+  }
+
+  .point-card:nth-child(1) { animation-delay: 0.3s; }
+  .point-card:nth-child(2) { animation-delay: 0.5s; }
+  .point-card:nth-child(3) { animation-delay: 0.7s; }
+
+  @keyframes reveal-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes reveal-left {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Hover interactions */
+  .point-card {
+    padding: 1rem 0;
+    transition: transform 0.3s ease;
+  }
+
+  .point-card:hover {
+    transform: translateX(8px);
+  }
+
+  /* CTA arrow animation */
+  .reveal-cta:hover .cta-arrow::after {
+    animation: arrow-pulse 0.6s ease infinite;
+  }
+
+  @keyframes arrow-pulse {
+    0%, 100% { transform: translateX(0) translateY(-50%) rotate(45deg); }
+    50% { transform: translateX(4px) translateY(-50%) rotate(45deg); }
+  }
+
+  /* Background text parallax hint */
+  .bg-text {
+    transform: translateY(-50%) translateX(-10%);
+  }
+
+  @media (max-width: 1024px) {
+    .bg-text {
+      display: none;
+    }
+
+    .accent-line {
+      display: none;
+    }
+  }
+</style>

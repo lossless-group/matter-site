@@ -1,0 +1,110 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A three-lens narrative: market timing, technological shift, and fund edge.',
+} = Astro.props as Props;
+---
+
+<section class="hero-shell relative min-h-[80vh] lg:min-h-screen flex items-center justify-center px-6 py-16 sm:px-10 lg:px-16">
+  <div class="absolute inset-0 -z-10 bg-linear-to-b from-background/70 via-background to-background/95" />
+
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-10">
+    <header class="space-y-4 max-w-3xl">
+      <p class="text-xs sm:text-sm font-medium tracking-[0.22em] uppercase text-accent/80">
+        Dark Matter Bio
+      </p>
+      <h1 class="text-balance text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-foreground">
+        {title}
+      </h1>
+      <p class="max-w-2xl text-base sm:text-lg text-foreground/80">
+        {subtitle}
+      </p>
+    </header>
+
+    <div class="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-start">
+      <!-- Left: stacked story with timeline accent -->
+      <article class="hero-panel relative overflow-hidden rounded-2xl border p-6 sm:p-7 backdrop-blur-sm">
+        <div class="absolute inset-y-4 left-3 w-px bg-linear-to-b from-accent/40 via-accent/20 to-transparent" />
+        <ol class="space-y-6 pl-6 text-sm sm:text-base text-foreground/85">
+          <li class="relative">
+            <div class="absolute left-[-1.35rem] top-0 h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_0_4px_rgba(156,133,223,0.35)]" />
+            <h2 class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Compression of Breakthroughs
+            </h2>
+            <p class="mt-2">
+              The half‑life between fundamental bioscience discovery and market application is collapsing,
+              pulling forward entire categories of longevity and healthspan investment.
+            </p>
+          </li>
+
+          <li class="relative">
+            <div class="absolute left-[-1.35rem] top-0 h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_0_4px_rgba(102,67,226,0.40)]" />
+            <h2 class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Data as a Biological Sense Organ
+            </h2>
+            <p class="mt-2">
+              Continuous biomarker streams, multi‑omics, and real‑world evidence turn health into a
+              live data problem instead of episodic lab work, opening venture‑scale software and
+              infrastructure layers.
+            </p>
+          </li>
+
+          <li class="relative">
+            <div class="absolute left-[-1.35rem] top-0 h-2.5 w-2.5 rounded-full bg-secondary shadow-[0_0_0_4px_rgba(205,196,237,0.38)]" />
+            <h2 class="text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Distribution Wants Better Health Outcomes
+            </h2>
+            <p class="mt-2">
+              Employers, payers, and consumers are aligned on outcomes, not procedures. That shift in
+              demand surface rewards ventures that can prove compounding, measurable improvements.
+            </p>
+          </li>
+        </ol>
+      </article>
+
+      <!-- Right: structured "why us" scorecard view -->
+      <aside class="hero-panel rounded-2xl border p-6 sm:p-7 backdrop-blur-sm flex flex-col gap-5">
+        <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+          Where Dark Matter Inserts Itself
+        </h2>
+
+        <dl class="space-y-4 text-sm sm:text-base text-foreground/85">
+          <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 items-baseline">
+            <dt class="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Network
+            </dt>
+            <dd>
+              Trusted access at the intersection of translational researchers, builders, and distribution
+              partners who can actually route breakthroughs into the market.
+            </dd>
+          </div>
+
+          <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 items-baseline">
+            <dt class="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Pattern Library
+            </dt>
+            <dd>
+              A curated set of venture and bio patterns—what tends to work, where companies stall,
+              and which signals matter early—that compresses founder learning cycles.
+            </dd>
+          </div>
+
+          <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 items-baseline">
+            <dt class="text-[0.75rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Time Horizon
+            </dt>
+            <dd>
+              A willingness to underwrite compounding advantage over a decade instead of chasing
+              short‑term narrative trades.
+            </dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>

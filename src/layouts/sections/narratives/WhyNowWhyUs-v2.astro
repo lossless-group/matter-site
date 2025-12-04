@@ -1,0 +1,108 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A side‑by‑side view of the world before and after the shift we are betting on.',
+} = Astro.props as Props;
+---
+
+<section class="hero-shell relative min-h-[80vh] lg:min-h-screen flex items-center justify-center px-6 py-16 sm:px-10 lg:px-16">
+  <div class="absolute inset-0 -z-10 bg-linear-to-b from-background/70 via-background to-background/95" />
+
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-10">
+    <header class="space-y-4 max-w-3xl">
+      <p class="text-xs sm:text-sm font-medium tracking-[0.22em] uppercase text-accent/80">
+        Dark Matter Bio
+      </p>
+      <h1 class="text-balance text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-foreground">
+        {title}
+      </h1>
+      <p class="max-w-2xl text-base sm:text-lg text-foreground/80">
+        {subtitle}
+      </p>
+    </header>
+
+    <div class="hero-panel grid gap-6 rounded-2xl border p-6 sm:p-7 backdrop-blur-sm lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <!-- Left: Before -->
+      <div class="space-y-4">
+        <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-muted-foreground">
+          Before: Fragmented, Episodic, Opaque
+        </h2>
+        <ul class="space-y-3 text-sm sm:text-base text-foreground/80">
+          <li class="flex gap-3">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+            <div>
+              <p class="font-medium">Health measured in snapshots</p>
+              <p class="text-foreground/75">
+                Annual labs and episodic visits produce incomplete, lagging indicators of true health
+                trajectory.
+              </p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+            <div>
+              <p class="font-medium">Data trapped in silos</p>
+              <p class="text-foreground/75">
+                Clinical, consumer, and behavioral data rarely talk to each other; insight lives in
+                spreadsheets and static reports.
+              </p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+            <div>
+              <p class="font-medium">Misaligned incentives</p>
+              <p class="text-foreground/75">
+                Systems optimized for billable events, not durable improvements in healthspan.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Right: After with Dark Matter -->
+      <div class="space-y-4 border-t pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6 border-border/40">
+        <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+          After: Continuous, Integrated, Compounding
+        </h2>
+        <ul class="space-y-3 text-sm sm:text-base text-foreground/80">
+          <li class="flex gap-3">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
+            <div>
+              <p class="font-medium">Always‑on biological telemetry</p>
+              <p class="text-foreground/75">
+                Biomarkers, wearables, and lab infrastructure route into living models of risk and
+                response, not static PDFs.
+              </p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-secondary" />
+            <div>
+              <p class="font-medium">Infrastructure that connects the stack</p>
+              <p class="text-foreground/75">
+                Founders build platforms that let researchers, clinicians, and consumers collaborate
+                on the same source of truth.
+              </p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-accent" />
+            <div>
+              <p class="font-medium">Capital wired to the edge</p>
+              <p class="text-foreground/75">
+                Dark Matter backs teams where marginal insight compounds—each experiment, each cohort,
+                each data point makes the next decision sharper.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,5 +1,23 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@layouts/*": ["src/layouts/*"],
+      "@icons/*": ["public/icons/*"],
+      "@sections/*": ["src/layouts/sections/*"],
+      "@components/*": ["src/components/*"],
+      "@infographic/*": ["src/components/infographic/*"],
+      "@core-messages/*": ["src/layouts/sections/core-messages/*"],
+      "@styles/*": ["src/styles/*"],
+      "styles/*": ["src/styles/*"],
+      "@scripts/*": ["src/scripts/*"],
+      "@content/*": ["src/content/*"],
+      "@types/*": ["src/types/*"],
+      "@utils/*": ["src/utils/*"] 
+    },
+    "types": ["vite/client"]
+  }
 }

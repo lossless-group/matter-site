@@ -1,0 +1,374 @@
+---
+/**
+ * VARIANT 7: "Orbital Narrative" — Scroll-Driven Storytelling with Orb
+ *
+ * The Orb becomes a living element that the content orbits around.
+ * Features:
+ * - Central Orb as the visual anchor
+ * - Content cards "orbit" into view on scroll
+ * - Staggered reveal animations with intersection observer
+ * - Clear visual hierarchy: headline → Orb → "Why Now" → "Why Us"
+ * - Cards swipe/fade in from alternating sides
+ * - Orb subtly scales/pulses as you scroll through sections
+ */
+
+import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A venture-built thesis at the edge of bioscience, data, and longevity.',
+} = Astro.props as Props;
+
+// Content data - exact copy from original
+const whyNowPoints = [
+  {
+    title: 'Bioscience Explosion',
+    description: 'Breakthroughs in genomics, epigenetics, proteomics, and other biosciences are enabling new ways to understand and treat disease.',
+  },
+  {
+    title: 'Unprecedented Data',
+    description: 'Newly discovered biomarkers, combined with real-time data collection, give us continuous, measurable signals about biological age, risk, and response.',
+  },
+  {
+    title: 'Leaps in Demand',
+    description: 'Consumers and institutions are demanding personalized, data-driven, future‑forward health innovations, not one-size-fits-all care.',
+  },
+  {
+    title: 'Entrepreneurial Talent',
+    description: 'Repeat founders from software and infrastructure now want to apply their company‑building craft to breakthroughs in health and longevity.',
+  },
+];
+
+const whyUsPoints = [
+  {
+    title: 'Cutting Edge Access',
+    description: 'Trusted networks at the intersection of Silicon Valley, bioscience research, inventors, and company builders.',
+  },
+  {
+    title: 'Eye‑Popping Track Record',
+    description: 'Investing partners with a track record several standard deviations above venture in general, including biotech and health.',
+  },
+  {
+    title: 'Profound Hustle',
+    description: 'Deep domain experience paired with the entrepreneurial energy of a modern venture firm.',
+  },
+  {
+    title: 'Genuine Passion & Networked Support',
+    description: 'Geekery, alignment, and wide, deep relationships across the ecosystem give Dark Matter the right to win the most interesting opportunities.',
+  },
+];
+---
+
+<section class="orbital-narrative relative bg-(--color-void) overflow-hidden">
+  <!-- Opening: Hero + Orb -->
+  <div class="hero-opening min-h-screen flex flex-col items-center justify-center px-6 py-20 relative">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_30%,rgba(102,67,226,0.12),transparent_70%)]"></div>
+
+    <!-- Eyebrow -->
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase text-[var(--color-lilac)]/70 mb-6 relative z-10">
+      Dark Matter Bio
+    </p>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center text-[var(--color-alabaster)] leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-[var(--color-alabaster)]/60 text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- The Orb - Central visual anchor -->
+    <div class="orb-wrapper mt-12 relative z-10">
+      <ImageAbstractOrb size="min(70vw, 400px)" rotationSpeed={0.15} />
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--color-lilac)]/40">
+      <span class="text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Why Now -->
+  <div class="why-now-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-marjorelle-purple)] border border-[var(--color-marjorelle-purple)]/30 rounded-full mb-4">
+          Why Now
+        </span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-alabaster)]">
+          The Timing Window
+        </h2>
+      </div>
+
+      <!-- Cards grid - staggered reveal -->
+      <div class="cards-grid grid gap-6 sm:gap-8 md:grid-cols-2">
+        {whyNowPoints.map((point, index) => (
+          <article
+            class="point-card reveal-item"
+            data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="card-inner group relative p-6 sm:p-8 rounded-2xl border border-[var(--color-marjorelle-purple)]/20 bg-(--color-void)/80 backdrop-blur-sm transition-all duration-500 hover:border-[var(--color-marjorelle-purple)]/50 hover:bg-[rgba(102,67,226,0.08)]">
+              <!-- Number accent -->
+              <span class="absolute -top-3 -left-3 w-8 h-8 flex items-center justify-center text-xs font-bold text-[var(--color-marjorelle-purple)] bg-(--color-void) border border-[var(--color-marjorelle-purple)]/40 rounded-full">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+
+              <h3 class="text-lg sm:text-xl font-semibold text-[var(--color-alabaster)] mb-3 group-hover:text-[var(--color-lilac)] transition-colors">
+                {point.title}
+              </h3>
+              <p class="text-sm sm:text-base text-[var(--color-alabaster)]/60 leading-relaxed">
+                {point.description}
+              </p>
+
+              <!-- Hover glow -->
+              <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-[radial-gradient(circle_at_50%_50%,rgba(102,67,226,0.1),transparent_70%)]"></div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider with mini orb -->
+  <div class="section-divider py-16 flex items-center justify-center relative">
+    <div class="absolute left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-[var(--color-marjorelle-purple)]/30 to-transparent"></div>
+    <div class="divider-orb relative z-10 bg-(--color-void) p-4">
+      <ImageAbstractOrb size="80px" color="#9C85DF" rotationSpeed={0.4} />
+    </div>
+  </div>
+
+  <!-- Section: Why Dark Matter -->
+  <div class="why-us-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-lilac)] border border-[var(--color-lilac)]/30 rounded-full mb-4">
+          Why Dark Matter
+        </span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-alabaster)]">
+          Our Unfair Advantage
+        </h2>
+      </div>
+
+      <!-- Cards - different layout for variety -->
+      <div class="cards-list space-y-6">
+        {whyUsPoints.map((point, index) => (
+          <article
+            class="point-card-horizontal reveal-item"
+            data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="card-inner group relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl border border-[var(--color-lilac)]/20 bg-(--color-void)/80 backdrop-blur-sm transition-all duration-500 hover:border-[var(--color-lilac)]/50 hover:bg-[rgba(156,133,223,0.06)]">
+              <!-- Icon/number area -->
+              <div class="flex-shrink-0 flex items-start">
+                <span class="w-12 h-12 flex items-center justify-center text-lg font-bold text-[var(--color-lilac)] border border-[var(--color-lilac)]/30 rounded-xl group-hover:bg-(--color-lilac)/10 transition-colors">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="flex-1">
+                <h3 class="text-lg sm:text-xl font-semibold text-[var(--color-alabaster)] mb-2 group-hover:text-[var(--color-lilac)] transition-colors">
+                  {point.title}
+                </h3>
+                <p class="text-sm sm:text-base text-[var(--color-alabaster)]/60 leading-relaxed">
+                  {point.description}
+                </p>
+              </div>
+
+              <!-- Arrow hint on hover -->
+              <div class="hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span class="text-[var(--color-lilac)]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing with Orb -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_70%,rgba(156,133,223,0.1),transparent_70%)]"></div>
+
+    <div class="closing-orb reveal-item" data-reveal="scale-up">
+      <ImageAbstractOrb size="min(50vw, 250px)" color="#CDC4ED" rotationSpeed={0.2} />
+    </div>
+
+    <p class="mt-8 text-lg sm:text-xl text-[var(--color-alabaster)]/50 text-center max-w-md reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Investing at the edge of what's knowable.
+    </p>
+  </div>
+</section>
+
+<style>
+  /* Base reveal states */
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  .reveal-item[data-reveal="slide-right"] {
+    transform: translateX(-60px);
+  }
+
+  .reveal-item[data-reveal="slide-left"] {
+    transform: translateX(60px);
+  }
+
+  .reveal-item[data-reveal="scale-up"] {
+    transform: scale(0.8);
+  }
+
+  /* Revealed state */
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* Hero opening animations */
+  .hero-opening .eyebrow-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .orb-wrapper {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeInScale 1s ease 0.8s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInScale {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Scroll hint animation */
+  .scroll-hint .w-px {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scaleY(1.2);
+    }
+  }
+
+  /* Card hover effects */
+  .point-card .card-inner,
+  .point-card-horizontal .card-inner {
+    box-shadow: 0 0 0 1px rgba(102, 67, 226, 0);
+  }
+
+  .point-card .card-inner:hover,
+  .point-card-horizontal .card-inner:hover {
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.15);
+  }
+
+  /* Divider orb pulse */
+  .divider-orb {
+    animation: orbPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes orbPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Add revealed class after the delay
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

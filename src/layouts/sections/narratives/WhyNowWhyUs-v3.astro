@@ -1,0 +1,108 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A venture‑grade synthesis of timing, talent, and terrain.',
+} = Astro.props as Props;
+---
+
+<section class="hero-shell relative min-h-[80vh] lg:min-h-screen flex items-center justify-center px-6 py-16 sm:px-10 lg:px-16">
+  <div class="absolute inset-0 -z-10 bg-linear-to-b from-background/70 via-background to-background/95" />
+
+  <div class="mx-auto flex w-full max-w-6xl flex-col gap-10 lg:gap-12">
+    <!-- Top row: headline and quick stat bar -->
+    <header class="space-y-5">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+        <div class="space-y-3">
+          <p class="text-xs sm:text-sm font-medium tracking-[0.22em] uppercase text-accent/80">
+            Dark Matter Bio
+          </p>
+          <h1 class="text-balance text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight text-foreground">
+            {title}
+          </h1>
+          <p class="max-w-2xl text-base sm:text-lg text-foreground/80">
+            {subtitle}
+          </p>
+        </div>
+
+        <div class="mt-4 flex flex-wrap gap-3 sm:mt-0 sm:justify-end">
+          <div class="rounded-full border border-border/60 bg-surface/60 px-3 py-1.5 text-xs sm:text-[0.8rem] text-foreground/80 flex items-center gap-2">
+            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_0_4px_rgba(102,67,226,0.40)]" />
+            <span>Bio, data, and longevity convergence</span>
+          </div>
+          <div class="rounded-full border border-border/40 bg-surface-muted/80 px-3 py-1.5 text-xs sm:text-[0.8rem] text-foreground/75 flex items-center gap-2">
+            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-secondary" />
+            <span>Seed–Series A focus</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Bottom row: three-column band -->
+    <div class="hero-panel grid gap-6 rounded-2xl border p-6 sm:p-7 backdrop-blur-sm lg:grid-cols-3">
+      <article class="space-y-3">
+        <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+          The Timing Window
+        </h2>
+        <p class="text-sm sm:text-base text-foreground/80">
+          Dark Matter sits at a moment when bioscience, compute, and capital have all become cheap
+          and programmable enough to invite a new generation of venture‑scale companies.
+        </p>
+        <ul class="mt-3 space-y-2 text-xs sm:text-[0.8rem] text-foreground/70">
+          <li class="flex gap-2">
+            <span class="mt-1 h-1 w-4 rounded-full bg-primary" />
+            <span>Order‑of‑magnitude drops in sequencing and lab costs.</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="mt-1 h-1 w-4 rounded-full bg-secondary" />
+            <span>Off‑the‑shelf infrastructure for data and workflow orchestration.</span>
+          </li>
+        </ul>
+      </article>
+
+      <article class="space-y-3">
+        <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+          The Founders We Back
+        </h2>
+        <p class="text-sm sm:text-base text-foreground/80">
+          We look for operators and scientists who can translate deep technical insight into systems,
+          not just stories.
+        </p>
+        <ul class="mt-3 space-y-2 text-xs sm:text-[0.8rem] text-foreground/70">
+          <li class="flex gap-2">
+            <span class="mt-1 h-1 w-4 rounded-full bg-primary" />
+            <span>Biologists who think in feedback loops and unit economics.</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="mt-1 h-1 w-4 rounded-full bg-secondary" />
+            <span>Software founders who respect regulatory, clinical, and scientific realities.</span>
+          </li>
+        </ul>
+      </article>
+
+      <article class="space-y-3">
+        <h2 class="text-sm font-semibold tracking-[0.18em] uppercase text-accent/80">
+          The Edge We Bring
+        </h2>
+        <p class="text-sm sm:text-base text-foreground/80">
+          Dark Matter combines pattern recognition from venture, operational empathy, and a willingness
+          to do the unglamorous work with founders.
+        </p>
+        <ul class="mt-3 space-y-2 text-xs sm:text-[0.8rem] text-foreground/70">
+          <li class="flex gap-2">
+            <span class="mt-1 h-1 w-4 rounded-full bg-primary" />
+            <span>A track record of picking outlier companies before they are consensus.</span>
+          </li>
+          <li class="flex gap-2">
+            <span class="mt-1 h-1 w-4 rounded-full bg-secondary" />
+            <span>Hands‑on support in recruiting, narrative, and go‑to‑market design.</span>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
