@@ -125,8 +125,13 @@
   color: var(--color-secondary-foreground);
 }
 
-/* Hero helpers: dark = calm, vibrant = expressive */
-.theme-matter .hero-shell {
+/* Hero helpers: light = clean, dark/vibrant = expressive */
+[data-theme="matter"][data-mode="light"] .hero-shell {
+  background-color: var(--color-background);
+}
+
+[data-theme="matter"][data-mode="dark"] .hero-shell,
+[data-theme="matter"][data-mode="vibrant"] .hero-shell {
   background: radial-gradient(circle at top, rgba(15, 9, 35, 0.6), #05030f);
 }
 

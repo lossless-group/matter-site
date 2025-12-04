@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(pnpm dev:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:the-water-foundation.com)",
+      "WebFetch(domain:www.lossless.group)"
     ],
     "deny": [],
     "ask": []

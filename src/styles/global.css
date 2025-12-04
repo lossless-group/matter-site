@@ -50,26 +50,28 @@ a, button, input, textarea, select, .transition-colors {
   color-scheme: dark;
 }
 
-/* Responsive visibility utilities */
+/* Responsive visibility utilities
+   Note: Media queries cannot use CSS variables - must use static values
+   Values kept in sync with :root breakpoint variables above */
 @layer utilities {
   .monitor-only { display: none; }
   .laptop-only { display: none; }
   .tablet-only { display: none; }
   .mobile-only { display: none; }
 
-  @media (min-width: var(--breakpoint-monitor)) {
+  @media (min-width: 1536px) {
     .monitor-only { display: block; }
   }
 
-  @media (min-width: var(--breakpoint-laptop)) and (max-width: calc(var(--breakpoint-monitor) - 1px)) {
+  @media (min-width: 1024px) and (max-width: 1535px) {
     .laptop-only { display: block; }
   }
 
-  @media (min-width: var(--breakpoint-tablet)) and (max-width: calc(var(--breakpoint-laptop) - 1px)) {
+  @media (min-width: 768px) and (max-width: 1023px) {
     .tablet-only { display: block; }
   }
 
-  @media (max-width: calc(var(--breakpoint-tablet) - 1px)) {
+  @media (max-width: 767px) {
     .mobile-only { display: block; }
   }
 }
