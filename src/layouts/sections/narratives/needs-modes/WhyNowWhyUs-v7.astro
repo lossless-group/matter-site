@@ -335,403 +335,403 @@ const whyUsPoints = [
   /* ==========================================================================
      LIGHT MODE — Clean, professional, subtle
      ========================================================================== */
-  [data-mode="light"] .orbital-narrative {
+  :global(:global([data-mode="light"])) .orbital-narrative {
     background: var(--color-alabaster);
   }
 
-  [data-mode="light"] .hero-gradient {
+  :global(:global([data-mode="light"])) .hero-gradient {
     background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(156, 133, 223, 0.08), transparent 70%);
   }
 
-  [data-mode="light"] .eyebrow-text {
+  :global([data-mode="light"]) .eyebrow-text {
     color: var(--color-marjorelle-purple);
     opacity: 0.8;
   }
 
-  [data-mode="light"] .headline-text {
+  :global([data-mode="light"]) .headline-text {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .subtitle-text {
+  :global([data-mode="light"]) .subtitle-text {
     color: var(--color-foreground);
     opacity: 0.6;
   }
 
-  [data-mode="light"] .scroll-hint {
+  :global([data-mode="light"]) .scroll-hint {
     color: var(--color-marjorelle-purple);
     opacity: 0.4;
   }
 
-  [data-mode="light"] .section-title {
+  :global([data-mode="light"]) .section-title {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .section-badge-primary {
+  :global([data-mode="light"]) .section-badge-primary {
     color: var(--color-marjorelle-purple);
     border: 1px solid rgba(108, 99, 255, 0.25);
   }
 
-  [data-mode="light"] .section-badge-secondary {
+  :global([data-mode="light"]) .section-badge-secondary {
     color: var(--color-lilac);
     border: 1px solid rgba(156, 133, 223, 0.25);
   }
 
   /* Light mode cards */
-  [data-mode="light"] .card-inner-primary {
+  :global([data-mode="light"]) .card-inner-primary {
     background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(108, 99, 255, 0.12);
   }
 
-  [data-mode="light"] .card-inner-primary:hover {
+  :global([data-mode="light"]) .card-inner-primary:hover {
     border-color: rgba(108, 99, 255, 0.3);
     background: rgba(255, 255, 255, 0.95);
   }
 
-  [data-mode="light"] .card-inner-secondary {
+  :global([data-mode="light"]) .card-inner-secondary {
     background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(156, 133, 223, 0.12);
   }
 
-  [data-mode="light"] .card-inner-secondary:hover {
+  :global([data-mode="light"]) .card-inner-secondary:hover {
     border-color: rgba(156, 133, 223, 0.3);
     background: rgba(255, 255, 255, 0.95);
   }
 
-  [data-mode="light"] .card-number-primary {
+  :global([data-mode="light"]) .card-number-primary {
     color: var(--color-marjorelle-purple);
     background: var(--color-alabaster);
     border: 1px solid rgba(108, 99, 255, 0.3);
   }
 
-  [data-mode="light"] .card-number-secondary {
+  :global([data-mode="light"]) .card-number-secondary {
     color: var(--color-lilac);
     border: 1px solid rgba(156, 133, 223, 0.25);
   }
 
-  [data-mode="light"] .card-number-box.card-number-secondary {
+  :global([data-mode="light"]) .card-number-box.card-number-secondary {
     background: transparent;
   }
 
-  [data-mode="light"] .group:hover .card-number-box.card-number-secondary {
+  :global([data-mode="light"]) .group:hover .card-number-box.card-number-secondary {
     background: rgba(156, 133, 223, 0.1);
   }
 
-  [data-mode="light"] .card-title {
+  :global([data-mode="light"]) .card-title {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .group:hover .card-title {
+  :global([data-mode="light"]) .group:hover .card-title {
     color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .card-body {
+  :global([data-mode="light"]) .card-body {
     color: var(--color-foreground);
     opacity: 0.65;
   }
 
-  [data-mode="light"] .card-glow {
+  :global([data-mode="light"]) .card-glow {
     background: radial-gradient(circle at 50% 50%, rgba(108, 99, 255, 0.05), transparent 70%);
   }
 
-  [data-mode="light"] .card-arrow {
+  :global([data-mode="light"]) .card-arrow {
     color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .divider-line {
+  :global([data-mode="light"]) .divider-line {
     background: linear-gradient(to bottom, transparent, rgba(108, 99, 255, 0.15), transparent);
   }
 
-  [data-mode="light"] .divider-orb {
+  :global([data-mode="light"]) .divider-orb {
     background: var(--color-alabaster);
   }
 
-  [data-mode="light"] .closing-gradient {
+  :global([data-mode="light"]) .closing-gradient {
     background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.06), transparent 70%);
   }
 
-  [data-mode="light"] .closing-text {
+  :global([data-mode="light"]) .closing-text {
     color: var(--color-foreground);
     opacity: 0.5;
   }
 
   /* Light mode hover shadows */
-  [data-mode="light"] .point-card .card-inner:hover,
-  [data-mode="light"] .point-card-horizontal .card-inner:hover {
+  :global([data-mode="light"]) .point-card .card-inner:hover,
+  :global([data-mode="light"]) .point-card-horizontal .card-inner:hover {
     box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
   }
 
   /* ==========================================================================
      DARK MODE — Deep, mysterious, glowing
      ========================================================================== */
-  [data-mode="dark"] .orbital-narrative {
+  :global([data-mode="dark"]) .orbital-narrative {
     background: var(--color-void);
   }
 
-  [data-mode="dark"] .hero-gradient {
+  :global([data-mode="dark"]) .hero-gradient {
     background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.12), transparent 70%);
   }
 
-  [data-mode="dark"] .eyebrow-text {
+  :global([data-mode="dark"]) .eyebrow-text {
     color: var(--color-lilac);
     opacity: 0.7;
   }
 
-  [data-mode="dark"] .headline-text {
+  :global([data-mode="dark"]) .headline-text {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .subtitle-text {
+  :global([data-mode="dark"]) .subtitle-text {
     color: var(--color-alabaster);
     opacity: 0.6;
   }
 
-  [data-mode="dark"] .scroll-hint {
+  :global([data-mode="dark"]) .scroll-hint {
     color: var(--color-lilac);
     opacity: 0.4;
   }
 
-  [data-mode="dark"] .section-title {
+  :global([data-mode="dark"]) .section-title {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .section-badge-primary {
+  :global([data-mode="dark"]) .section-badge-primary {
     color: var(--color-marjorelle-purple);
     border: 1px solid rgba(108, 99, 255, 0.3);
   }
 
-  [data-mode="dark"] .section-badge-secondary {
+  :global([data-mode="dark"]) .section-badge-secondary {
     color: var(--color-lilac);
     border: 1px solid rgba(156, 133, 223, 0.3);
   }
 
   /* Dark mode cards */
-  [data-mode="dark"] .card-inner-primary {
+  :global([data-mode="dark"]) .card-inner-primary {
     background: rgba(15, 9, 35, 0.8);
     border: 1px solid rgba(108, 99, 255, 0.2);
   }
 
-  [data-mode="dark"] .card-inner-primary:hover {
+  :global([data-mode="dark"]) .card-inner-primary:hover {
     border-color: rgba(108, 99, 255, 0.5);
     background: rgba(102, 67, 226, 0.08);
   }
 
-  [data-mode="dark"] .card-inner-secondary {
+  :global([data-mode="dark"]) .card-inner-secondary {
     background: rgba(15, 9, 35, 0.8);
     border: 1px solid rgba(156, 133, 223, 0.2);
   }
 
-  [data-mode="dark"] .card-inner-secondary:hover {
+  :global([data-mode="dark"]) .card-inner-secondary:hover {
     border-color: rgba(156, 133, 223, 0.5);
     background: rgba(156, 133, 223, 0.06);
   }
 
-  [data-mode="dark"] .card-number-primary {
+  :global([data-mode="dark"]) .card-number-primary {
     color: var(--color-marjorelle-purple);
     background: var(--color-void);
     border: 1px solid rgba(108, 99, 255, 0.4);
   }
 
-  [data-mode="dark"] .card-number-secondary {
+  :global([data-mode="dark"]) .card-number-secondary {
     color: var(--color-lilac);
     border: 1px solid rgba(156, 133, 223, 0.3);
   }
 
-  [data-mode="dark"] .card-number-box.card-number-secondary {
+  :global([data-mode="dark"]) .card-number-box.card-number-secondary {
     background: transparent;
   }
 
-  [data-mode="dark"] .group:hover .card-number-box.card-number-secondary {
+  :global([data-mode="dark"]) .group:hover .card-number-box.card-number-secondary {
     background: rgba(156, 133, 223, 0.1);
   }
 
-  [data-mode="dark"] .card-title {
+  :global([data-mode="dark"]) .card-title {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .group:hover .card-title {
+  :global([data-mode="dark"]) .group:hover .card-title {
     color: var(--color-lilac);
   }
 
-  [data-mode="dark"] .card-body {
+  :global([data-mode="dark"]) .card-body {
     color: var(--color-alabaster);
     opacity: 0.6;
   }
 
-  [data-mode="dark"] .card-glow {
+  :global([data-mode="dark"]) .card-glow {
     background: radial-gradient(circle at 50% 50%, rgba(102, 67, 226, 0.1), transparent 70%);
   }
 
-  [data-mode="dark"] .card-arrow {
+  :global([data-mode="dark"]) .card-arrow {
     color: var(--color-lilac);
   }
 
-  [data-mode="dark"] .divider-line {
+  :global([data-mode="dark"]) .divider-line {
     background: linear-gradient(to bottom, transparent, rgba(108, 99, 255, 0.3), transparent);
   }
 
-  [data-mode="dark"] .divider-orb {
+  :global([data-mode="dark"]) .divider-orb {
     background: var(--color-void);
   }
 
-  [data-mode="dark"] .closing-gradient {
+  :global([data-mode="dark"]) .closing-gradient {
     background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.1), transparent 70%);
   }
 
-  [data-mode="dark"] .closing-text {
+  :global([data-mode="dark"]) .closing-text {
     color: var(--color-alabaster);
     opacity: 0.5;
   }
 
   /* Dark mode hover shadows */
-  [data-mode="dark"] .point-card .card-inner:hover,
-  [data-mode="dark"] .point-card-horizontal .card-inner:hover {
+  :global([data-mode="dark"]) .point-card .card-inner:hover,
+  :global([data-mode="dark"]) .point-card-horizontal .card-inner:hover {
     box-shadow: 0 0 40px rgba(102, 67, 226, 0.15);
   }
 
   /* ==========================================================================
      VIBRANT MODE — Intense, energetic, dramatic
      ========================================================================== */
-  [data-mode="vibrant"] .orbital-narrative {
+  :global([data-mode="vibrant"]) .orbital-narrative {
     background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 30%, #0d0518 70%, var(--color-void) 100%);
   }
 
-  [data-mode="vibrant"] .hero-gradient {
+  :global([data-mode="vibrant"]) .hero-gradient {
     background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.25), transparent 70%);
   }
 
-  [data-mode="vibrant"] .eyebrow-text {
+  :global([data-mode="vibrant"]) .eyebrow-text {
     color: var(--color-lilac);
     opacity: 0.9;
     text-shadow: 0 0 20px rgba(156, 133, 223, 0.4);
   }
 
-  [data-mode="vibrant"] .headline-text {
+  :global([data-mode="vibrant"]) .headline-text {
     color: var(--color-alabaster);
     text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
   }
 
-  [data-mode="vibrant"] .subtitle-text {
+  :global([data-mode="vibrant"]) .subtitle-text {
     color: var(--color-alabaster);
     opacity: 0.7;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   }
 
-  [data-mode="vibrant"] .scroll-hint {
+  :global([data-mode="vibrant"]) .scroll-hint {
     color: var(--color-lilac);
     opacity: 0.6;
   }
 
-  [data-mode="vibrant"] .scroll-hint-line {
+  :global([data-mode="vibrant"]) .scroll-hint-line {
     box-shadow: 0 0 10px currentColor;
   }
 
-  [data-mode="vibrant"] .section-title {
+  :global([data-mode="vibrant"]) .section-title {
     color: var(--color-alabaster);
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   }
 
-  [data-mode="vibrant"] .section-badge-primary {
+  :global([data-mode="vibrant"]) .section-badge-primary {
     color: var(--color-marjorelle-purple);
     border: 1px solid rgba(108, 99, 255, 0.5);
     box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
   }
 
-  [data-mode="vibrant"] .section-badge-secondary {
+  :global([data-mode="vibrant"]) .section-badge-secondary {
     color: var(--color-lilac);
     border: 1px solid rgba(156, 133, 223, 0.5);
     box-shadow: 0 0 15px rgba(156, 133, 223, 0.2);
   }
 
   /* Vibrant mode cards */
-  [data-mode="vibrant"] .card-inner-primary {
+  :global([data-mode="vibrant"]) .card-inner-primary {
     background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
     border: 1px solid rgba(108, 99, 255, 0.3);
   }
 
-  [data-mode="vibrant"] .card-inner-primary:hover {
+  :global([data-mode="vibrant"]) .card-inner-primary:hover {
     border-color: rgba(108, 99, 255, 0.7);
     background: linear-gradient(135deg, rgba(102, 67, 226, 0.15), rgba(26, 10, 53, 0.9));
     box-shadow: 0 0 50px rgba(102, 67, 226, 0.25), inset 0 0 30px rgba(102, 67, 226, 0.05);
   }
 
-  [data-mode="vibrant"] .card-inner-secondary {
+  :global([data-mode="vibrant"]) .card-inner-secondary {
     background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
     border: 1px solid rgba(156, 133, 223, 0.3);
   }
 
-  [data-mode="vibrant"] .card-inner-secondary:hover {
+  :global([data-mode="vibrant"]) .card-inner-secondary:hover {
     border-color: rgba(156, 133, 223, 0.7);
     background: linear-gradient(135deg, rgba(156, 133, 223, 0.1), rgba(26, 10, 53, 0.9));
     box-shadow: 0 0 50px rgba(156, 133, 223, 0.2), inset 0 0 30px rgba(156, 133, 223, 0.05);
   }
 
-  [data-mode="vibrant"] .card-number-primary {
+  :global([data-mode="vibrant"]) .card-number-primary {
     color: var(--color-marjorelle-purple);
     background: var(--color-void);
     border: 1px solid rgba(108, 99, 255, 0.5);
     box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
   }
 
-  [data-mode="vibrant"] .card-number-secondary {
+  :global([data-mode="vibrant"]) .card-number-secondary {
     color: var(--color-lilac);
     border: 1px solid rgba(156, 133, 223, 0.4);
     box-shadow: 0 0 10px rgba(156, 133, 223, 0.2);
   }
 
-  [data-mode="vibrant"] .card-number-box.card-number-secondary {
+  :global([data-mode="vibrant"]) .card-number-box.card-number-secondary {
     background: transparent;
   }
 
-  [data-mode="vibrant"] .group:hover .card-number-box.card-number-secondary {
+  :global([data-mode="vibrant"]) .group:hover .card-number-box.card-number-secondary {
     background: rgba(156, 133, 223, 0.15);
     box-shadow: 0 0 15px rgba(156, 133, 223, 0.3);
   }
 
-  [data-mode="vibrant"] .card-title {
+  :global([data-mode="vibrant"]) .card-title {
     color: var(--color-alabaster);
   }
 
-  [data-mode="vibrant"] .group:hover .card-title {
+  :global([data-mode="vibrant"]) .group:hover .card-title {
     color: var(--color-lilac);
     text-shadow: 0 0 20px var(--color-lilac);
   }
 
-  [data-mode="vibrant"] .card-body {
+  :global([data-mode="vibrant"]) .card-body {
     color: var(--color-alabaster);
     opacity: 0.7;
   }
 
-  [data-mode="vibrant"] .card-glow {
+  :global([data-mode="vibrant"]) .card-glow {
     background: radial-gradient(circle at 50% 50%, rgba(102, 67, 226, 0.2), transparent 70%);
   }
 
-  [data-mode="vibrant"] .card-arrow {
+  :global([data-mode="vibrant"]) .card-arrow {
     color: var(--color-lilac);
     filter: drop-shadow(0 0 5px currentColor);
   }
 
-  [data-mode="vibrant"] .divider-line {
+  :global([data-mode="vibrant"]) .divider-line {
     background: linear-gradient(to bottom, transparent, rgba(108, 99, 255, 0.5), transparent);
     box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
   }
 
-  [data-mode="vibrant"] .divider-orb {
+  :global([data-mode="vibrant"]) .divider-orb {
     background: transparent;
   }
 
-  [data-mode="vibrant"] .closing-gradient {
+  :global([data-mode="vibrant"]) .closing-gradient {
     background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.2), transparent 70%);
   }
 
-  [data-mode="vibrant"] .closing-text {
+  :global([data-mode="vibrant"]) .closing-text {
     color: var(--color-alabaster);
     opacity: 0.6;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   }
 
   /* Vibrant mode hover shadows */
-  [data-mode="vibrant"] .point-card .card-inner:hover,
-  [data-mode="vibrant"] .point-card-horizontal .card-inner:hover {
+  :global([data-mode="vibrant"]) .point-card .card-inner:hover,
+  :global([data-mode="vibrant"]) .point-card-horizontal .card-inner:hover {
     box-shadow: 0 0 60px rgba(102, 67, 226, 0.3);
   }
 </style>

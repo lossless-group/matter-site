@@ -2,21 +2,21 @@
 /**
  * ImageAbstract--HumanBody--Particles
  *
- * A Three.js particle field approximating a human upper-body silhouette
- * (head + shoulders/torso), inspired by the reference particle figure.
+ * A Three.js particle field creating a realistic human upper-body silhouette
+ * with artistic particle distribution matching the reference image style.
  *
  * Design:
- * - Particles are sampled inside an analytic 2D body silhouette
- *   (head circle + neck + shoulders + torso), then given small Z jitter
- *   for thickness.
- * - Bright, dense head/upper torso, softer falloff toward lower torso.
- * - Slow, subtle motion via group rotation to keep it ambient.
+ * - Anatomically-inspired silhouette with organic curves
+ * - Very dense, bright particles at the head (glowing effect)
+ * - Gradual density falloff toward the torso
+ * - Realistic shoulder/clavicle contours
+ * - Subtle 3D depth with particle size/opacity variation
  */
 
 interface Props {
   /** Container size in pixels or CSS units */
   size?: string;
-  /** Particle color */
+  /** Particle color - can be hex, CSS variable name, or 'auto' to use --fx-orb-color */
   color?: string;
   /** Enable animation */
   animate?: boolean;
@@ -28,9 +28,9 @@ interface Props {
 
 const {
   size = '520px',
-  color = '#ffffff',
+  color = 'auto',
   animate = true,
-  rotationSpeed = 0.25,
+  rotationSpeed = 0.15,
   class: className = '',
 } = Astro.props as Props;
 
@@ -73,14 +73,29 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
     rotationSpeed: number;
   }
 
+  /**
+   * Get color - either from explicit prop or from CSS variable
+   */
+  function getBodyColor(container: HTMLElement): string {
+    const colorProp = container.dataset.color || 'auto';
+
+    if (colorProp === 'auto') {
+      const computedStyle = getComputedStyle(document.documentElement);
+      const cssColor = computedStyle.getPropertyValue('--fx-orb-color').trim();
+      return cssColor || '#ffffff';
+    }
+
+    return colorProp;
+  }
+
   function initHumanBody(container: HTMLElement) {
     const canvas = container.querySelector('.human-body-canvas') as HTMLCanvasElement | null;
     if (!canvas) return;
 
     const config: HumanBodyConfig = {
-      color: container.dataset.color || '#ffffff',
+      color: getBodyColor(container),
       animate: container.dataset.animate !== 'false',
-      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.25'),
+      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.15'),
     };
 
     const scene = new THREE.Scene();
@@ -88,8 +103,8 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
     const width = container.clientWidth || 400;
     const height = container.clientHeight || 400;
 
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.z = 2.6;
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
+    camera.position.z = 3.2;
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -100,108 +115,212 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
 
-    // Particle generation
-    const particleCount = 9000;
+    // Much higher particle count for dense, detailed appearance
+    const particleCount = 25000;
     const positions = new Float32Array(particleCount * 3);
     const sizes = new Float32Array(particleCount);
+    const alphas = new Float32Array(particleCount);
 
     let count = 0;
 
-    // Body silhouette is defined in normalized 2D coordinates:
-    // x in [-0.35, 0.35], y in [0, 1]. We later map to [-1, 1] space.
-    // This tries to approximate an adult upper body: oval head, neck,
-    // sloped shoulders, and a tapered torso.
-    function inBody(x: number, y: number): boolean {
-      // Head: slightly squashed vertical oval with hint of chin
-      const headCenterY = 0.8;
-      const headRadiusX = 0.16;
-      const headRadiusY = 0.20;
-      const dxHead = x / headRadiusX;
-      const dyHead = (y - headCenterY) / headRadiusY;
-      let inHead = dxHead * dxHead + dyHead * dyHead <= 1.0;
-
-      // Carve a subtle chin by extending the oval downward a bit in center
-      if (!inHead && y > 0.7 && y < 0.78 && Math.abs(x) < 0.08) {
-        inHead = true;
+    /**
+     * Sophisticated body silhouette using spline-like width functions
+     * for organic, anatomically-inspired curves.
+     * Coordinate system: x in [-1, 1], y in [0, 1] (bottom to top)
+     */
+    function getBodyWidth(y: number): number {
+      // Head (y: 0.72 - 1.0)
+      if (y >= 0.72) {
+        const headY = (y - 0.72) / 0.28; // 0 at bottom of head, 1 at top
+        // Egg-shaped head: wider at top-middle, tapering at chin and crown
+        const headWidth = 0.16 * Math.sqrt(1 - Math.pow(headY * 2 - 1, 2) * 0.85);
+        // Slight taper toward chin
+        if (headY < 0.3) {
+          return headWidth * (0.7 + headY);
+        }
+        return headWidth;
       }
 
-      // Neck: narrow vertical column under head
-      const inNeck =
-        y >= 0.66 &&
-        y <= 0.74 &&
-        Math.abs(x) <= 0.055;
+      // Neck (y: 0.67 - 0.72) - shorter, thicker neck
+      if (y >= 0.67) {
+        const neckT = (y - 0.67) / 0.05;
+        // Neck widens toward head
+        return 0.09 + neckT * 0.03;
+      }
 
-      // Shoulders / upper chest: gently sloped from neck outward
-      const inShoulders = ((): boolean => {
-        if (y < 0.52 || y > 0.70) return false;
-        // t = 0 at top of chest, 1 near armpit line
-        const t = (0.70 - y) / (0.70 - 0.52);
-        // Wider near top of chest, then slightly narrower
-        const baseWidth = 0.22 - t * 0.04;
-        // Add a bit of slope so top of shoulder is higher near neck
-        const shoulderSlope = 0.04 * (1.0 - Math.abs(x) / baseWidth);
-        const yShift = shoulderSlope;
-        if (y + yShift < 0.52 || y + yShift > 0.70) return false;
-        return Math.abs(x) <= baseWidth;
-      })();
+      // Trapezius / upper shoulder slope (y: 0.52 - 0.67)
+      if (y >= 0.52) {
+        const trapT = (y - 0.52) / 0.15;
+        // Smooth transition from broad shoulders to thicker neck
+        const neckWidth = 0.09;
+        const shoulderWidth = 0.38;
+        // Use smoothstep for organic transition
+        const t = trapT * trapT * (3 - 2 * trapT);
+        return shoulderWidth + (neckWidth - shoulderWidth) * t;
+      }
 
-      // Upper torso: tapered from chest to waist
-      const inUpperTorso = ((): boolean => {
-        if (y < 0.34 || y > 0.52) return false;
-        const t = (0.52 - y) / (0.52 - 0.34); // 0 at chest, 1 at waist
-        const halfWidth = 0.18 - t * 0.05; // narrower toward waist
-        return Math.abs(x) <= halfWidth;
-      })();
+      // Shoulders / deltoids (y: 0.44 - 0.52)
+      if (y >= 0.44) {
+        const shoulderT = (y - 0.44) / 0.08;
+        // Shoulders curve downward at edges
+        const baseWidth = 0.38 - shoulderT * 0.02;
+        return baseWidth;
+      }
 
-      // Lower torso: very subtle tail, fades out
-      const inLowerTorso = ((): boolean => {
-        if (y < 0.16 || y > 0.34) return false;
-        const t = (0.34 - y) / (0.34 - 0.16);
-        const halfWidth = 0.13 - t * 0.05;
-        return Math.abs(x) <= halfWidth;
-      })();
+      // Upper chest / pectorals (y: 0.32 - 0.44)
+      if (y >= 0.32) {
+        const chestT = (y - 0.32) / 0.12;
+        // Slight chest curve
+        return 0.32 - chestT * 0.04;
+      }
 
-      return inHead || inNeck || inShoulders || inUpperTorso || inLowerTorso;
+      // Mid torso (y: 0.18 - 0.32)
+      if (y >= 0.18) {
+        const midT = (y - 0.18) / 0.14;
+        // Taper toward waist
+        return 0.26 - midT * 0.06;
+      }
+
+      // Lower torso / waist (y: 0.0 - 0.18)
+      const lowerT = y / 0.18;
+      // Gradual fade-out at bottom
+      return 0.20 * lowerT;
     }
 
-    const maxTries = particleCount * 10;
+    /**
+     * Check if point is inside body silhouette with edge softness
+     */
+    function inBody(x: number, y: number): { inside: boolean; edgeDist: number } {
+      const width = getBodyWidth(y);
+      const absX = Math.abs(x);
+
+      if (absX > width) {
+        return { inside: false, edgeDist: 0 };
+      }
+
+      // Calculate distance from edge (0 = at edge, 1 = at center)
+      const edgeDist = 1 - (absX / width);
+      return { inside: true, edgeDist };
+    }
+
+    /**
+     * Add anatomical detail: shoulder curve indentation
+     */
+    function shoulderCurveAdjustment(x: number, y: number): number {
+      // Create the deltoid/arm cutout curve on each side
+      if (y >= 0.35 && y <= 0.52) {
+        const absX = Math.abs(x);
+        if (absX > 0.28) {
+          // Curve inward at the outer shoulders
+          const t = (y - 0.35) / 0.17;
+          const curveDepth = 0.08 * Math.sin(t * Math.PI);
+          if (absX > 0.38 - curveDepth) {
+            return -1; // Outside
+          }
+        }
+      }
+      return 0;
+    }
+
+    const maxTries = particleCount * 8;
     let tries = 0;
 
     while (count < particleCount && tries < maxTries) {
       tries++;
 
-      const x = (Math.random() - 0.5) * 0.7; // roughly [-0.35, 0.35]
-      const y = Math.random(); // [0, 1]
+      // Sample in body bounds
+      const x = (Math.random() - 0.5) * 0.9;
+      const y = Math.random();
 
-      if (!inBody(x, y)) continue;
+      const bodyCheck = inBody(x, y);
+      if (!bodyCheck.inside) continue;
 
-      // Density falloff: denser at head/upper torso, sparser lower
-      const densityBoost = y * 0.7 + 0.3; // 1.0 near top, ~0.3 near bottom
-      if (Math.random() > densityBoost) continue;
+      // Check shoulder curve adjustment
+      if (shoulderCurveAdjustment(x, y) < 0) continue;
 
-      // Map to centered coordinates for rendering
-      const px = x * 2.2; // widen silhouette a bit
-      const py = (y - 0.5) * 2.4;
-      const pz = (Math.random() - 0.5) * 0.2; // small thickness
+      // Density varies by region
+      let density = 0.5;
+
+      // Head is VERY dense (like the reference image's glowing head)
+      if (y >= 0.72) {
+        density = 1.0;
+      }
+      // Upper body moderately dense
+      else if (y >= 0.45) {
+        density = 0.4 + (y - 0.45) * 1.5;
+      }
+      // Lower body sparser
+      else {
+        density = 0.15 + y * 0.5;
+      }
+
+      // Edge particles are sparser for soft silhouette edge
+      density *= 0.3 + bodyCheck.edgeDist * 0.7;
+
+      if (Math.random() > density) continue;
+
+      // Map to 3D coordinates
+      const px = x * 2.5;
+      const py = (y - 0.55) * 2.8; // Center vertically
+
+      // Z depth: more depth in torso, flatter head
+      let zRange = 0.15;
+      if (y >= 0.72) {
+        zRange = 0.25; // Head has more 3D roundness
+      } else if (y >= 0.45) {
+        zRange = 0.20;
+      }
+      const pz = (Math.random() - 0.5) * zRange;
 
       const baseIndex = count * 3;
       positions[baseIndex] = px;
       positions[baseIndex + 1] = py;
       positions[baseIndex + 2] = pz;
 
-      // Slightly larger and brighter near top
-      const sizeBase = 0.018 + Math.random() * 0.012;
-      sizes[count] = sizeBase * (0.8 + y * 0.6);
+      // Size varies: larger/brighter in head, smaller scattered in torso
+      // Increased base sizes for more visual punch
+      let sizeBase = 0.014 + Math.random() * 0.012;
 
+      if (y >= 0.72) {
+        // Head particles: dense, varied sizes for that "glowing" look
+        sizeBase = 0.012 + Math.random() * 0.018;
+        // Some larger "star" particles
+        if (Math.random() < 0.2) {
+          sizeBase *= 1.6;
+        }
+      } else if (y >= 0.5) {
+        sizeBase = 0.013 + Math.random() * 0.014;
+      } else {
+        // Lower torso: sparser, more varied
+        sizeBase = 0.010 + Math.random() * 0.016;
+        if (Math.random() < 0.12) {
+          sizeBase *= 2.0;
+        }
+      }
+
+      sizes[count] = sizeBase;
+
+      // Alpha varies for depth and glow effect
+      let alpha = 0.6 + Math.random() * 0.4;
+      if (y >= 0.72) {
+        // Head is brighter
+        alpha = 0.8 + Math.random() * 0.2;
+      }
+      // Fade edges
+      alpha *= 0.5 + bodyCheck.edgeDist * 0.5;
+
+      alphas[count] = alpha;
       count++;
     }
 
     const posTrimmed = positions.subarray(0, count * 3);
     const sizeTrimmed = sizes.subarray(0, count);
+    const alphaTrimmed = alphas.subarray(0, count);
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(posTrimmed, 3));
     geometry.setAttribute('size', new THREE.BufferAttribute(sizeTrimmed, 1));
+    geometry.setAttribute('alpha', new THREE.BufferAttribute(alphaTrimmed, 1));
 
     const material = new THREE.ShaderMaterial({
       uniforms: {
@@ -209,29 +328,45 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
       },
       vertexShader: `
         attribute float size;
+        attribute float alpha;
         varying float vAlpha;
+        varying float vSize;
 
         void main() {
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           gl_Position = projectionMatrix * mvPosition;
 
-          gl_PointSize = size * 320.0 * (1.0 / -mvPosition.z);
+          // Size attenuation - larger multiplier for bolder particles
+          gl_PointSize = size * 500.0 * (1.0 / -mvPosition.z);
 
-          float depth = clamp(-mvPosition.z, 1.5, 4.0);
-          vAlpha = smoothstep(4.0, 1.5, depth);
+          // Pass alpha with depth-based adjustment
+          float depthFade = smoothstep(5.0, 2.0, -mvPosition.z);
+          vAlpha = alpha * depthFade;
+          vSize = size;
         }
       `,
       fragmentShader: `
         uniform vec3 color;
         varying float vAlpha;
+        varying float vSize;
 
         void main() {
           vec2 center = gl_PointCoord - vec2(0.5);
           float dist = length(center);
-          float alpha = 1.0 - smoothstep(0.25, 0.5, dist);
+
+          // Soft circular particle with glow
+          float coreFalloff = 1.0 - smoothstep(0.0, 0.35, dist);
+          float glowFalloff = 1.0 - smoothstep(0.2, 0.5, dist);
+
+          float alpha = mix(glowFalloff * 0.6, coreFalloff, 0.7);
           alpha *= vAlpha;
-          if (alpha < 0.01) discard;
-          gl_FragColor = vec4(color, alpha);
+
+          if (alpha < 0.005) discard;
+
+          // Slight color boost in center for glow
+          vec3 finalColor = color * (0.9 + coreFalloff * 0.3);
+
+          gl_FragColor = vec4(finalColor, alpha);
         }
       `,
       transparent: true,
@@ -250,14 +385,35 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
 
       if (config.animate) {
         time += 0.016;
-        points.rotation.y = Math.sin(time * 0.25) * config.rotationSpeed * 0.6;
-        points.rotation.x = Math.sin(time * 0.18) * config.rotationSpeed * 0.3;
+        // Very subtle, slow oscillation
+        points.rotation.y = Math.sin(time * 0.15) * config.rotationSpeed * 0.4;
+        points.rotation.x = Math.sin(time * 0.1) * config.rotationSpeed * 0.15;
       }
 
       renderer.render(scene, camera);
     }
 
     animate();
+
+    // Watch for mode changes to update color
+    const colorProp = container.dataset.color || 'auto';
+    if (colorProp === 'auto') {
+      const modeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'data-mode') {
+            const newColor = getBodyColor(container);
+            (material.uniforms.color.value as THREE.Color).set(newColor);
+          }
+        });
+      });
+
+      modeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-mode'],
+      });
+
+      (container as any)._modeObserver = modeObserver;
+    }
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -278,6 +434,9 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
             cancelAnimationFrame(animationId);
             resizeObserver.disconnect();
             mutationObserver.disconnect();
+            if ((container as any)._modeObserver) {
+              (container as any)._modeObserver.disconnect();
+            }
             geometry.dispose();
             material.dispose();
             renderer.dispose();

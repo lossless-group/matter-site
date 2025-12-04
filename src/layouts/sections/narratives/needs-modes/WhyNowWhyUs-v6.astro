@@ -11,7 +11,7 @@
  * - Words animate and transform on hover/scroll
  * - Mobile-first dramatic impact
  *
- * MODES: Supports light, dark, and vibrant visual modes via CSS.
+ * MODES: Supports light, dark, and vibrant. Default styles are vibrant.
  */
 
 interface Props {
@@ -135,20 +135,14 @@ const {
 
 <style>
   /* ==========================================================================
-     BASE STYLES (shared across all modes)
+     BASE STYLES & ANIMATIONS (shared across all modes)
      ========================================================================== */
-
-  /* Sticky section needs solid background */
-  .manifesto-sticky {
-    background-color: var(--color-void, #0F0923);
-  }
 
   /* Ambient background effects */
   .glow-orb {
     position: absolute;
     border-radius: 50%;
     filter: blur(100px);
-    opacity: 0.4;
   }
 
   .glow-1 {
@@ -156,7 +150,6 @@ const {
     height: 40vw;
     max-width: 500px;
     max-height: 500px;
-    background: var(--color-marjorelle-purple);
     top: 10%;
     right: -10%;
     animation: glow-drift 20s ease-in-out infinite;
@@ -167,7 +160,6 @@ const {
     height: 30vw;
     max-width: 400px;
     max-height: 400px;
-    background: var(--color-lilac);
     bottom: 20%;
     left: -5%;
     animation: glow-drift 25s ease-in-out infinite reverse;
@@ -185,6 +177,8 @@ const {
     animation: line-reveal 0.8s ease-out forwards;
     animation-delay: calc(var(--line-index) * 0.15s + 0.2s);
     margin-bottom: 0.1em;
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+    cursor: default;
   }
 
   @keyframes line-reveal {
@@ -200,13 +194,16 @@ const {
     animation-delay: 1s;
   }
 
+  .manifesto-line:hover {
+    transform: translateX(10px);
+  }
+
   /* Floating thesis words */
   .floating-word {
     position: absolute;
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    opacity: 0.15;
   }
 
   .word-1 { top: 15%; left: 10%; animation: float-word 15s ease-in-out infinite; }
@@ -273,17 +270,6 @@ const {
     }
   }
 
-  /* Hover states for manifesto lines */
-  .manifesto-line {
-    transition: transform 0.3s ease, text-shadow 0.3s ease;
-    cursor: default;
-  }
-
-  .manifesto-line:hover {
-    transform: translateX(10px);
-    text-shadow: 0 0 60px currentColor;
-  }
-
   /* Mobile adjustments */
   @media (max-width: 640px) {
     .floating-word {
@@ -298,225 +284,223 @@ const {
   /* ==========================================================================
      LIGHT MODE — Clean, professional, subtle
      ========================================================================== */
-  [data-mode="light"] .manifesto-hero {
-    background: var(--color-alabaster);
+  :global([data-mode="light"]) .manifesto-hero {
+    background: var(--color-background);
   }
 
-  [data-mode="light"] .manifesto-backdrop {
-    background: var(--color-alabaster);
+  :global([data-mode="light"]) .manifesto-backdrop {
+    background: var(--color-background);
   }
 
-  [data-mode="light"] .manifesto-sticky {
-    background-color: var(--color-alabaster);
+  :global([data-mode="light"]) .manifesto-sticky {
+    background-color: var(--color-background);
   }
 
-  [data-mode="light"] .thesis-reveal {
-    background: var(--color-alabaster);
+  :global([data-mode="light"]) .thesis-reveal {
+    background: var(--color-background);
   }
 
   /* Light mode: subtle glows */
-  [data-mode="light"] .glow-orb {
-    opacity: 0.15;
+  :global([data-mode="light"]) .glow-orb {
+    opacity: 0.12;
   }
 
-  [data-mode="light"] .glow-1 {
+  :global([data-mode="light"]) .glow-1 {
     background: var(--color-lilac);
   }
 
-  [data-mode="light"] .glow-2 {
+  :global([data-mode="light"]) .glow-2 {
     background: var(--color-soap-purple);
   }
 
   /* Light mode: brand mark */
-  [data-mode="light"] .brand-mark-text {
+  :global([data-mode="light"]) .brand-mark-text {
     color: var(--color-marjorelle-purple);
     opacity: 0.7;
   }
 
   /* Light mode: manifesto lines */
-  [data-mode="light"] .line-muted {
+  :global([data-mode="light"]) .line-muted {
     color: var(--color-foreground);
     opacity: 0.35;
   }
 
-  [data-mode="light"] .line-accent-1 {
+  :global([data-mode="light"]) .line-accent-1 {
     color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .line-accent-2 {
+  :global([data-mode="light"]) .line-accent-2 {
     color: var(--color-lilac);
   }
 
-  [data-mode="light"] .line-emphasis {
+  :global([data-mode="light"]) .line-emphasis {
     color: var(--color-foreground);
   }
 
   /* Light mode: floating words */
-  [data-mode="light"] .floating-word {
+  :global([data-mode="light"]) .floating-word {
     color: var(--color-marjorelle-purple);
     opacity: 0.1;
   }
 
   /* Light mode: scroll prompt */
-  [data-mode="light"] .scroll-prompt {
+  :global([data-mode="light"]) .scroll-prompt {
     color: var(--color-marjorelle-purple);
     opacity: 0.5;
   }
 
   /* Light mode: corner accents */
-  [data-mode="light"] .corner-accent {
-    border-color: rgba(108, 99, 255, 0.15);
+  :global([data-mode="light"]) .corner-accent {
+    border-color: rgba(102, 67, 226, 0.15);
   }
 
   /* Light mode: reveal blocks */
-  [data-mode="light"] .block-accent-1 {
+  :global([data-mode="light"]) .block-accent-1 {
     background: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .block-accent-2 {
+  :global([data-mode="light"]) .block-accent-2 {
     background: var(--color-lilac);
   }
 
-  [data-mode="light"] .block-accent-3 {
+  :global([data-mode="light"]) .block-accent-3 {
     background: var(--color-soap-purple);
   }
 
-  [data-mode="light"] .reveal-title {
+  :global([data-mode="light"]) .reveal-title {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .reveal-body {
-    color: var(--color-foreground);
-    opacity: 0.65;
+  :global([data-mode="light"]) .reveal-body {
+    color: var(--color-muted-foreground);
   }
 
   /* ==========================================================================
-     DARK MODE — Deep, mysterious, glowing
+     DARK MODE — Deep, mysterious, moderate glows
      ========================================================================== */
-  [data-mode="dark"] .manifesto-hero {
+  :global([data-mode="dark"]) .manifesto-hero {
     background: var(--color-void);
   }
 
-  [data-mode="dark"] .manifesto-backdrop {
+  :global([data-mode="dark"]) .manifesto-backdrop {
     background: var(--color-void);
   }
 
-  [data-mode="dark"] .manifesto-sticky {
+  :global([data-mode="dark"]) .manifesto-sticky {
     background-color: var(--color-void);
   }
 
-  [data-mode="dark"] .thesis-reveal {
+  :global([data-mode="dark"]) .thesis-reveal {
     background: var(--color-void);
   }
 
   /* Dark mode: glowing orbs */
-  [data-mode="dark"] .glow-orb {
+  :global([data-mode="dark"]) .glow-orb {
     opacity: 0.4;
   }
 
-  [data-mode="dark"] .glow-1 {
+  :global([data-mode="dark"]) .glow-1 {
     background: var(--color-marjorelle-purple);
   }
 
-  [data-mode="dark"] .glow-2 {
+  :global([data-mode="dark"]) .glow-2 {
     background: var(--color-lilac);
   }
 
   /* Dark mode: brand mark */
-  [data-mode="dark"] .brand-mark-text {
+  :global([data-mode="dark"]) .brand-mark-text {
     color: var(--color-lilac);
     opacity: 0.6;
   }
 
   /* Dark mode: manifesto lines */
-  [data-mode="dark"] .line-muted {
+  :global([data-mode="dark"]) .line-muted {
     color: var(--color-alabaster);
     opacity: 0.4;
   }
 
-  [data-mode="dark"] .line-accent-1 {
+  :global([data-mode="dark"]) .line-accent-1 {
     color: var(--color-lilac);
   }
 
-  [data-mode="dark"] .line-accent-2 {
+  :global([data-mode="dark"]) .line-accent-2 {
     color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="dark"] .line-emphasis {
+  :global([data-mode="dark"]) .line-emphasis {
     color: var(--color-alabaster);
   }
 
   /* Dark mode: floating words */
-  [data-mode="dark"] .floating-word {
+  :global([data-mode="dark"]) .floating-word {
     color: var(--color-lilac);
     opacity: 0.15;
   }
 
   /* Dark mode: scroll prompt */
-  [data-mode="dark"] .scroll-prompt {
+  :global([data-mode="dark"]) .scroll-prompt {
     color: var(--color-lilac);
     opacity: 0.5;
   }
 
   /* Dark mode: corner accents */
-  [data-mode="dark"] .corner-accent {
-    border-color: rgba(108, 99, 255, 0.2);
+  :global([data-mode="dark"]) .corner-accent {
+    border-color: rgba(102, 67, 226, 0.2);
   }
 
   /* Dark mode: reveal blocks */
-  [data-mode="dark"] .block-accent-1 {
+  :global([data-mode="dark"]) .block-accent-1 {
     background: var(--color-marjorelle-purple);
   }
 
-  [data-mode="dark"] .block-accent-2 {
+  :global([data-mode="dark"]) .block-accent-2 {
     background: var(--color-lilac);
   }
 
-  [data-mode="dark"] .block-accent-3 {
+  :global([data-mode="dark"]) .block-accent-3 {
     background: var(--color-soap-purple);
   }
 
-  [data-mode="dark"] .reveal-title {
+  :global([data-mode="dark"]) .reveal-title {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .reveal-body {
-    color: var(--color-alabaster);
-    opacity: 0.6;
+  :global([data-mode="dark"]) .reveal-body {
+    color: rgba(249, 250, 251, 0.6);
   }
 
   /* ==========================================================================
-     VIBRANT MODE — Intense, energetic, dramatic
+     VIBRANT MODE — Intense, energetic, dramatic glows & gradients
      ========================================================================== */
-  [data-mode="vibrant"] .manifesto-hero {
+  :global([data-mode="vibrant"]) .manifesto-hero {
     background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 50%, var(--color-void) 100%);
   }
 
-  [data-mode="vibrant"] .manifesto-backdrop {
+  :global([data-mode="vibrant"]) .manifesto-backdrop {
     background: linear-gradient(135deg, var(--color-void) 0%, #1a0a35 50%, #0d0518 100%);
   }
 
-  [data-mode="vibrant"] .manifesto-sticky {
+  :global([data-mode="vibrant"]) .manifesto-sticky {
     background: transparent;
   }
 
-  [data-mode="vibrant"] .thesis-reveal {
+  :global([data-mode="vibrant"]) .thesis-reveal {
     background: linear-gradient(180deg, #1a0a35 0%, var(--color-void) 100%);
   }
 
   /* Vibrant mode: intense glowing orbs */
-  [data-mode="vibrant"] .glow-orb {
+  :global([data-mode="vibrant"]) .glow-orb {
     opacity: 0.6;
     filter: blur(80px);
   }
 
-  [data-mode="vibrant"] .glow-1 {
-    background: linear-gradient(135deg, var(--color-marjorelle-purple), #ff00ff);
+  :global([data-mode="vibrant"]) .glow-1 {
+    background: linear-gradient(135deg, var(--color-marjorelle-purple), #a855f7);
     animation: glow-drift-vibrant 15s ease-in-out infinite;
   }
 
-  [data-mode="vibrant"] .glow-2 {
-    background: linear-gradient(225deg, var(--color-lilac), #00ffff);
+  :global([data-mode="vibrant"]) .glow-2 {
+    background: linear-gradient(225deg, var(--color-lilac), #38bdf8);
     animation: glow-drift-vibrant 20s ease-in-out infinite reverse;
   }
 
@@ -528,86 +512,84 @@ const {
   }
 
   /* Vibrant mode: brand mark */
-  [data-mode="vibrant"] .brand-mark-text {
-    color: var(--color-lilac);
-    opacity: 0.8;
-    text-shadow: 0 0 20px rgba(156, 133, 223, 0.5);
+  :global([data-mode="vibrant"]) .brand-mark-text {
+    color: var(--color-soap-purple);
+    opacity: 0.9;
+    text-shadow: 0 0 25px rgba(156, 133, 223, 0.6);
   }
 
   /* Vibrant mode: manifesto lines */
-  [data-mode="vibrant"] .line-muted {
+  :global([data-mode="vibrant"]) .line-muted {
     color: var(--color-alabaster);
     opacity: 0.5;
     text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
   }
 
-  [data-mode="vibrant"] .line-accent-1 {
+  :global([data-mode="vibrant"]) .line-accent-1 {
     color: var(--color-lilac);
-    text-shadow: 0 0 40px var(--color-lilac);
+    text-shadow: 0 0 50px var(--color-lilac);
   }
 
-  [data-mode="vibrant"] .line-accent-2 {
+  :global([data-mode="vibrant"]) .line-accent-2 {
     color: var(--color-marjorelle-purple);
-    text-shadow: 0 0 40px var(--color-marjorelle-purple);
+    text-shadow: 0 0 50px var(--color-marjorelle-purple);
   }
 
-  [data-mode="vibrant"] .line-emphasis {
+  :global([data-mode="vibrant"]) .line-emphasis {
     color: var(--color-alabaster);
-    text-shadow: 0 0 60px rgba(255, 255, 255, 0.3), 0 0 120px var(--color-lilac);
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.4), 0 0 120px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .manifesto-line:hover {
+    text-shadow: 0 0 80px currentColor, 0 0 120px currentColor;
   }
 
   /* Vibrant mode: floating words */
-  [data-mode="vibrant"] .floating-word {
+  :global([data-mode="vibrant"]) .floating-word {
     color: var(--color-lilac);
-    opacity: 0.25;
-    text-shadow: 0 0 10px currentColor;
+    opacity: 0.3;
+    text-shadow: 0 0 15px currentColor;
   }
 
   /* Vibrant mode: scroll prompt */
-  [data-mode="vibrant"] .scroll-prompt {
-    color: var(--color-lilac);
-    opacity: 0.7;
+  :global([data-mode="vibrant"]) .scroll-prompt {
+    color: var(--color-soap-purple);
+    opacity: 0.8;
   }
 
-  [data-mode="vibrant"] .scroll-indicator {
-    box-shadow: 0 0 15px rgba(156, 133, 223, 0.3);
+  :global([data-mode="vibrant"]) .scroll-indicator {
+    box-shadow: 0 0 20px rgba(156, 133, 223, 0.4);
   }
 
   /* Vibrant mode: corner accents */
-  [data-mode="vibrant"] .corner-accent {
-    border-color: rgba(108, 99, 255, 0.4);
-    box-shadow: 0 0 20px rgba(108, 99, 255, 0.2);
+  :global([data-mode="vibrant"]) .corner-accent {
+    border-color: rgba(102, 67, 226, 0.5);
+    box-shadow: 0 0 25px rgba(102, 67, 226, 0.3);
   }
 
   /* Vibrant mode: reveal blocks */
-  [data-mode="vibrant"] .block-accent-1 {
+  :global([data-mode="vibrant"]) .block-accent-1 {
     background: linear-gradient(90deg, var(--color-marjorelle-purple), var(--color-lilac));
-    box-shadow: 0 0 20px var(--color-marjorelle-purple);
+    box-shadow: 0 0 25px var(--color-marjorelle-purple);
   }
 
-  [data-mode="vibrant"] .block-accent-2 {
+  :global([data-mode="vibrant"]) .block-accent-2 {
     background: linear-gradient(90deg, var(--color-lilac), var(--color-soap-purple));
-    box-shadow: 0 0 20px var(--color-lilac);
+    box-shadow: 0 0 25px var(--color-lilac);
   }
 
-  [data-mode="vibrant"] .block-accent-3 {
+  :global([data-mode="vibrant"]) .block-accent-3 {
     background: linear-gradient(90deg, var(--color-soap-purple), var(--color-marjorelle-purple));
-    box-shadow: 0 0 20px var(--color-soap-purple);
+    box-shadow: 0 0 25px var(--color-soap-purple);
   }
 
-  [data-mode="vibrant"] .reveal-title {
+  :global([data-mode="vibrant"]) .reveal-title {
     color: var(--color-alabaster);
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
   }
 
-  [data-mode="vibrant"] .reveal-body {
-    color: var(--color-alabaster);
-    opacity: 0.75;
-  }
-
-  /* Vibrant mode: enhanced hover */
-  [data-mode="vibrant"] .manifesto-line:hover {
-    text-shadow: 0 0 80px currentColor, 0 0 120px currentColor;
+  :global([data-mode="vibrant"]) .reveal-body {
+    color: var(--color-soap-purple);
   }
 </style>
 

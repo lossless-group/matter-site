@@ -10,10 +10,7 @@
  * - Text overlaps boundaries for editorial impact
  * - Staggered entrance animations
  *
- * MODE SUPPORT:
- * - Light: Clean white background, subtle accents, dark text
- * - Dark: Deep void background, glowing accents, light text
- * - Vibrant: Intense gradients, bright glowing effects
+ * MODES: Supports light, dark, and vibrant. Default styles are vibrant.
  */
 
 interface Props {
@@ -34,7 +31,7 @@ const {
 
   <!-- Large background text (decorative) -->
   <div class="bg-text absolute top-1/2 left-0 -translate-y-1/2 select-none pointer-events-none" aria-hidden="true">
-    <span class="bg-text-content text-[20vw] font-black leading-none tracking-tighter">
+    <span class="bg-text-span text-[20vw] font-black leading-none tracking-tighter">
       DARK
     </span>
   </div>
@@ -75,7 +72,7 @@ const {
     <div class="right-panel relative flex flex-col justify-center px-8 sm:px-12 lg:px-16 py-20 lg:py-0 lg:border-l">
       <div class="reveal-points space-y-8">
         <div class="point-card group">
-          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-colors">
+          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-all">
             01
           </div>
           <div class="relative pl-12 sm:pl-16">
@@ -89,7 +86,7 @@ const {
         </div>
 
         <div class="point-card group">
-          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-colors">
+          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-all">
             02
           </div>
           <div class="relative pl-12 sm:pl-16">
@@ -103,7 +100,7 @@ const {
         </div>
 
         <div class="point-card group">
-          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-colors">
+          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-all">
             03
           </div>
           <div class="relative pl-12 sm:pl-16">
@@ -134,13 +131,9 @@ const {
 </section>
 
 <style>
-  /* ========================================
-     BASE STYLES (shared across all modes)
-     ======================================== */
-  .reveal-hero {
-    background-color: var(--color-background);
-  }
-
+  /* ==========================================================================
+     BASE STYLES & ANIMATIONS (shared across all modes)
+     ========================================================================== */
   .split-bg {
     overflow: hidden;
   }
@@ -198,7 +191,7 @@ const {
     50% { transform: translateX(4px) translateY(-50%) rotate(45deg); }
   }
 
-  /* Background text parallax hint */
+  /* Background text positioning */
   .bg-text {
     transform: translateY(-50%) translateX(-10%);
   }
@@ -210,111 +203,111 @@ const {
     }
   }
 
-  /* ========================================
-     LIGHT MODE
-     ======================================== */
-  [data-mode="light"] .reveal-hero {
+  /* ==========================================================================
+     LIGHT MODE — Clean, professional, subtle shadows
+     ========================================================================== */
+  :global([data-mode="light"]) .reveal-hero {
     background: var(--color-background);
   }
 
-  [data-mode="light"] .split-dark {
+  :global([data-mode="light"]) .split-dark {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface-muted) 100%);
   }
 
-  [data-mode="light"] .split-glow {
+  :global([data-mode="light"]) .split-glow {
     position: absolute;
     top: 20%;
     right: -10%;
     width: 60%;
     height: 80%;
-    background: radial-gradient(ellipse at center, rgba(102, 67, 226, 0.06) 0%, transparent 70%);
+    background: radial-gradient(ellipse at center, rgba(102, 67, 226, 0.08) 0%, transparent 70%);
     filter: blur(80px);
   }
 
-  [data-mode="light"] .bg-text-content {
-    color: rgba(102, 67, 226, 0.04);
+  :global([data-mode="light"]) .bg-text-span {
+    color: rgba(102, 67, 226, 0.06);
   }
 
-  [data-mode="light"] .eyebrow {
-    color: var(--color-primary);
+  :global([data-mode="light"]) .eyebrow {
+    color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .headline-main {
+  :global([data-mode="light"]) .headline-main {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .headline-accent {
-    color: var(--color-primary);
+  :global([data-mode="light"]) .headline-accent {
+    color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .headline-sub {
+  :global([data-mode="light"]) .headline-sub {
     color: var(--color-muted-foreground);
   }
 
-  [data-mode="light"] .statement {
+  :global([data-mode="light"]) .statement {
     color: var(--color-muted-foreground);
   }
 
-  [data-mode="light"] .stat-accent {
-    border-left: 2px solid var(--color-primary);
+  :global([data-mode="light"]) .stat-accent {
+    border-left: 2px solid var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .stat-number {
-    color: var(--color-primary);
+  :global([data-mode="light"]) .stat-number {
+    color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .stat-label {
+  :global([data-mode="light"]) .stat-label {
     color: var(--color-muted-foreground);
   }
 
-  [data-mode="light"] .right-panel {
+  :global([data-mode="light"]) .right-panel {
     border-color: var(--color-border);
   }
 
-  [data-mode="light"] .point-number {
-    color: rgba(102, 67, 226, 0.1);
+  :global([data-mode="light"]) .point-number {
+    color: rgba(102, 67, 226, 0.12);
   }
 
-  [data-mode="light"] .point-card:hover .point-number {
-    color: rgba(102, 67, 226, 0.2);
+  :global([data-mode="light"]) .point-card:hover .point-number {
+    color: rgba(102, 67, 226, 0.25);
   }
 
-  [data-mode="light"] .point-title {
+  :global([data-mode="light"]) .point-title {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .point-desc {
+  :global([data-mode="light"]) .point-desc {
     color: var(--color-muted-foreground);
   }
 
-  [data-mode="light"] .reveal-cta {
-    color: var(--color-primary);
+  :global([data-mode="light"]) .reveal-cta {
+    color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="light"] .reveal-cta:hover {
+  :global([data-mode="light"]) .reveal-cta:hover {
     color: var(--color-foreground);
   }
 
-  [data-mode="light"] .accent-line {
+  :global([data-mode="light"]) .accent-line {
     background: linear-gradient(to bottom, transparent, rgba(102, 67, 226, 0.15), transparent);
   }
 
-  /* ========================================
-     DARK MODE
-     ======================================== */
-  [data-mode="dark"] .reveal-hero {
+  /* ==========================================================================
+     DARK MODE — Deep void, moderate glows, mysterious
+     ========================================================================== */
+  :global([data-mode="dark"]) .reveal-hero {
     background: var(--color-void);
   }
 
-  [data-mode="dark"] .split-dark {
+  :global([data-mode="dark"]) .split-dark {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, var(--color-void) 0%, rgba(15, 9, 35, 0.95) 100%);
   }
 
-  [data-mode="dark"] .split-glow {
+  :global([data-mode="dark"]) .split-glow {
     position: absolute;
     top: 20%;
     right: -10%;
@@ -324,82 +317,82 @@ const {
     filter: blur(80px);
   }
 
-  [data-mode="dark"] .bg-text-content {
+  :global([data-mode="dark"]) .bg-text-span {
     color: rgba(102, 67, 226, 0.04);
   }
 
-  [data-mode="dark"] .eyebrow {
+  :global([data-mode="dark"]) .eyebrow {
     color: var(--color-lilac);
   }
 
-  [data-mode="dark"] .headline-main {
+  :global([data-mode="dark"]) .headline-main {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .headline-accent {
+  :global([data-mode="dark"]) .headline-accent {
     color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="dark"] .headline-sub {
+  :global([data-mode="dark"]) .headline-sub {
     color: rgba(156, 133, 223, 0.6);
   }
 
-  [data-mode="dark"] .statement {
+  :global([data-mode="dark"]) .statement {
     color: rgba(249, 250, 251, 0.7);
   }
 
-  [data-mode="dark"] .stat-accent {
+  :global([data-mode="dark"]) .stat-accent {
     border-left: 2px solid var(--color-marjorelle-purple);
   }
 
-  [data-mode="dark"] .stat-number {
+  :global([data-mode="dark"]) .stat-number {
     color: var(--color-marjorelle-purple);
   }
 
-  [data-mode="dark"] .stat-label {
+  :global([data-mode="dark"]) .stat-label {
     color: rgba(249, 250, 251, 0.6);
   }
 
-  [data-mode="dark"] .right-panel {
+  :global([data-mode="dark"]) .right-panel {
     border-color: rgba(102, 67, 226, 0.2);
   }
 
-  [data-mode="dark"] .point-number {
+  :global([data-mode="dark"]) .point-number {
     color: rgba(102, 67, 226, 0.2);
   }
 
-  [data-mode="dark"] .point-card:hover .point-number {
+  :global([data-mode="dark"]) .point-card:hover .point-number {
     color: rgba(102, 67, 226, 0.4);
   }
 
-  [data-mode="dark"] .point-title {
+  :global([data-mode="dark"]) .point-title {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .point-desc {
+  :global([data-mode="dark"]) .point-desc {
     color: rgba(249, 250, 251, 0.6);
   }
 
-  [data-mode="dark"] .reveal-cta {
+  :global([data-mode="dark"]) .reveal-cta {
     color: var(--color-lilac);
   }
 
-  [data-mode="dark"] .reveal-cta:hover {
+  :global([data-mode="dark"]) .reveal-cta:hover {
     color: var(--color-alabaster);
   }
 
-  [data-mode="dark"] .accent-line {
+  :global([data-mode="dark"]) .accent-line {
     background: linear-gradient(to bottom, transparent, rgba(102, 67, 226, 0.3), transparent);
   }
 
-  /* ========================================
-     VIBRANT MODE
-     ======================================== */
-  [data-mode="vibrant"] .reveal-hero {
+  /* ==========================================================================
+     VIBRANT MODE — Maximum impact, glowing borders, intense gradients
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .reveal-hero {
     background: var(--color-void);
   }
 
-  [data-mode="vibrant"] .split-dark {
+  :global([data-mode="vibrant"]) .split-dark {
     position: absolute;
     inset: 0;
     background:
@@ -407,7 +400,7 @@ const {
       radial-gradient(circle at 30% 70%, rgba(102, 67, 226, 0.2) 0%, transparent 50%);
   }
 
-  [data-mode="vibrant"] .split-glow {
+  :global([data-mode="vibrant"]) .split-glow {
     position: absolute;
     top: 20%;
     right: -10%;
@@ -415,87 +408,99 @@ const {
     height: 80%;
     background:
       radial-gradient(ellipse at center, rgba(102, 67, 226, 0.35) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 80%, rgba(56, 189, 248, 0.2) 0%, transparent 50%);
-    filter: blur(80px);
+      radial-gradient(ellipse at 80% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 50%);
+    filter: blur(60px);
+    animation: glow-pulse 8s ease-in-out infinite;
   }
 
-  [data-mode="vibrant"] .bg-text-content {
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+
+  :global([data-mode="vibrant"]) .bg-text-span {
     color: rgba(102, 67, 226, 0.08);
-    text-shadow: 0 0 60px rgba(102, 67, 226, 0.3);
+    text-shadow: 0 0 80px rgba(102, 67, 226, 0.3);
   }
 
-  [data-mode="vibrant"] .eyebrow {
+  :global([data-mode="vibrant"]) .eyebrow {
     color: var(--color-soap-purple);
-    text-shadow: 0 0 20px rgba(102, 67, 226, 0.5);
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.5);
   }
 
-  [data-mode="vibrant"] .headline-main {
+  :global([data-mode="vibrant"]) .headline-main {
     color: var(--color-alabaster);
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
   }
 
-  [data-mode="vibrant"] .headline-accent {
+  :global([data-mode="vibrant"]) .headline-accent {
     color: var(--color-marjorelle-purple);
     text-shadow: 0 0 30px var(--color-marjorelle-purple);
   }
 
-  [data-mode="vibrant"] .headline-sub {
+  :global([data-mode="vibrant"]) .headline-sub {
     color: var(--color-soap-purple);
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.3);
   }
 
-  [data-mode="vibrant"] .statement {
+  :global([data-mode="vibrant"]) .statement {
     color: rgba(249, 250, 251, 0.8);
   }
 
-  [data-mode="vibrant"] .stat-accent {
+  :global([data-mode="vibrant"]) .stat-accent {
     border-left: 2px solid var(--color-marjorelle-purple);
-    box-shadow: -2px 0 20px rgba(102, 67, 226, 0.4);
+    box-shadow: -2px 0 25px rgba(102, 67, 226, 0.5);
   }
 
-  [data-mode="vibrant"] .stat-number {
+  :global([data-mode="vibrant"]) .stat-number {
     color: var(--color-marjorelle-purple);
     text-shadow: 0 0 30px var(--color-marjorelle-purple);
   }
 
-  [data-mode="vibrant"] .stat-label {
+  :global([data-mode="vibrant"]) .stat-label {
     color: var(--color-soap-purple);
   }
 
-  [data-mode="vibrant"] .right-panel {
-    border-color: rgba(102, 67, 226, 0.4);
-    box-shadow: -1px 0 30px rgba(102, 67, 226, 0.2);
+  :global([data-mode="vibrant"]) .right-panel {
+    border-color: rgba(102, 67, 226, 0.5);
+    box-shadow: -1px 0 40px rgba(102, 67, 226, 0.25);
   }
 
-  [data-mode="vibrant"] .point-number {
-    color: rgba(102, 67, 226, 0.3);
-    text-shadow: 0 0 20px rgba(102, 67, 226, 0.3);
+  :global([data-mode="vibrant"]) .point-number {
+    color: rgba(102, 67, 226, 0.35);
+    text-shadow: 0 0 25px rgba(102, 67, 226, 0.4);
   }
 
-  [data-mode="vibrant"] .point-card:hover .point-number {
-    color: rgba(102, 67, 226, 0.6);
-    text-shadow: 0 0 30px rgba(102, 67, 226, 0.5);
+  :global([data-mode="vibrant"]) .point-card:hover .point-number {
+    color: rgba(102, 67, 226, 0.7);
+    text-shadow: 0 0 40px rgba(102, 67, 226, 0.6);
   }
 
-  [data-mode="vibrant"] .point-title {
+  :global([data-mode="vibrant"]) .point-title {
     color: var(--color-alabaster);
+    transition: text-shadow 0.3s ease;
   }
 
-  [data-mode="vibrant"] .point-desc {
-    color: var(--color-soap-purple);
-  }
-
-  [data-mode="vibrant"] .reveal-cta {
-    color: var(--color-soap-purple);
-    text-shadow: 0 0 15px rgba(102, 67, 226, 0.4);
-  }
-
-  [data-mode="vibrant"] .reveal-cta:hover {
-    color: var(--color-alabaster);
+  :global([data-mode="vibrant"]) .point-card:hover .point-title {
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }
 
-  [data-mode="vibrant"] .accent-line {
+  :global([data-mode="vibrant"]) .point-desc {
+    color: var(--color-soap-purple);
+  }
+
+  :global([data-mode="vibrant"]) .reveal-cta {
+    color: var(--color-soap-purple);
+    text-shadow: 0 0 15px rgba(156, 133, 223, 0.4);
+  }
+
+  :global([data-mode="vibrant"]) .reveal-cta:hover {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+  }
+
+  :global([data-mode="vibrant"]) .accent-line {
     background: linear-gradient(to bottom, transparent, var(--color-marjorelle-purple), transparent);
-    box-shadow: 0 0 20px var(--color-marjorelle-purple);
+    box-shadow: 0 0 25px var(--color-marjorelle-purple);
   }
 </style>
