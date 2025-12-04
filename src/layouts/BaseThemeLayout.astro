@@ -1,0 +1,31 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  mode?: 'light' | 'dark' | 'vibrant';
+}
+
+const {
+  title = 'Dark Matter',
+  description = 'A minimal themed shell using the Matter design system.',
+  mode = 'dark',
+} = Astro.props;
+
+import '../styles/global.css';
+import '../styles/themes/matter-theme.css';
+---
+
+<html lang="en" class="theme-matter" data-theme="matter" data-mode={mode}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-screen flex flex-col" style={`background-color: var(--color-background); color: var(--color-foreground);`}>
+    <main class="flex-1 flex flex-col">
+      <slot />
+    </main>
+  </body>
+</html>

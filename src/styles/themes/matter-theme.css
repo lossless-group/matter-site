@@ -1,8 +1,14 @@
 :root {
   /* Brand-level named colors for Dark Matter */
-  --color-void: #0F0923;      /* Deep background / brand base */
-  --color-ink: #F9FAFB;       /* Primary foreground on void */
-  --color-lavender: #9C85DF;  /* Accent / highlight */
+  --color-ebony: #0F0923;      /* Deep background / brand base */
+  --color-alabaster: #F9FAFB;  /* Primary foreground on void */
+  --color-lilac: #9C85DF;      /* Accent / highlight */
+
+  /* Aliases used by existing themes */
+  --color-void: var(--color-ebony);
+  --color-ink: var(--color-alabaster);
+  --color-lavender: var(--color-lilac);
+
 
   /* Neutral greys for surfaces and borders */
   --color-graphite-800: #111827;
@@ -15,21 +21,21 @@
 /* LIGHT MODE – matter */
 [data-theme="matter"][data-mode="light"] {
   /* Core surfaces */
-  --color-background: #F9FAFB;
+  --color-background: var(--color-alabaster);
   --color-foreground: #050516;
 
   --color-surface: #FFFFFF;
   --color-surface-muted: #F3F4F6;
 
   /* Primary / secondary semantic tokens */
-  --color-primary: #0F0923;           /* logo ink as primary in light mode */
-  --color-primary-foreground: #F9FAFB;
+  --color-primary: var(--color-ebony);           /* logo ink as primary in light mode */
+  --color-primary-foreground: var(--color-alabaster);
 
   --color-secondary: #4B5563;
-  --color-secondary-foreground: #F9FAFB;
+  --color-secondary-foreground: var(--color-alabaster);
 
   /* Accent (lavender) */
-  --color-accent: #9C85DF;
+  --color-accent: var(--color-lilac);
   --color-accent-foreground: #050516;
 
   /* Supporting tokens */
@@ -38,7 +44,7 @@
 
   --color-border: #D1D5DB;
   --color-input: #E5E7EB;
-  --color-ring: #9C85DF;
+  --color-ring: var(--color-lilac);
 }
 
 /* DARK MODE – matter */
@@ -49,13 +55,13 @@
   --color-surface: #111827;
   --color-surface-muted: #020617;
 
-  --color-primary: #9C85DF;           /* lavender as primary in dark mode */
+  --color-primary: var(--color-lilac);           /* lavender as primary in dark mode */
   --color-primary-foreground: #050516;
 
   --color-secondary: #4B5563;
-  --color-secondary-foreground: #F9FAFB;
+  --color-secondary-foreground: var(--color-alabaster);
 
-  --color-accent: #9C85DF;
+  --color-accent: var(--color-lilac);
   --color-accent-foreground: #050516;
 
   --color-muted: #1F2937;
@@ -63,7 +69,7 @@
 
   --color-border: #1F2937;
   --color-input: #111827;
-  --color-ring: #9C85DF;
+  --color-ring: var(--color-lilac);
 }
 
 /* VIBRANT MODE – matter (expressive dark variant) */
@@ -76,13 +82,13 @@
   --color-surface-muted: #020617;
 
   /* Use brighter accent emphasis */
-  --color-primary: #9C85DF;
+  --color-primary: var(--color-lilac);
   --color-primary-foreground: #050516;
 
   --color-secondary: #38BDF8;          /* cobalt-like secondary */
   --color-secondary-foreground: #020617;
 
-  --color-accent: #9C85DF;
+  --color-accent: var(--color-lilac);
   --color-accent-foreground: #020617;
 
   --color-muted: rgba(15,9,35,0.9);
@@ -90,7 +96,7 @@
 
   --color-border: rgba(156,133,223,0.6);
   --color-input: rgba(15,9,35,0.9);
-  --color-ring: #9C85DF;
+  --color-ring: var(--color-lilac);
 }
 
 /* Convenience theme-scoped helpers – keep thin and semantic */

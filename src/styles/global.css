@@ -76,7 +76,7 @@ a, button, input, textarea, select, .transition-colors {
 
 /* Base document colors driven by semantic tokens; falls back if theme not set */
 body {
-  background-color: var(--color-background, #0F0923);
-  color: var(--color-foreground, #F9FAFB);
+  background-color: var(--color-background, var(--color-ebony));
+  color: var(--color-foreground, var(--color-alabaster));
   font-family: var(--font-family-primary);
 }
