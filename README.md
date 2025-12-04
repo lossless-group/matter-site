@@ -37,6 +37,10 @@
     <img src="https://ik.imagekit.io/xvpgfijuw/uploads/lossless/trademarks/trademark__TailwindCSS--Lighter.webp?updatedAt=1758016076289" height="42" />
   </a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://threejs.org" target="_blank" rel="noopener">
+    <img src="https://threejs.org/files/favicon.ico" alt="Three.js" height="48" />
+  </a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://vitest.dev" target="_blank" rel="noopener">
     <span style="display:inline-flex;align-items:center;gap:8px">
       <img src="https://ik.imagekit.io/xvpgfijuw/uploads/lossless/trademarks/trademark__Vitest.webp?updatedAt=1758016614303" alt="Vitest" height="48" />
@@ -45,9 +49,72 @@
 </p>
 
 <p align="center">
-  Modern site generation, presentations, styling, and testing.
+  Modern site generation, presentations, styling, testing, and 3D graphics.
 </p>
 
+---
+
+## 🌐 Three.js for WebGL Graphics
+
+This site uses [Three.js](https://threejs.org) for hardware-accelerated 3D graphics and particle systems. Three.js provides:
+
+- **WebGL Abstraction** — Write high-level JavaScript instead of raw WebGL shaders
+- **Particle Systems** — Create thousands of animated points with custom behaviors
+- **Custom Shaders** — GLSL vertex and fragment shaders for unique visual effects
+- **Performance** — GPU-accelerated rendering runs smoothly even with complex scenes
+- **Cross-Platform** — Works on desktop and mobile browsers with WebGL support
+
+### Current Components
+
+**`ImageAbstract--Orb--Half.astro`** — A signature particle sphere based on Dark Matter brand assets:
+- ~8000 particles distributed using golden spiral algorithm
+- Central void/eye cutout creating an almond-shaped hole
+- Custom shaders for soft circular particles with depth-based transparency
+- Subtle rotation animation with configurable speed
+- Additive blending for glowing effect
+
+```astro
+<ImageAbstractOrb
+  size="400px"
+  color="#9C85DF"
+  rotationSpeed={0.3}
+/>
+```
+
+### Future Possibilities
+
+Three.js opens the door to:
+- Interactive data visualizations
+- Animated backgrounds and hero sections
+- 3D product showcases
+- Particle-based transitions between pages
+- Scroll-driven 3D animations
+
+---
+
+## 📝 Changelog as Git Submodule
+
+The `changelog/` directory is managed as a **separate git repository** (submodule), enabling:
+
+- **Independent Version Control** — Changelog history is tracked separately from site code
+- **Cross-Repository Collaboration** — Team members can update the changelog without touching the main codebase
+- **Selective Sharing** — The changelog can be shared with stakeholders who don't need access to source code
+- **Clean Commit History** — Documentation changes don't clutter the main repository's git log
+- **Reusability** — The same changelog can be mounted in multiple projects or documentation sites
+
+The changelog is also registered as an **Astro content collection** using a `glob` loader that points outside `src/`:
+
+```ts
+// src/content/changelog/changelog.config.ts
+loader: glob({
+  pattern: '**/*.md',
+  base: '../../changelog',
+}),
+```
+
+This allows changelog entries to be queried and rendered as pages while keeping the content in its own repository.
+
+---
 
 ## 🧞 Commands
 
