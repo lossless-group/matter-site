@@ -1,0 +1,31 @@
+---
+import SiteBrandMarkModeWrapper from '../ui/SiteBrandMarkModeWrapper.astro';
+
+export interface Props {
+  class?: string;
+}
+
+const {
+  class: className = '',
+} = Astro.props as Props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class:list={[
+  'bg-background border-t border-border/10 text-foreground/70 mt-12 pt-6 md:mt-16 md:pt-8',
+  className,
+]}>
+  <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col items-center gap-3 py-4 md:py-6">
+      <a href="/" aria-label="Dark Matter" class="inline-flex items-center">
+        <div class="h-8 w-auto flex items-center">
+          <SiteBrandMarkModeWrapper className="h-8 w-auto" />
+        </div>
+      </a>
+      <p class="text-xs text-muted-foreground">
+        © {currentYear} Dark Matter. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>

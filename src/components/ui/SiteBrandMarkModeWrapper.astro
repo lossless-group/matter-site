@@ -1,0 +1,81 @@
+---
+interface Props {
+  className?: string;
+  width?: number | string;
+  height?: number | string;
+}
+
+const {
+  className = '',
+  width = 'auto',
+  height = '100%',
+} = Astro.props;
+---
+
+<div class:list={[
+  'dm-brand-mark-wrapper relative w-full h-full',
+  className,
+]}>
+  <img
+    src="/trademarks/trademark__Dark-Matter--Light-Mode.svg"
+    alt="Dark Matter"
+    width={width}
+    height={height}
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    class="dm-light-logo h-full w-auto"
+  />
+
+  <img
+    src="/trademarks/trademark__Dark-Matter--Dark-Mode.svg"
+    alt="Dark Matter"
+    width={width}
+    height={height}
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    class="dm-dark-logo h-full w-auto"
+  />
+
+  <img
+    src="/trademarks/trademark__Dark-Matter--Vibrant-Mode.svg"
+    alt="Dark Matter"
+    width={width}
+    height={height}
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    class="dm-vibrant-logo h-full w-auto"
+  />
+</div>
+
+<style is:global>
+  .dm-brand-mark-wrapper .dm-light-logo,
+  .dm-brand-mark-wrapper .dm-dark-logo,
+  .dm-brand-mark-wrapper .dm-vibrant-logo {
+    display: none !important;
+  }
+
+  /* Default (no explicit mode): show light logo */
+  .dm-brand-mark-wrapper .dm-light-logo {
+    display: block !important;
+  }
+
+  /* Dark mode: show dark logo */
+  html[data-mode="dark"] .dm-brand-mark-wrapper .dm-light-logo {
+    display: none !important;
+  }
+  html[data-mode="dark"] .dm-brand-mark-wrapper .dm-dark-logo {
+    display: block !important;
+  }
+
+  /* Vibrant mode: show vibrant logo */
+  html[data-mode="vibrant"] .dm-brand-mark-wrapper .dm-light-logo,
+  html[data-mode="vibrant"] .dm-brand-mark-wrapper .dm-dark-logo {
+    display: none !important;
+  }
+  html[data-mode="vibrant"] .dm-brand-mark-wrapper .dm-vibrant-logo {
+    display: block !important;
+  }
+</style>

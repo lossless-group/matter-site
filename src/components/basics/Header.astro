@@ -1,0 +1,36 @@
+---
+// Minimal Dark Matter header with brand mark and mode toggle
+import SiteBrandMarkModeWrapper from '../ui/SiteBrandMarkModeWrapper.astro';
+import ModeToggle from '../ui/ModeToggle.astro';
+
+export interface Props {
+  siteTitle?: string;
+  class?: string;
+}
+
+const {
+  siteTitle = 'Dark Matter',
+  class: className = '',
+} = Astro.props as Props;
+---
+
+<header class={`bg-background/80 backdrop-blur-sm border-b border-border/20 w-full ${className}`}>
+  <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+    <div class="h-16 md:h-20 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3">
+        <div class="h-10 w-auto flex items-center">
+          <SiteBrandMarkModeWrapper className="h-10 w-auto" />
+        </div>
+      </a>
+
+      <div class="flex items-center gap-4">
+        <nav class="hidden md:flex items-center gap-4 text-sm text-muted-foreground">
+          <a href="#about" class="hover:text-foreground transition-colors">About</a>
+          <a href="#modes" class="hover:text-foreground transition-colors">Modes</a>
+          <a href="#tokens" class="hover:text-foreground transition-colors">Tokens</a>
+        </nav>
+        <ModeToggle />
+      </div>
+    </div>
+  </div>
+</header>

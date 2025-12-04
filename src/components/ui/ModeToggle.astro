@@ -1,0 +1,127 @@
+---
+// Dark Matter ModeToggle - cycles between light, dark, and vibrant modes
+---
+
+<button
+  type="button"
+  class="dm-mode-toggle p-2 rounded-lg hover:bg-surface-muted transition-colors w-10 h-10 flex items-center justify-center text-foreground border border-border/60"
+  title="Cycle color mode"
+  aria-label="Cycle color mode"
+  data-dm-theme-toggle
+  data-mode="dark"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    class="dm-icon dm-icon-sun w-5 h-5"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+  </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    class="dm-icon dm-icon-moon w-5 h-5"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    class="dm-icon dm-icon-star w-5 h-5"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l2.39 6.26L21 9.27l-4.5 4.38L17.48 21 12 17.77 6.52 21 7.5 13.65 3 9.27l6.61-1.01L12 2z" />
+  </svg>
+</button>
+
+<script is:inline>
+  const MODES = ['light', 'dark', 'vibrant'];
+  const STORAGE_KEY = 'dark-matter-mode';
+
+  function applyMode(mode) {
+    const docEl = document.documentElement;
+    if (!MODES.includes(mode)) mode = 'dark';
+    docEl.dataset.mode = mode;
+    try {
+      localStorage.setItem(STORAGE_KEY, mode);
+    } catch {}
+    updateToggleIcons(mode);
+  }
+
+  function getInitialMode() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && MODES.includes(stored)) return stored;
+    } catch {}
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
+  }
+
+  function updateToggleIcons(mode) {
+    const buttons = document.querySelectorAll('[data-dm-theme-toggle]');
+    buttons.forEach((btn) => {
+      btn.setAttribute('data-mode', mode);
+      const label = `Current mode: ${mode}. Click to change.`;
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
+    });
+  }
+
+  function nextMode(current) {
+    const idx = MODES.indexOf(current);
+    if (idx === -1) return 'dark';
+    return MODES[(idx + 1) % MODES.length];
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const initial = getInitialMode();
+    applyMode(initial);
+
+    document.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-dm-theme-toggle]');
+      if (!toggle) return;
+      const current = document.documentElement.dataset.mode || 'dark';
+      const mode = nextMode(current);
+      applyMode(mode);
+    });
+  });
+</script>
+
+<style is:global>
+  .dm-mode-toggle {
+    color: var(--color-foreground);
+    background-color: var(--color-surface, transparent);
+  }
+
+  .dm-icon-sun,
+  .dm-icon-moon,
+  .dm-icon-star {
+    display: none;
+  }
+
+  .dm-mode-toggle[data-mode="light"] .dm-icon-sun {
+    display: block;
+  }
+
+  .dm-mode-toggle[data-mode="dark"] .dm-icon-moon {
+    display: block;
+  }
+
+  .dm-mode-toggle[data-mode="vibrant"] .dm-icon-star {
+    display: block;
+  }
+</style>
