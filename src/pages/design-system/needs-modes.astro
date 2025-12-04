@@ -1,0 +1,107 @@
+---
+/**
+ * Design System: Needs-Modes Showcase
+ *
+ * Displays the refactored hero variants (v4-v7) from the needs-modes folder.
+ * These were refactored to support all three visual modes via CSS selectors.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+
+// Import the refactored mode-aware designs
+import WhyNowWhyUsV5 from '@sections/narratives/needs-modes/WhyNowWhyUs-v5.astro';
+import WhyNowWhyUsV6 from '@sections/narratives/needs-modes/WhyNowWhyUs-v6.astro';
+import WhyNowWhyUsV7 from '@sections/narratives/needs-modes/WhyNowWhyUs-v7.astro';
+---
+
+<BaseThemeLayout title="Needs-Modes - Design System" mode="vibrant">
+  <div class="design-system-header py-8 px-6 text-center border-b border-(--color-border)">
+    <h1 class="text-3xl font-bold mb-2">Needs-Modes Variants (Refactored)</h1>
+    <p class="text-(--color-muted-foreground) mb-4">
+      Refactored designs from <code class="bg-(--color-muted) px-2 py-1 rounded text-sm">narratives/needs-modes/</code>
+    </p>
+
+    <!-- Mode Switcher -->
+    <div class="inline-flex gap-2 p-1 bg-(--color-muted) rounded-lg">
+      <button class="mode-btn" data-mode="light">Light</button>
+      <button class="mode-btn active" data-mode="vibrant">Vibrant</button>
+      <button class="mode-btn" data-mode="dark">Dark</button>
+    </div>
+  </div>
+
+
+  <!-- V5: The Reveal -->
+  <div class="variant-section">
+    <div class="variant-label">V5: The Reveal (Refactored)</div>
+    <WhyNowWhyUsV5 />
+  </div>
+
+  <!-- V6: The Manifesto -->
+  <div class="variant-section">
+    <div class="variant-label">V6: The Manifesto (Refactored)</div>
+    <WhyNowWhyUsV6 />
+  </div>
+
+  <!-- V7: Orbital Narrative -->
+  <div class="variant-section">
+    <div class="variant-label">V7: Orbital Narrative (Refactored)</div>
+    <WhyNowWhyUsV7 />
+  </div>
+</BaseThemeLayout>
+
+<style>
+  .variant-section {
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .variant-label {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
+  }
+
+  .mode-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    color: var(--color-muted-foreground);
+    transition: all 0.2s ease;
+  }
+
+  .mode-btn:hover {
+    color: var(--color-foreground);
+  }
+
+  .mode-btn.active {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<script>
+  // Mode switcher functionality
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-mode');
+      if (mode) {
+        document.documentElement.setAttribute('data-mode', mode);
+      }
+
+      // Update active state
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>

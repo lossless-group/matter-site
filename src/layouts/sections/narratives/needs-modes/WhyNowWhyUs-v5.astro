@@ -1,0 +1,501 @@
+---
+/**
+ * VARIANT 5: "The Reveal" — Dramatic Asymmetric Split
+ *
+ * A bold, editorial-style hero with strong visual hierarchy.
+ * Features:
+ * - Massive oversized typography that breaks the grid
+ * - Asymmetric diagonal split creating tension
+ * - One side dark/mysterious, other side reveals the "why"
+ * - Text overlaps boundaries for editorial impact
+ * - Staggered entrance animations
+ *
+ * MODE SUPPORT:
+ * - Light: Clean white background, subtle accents, dark text
+ * - Dark: Deep void background, glowing accents, light text
+ * - Vibrant: Intense gradients, bright glowing effects
+ */
+
+interface Props {
+  mainStatement?: string;
+}
+
+const {
+  mainStatement = 'The invisible forces shaping the future of human health',
+} = Astro.props as Props;
+---
+
+<section class="reveal-hero relative min-h-screen w-full overflow-hidden">
+  <!-- Diagonal split background -->
+  <div class="split-bg absolute inset-0">
+    <div class="split-dark"></div>
+    <div class="split-glow"></div>
+  </div>
+
+  <!-- Large background text (decorative) -->
+  <div class="bg-text absolute top-1/2 left-0 -translate-y-1/2 select-none pointer-events-none" aria-hidden="true">
+    <span class="bg-text-content text-[20vw] font-black leading-none tracking-tighter">
+      DARK
+    </span>
+  </div>
+
+  <!-- Main content grid -->
+  <div class="relative z-10 min-h-screen grid lg:grid-cols-[1.2fr_1fr] items-center">
+
+    <!-- Left: The mystery / brand presence -->
+    <div class="left-panel relative flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24 py-20 lg:py-0">
+      <div class="reveal-content">
+        <p class="eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-6">
+          Dark Matter Bio
+        </p>
+
+        <h1 class="headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.9] tracking-tight">
+          <span class="headline-main block">Why</span>
+          <span class="headline-main block">Now<span class="headline-accent">.</span></span>
+          <span class="headline-sub block mt-2 text-[0.5em] font-light tracking-normal">
+            Why Us<span class="headline-accent">.</span>
+          </span>
+        </h1>
+
+        <p class="statement mt-8 sm:mt-12 text-lg sm:text-xl lg:text-2xl max-w-lg leading-relaxed font-light">
+          {mainStatement}
+        </p>
+
+        <!-- Floating stat accent -->
+        <div class="stat-accent mt-12 inline-flex items-baseline gap-3 pl-4">
+          <span class="stat-number text-5xl sm:text-6xl font-bold">10×</span>
+          <span class="stat-label text-sm uppercase tracking-wider">
+            compression<br/>in discovery cycles
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: The reveal / key points -->
+    <div class="right-panel relative flex flex-col justify-center px-8 sm:px-12 lg:px-16 py-20 lg:py-0 lg:border-l">
+      <div class="reveal-points space-y-8">
+        <div class="point-card group">
+          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-colors">
+            01
+          </div>
+          <div class="relative pl-12 sm:pl-16">
+            <h2 class="point-title text-lg sm:text-xl font-semibold mb-2">
+              The Timing Window
+            </h2>
+            <p class="point-desc text-sm sm:text-base leading-relaxed">
+              Bioscience, compute, and capital have converged. The half-life between discovery and application is collapsing.
+            </p>
+          </div>
+        </div>
+
+        <div class="point-card group">
+          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-colors">
+            02
+          </div>
+          <div class="relative pl-12 sm:pl-16">
+            <h2 class="point-title text-lg sm:text-xl font-semibold mb-2">
+              Data as a Sense Organ
+            </h2>
+            <p class="point-desc text-sm sm:text-base leading-relaxed">
+              Health becomes a live data problem. Continuous biomarkers replace episodic snapshots.
+            </p>
+          </div>
+        </div>
+
+        <div class="point-card group">
+          <div class="point-number text-7xl sm:text-8xl font-black leading-none absolute -left-2 -top-4 transition-colors">
+            03
+          </div>
+          <div class="relative pl-12 sm:pl-16">
+            <h2 class="point-title text-lg sm:text-xl font-semibold mb-2">
+              Our Unfair Advantage
+            </h2>
+            <p class="point-desc text-sm sm:text-base leading-relaxed">
+              Trusted networks at the intersection of research, builders, and distribution partners who route breakthroughs to market.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12">
+        <a href="#learn-more" class="reveal-cta inline-flex items-center gap-4 text-sm uppercase tracking-[0.2em] transition-colors group">
+          <span>Discover our thesis</span>
+          <span class="cta-arrow w-12 h-px bg-current relative">
+            <span class="absolute right-0 top-1/2 w-2 h-2 border-t border-r border-current rotate-45 -translate-y-1/2 transition-transform group-hover:translate-x-1"></span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vertical accent line -->
+  <div class="accent-line absolute top-0 bottom-0 left-[55%] w-px hidden lg:block"></div>
+</section>
+
+<style>
+  /* ========================================
+     BASE STYLES (shared across all modes)
+     ======================================== */
+  .reveal-hero {
+    background-color: var(--color-background);
+  }
+
+  .split-bg {
+    overflow: hidden;
+  }
+
+  /* Staggered entrance animations */
+  .reveal-content > * {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: reveal-up 0.8s ease-out forwards;
+  }
+
+  .eyebrow { animation-delay: 0.1s; }
+  .headline { animation-delay: 0.2s; }
+  .statement { animation-delay: 0.4s; }
+  .stat-accent { animation-delay: 0.6s; }
+
+  .point-card {
+    position: relative;
+    opacity: 0;
+    transform: translateX(30px);
+    animation: reveal-left 0.8s ease-out forwards;
+    padding: 1rem 0;
+    transition: transform 0.3s ease;
+  }
+
+  .point-card:nth-child(1) { animation-delay: 0.3s; }
+  .point-card:nth-child(2) { animation-delay: 0.5s; }
+  .point-card:nth-child(3) { animation-delay: 0.7s; }
+
+  .point-card:hover {
+    transform: translateX(8px);
+  }
+
+  @keyframes reveal-up {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes reveal-left {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* CTA arrow animation */
+  .reveal-cta:hover .cta-arrow::after {
+    animation: arrow-pulse 0.6s ease infinite;
+  }
+
+  @keyframes arrow-pulse {
+    0%, 100% { transform: translateX(0) translateY(-50%) rotate(45deg); }
+    50% { transform: translateX(4px) translateY(-50%) rotate(45deg); }
+  }
+
+  /* Background text parallax hint */
+  .bg-text {
+    transform: translateY(-50%) translateX(-10%);
+  }
+
+  @media (max-width: 1024px) {
+    .bg-text,
+    .accent-line {
+      display: none;
+    }
+  }
+
+  /* ========================================
+     LIGHT MODE
+     ======================================== */
+  [data-mode="light"] .reveal-hero {
+    background: var(--color-background);
+  }
+
+  [data-mode="light"] .split-dark {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-background) 0%, var(--color-surface-muted) 100%);
+  }
+
+  [data-mode="light"] .split-glow {
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, rgba(102, 67, 226, 0.06) 0%, transparent 70%);
+    filter: blur(80px);
+  }
+
+  [data-mode="light"] .bg-text-content {
+    color: rgba(102, 67, 226, 0.04);
+  }
+
+  [data-mode="light"] .eyebrow {
+    color: var(--color-primary);
+  }
+
+  [data-mode="light"] .headline-main {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .headline-accent {
+    color: var(--color-primary);
+  }
+
+  [data-mode="light"] .headline-sub {
+    color: var(--color-muted-foreground);
+  }
+
+  [data-mode="light"] .statement {
+    color: var(--color-muted-foreground);
+  }
+
+  [data-mode="light"] .stat-accent {
+    border-left: 2px solid var(--color-primary);
+  }
+
+  [data-mode="light"] .stat-number {
+    color: var(--color-primary);
+  }
+
+  [data-mode="light"] .stat-label {
+    color: var(--color-muted-foreground);
+  }
+
+  [data-mode="light"] .right-panel {
+    border-color: var(--color-border);
+  }
+
+  [data-mode="light"] .point-number {
+    color: rgba(102, 67, 226, 0.1);
+  }
+
+  [data-mode="light"] .point-card:hover .point-number {
+    color: rgba(102, 67, 226, 0.2);
+  }
+
+  [data-mode="light"] .point-title {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .point-desc {
+    color: var(--color-muted-foreground);
+  }
+
+  [data-mode="light"] .reveal-cta {
+    color: var(--color-primary);
+  }
+
+  [data-mode="light"] .reveal-cta:hover {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .accent-line {
+    background: linear-gradient(to bottom, transparent, rgba(102, 67, 226, 0.15), transparent);
+  }
+
+  /* ========================================
+     DARK MODE
+     ======================================== */
+  [data-mode="dark"] .reveal-hero {
+    background: var(--color-void);
+  }
+
+  [data-mode="dark"] .split-dark {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-void) 0%, rgba(15, 9, 35, 0.95) 100%);
+  }
+
+  [data-mode="dark"] .split-glow {
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 60%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, rgba(102, 67, 226, 0.15) 0%, transparent 70%);
+    filter: blur(80px);
+  }
+
+  [data-mode="dark"] .bg-text-content {
+    color: rgba(102, 67, 226, 0.04);
+  }
+
+  [data-mode="dark"] .eyebrow {
+    color: var(--color-lilac);
+  }
+
+  [data-mode="dark"] .headline-main {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .headline-accent {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="dark"] .headline-sub {
+    color: rgba(156, 133, 223, 0.6);
+  }
+
+  [data-mode="dark"] .statement {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  [data-mode="dark"] .stat-accent {
+    border-left: 2px solid var(--color-marjorelle-purple);
+  }
+
+  [data-mode="dark"] .stat-number {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="dark"] .stat-label {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  [data-mode="dark"] .right-panel {
+    border-color: rgba(102, 67, 226, 0.2);
+  }
+
+  [data-mode="dark"] .point-number {
+    color: rgba(102, 67, 226, 0.2);
+  }
+
+  [data-mode="dark"] .point-card:hover .point-number {
+    color: rgba(102, 67, 226, 0.4);
+  }
+
+  [data-mode="dark"] .point-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .point-desc {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  [data-mode="dark"] .reveal-cta {
+    color: var(--color-lilac);
+  }
+
+  [data-mode="dark"] .reveal-cta:hover {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .accent-line {
+    background: linear-gradient(to bottom, transparent, rgba(102, 67, 226, 0.3), transparent);
+  }
+
+  /* ========================================
+     VIBRANT MODE
+     ======================================== */
+  [data-mode="vibrant"] .reveal-hero {
+    background: var(--color-void);
+  }
+
+  [data-mode="vibrant"] .split-dark {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, var(--color-void) 0%, rgba(15, 9, 35, 0.9) 100%),
+      radial-gradient(circle at 30% 70%, rgba(102, 67, 226, 0.2) 0%, transparent 50%);
+  }
+
+  [data-mode="vibrant"] .split-glow {
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 60%;
+    height: 80%;
+    background:
+      radial-gradient(ellipse at center, rgba(102, 67, 226, 0.35) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(56, 189, 248, 0.2) 0%, transparent 50%);
+    filter: blur(80px);
+  }
+
+  [data-mode="vibrant"] .bg-text-content {
+    color: rgba(102, 67, 226, 0.08);
+    text-shadow: 0 0 60px rgba(102, 67, 226, 0.3);
+  }
+
+  [data-mode="vibrant"] .eyebrow {
+    color: var(--color-soap-purple);
+    text-shadow: 0 0 20px rgba(102, 67, 226, 0.5);
+  }
+
+  [data-mode="vibrant"] .headline-main {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+  }
+
+  [data-mode="vibrant"] .headline-accent {
+    color: var(--color-marjorelle-purple);
+    text-shadow: 0 0 30px var(--color-marjorelle-purple);
+  }
+
+  [data-mode="vibrant"] .headline-sub {
+    color: var(--color-soap-purple);
+  }
+
+  [data-mode="vibrant"] .statement {
+    color: rgba(249, 250, 251, 0.8);
+  }
+
+  [data-mode="vibrant"] .stat-accent {
+    border-left: 2px solid var(--color-marjorelle-purple);
+    box-shadow: -2px 0 20px rgba(102, 67, 226, 0.4);
+  }
+
+  [data-mode="vibrant"] .stat-number {
+    color: var(--color-marjorelle-purple);
+    text-shadow: 0 0 30px var(--color-marjorelle-purple);
+  }
+
+  [data-mode="vibrant"] .stat-label {
+    color: var(--color-soap-purple);
+  }
+
+  [data-mode="vibrant"] .right-panel {
+    border-color: rgba(102, 67, 226, 0.4);
+    box-shadow: -1px 0 30px rgba(102, 67, 226, 0.2);
+  }
+
+  [data-mode="vibrant"] .point-number {
+    color: rgba(102, 67, 226, 0.3);
+    text-shadow: 0 0 20px rgba(102, 67, 226, 0.3);
+  }
+
+  [data-mode="vibrant"] .point-card:hover .point-number {
+    color: rgba(102, 67, 226, 0.6);
+    text-shadow: 0 0 30px rgba(102, 67, 226, 0.5);
+  }
+
+  [data-mode="vibrant"] .point-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="vibrant"] .point-desc {
+    color: var(--color-soap-purple);
+  }
+
+  [data-mode="vibrant"] .reveal-cta {
+    color: var(--color-soap-purple);
+    text-shadow: 0 0 15px rgba(102, 67, 226, 0.4);
+  }
+
+  [data-mode="vibrant"] .reveal-cta:hover {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  [data-mode="vibrant"] .accent-line {
+    background: linear-gradient(to bottom, transparent, var(--color-marjorelle-purple), transparent);
+    box-shadow: 0 0 20px var(--color-marjorelle-purple);
+  }
+</style>

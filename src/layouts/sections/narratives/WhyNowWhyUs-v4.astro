@@ -4,11 +4,17 @@
  *
  * A dramatic, immersive hero inspired by Dark Matter's cosmic branding.
  * Features:
- * - Full-bleed dark gradient with animated orbital rings
+ * - Full-bleed gradient with animated orbital rings
  * - Central "nucleus" focal point with the core message
  * - Floating data points that orbit around the center
  * - Minimal text, maximum visual impact
  * - Hover interactions reveal depth
+ *
+ * MODE SUPPORT:
+ * Uses --fx-* tokens from matter-theme.css for mode-aware effects.
+ * - Light: Clean, minimal glows
+ * - Dark: Moderate glows, cosmic feel
+ * - Vibrant: Maximum impact, bright glows
  */
 
 interface Props {
@@ -22,7 +28,7 @@ const {
 } = Astro.props as Props;
 ---
 
-<section class="orbital-hero relative min-h-screen w-full overflow-hidden bg-(--color-void)">
+<section class="orbital-hero relative min-h-screen w-full overflow-hidden">
   <!-- Animated orbital rings -->
   <div class="orbital-system absolute inset-0 flex items-center justify-center">
     <div class="orbit orbit-1"></div>
@@ -49,47 +55,48 @@ const {
     <div class="nucleus-glow"></div>
 
     <h1 class="nucleus-title text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight text-center">
-      <span class="block text-transparent bg-clip-text bg-linear-to-b from-(--color-alabaster) via-(--color-lilac) to-(--color-marjorelle-purple)">
+      <span class="headline-gradient block text-transparent bg-clip-text">
         {headline}
       </span>
     </h1>
 
-    <p class="nucleus-tagline mt-6 text-lg sm:text-xl md:text-2xl text-(--color-lilac)/80 text-center max-w-2xl font-light tracking-wide">
+    <p class="nucleus-tagline mt-6 text-lg sm:text-xl md:text-2xl text-center max-w-2xl font-light tracking-wide">
       {tagline}
     </p>
 
     <div class="mt-12 flex flex-col sm:flex-row gap-4 items-center">
-      <a href="#thesis" class="nucleus-cta group relative px-8 py-4 text-sm uppercase tracking-[0.25em] text-(--color-alabaster) border border-(--color-lilac)/40 rounded-full overflow-hidden transition-all duration-500 hover:border-(--color-marjorelle-purple)">
+      <a href="#thesis" class="nucleus-cta group relative px-8 py-4 text-sm uppercase tracking-[0.25em] rounded-full overflow-hidden transition-all duration-500">
         <span class="relative z-10">Explore Our Thesis</span>
-        <span class="absolute inset-0 bg-gradient-to-r from-(--color-marjorelle-purple)/0 via-(--color-marjorelle-purple)/20 to-(--color-marjorelle-purple)/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+        <span class="cta-sweep absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
       </a>
     </div>
   </div>
 
   <!-- Bottom fade hint -->
-  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-(--color-void) to-transparent z-20"></div>
+  <div class="bottom-fade absolute bottom-0 left-0 right-0 h-32 z-20"></div>
 
   <!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 text-(--color-lilac)/60">
+  <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2">
     <span class="text-xs uppercase tracking-[0.3em]">Scroll</span>
-    <div class="scroll-line w-px h-8 bg-gradient-to-b from-(--color-lilac)/60 to-transparent"></div>
+    <div class="scroll-line w-px h-8"></div>
   </div>
 </section>
 
 <style>
+  /* =============================================
+     BASE STYLES — Structure & Animation
+     ============================================= */
   .orbital-hero {
-    background:
-      radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 20% 80%, rgba(156, 133, 223, 0.08) 0%, transparent 30%),
-      radial-gradient(circle at 80% 20%, rgba(102, 67, 226, 0.08) 0%, transparent 30%),
-      var(--color-void);
+    /* Uses theme tokens for background */
+    background: var(--fx-hero-gradient), var(--fx-hero-bg, var(--color-background));
   }
 
   /* Orbital rings */
   .orbit {
     position: absolute;
-    border: 1px solid rgba(156, 133, 223, 0.15);
+    border: 1px solid var(--fx-orbit-color);
     border-radius: 50%;
+    box-shadow: var(--fx-orbit-glow);
     animation: orbit-rotate 60s linear infinite;
   }
 
@@ -106,7 +113,7 @@ const {
     height: 60vw;
     max-width: 750px;
     max-height: 750px;
-    border-color: rgba(102, 67, 226, 0.12);
+    opacity: 0.8;
     animation-duration: 120s;
     animation-direction: reverse;
   }
@@ -116,7 +123,7 @@ const {
     height: 85vw;
     max-width: 1000px;
     max-height: 1000px;
-    border-color: rgba(156, 133, 223, 0.08);
+    opacity: 0.5;
     animation-duration: 180s;
   }
 
@@ -130,9 +137,9 @@ const {
     position: absolute;
     width: 12px;
     height: 12px;
-    background: var(--color-lilac);
+    background: var(--color-primary);
     border-radius: 50%;
-    box-shadow: 0 0 20px var(--color-lilac), 0 0 40px rgba(156, 133, 223, 0.5);
+    box-shadow: var(--fx-node-glow);
   }
 
   .orbital-node::after {
@@ -144,7 +151,7 @@ const {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: var(--color-lilac);
+    color: var(--color-primary);
     opacity: 0;
     transition: opacity 0.3s ease;
     white-space: nowrap;
@@ -158,7 +165,7 @@ const {
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    border: 1px solid var(--color-lilac);
+    border: 1px solid var(--color-primary);
     animation: pulse 2s ease-out infinite;
   }
 
@@ -189,37 +196,70 @@ const {
     50% { transform: translate(-20px, -20px); }
   }
 
-  /* Nucleus glow */
+  /* Nucleus glow - uses theme token */
   .nucleus-glow {
     position: absolute;
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(102, 67, 226, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--fx-glow-color) 0%, transparent 70%);
     filter: blur(60px);
+    opacity: var(--fx-glow-opacity);
     animation: glow-pulse 4s ease-in-out infinite;
   }
 
   @keyframes glow-pulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.2); opacity: 0.8; }
+    0%, 100% { transform: scale(1); opacity: var(--fx-glow-opacity, 0.6); }
+    50% { transform: scale(1.2); opacity: calc(var(--fx-glow-opacity, 0.6) * 1.3); }
+  }
+
+  /* Headline with gradient text */
+  .headline-gradient {
+    background-image: var(--fx-headline-gradient);
   }
 
   .nucleus-title {
-    text-shadow: 0 0 80px rgba(102, 67, 226, 0.5);
+    text-shadow: var(--fx-text-shadow);
   }
 
-  /* Scroll indicator animation */
+  /* Tagline */
+  .nucleus-tagline {
+    color: var(--color-accent);
+    opacity: 0.8;
+  }
+
+  /* CTA button */
+  .nucleus-cta {
+    color: var(--color-foreground);
+    border: 1px solid var(--fx-card-border);
+  }
+
+  .nucleus-cta:hover {
+    border-color: var(--fx-card-border-hover);
+    box-shadow: var(--fx-card-shadow-hover);
+  }
+
+  .cta-sweep {
+    background: linear-gradient(to right, transparent, var(--fx-glow-color), transparent);
+  }
+
+  /* Bottom fade */
+  .bottom-fade {
+    background: linear-gradient(to top, var(--color-background), transparent);
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    color: var(--color-accent);
+    opacity: 0.6;
+  }
+
   .scroll-line {
+    background: linear-gradient(to bottom, currentColor, transparent);
     animation: scroll-hint 2s ease-in-out infinite;
   }
 
   @keyframes scroll-hint {
     0%, 100% { opacity: 0.6; transform: scaleY(1); }
     50% { opacity: 1; transform: scaleY(1.3); }
-  }
-
-  /* CTA hover effect */
-  .nucleus-cta:hover {
-    box-shadow: 0 0 30px rgba(102, 67, 226, 0.4);
   }
 </style>

@@ -1,0 +1,306 @@
+---
+/**
+ * ImageAbstract--HumanBody--Particles
+ *
+ * A Three.js particle field approximating a human upper-body silhouette
+ * (head + shoulders/torso), inspired by the reference particle figure.
+ *
+ * Design:
+ * - Particles are sampled inside an analytic 2D body silhouette
+ *   (head circle + neck + shoulders + torso), then given small Z jitter
+ *   for thickness.
+ * - Bright, dense head/upper torso, softer falloff toward lower torso.
+ * - Slow, subtle motion via group rotation to keep it ambient.
+ */
+
+interface Props {
+  /** Container size in pixels or CSS units */
+  size?: string;
+  /** Particle color */
+  color?: string;
+  /** Enable animation */
+  animate?: boolean;
+  /** Rotation speed multiplier */
+  rotationSpeed?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  color = '#ffffff',
+  animate = true,
+  rotationSpeed = 0.25,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['human-body-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-color={color}
+  data-animate={animate}
+  data-rotation-speed={rotationSpeed}
+>
+  <canvas class="human-body-canvas"></canvas>
+</div>
+
+<style>
+  .human-body-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .human-body-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface HumanBodyConfig {
+    color: string;
+    animate: boolean;
+    rotationSpeed: number;
+  }
+
+  function initHumanBody(container: HTMLElement) {
+    const canvas = container.querySelector('.human-body-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const config: HumanBodyConfig = {
+      color: container.dataset.color || '#ffffff',
+      animate: container.dataset.animate !== 'false',
+      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.25'),
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 400;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.z = 2.6;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    // Particle generation
+    const particleCount = 9000;
+    const positions = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+
+    let count = 0;
+
+    // Body silhouette is defined in normalized 2D coordinates:
+    // x in [-0.35, 0.35], y in [0, 1]. We later map to [-1, 1] space.
+    // This tries to approximate an adult upper body: oval head, neck,
+    // sloped shoulders, and a tapered torso.
+    function inBody(x: number, y: number): boolean {
+      // Head: slightly squashed vertical oval with hint of chin
+      const headCenterY = 0.8;
+      const headRadiusX = 0.16;
+      const headRadiusY = 0.20;
+      const dxHead = x / headRadiusX;
+      const dyHead = (y - headCenterY) / headRadiusY;
+      let inHead = dxHead * dxHead + dyHead * dyHead <= 1.0;
+
+      // Carve a subtle chin by extending the oval downward a bit in center
+      if (!inHead && y > 0.7 && y < 0.78 && Math.abs(x) < 0.08) {
+        inHead = true;
+      }
+
+      // Neck: narrow vertical column under head
+      const inNeck =
+        y >= 0.66 &&
+        y <= 0.74 &&
+        Math.abs(x) <= 0.055;
+
+      // Shoulders / upper chest: gently sloped from neck outward
+      const inShoulders = ((): boolean => {
+        if (y < 0.52 || y > 0.70) return false;
+        // t = 0 at top of chest, 1 near armpit line
+        const t = (0.70 - y) / (0.70 - 0.52);
+        // Wider near top of chest, then slightly narrower
+        const baseWidth = 0.22 - t * 0.04;
+        // Add a bit of slope so top of shoulder is higher near neck
+        const shoulderSlope = 0.04 * (1.0 - Math.abs(x) / baseWidth);
+        const yShift = shoulderSlope;
+        if (y + yShift < 0.52 || y + yShift > 0.70) return false;
+        return Math.abs(x) <= baseWidth;
+      })();
+
+      // Upper torso: tapered from chest to waist
+      const inUpperTorso = ((): boolean => {
+        if (y < 0.34 || y > 0.52) return false;
+        const t = (0.52 - y) / (0.52 - 0.34); // 0 at chest, 1 at waist
+        const halfWidth = 0.18 - t * 0.05; // narrower toward waist
+        return Math.abs(x) <= halfWidth;
+      })();
+
+      // Lower torso: very subtle tail, fades out
+      const inLowerTorso = ((): boolean => {
+        if (y < 0.16 || y > 0.34) return false;
+        const t = (0.34 - y) / (0.34 - 0.16);
+        const halfWidth = 0.13 - t * 0.05;
+        return Math.abs(x) <= halfWidth;
+      })();
+
+      return inHead || inNeck || inShoulders || inUpperTorso || inLowerTorso;
+    }
+
+    const maxTries = particleCount * 10;
+    let tries = 0;
+
+    while (count < particleCount && tries < maxTries) {
+      tries++;
+
+      const x = (Math.random() - 0.5) * 0.7; // roughly [-0.35, 0.35]
+      const y = Math.random(); // [0, 1]
+
+      if (!inBody(x, y)) continue;
+
+      // Density falloff: denser at head/upper torso, sparser lower
+      const densityBoost = y * 0.7 + 0.3; // 1.0 near top, ~0.3 near bottom
+      if (Math.random() > densityBoost) continue;
+
+      // Map to centered coordinates for rendering
+      const px = x * 2.2; // widen silhouette a bit
+      const py = (y - 0.5) * 2.4;
+      const pz = (Math.random() - 0.5) * 0.2; // small thickness
+
+      const baseIndex = count * 3;
+      positions[baseIndex] = px;
+      positions[baseIndex + 1] = py;
+      positions[baseIndex + 2] = pz;
+
+      // Slightly larger and brighter near top
+      const sizeBase = 0.018 + Math.random() * 0.012;
+      sizes[count] = sizeBase * (0.8 + y * 0.6);
+
+      count++;
+    }
+
+    const posTrimmed = positions.subarray(0, count * 3);
+    const sizeTrimmed = sizes.subarray(0, count);
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(posTrimmed, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizeTrimmed, 1));
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        color: { value: new THREE.Color(config.color) },
+      },
+      vertexShader: `
+        attribute float size;
+        varying float vAlpha;
+
+        void main() {
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          gl_PointSize = size * 320.0 * (1.0 / -mvPosition.z);
+
+          float depth = clamp(-mvPosition.z, 1.5, 4.0);
+          vAlpha = smoothstep(4.0, 1.5, depth);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 color;
+        varying float vAlpha;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+          float alpha = 1.0 - smoothstep(0.25, 0.5, dist);
+          alpha *= vAlpha;
+          if (alpha < 0.01) discard;
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016;
+        points.rotation.y = Math.sin(time * 0.25) * config.rotationSpeed * 0.6;
+        points.rotation.x = Math.sin(time * 0.18) * config.rotationSpeed * 0.3;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            geometry.dispose();
+            material.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Initialize all human-body flares on the page
+  function initAll() {
+    document.querySelectorAll('.human-body-container').forEach((container) => {
+      const el = container as HTMLElement;
+      if (el.dataset.initialized === 'true') return;
+      el.dataset.initialized = 'true';
+      initHumanBody(el);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initAll);
+  document.addEventListener('astro:page-load', initAll);
+</script>

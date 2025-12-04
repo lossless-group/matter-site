@@ -14,7 +14,7 @@
 interface Props {
   /** Container size in pixels or CSS units */
   size?: string;
-  /** Particle color */
+  /** Particle color - can be hex, CSS variable name, or 'auto' to use --fx-orb-color */
   color?: string;
   /** Enable rotation animation */
   animate?: boolean;
@@ -26,7 +26,7 @@ interface Props {
 
 const {
   size = '500px',
-  color = '#ffffff',
+  color = 'auto', // 'auto' means use --fx-orb-color CSS variable (mode-aware)
   animate = true,
   rotationSpeed = 0.3,
   class: className = '',
@@ -71,13 +71,29 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
     rotationSpeed: number;
   }
 
+  /**
+   * Get the orb color - either from explicit prop or from CSS variable
+   */
+  function getOrbColor(container: HTMLElement): string {
+    const colorProp = container.dataset.color || 'auto';
+
+    if (colorProp === 'auto') {
+      // Read from CSS variable --fx-orb-color
+      const computedStyle = getComputedStyle(document.documentElement);
+      const cssColor = computedStyle.getPropertyValue('--fx-orb-color').trim();
+      return cssColor || '#ffffff';
+    }
+
+    return colorProp;
+  }
+
   function initOrb(container: HTMLElement) {
     const canvas = container.querySelector('.orb-canvas') as HTMLCanvasElement;
     if (!canvas) return;
 
     // Get configuration from data attributes
     const config: OrbConfig = {
-      color: container.dataset.color || '#ffffff',
+      color: getOrbColor(container),
       animate: container.dataset.animate !== 'false',
       rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.3'),
     };
@@ -238,6 +254,28 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
 
     animate();
 
+    // Watch for mode changes on <html> element to update orb color
+    const colorProp = container.dataset.color || 'auto';
+    if (colorProp === 'auto') {
+      const modeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'data-mode') {
+            // Mode changed, update the color uniform
+            const newColor = getOrbColor(container);
+            (material.uniforms.color.value as THREE.Color).set(newColor);
+          }
+        });
+      });
+
+      modeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-mode'],
+      });
+
+      // Store for cleanup
+      (container as any)._modeObserver = modeObserver;
+    }
+
     // Handle resize
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -259,6 +297,10 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
             cancelAnimationFrame(animationId);
             resizeObserver.disconnect();
             mutationObserver.disconnect();
+            // Also cleanup mode observer if it exists
+            if ((container as any)._modeObserver) {
+              (container as any)._modeObserver.disconnect();
+            }
             geometry.dispose();
             material.dispose();
             renderer.dispose();

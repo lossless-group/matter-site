@@ -1,0 +1,635 @@
+---
+/**
+ * VARIANT 6: "The Manifesto" — Bold Typographic Statement
+ *
+ * A minimalist, text-forward hero that makes the words themselves the visual.
+ * Inspired by high-end fashion/editorial design.
+ * Features:
+ * - Giant kinetic typography that demands attention
+ * - Scroll-triggered text reveals
+ * - No cards, no boxes — pure negative space
+ * - Words animate and transform on hover/scroll
+ * - Mobile-first dramatic impact
+ *
+ * MODES: Supports light, dark, and vibrant visual modes via CSS.
+ */
+
+interface Props {
+  manifesto?: string[];
+}
+
+const {
+  manifesto = [
+    'The future of health',
+    'is not episodic.',
+    'It is continuous.',
+    'It is compounding.',
+    'It is now.',
+  ],
+} = Astro.props as Props;
+---
+
+<section class="manifesto-hero relative min-h-[200vh] w-full">
+  <!-- Fixed centered content - needs solid bg to prevent bleed-through -->
+  <div class="manifesto-sticky sticky top-0 min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+    <!-- Solid backdrop to prevent content bleed-through -->
+    <div class="manifesto-backdrop absolute inset-0 -z-20"></div>
+
+    <!-- Ambient glow -->
+    <div class="ambient-glow absolute inset-0 pointer-events-none">
+      <div class="glow-orb glow-1"></div>
+      <div class="glow-orb glow-2"></div>
+    </div>
+
+    <!-- Brand mark -->
+    <div class="brand-mark absolute top-8 left-8 sm:top-12 sm:left-12">
+      <span class="brand-mark-text text-xs font-medium tracking-[0.4em] uppercase">
+        Dark Matter
+      </span>
+    </div>
+
+    <!-- The manifesto -->
+    <div class="manifesto-text relative z-10 text-center max-w-5xl">
+      {manifesto.map((line, index) => (
+        <p
+          class:list={[
+            'manifesto-line',
+            'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl',
+            'font-bold leading-[1.1] tracking-tight',
+            index < 2 ? 'line-muted' : '',
+            index === 2 ? 'line-accent-1' : '',
+            index === 3 ? 'line-accent-2' : '',
+            index === 4 ? 'line-emphasis text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl' : '',
+          ]}
+          style={`--line-index: ${index};`}
+          data-line={index}
+        >
+          {line}
+        </p>
+      ))}
+    </div>
+
+    <!-- Thesis keywords floating -->
+    <div class="thesis-words absolute inset-0 pointer-events-none overflow-hidden">
+      <span class="floating-word word-1">Bioscience</span>
+      <span class="floating-word word-2">Longevity</span>
+      <span class="floating-word word-3">Data</span>
+      <span class="floating-word word-4">Venture</span>
+      <span class="floating-word word-5">Founders</span>
+      <span class="floating-word word-6">Health</span>
+    </div>
+
+    <!-- Bottom CTA area -->
+    <div class="cta-area absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center gap-6">
+      <div class="scroll-prompt flex flex-col items-center gap-3">
+        <span class="scroll-text text-xs uppercase tracking-[0.3em]">Scroll to explore</span>
+        <div class="scroll-indicator w-6 h-10 border border-current rounded-full flex items-start justify-center p-2">
+          <span class="scroll-dot w-1 h-1 bg-current rounded-full"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corner accents -->
+    <div class="corner-accent top-left absolute top-8 left-8 w-16 h-16 border-l border-t hidden sm:block"></div>
+    <div class="corner-accent bottom-right absolute bottom-8 right-8 w-16 h-16 border-r border-b hidden sm:block"></div>
+  </div>
+
+  <!-- Second "page" - the reveal on scroll -->
+  <div class="thesis-reveal min-h-screen flex items-center justify-center px-6 py-20">
+    <div class="reveal-grid grid gap-12 md:gap-16 lg:grid-cols-3 max-w-6xl mx-auto">
+      <div class="reveal-block">
+        <div class="block-accent block-accent-1 w-12 h-1 mb-6"></div>
+        <h2 class="reveal-title text-2xl sm:text-3xl font-bold mb-4">
+          Why Now
+        </h2>
+        <p class="reveal-body text-base sm:text-lg leading-relaxed">
+          The half-life between bioscience discovery and market application is collapsing.
+          Compute is cheap. Data is abundant. The window is open.
+        </p>
+      </div>
+
+      <div class="reveal-block">
+        <div class="block-accent block-accent-2 w-12 h-1 mb-6"></div>
+        <h2 class="reveal-title text-2xl sm:text-3xl font-bold mb-4">
+          Why Health
+        </h2>
+        <p class="reveal-body text-base sm:text-lg leading-relaxed">
+          Health is becoming a continuous data stream, not episodic snapshots.
+          This shift creates venture-scale infrastructure opportunities.
+        </p>
+      </div>
+
+      <div class="reveal-block">
+        <div class="block-accent block-accent-3 w-12 h-1 mb-6"></div>
+        <h2 class="reveal-title text-2xl sm:text-3xl font-bold mb-4">
+          Why Us
+        </h2>
+        <p class="reveal-body text-base sm:text-lg leading-relaxed">
+          Trusted networks. Pattern recognition from decades of venture. The willingness
+          to do the unglamorous work alongside founders.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  /* Sticky section needs solid background */
+  .manifesto-sticky {
+    background-color: var(--color-void, #0F0923);
+  }
+
+  /* Ambient background effects */
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+  }
+
+  .glow-1 {
+    width: 40vw;
+    height: 40vw;
+    max-width: 500px;
+    max-height: 500px;
+    background: var(--color-marjorelle-purple);
+    top: 10%;
+    right: -10%;
+    animation: glow-drift 20s ease-in-out infinite;
+  }
+
+  .glow-2 {
+    width: 30vw;
+    height: 30vw;
+    max-width: 400px;
+    max-height: 400px;
+    background: var(--color-lilac);
+    bottom: 20%;
+    left: -5%;
+    animation: glow-drift 25s ease-in-out infinite reverse;
+  }
+
+  @keyframes glow-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, -20px) scale(1.1); }
+  }
+
+  /* Manifesto text animations */
+  .manifesto-line {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: line-reveal 0.8s ease-out forwards;
+    animation-delay: calc(var(--line-index) * 0.15s + 0.2s);
+    margin-bottom: 0.1em;
+  }
+
+  @keyframes line-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Last line special treatment */
+  .manifesto-line[data-line="4"] {
+    margin-top: 0.5em;
+    animation-delay: 1s;
+  }
+
+  /* Floating thesis words */
+  .floating-word {
+    position: absolute;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.15;
+  }
+
+  .word-1 { top: 15%; left: 10%; animation: float-word 15s ease-in-out infinite; }
+  .word-2 { top: 25%; right: 15%; animation: float-word 18s ease-in-out infinite 2s; }
+  .word-3 { top: 60%; left: 8%; animation: float-word 20s ease-in-out infinite 1s; }
+  .word-4 { top: 70%; right: 12%; animation: float-word 17s ease-in-out infinite 3s; }
+  .word-5 { bottom: 25%; left: 20%; animation: float-word 22s ease-in-out infinite 1.5s; }
+  .word-6 { bottom: 30%; right: 25%; animation: float-word 19s ease-in-out infinite 2.5s; }
+
+  @keyframes float-word {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(10px, -15px); }
+    50% { transform: translate(-5px, 10px); }
+    75% { transform: translate(15px, 5px); }
+  }
+
+  /* Scroll indicator */
+  .scroll-dot {
+    animation: scroll-bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-bounce {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(12px); opacity: 0.3; }
+  }
+
+  /* Corner accents subtle animation */
+  .corner-accent {
+    opacity: 0;
+    animation: corner-fade 1s ease-out 1.5s forwards;
+  }
+
+  @keyframes corner-fade {
+    to { opacity: 1; }
+  }
+
+  /* Reveal blocks on scroll section */
+  .reveal-block {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  /* Use intersection observer or scroll-based reveal */
+  @supports (animation-timeline: scroll()) {
+    .reveal-block {
+      animation: block-reveal linear forwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+  }
+
+  @keyframes block-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Fallback for browsers without scroll timeline */
+  @supports not (animation-timeline: scroll()) {
+    .thesis-reveal .reveal-block {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Hover states for manifesto lines */
+  .manifesto-line {
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+    cursor: default;
+  }
+
+  .manifesto-line:hover {
+    transform: translateX(10px);
+    text-shadow: 0 0 60px currentColor;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 640px) {
+    .floating-word {
+      display: none;
+    }
+
+    .manifesto-line {
+      margin-bottom: 0.2em;
+    }
+  }
+
+  /* ==========================================================================
+     LIGHT MODE — Clean, professional, subtle
+     ========================================================================== */
+  [data-mode="light"] .manifesto-hero {
+    background: var(--color-alabaster);
+  }
+
+  [data-mode="light"] .manifesto-backdrop {
+    background: var(--color-alabaster);
+  }
+
+  [data-mode="light"] .manifesto-sticky {
+    background-color: var(--color-alabaster);
+  }
+
+  [data-mode="light"] .thesis-reveal {
+    background: var(--color-alabaster);
+  }
+
+  /* Light mode: subtle glows */
+  [data-mode="light"] .glow-orb {
+    opacity: 0.15;
+  }
+
+  [data-mode="light"] .glow-1 {
+    background: var(--color-lilac);
+  }
+
+  [data-mode="light"] .glow-2 {
+    background: var(--color-soap-purple);
+  }
+
+  /* Light mode: brand mark */
+  [data-mode="light"] .brand-mark-text {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.7;
+  }
+
+  /* Light mode: manifesto lines */
+  [data-mode="light"] .line-muted {
+    color: var(--color-foreground);
+    opacity: 0.35;
+  }
+
+  [data-mode="light"] .line-accent-1 {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="light"] .line-accent-2 {
+    color: var(--color-lilac);
+  }
+
+  [data-mode="light"] .line-emphasis {
+    color: var(--color-foreground);
+  }
+
+  /* Light mode: floating words */
+  [data-mode="light"] .floating-word {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.1;
+  }
+
+  /* Light mode: scroll prompt */
+  [data-mode="light"] .scroll-prompt {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.5;
+  }
+
+  /* Light mode: corner accents */
+  [data-mode="light"] .corner-accent {
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  /* Light mode: reveal blocks */
+  [data-mode="light"] .block-accent-1 {
+    background: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="light"] .block-accent-2 {
+    background: var(--color-lilac);
+  }
+
+  [data-mode="light"] .block-accent-3 {
+    background: var(--color-soap-purple);
+  }
+
+  [data-mode="light"] .reveal-title {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .reveal-body {
+    color: var(--color-foreground);
+    opacity: 0.65;
+  }
+
+  /* ==========================================================================
+     DARK MODE — Deep, mysterious, glowing
+     ========================================================================== */
+  [data-mode="dark"] .manifesto-hero {
+    background: var(--color-void);
+  }
+
+  [data-mode="dark"] .manifesto-backdrop {
+    background: var(--color-void);
+  }
+
+  [data-mode="dark"] .manifesto-sticky {
+    background-color: var(--color-void);
+  }
+
+  [data-mode="dark"] .thesis-reveal {
+    background: var(--color-void);
+  }
+
+  /* Dark mode: glowing orbs */
+  [data-mode="dark"] .glow-orb {
+    opacity: 0.4;
+  }
+
+  [data-mode="dark"] .glow-1 {
+    background: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="dark"] .glow-2 {
+    background: var(--color-lilac);
+  }
+
+  /* Dark mode: brand mark */
+  [data-mode="dark"] .brand-mark-text {
+    color: var(--color-lilac);
+    opacity: 0.6;
+  }
+
+  /* Dark mode: manifesto lines */
+  [data-mode="dark"] .line-muted {
+    color: var(--color-alabaster);
+    opacity: 0.4;
+  }
+
+  [data-mode="dark"] .line-accent-1 {
+    color: var(--color-lilac);
+  }
+
+  [data-mode="dark"] .line-accent-2 {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="dark"] .line-emphasis {
+    color: var(--color-alabaster);
+  }
+
+  /* Dark mode: floating words */
+  [data-mode="dark"] .floating-word {
+    color: var(--color-lilac);
+    opacity: 0.15;
+  }
+
+  /* Dark mode: scroll prompt */
+  [data-mode="dark"] .scroll-prompt {
+    color: var(--color-lilac);
+    opacity: 0.5;
+  }
+
+  /* Dark mode: corner accents */
+  [data-mode="dark"] .corner-accent {
+    border-color: rgba(108, 99, 255, 0.2);
+  }
+
+  /* Dark mode: reveal blocks */
+  [data-mode="dark"] .block-accent-1 {
+    background: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="dark"] .block-accent-2 {
+    background: var(--color-lilac);
+  }
+
+  [data-mode="dark"] .block-accent-3 {
+    background: var(--color-soap-purple);
+  }
+
+  [data-mode="dark"] .reveal-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .reveal-body {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE — Intense, energetic, dramatic
+     ========================================================================== */
+  [data-mode="vibrant"] .manifesto-hero {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 50%, var(--color-void) 100%);
+  }
+
+  [data-mode="vibrant"] .manifesto-backdrop {
+    background: linear-gradient(135deg, var(--color-void) 0%, #1a0a35 50%, #0d0518 100%);
+  }
+
+  [data-mode="vibrant"] .manifesto-sticky {
+    background: transparent;
+  }
+
+  [data-mode="vibrant"] .thesis-reveal {
+    background: linear-gradient(180deg, #1a0a35 0%, var(--color-void) 100%);
+  }
+
+  /* Vibrant mode: intense glowing orbs */
+  [data-mode="vibrant"] .glow-orb {
+    opacity: 0.6;
+    filter: blur(80px);
+  }
+
+  [data-mode="vibrant"] .glow-1 {
+    background: linear-gradient(135deg, var(--color-marjorelle-purple), #ff00ff);
+    animation: glow-drift-vibrant 15s ease-in-out infinite;
+  }
+
+  [data-mode="vibrant"] .glow-2 {
+    background: linear-gradient(225deg, var(--color-lilac), #00ffff);
+    animation: glow-drift-vibrant 20s ease-in-out infinite reverse;
+  }
+
+  @keyframes glow-drift-vibrant {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+    25% { transform: translate(50px, -30px) scale(1.2); opacity: 0.7; }
+    50% { transform: translate(-20px, 40px) scale(0.9); opacity: 0.4; }
+    75% { transform: translate(30px, 20px) scale(1.15); opacity: 0.6; }
+  }
+
+  /* Vibrant mode: brand mark */
+  [data-mode="vibrant"] .brand-mark-text {
+    color: var(--color-lilac);
+    opacity: 0.8;
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.5);
+  }
+
+  /* Vibrant mode: manifesto lines */
+  [data-mode="vibrant"] .line-muted {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+  }
+
+  [data-mode="vibrant"] .line-accent-1 {
+    color: var(--color-lilac);
+    text-shadow: 0 0 40px var(--color-lilac);
+  }
+
+  [data-mode="vibrant"] .line-accent-2 {
+    color: var(--color-marjorelle-purple);
+    text-shadow: 0 0 40px var(--color-marjorelle-purple);
+  }
+
+  [data-mode="vibrant"] .line-emphasis {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.3), 0 0 120px var(--color-lilac);
+  }
+
+  /* Vibrant mode: floating words */
+  [data-mode="vibrant"] .floating-word {
+    color: var(--color-lilac);
+    opacity: 0.25;
+    text-shadow: 0 0 10px currentColor;
+  }
+
+  /* Vibrant mode: scroll prompt */
+  [data-mode="vibrant"] .scroll-prompt {
+    color: var(--color-lilac);
+    opacity: 0.7;
+  }
+
+  [data-mode="vibrant"] .scroll-indicator {
+    box-shadow: 0 0 15px rgba(156, 133, 223, 0.3);
+  }
+
+  /* Vibrant mode: corner accents */
+  [data-mode="vibrant"] .corner-accent {
+    border-color: rgba(108, 99, 255, 0.4);
+    box-shadow: 0 0 20px rgba(108, 99, 255, 0.2);
+  }
+
+  /* Vibrant mode: reveal blocks */
+  [data-mode="vibrant"] .block-accent-1 {
+    background: linear-gradient(90deg, var(--color-marjorelle-purple), var(--color-lilac));
+    box-shadow: 0 0 20px var(--color-marjorelle-purple);
+  }
+
+  [data-mode="vibrant"] .block-accent-2 {
+    background: linear-gradient(90deg, var(--color-lilac), var(--color-soap-purple));
+    box-shadow: 0 0 20px var(--color-lilac);
+  }
+
+  [data-mode="vibrant"] .block-accent-3 {
+    background: linear-gradient(90deg, var(--color-soap-purple), var(--color-marjorelle-purple));
+    box-shadow: 0 0 20px var(--color-soap-purple);
+  }
+
+  [data-mode="vibrant"] .reveal-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+
+  [data-mode="vibrant"] .reveal-body {
+    color: var(--color-alabaster);
+    opacity: 0.75;
+  }
+
+  /* Vibrant mode: enhanced hover */
+  [data-mode="vibrant"] .manifesto-line:hover {
+    text-shadow: 0 0 80px currentColor, 0 0 120px currentColor;
+  }
+</style>
+
+<script>
+  // Simple intersection observer for reveal blocks
+  const revealBlocks = document.querySelectorAll('.reveal-block');
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting && entry.target instanceof HTMLElement) {
+          const el = entry.target;
+          setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          }, index * 150);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  revealBlocks.forEach((block) => observer.observe(block));
+</script>

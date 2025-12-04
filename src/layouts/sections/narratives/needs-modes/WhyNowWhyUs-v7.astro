@@ -1,0 +1,772 @@
+---
+/**
+ * VARIANT 7: "Orbital Narrative" — Scroll-Driven Storytelling with Orb
+ *
+ * The Orb becomes a living element that the content orbits around.
+ * Features:
+ * - Central Orb as the visual anchor
+ * - Content cards "orbit" into view on scroll
+ * - Staggered reveal animations with intersection observer
+ * - Clear visual hierarchy: headline → Orb → "Why Now" → "Why Us"
+ * - Cards swipe/fade in from alternating sides
+ * - Orb subtly scales/pulses as you scroll through sections
+ *
+ * MODES: Supports light, dark, and vibrant visual modes via CSS.
+ */
+
+import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A venture-built thesis at the edge of bioscience, data, and longevity.',
+} = Astro.props as Props;
+
+// Content data - exact copy from original
+const whyNowPoints = [
+  {
+    title: 'Bioscience Explosion',
+    description: 'Breakthroughs in genomics, epigenetics, proteomics, and other biosciences are enabling new ways to understand and treat disease.',
+  },
+  {
+    title: 'Unprecedented Data',
+    description: 'Newly discovered biomarkers, combined with real-time data collection, give us continuous, measurable signals about biological age, risk, and response.',
+  },
+  {
+    title: 'Leaps in Demand',
+    description: 'Consumers and institutions are demanding personalized, data-driven, future‑forward health innovations, not one-size-fits-all care.',
+  },
+  {
+    title: 'Entrepreneurial Talent',
+    description: 'Repeat founders from software and infrastructure now want to apply their company‑building craft to breakthroughs in health and longevity.',
+  },
+];
+
+const whyUsPoints = [
+  {
+    title: 'Cutting Edge Access',
+    description: 'Trusted networks at the intersection of Silicon Valley, bioscience research, inventors, and company builders.',
+  },
+  {
+    title: 'Eye‑Popping Track Record',
+    description: 'Investing partners with a track record several standard deviations above venture in general, including biotech and health.',
+  },
+  {
+    title: 'Profound Hustle',
+    description: 'Deep domain experience paired with the entrepreneurial energy of a modern venture firm.',
+  },
+  {
+    title: 'Genuine Passion & Networked Support',
+    description: 'Geekery, alignment, and wide, deep relationships across the ecosystem give Dark Matter the right to win the most interesting opportunities.',
+  },
+];
+---
+
+<section class="orbital-narrative relative overflow-hidden">
+  <!-- Opening: Hero + Orb -->
+  <div class="hero-opening min-h-screen flex flex-col items-center justify-center px-6 py-20 relative">
+    <!-- Background gradient -->
+    <div class="hero-gradient absolute inset-0"></div>
+
+    <!-- Eyebrow -->
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-6 relative z-10">
+      Dark Matter Bio
+    </p>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- The Orb - Central visual anchor -->
+    <div class="orb-wrapper mt-12 relative z-10">
+      <ImageAbstractOrb size="min(70vw, 400px)" rotationSpeed={0.15} />
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Why Now -->
+  <div class="why-now-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-primary inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Why Now
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          The Timing Window
+        </h2>
+      </div>
+
+      <!-- Cards grid - staggered reveal -->
+      <div class="cards-grid grid gap-6 sm:gap-8 md:grid-cols-2">
+        {whyNowPoints.map((point, index) => (
+          <article
+            class="point-card reveal-item"
+            data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="card-inner card-inner-primary group relative p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500">
+              <!-- Number accent -->
+              <span class="card-number card-number-primary absolute -top-3 -left-3 w-8 h-8 flex items-center justify-center text-xs font-bold rounded-full">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+
+              <h3 class="card-title text-lg sm:text-xl font-semibold mb-3 transition-colors">
+                {point.title}
+              </h3>
+              <p class="card-body text-sm sm:text-base leading-relaxed">
+                {point.description}
+              </p>
+
+              <!-- Hover glow -->
+              <div class="card-glow absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Divider with mini orb -->
+  <div class="section-divider py-16 flex items-center justify-center relative">
+    <div class="divider-line absolute left-1/2 -translate-x-1/2 w-px h-full"></div>
+    <div class="divider-orb relative z-10 p-4">
+      <ImageAbstractOrb size="80px" color="#9C85DF" rotationSpeed={0.4} />
+    </div>
+  </div>
+
+  <!-- Section: Why Dark Matter -->
+  <div class="why-us-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-secondary inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Why Dark Matter
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Our Unfair Advantage
+        </h2>
+      </div>
+
+      <!-- Cards - different layout for variety -->
+      <div class="cards-list space-y-6">
+        {whyUsPoints.map((point, index) => (
+          <article
+            class="point-card-horizontal reveal-item"
+            data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="card-inner card-inner-secondary group relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500">
+              <!-- Icon/number area -->
+              <div class="flex-shrink-0 flex items-start">
+                <span class="card-number-box card-number-secondary w-12 h-12 flex items-center justify-center text-lg font-bold rounded-xl transition-colors">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="flex-1">
+                <h3 class="card-title text-lg sm:text-xl font-semibold mb-2 transition-colors">
+                  {point.title}
+                </h3>
+                <p class="card-body text-sm sm:text-base leading-relaxed">
+                  {point.description}
+                </p>
+              </div>
+
+              <!-- Arrow hint on hover -->
+              <div class="card-arrow hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing with Orb -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="closing-gradient absolute inset-0"></div>
+
+    <div class="closing-orb reveal-item" data-reveal="scale-up">
+      <ImageAbstractOrb size="min(50vw, 250px)" color="#CDC4ED" rotationSpeed={0.2} />
+    </div>
+
+    <p class="closing-text mt-8 text-lg sm:text-xl text-center max-w-md reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Investing at the edge of what's knowable.
+    </p>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  /* Base reveal states */
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  .reveal-item[data-reveal="slide-right"] {
+    transform: translateX(-60px);
+  }
+
+  .reveal-item[data-reveal="slide-left"] {
+    transform: translateX(60px);
+  }
+
+  .reveal-item[data-reveal="scale-up"] {
+    transform: scale(0.8);
+  }
+
+  /* Revealed state */
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* Hero opening animations */
+  .hero-opening .eyebrow-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .orb-wrapper {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeInScale 1s ease 0.8s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInScale {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Scroll hint animation */
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scaleY(1.2);
+    }
+  }
+
+  /* Divider orb pulse */
+  .divider-orb {
+    animation: orbPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes orbPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  /* ==========================================================================
+     LIGHT MODE — Clean, professional, subtle
+     ========================================================================== */
+  [data-mode="light"] .orbital-narrative {
+    background: var(--color-alabaster);
+  }
+
+  [data-mode="light"] .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(156, 133, 223, 0.08), transparent 70%);
+  }
+
+  [data-mode="light"] .eyebrow-text {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.8;
+  }
+
+  [data-mode="light"] .headline-text {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .subtitle-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  [data-mode="light"] .scroll-hint {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.4;
+  }
+
+  [data-mode="light"] .section-title {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .section-badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  [data-mode="light"] .section-badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.25);
+  }
+
+  /* Light mode cards */
+  [data-mode="light"] .card-inner-primary {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.12);
+  }
+
+  [data-mode="light"] .card-inner-primary:hover {
+    border-color: rgba(108, 99, 255, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  [data-mode="light"] .card-inner-secondary {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(156, 133, 223, 0.12);
+  }
+
+  [data-mode="light"] .card-inner-secondary:hover {
+    border-color: rgba(156, 133, 223, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  [data-mode="light"] .card-number-primary {
+    color: var(--color-marjorelle-purple);
+    background: var(--color-alabaster);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  [data-mode="light"] .card-number-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.25);
+  }
+
+  [data-mode="light"] .card-number-box.card-number-secondary {
+    background: transparent;
+  }
+
+  [data-mode="light"] .group:hover .card-number-box.card-number-secondary {
+    background: rgba(156, 133, 223, 0.1);
+  }
+
+  [data-mode="light"] .card-title {
+    color: var(--color-foreground);
+  }
+
+  [data-mode="light"] .group:hover .card-title {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="light"] .card-body {
+    color: var(--color-foreground);
+    opacity: 0.65;
+  }
+
+  [data-mode="light"] .card-glow {
+    background: radial-gradient(circle at 50% 50%, rgba(108, 99, 255, 0.05), transparent 70%);
+  }
+
+  [data-mode="light"] .card-arrow {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-mode="light"] .divider-line {
+    background: linear-gradient(to bottom, transparent, rgba(108, 99, 255, 0.15), transparent);
+  }
+
+  [data-mode="light"] .divider-orb {
+    background: var(--color-alabaster);
+  }
+
+  [data-mode="light"] .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.06), transparent 70%);
+  }
+
+  [data-mode="light"] .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  /* Light mode hover shadows */
+  [data-mode="light"] .point-card .card-inner:hover,
+  [data-mode="light"] .point-card-horizontal .card-inner:hover {
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+  }
+
+  /* ==========================================================================
+     DARK MODE — Deep, mysterious, glowing
+     ========================================================================== */
+  [data-mode="dark"] .orbital-narrative {
+    background: var(--color-void);
+  }
+
+  [data-mode="dark"] .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.12), transparent 70%);
+  }
+
+  [data-mode="dark"] .eyebrow-text {
+    color: var(--color-lilac);
+    opacity: 0.7;
+  }
+
+  [data-mode="dark"] .headline-text {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .subtitle-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  [data-mode="dark"] .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.4;
+  }
+
+  [data-mode="dark"] .section-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .section-badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  [data-mode="dark"] .section-badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  /* Dark mode cards */
+  [data-mode="dark"] .card-inner-primary {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  [data-mode="dark"] .card-inner-primary:hover {
+    border-color: rgba(108, 99, 255, 0.5);
+    background: rgba(102, 67, 226, 0.08);
+  }
+
+  [data-mode="dark"] .card-inner-secondary {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(156, 133, 223, 0.2);
+  }
+
+  [data-mode="dark"] .card-inner-secondary:hover {
+    border-color: rgba(156, 133, 223, 0.5);
+    background: rgba(156, 133, 223, 0.06);
+  }
+
+  [data-mode="dark"] .card-number-primary {
+    color: var(--color-marjorelle-purple);
+    background: var(--color-void);
+    border: 1px solid rgba(108, 99, 255, 0.4);
+  }
+
+  [data-mode="dark"] .card-number-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  [data-mode="dark"] .card-number-box.card-number-secondary {
+    background: transparent;
+  }
+
+  [data-mode="dark"] .group:hover .card-number-box.card-number-secondary {
+    background: rgba(156, 133, 223, 0.1);
+  }
+
+  [data-mode="dark"] .card-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="dark"] .group:hover .card-title {
+    color: var(--color-lilac);
+  }
+
+  [data-mode="dark"] .card-body {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  [data-mode="dark"] .card-glow {
+    background: radial-gradient(circle at 50% 50%, rgba(102, 67, 226, 0.1), transparent 70%);
+  }
+
+  [data-mode="dark"] .card-arrow {
+    color: var(--color-lilac);
+  }
+
+  [data-mode="dark"] .divider-line {
+    background: linear-gradient(to bottom, transparent, rgba(108, 99, 255, 0.3), transparent);
+  }
+
+  [data-mode="dark"] .divider-orb {
+    background: var(--color-void);
+  }
+
+  [data-mode="dark"] .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.1), transparent 70%);
+  }
+
+  [data-mode="dark"] .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+  }
+
+  /* Dark mode hover shadows */
+  [data-mode="dark"] .point-card .card-inner:hover,
+  [data-mode="dark"] .point-card-horizontal .card-inner:hover {
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.15);
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE — Intense, energetic, dramatic
+     ========================================================================== */
+  [data-mode="vibrant"] .orbital-narrative {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 30%, #0d0518 70%, var(--color-void) 100%);
+  }
+
+  [data-mode="vibrant"] .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.25), transparent 70%);
+  }
+
+  [data-mode="vibrant"] .eyebrow-text {
+    color: var(--color-lilac);
+    opacity: 0.9;
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.4);
+  }
+
+  [data-mode="vibrant"] .headline-text {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  [data-mode="vibrant"] .subtitle-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  [data-mode="vibrant"] .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.6;
+  }
+
+  [data-mode="vibrant"] .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  [data-mode="vibrant"] .section-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  [data-mode="vibrant"] .section-badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.5);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
+  }
+
+  [data-mode="vibrant"] .section-badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.5);
+    box-shadow: 0 0 15px rgba(156, 133, 223, 0.2);
+  }
+
+  /* Vibrant mode cards */
+  [data-mode="vibrant"] .card-inner-primary {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  [data-mode="vibrant"] .card-inner-primary:hover {
+    border-color: rgba(108, 99, 255, 0.7);
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.15), rgba(26, 10, 53, 0.9));
+    box-shadow: 0 0 50px rgba(102, 67, 226, 0.25), inset 0 0 30px rgba(102, 67, 226, 0.05);
+  }
+
+  [data-mode="vibrant"] .card-inner-secondary {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  [data-mode="vibrant"] .card-inner-secondary:hover {
+    border-color: rgba(156, 133, 223, 0.7);
+    background: linear-gradient(135deg, rgba(156, 133, 223, 0.1), rgba(26, 10, 53, 0.9));
+    box-shadow: 0 0 50px rgba(156, 133, 223, 0.2), inset 0 0 30px rgba(156, 133, 223, 0.05);
+  }
+
+  [data-mode="vibrant"] .card-number-primary {
+    color: var(--color-marjorelle-purple);
+    background: var(--color-void);
+    border: 1px solid rgba(108, 99, 255, 0.5);
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
+  }
+
+  [data-mode="vibrant"] .card-number-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.4);
+    box-shadow: 0 0 10px rgba(156, 133, 223, 0.2);
+  }
+
+  [data-mode="vibrant"] .card-number-box.card-number-secondary {
+    background: transparent;
+  }
+
+  [data-mode="vibrant"] .group:hover .card-number-box.card-number-secondary {
+    background: rgba(156, 133, 223, 0.15);
+    box-shadow: 0 0 15px rgba(156, 133, 223, 0.3);
+  }
+
+  [data-mode="vibrant"] .card-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-mode="vibrant"] .group:hover .card-title {
+    color: var(--color-lilac);
+    text-shadow: 0 0 20px var(--color-lilac);
+  }
+
+  [data-mode="vibrant"] .card-body {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  [data-mode="vibrant"] .card-glow {
+    background: radial-gradient(circle at 50% 50%, rgba(102, 67, 226, 0.2), transparent 70%);
+  }
+
+  [data-mode="vibrant"] .card-arrow {
+    color: var(--color-lilac);
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+
+  [data-mode="vibrant"] .divider-line {
+    background: linear-gradient(to bottom, transparent, rgba(108, 99, 255, 0.5), transparent);
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
+  }
+
+  [data-mode="vibrant"] .divider-orb {
+    background: transparent;
+  }
+
+  [data-mode="vibrant"] .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.2), transparent 70%);
+  }
+
+  [data-mode="vibrant"] .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Vibrant mode hover shadows */
+  [data-mode="vibrant"] .point-card .card-inner:hover,
+  [data-mode="vibrant"] .point-card-horizontal .card-inner:hover {
+    box-shadow: 0 0 60px rgba(102, 67, 226, 0.3);
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Add revealed class after the delay
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

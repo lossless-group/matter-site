@@ -1,6 +1,7 @@
 ---
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+import ImageAbstractHumanBody from '@components/flare/ImageAbstract--HumanBody--Particles.astro';
 ---
 
 <BaseThemeLayout
@@ -38,6 +39,40 @@ import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
           <ImageAbstractOrb size="150px" animate={false} />
         </div>
         <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--HumanBody--Particles
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Particle-based human silhouette, inspired by the same Dark Matter flare language.
+    </p>
+
+    <ImageAbstractHumanBody size="min(80vw, 520px)" />
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4">
+          <ImageAbstractHumanBody size="220px" color="#f9fafb" rotationSpeed={0.3} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Soft alabaster</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4">
+          <ImageAbstractHumanBody size="220px" color="#9C85DF" rotationSpeed={0.4} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Lilac emphasis</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4">
+          <ImageAbstractHumanBody size="220px" color="#6643e2" animate={false} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static silhouette</p>
       </div>
     </div>
   </section>

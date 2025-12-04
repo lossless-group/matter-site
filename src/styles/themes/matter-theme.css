@@ -47,6 +47,38 @@
   --color-border: #D1D5DB;
   --color-input: #E5E7EB;
   --color-ring: var(--color-lilac);
+
+  /* ==============================================
+     EFFECT TOKENS — Light mode (minimal effects)
+     ============================================== */
+  /* Glow & shadow intensities */
+  --fx-glow-opacity: 0.08;
+  --fx-glow-spread: 10px;
+  --fx-glow-color: rgba(102, 67, 226, 0.1);
+  --fx-text-shadow: none;
+  --fx-text-glow: 0 0 0 transparent;
+
+  /* Gradient backgrounds */
+  --fx-hero-gradient: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(156, 133, 223, 0.06) 0%, transparent 50%);
+  --fx-hero-bg: var(--color-background);
+
+  /* Orbit/ring effects */
+  --fx-orbit-color: rgba(102, 67, 226, 0.12);
+  --fx-orbit-glow: none;
+  --fx-node-glow: 0 0 8px rgba(102, 67, 226, 0.2);
+
+  /* Card effects */
+  --fx-card-bg: rgba(255, 255, 255, 0.9);
+  --fx-card-border: rgba(102, 67, 226, 0.12);
+  --fx-card-border-hover: rgba(102, 67, 226, 0.25);
+  --fx-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --fx-card-shadow-hover: 0 4px 16px rgba(102, 67, 226, 0.08);
+
+  /* Text gradients (for gradient text effect) */
+  --fx-headline-gradient: linear-gradient(to bottom, var(--color-foreground), var(--color-marjorelle-purple));
+
+  /* Orb/particle color — dark purple visible on light backgrounds */
+  --fx-orb-color: var(--color-marjorelle-purple);
 }
 
 /* DARK MODE – matter */
@@ -72,6 +104,40 @@
   --color-border: #1F2937;
   --color-input: #111827;
   --color-ring: var(--color-lilac);
+
+  /* ==============================================
+     EFFECT TOKENS — Dark mode (moderate glow)
+     ============================================== */
+  /* Glow & shadow intensities */
+  --fx-glow-opacity: 0.25;
+  --fx-glow-spread: 25px;
+  --fx-glow-color: rgba(102, 67, 226, 0.3);
+  --fx-text-shadow: 0 0 40px rgba(102, 67, 226, 0.4);
+  --fx-text-glow: 0 0 60px rgba(102, 67, 226, 0.3);
+
+  /* Gradient backgrounds */
+  --fx-hero-gradient:
+    radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(156, 133, 223, 0.06) 0%, transparent 30%);
+  --fx-hero-bg: var(--color-void);
+
+  /* Orbit/ring effects */
+  --fx-orbit-color: rgba(156, 133, 223, 0.15);
+  --fx-orbit-glow: 0 0 15px rgba(102, 67, 226, 0.1);
+  --fx-node-glow: 0 0 20px var(--color-lilac), 0 0 40px rgba(156, 133, 223, 0.4);
+
+  /* Card effects */
+  --fx-card-bg: rgba(15, 9, 35, 0.8);
+  --fx-card-border: rgba(102, 67, 226, 0.2);
+  --fx-card-border-hover: rgba(102, 67, 226, 0.5);
+  --fx-card-shadow: 0 0 0 1px rgba(15, 23, 42, 0.6);
+  --fx-card-shadow-hover: 0 0 30px rgba(102, 67, 226, 0.2);
+
+  /* Text gradients */
+  --fx-headline-gradient: linear-gradient(to bottom, var(--color-alabaster), var(--color-lilac), var(--color-marjorelle-purple));
+
+  /* Orb/particle color — white/lilac visible on dark backgrounds */
+  --fx-orb-color: var(--color-alabaster);
 }
 
 /* VIBRANT MODE – matter (expressive dark variant) */
@@ -100,6 +166,48 @@
   --color-border: rgba(102,67,226,0.7); /* marjorelle border glow */
   --color-input: rgba(15,9,35,0.9);
   --color-ring: var(--color-marjorelle-purple);
+
+  /* ==============================================
+     EFFECT TOKENS — Vibrant mode (maximum impact)
+     ============================================== */
+  /* Glow & shadow intensities — cranked up */
+  --fx-glow-opacity: 0.5;
+  --fx-glow-spread: 50px;
+  --fx-glow-color: rgba(102, 67, 226, 0.5);
+  --fx-text-shadow: 0 0 80px rgba(102, 67, 226, 0.6);
+  --fx-text-glow: 0 0 100px rgba(102, 67, 226, 0.5), 0 0 150px rgba(56, 189, 248, 0.2);
+
+  /* Gradient backgrounds — multi-layered cosmic */
+  --fx-hero-gradient:
+    radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(156, 133, 223, 0.12) 0%, transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(102, 67, 226, 0.12) 0%, transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.08) 0%, transparent 40%);
+  --fx-hero-bg: var(--color-void);
+
+  /* Orbit/ring effects — bright glowing */
+  --fx-orbit-color: rgba(156, 133, 223, 0.25);
+  --fx-orbit-glow: 0 0 25px rgba(102, 67, 226, 0.3);
+  --fx-node-glow:
+    0 0 25px var(--color-marjorelle-purple),
+    0 0 50px rgba(102, 67, 226, 0.6),
+    0 0 80px rgba(156, 133, 223, 0.4);
+
+  /* Card effects — dramatic borders and glows */
+  --fx-card-bg: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+  --fx-card-border: rgba(102, 67, 226, 0.4);
+  --fx-card-border-hover: rgba(102, 67, 226, 0.8);
+  --fx-card-shadow: 0 0 20px rgba(102, 67, 226, 0.15);
+  --fx-card-shadow-hover:
+    0 0 40px rgba(102, 67, 226, 0.4),
+    0 0 80px rgba(56, 189, 248, 0.15),
+    inset 0 0 30px rgba(102, 67, 226, 0.05);
+
+  /* Text gradients — bright multi-color */
+  --fx-headline-gradient: linear-gradient(to bottom, #ffffff, var(--color-soap-purple), var(--color-marjorelle-purple));
+
+  /* Orb/particle color — bright white for maximum contrast on dark void */
+  --fx-orb-color: #ffffff;
 }
 
 /* Convenience theme-scoped helpers – keep thin and semantic */
