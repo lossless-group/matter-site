@@ -1,0 +1,117 @@
+:root {
+  /* Brand-level named colors for Dark Matter */
+  --color-void: #0F0923;      /* Deep background / brand base */
+  --color-ink: #F9FAFB;       /* Primary foreground on void */
+  --color-lavender: #9C85DF;  /* Accent / highlight */
+
+  /* Neutral greys for surfaces and borders */
+  --color-graphite-800: #111827;
+  --color-graphite-700: #1F2933;
+  --color-graphite-600: #4B5563;
+  --color-graphite-500: #6B7280;
+  --color-graphite-300: #9CA3AF;
+}
+
+/* LIGHT MODE – matter */
+[data-theme="matter"][data-mode="light"] {
+  /* Core surfaces */
+  --color-background: #F9FAFB;
+  --color-foreground: #050516;
+
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F3F4F6;
+
+  /* Primary / secondary semantic tokens */
+  --color-primary: #0F0923;           /* logo ink as primary in light mode */
+  --color-primary-foreground: #F9FAFB;
+
+  --color-secondary: #4B5563;
+  --color-secondary-foreground: #F9FAFB;
+
+  /* Accent (lavender) */
+  --color-accent: #9C85DF;
+  --color-accent-foreground: #050516;
+
+  /* Supporting tokens */
+  --color-muted: #E5E7EB;
+  --color-muted-foreground: #4B5563;
+
+  --color-border: #D1D5DB;
+  --color-input: #E5E7EB;
+  --color-ring: #9C85DF;
+}
+
+/* DARK MODE – matter */
+[data-theme="matter"][data-mode="dark"] {
+  --color-background: var(--color-void);
+  --color-foreground: var(--color-ink);
+
+  --color-surface: #111827;
+  --color-surface-muted: #020617;
+
+  --color-primary: #9C85DF;           /* lavender as primary in dark mode */
+  --color-primary-foreground: #050516;
+
+  --color-secondary: #4B5563;
+  --color-secondary-foreground: #F9FAFB;
+
+  --color-accent: #9C85DF;
+  --color-accent-foreground: #050516;
+
+  --color-muted: #1F2937;
+  --color-muted-foreground: #9CA3AF;
+
+  --color-border: #1F2937;
+  --color-input: #111827;
+  --color-ring: #9C85DF;
+}
+
+/* VIBRANT MODE – matter (expressive dark variant) */
+[data-theme="matter"][data-mode="vibrant"] {
+  /* Keep same background as dark for consistency */
+  --color-background: var(--color-void);
+  --color-foreground: var(--color-ink);
+
+  --color-surface: radial-gradient(circle at top, rgba(156,133,223,0.18), #05030f);
+  --color-surface-muted: #020617;
+
+  /* Use brighter accent emphasis */
+  --color-primary: #9C85DF;
+  --color-primary-foreground: #050516;
+
+  --color-secondary: #38BDF8;          /* cobalt-like secondary */
+  --color-secondary-foreground: #020617;
+
+  --color-accent: #9C85DF;
+  --color-accent-foreground: #020617;
+
+  --color-muted: rgba(15,9,35,0.9);
+  --color-muted-foreground: #E5E7EB;
+
+  --color-border: rgba(156,133,223,0.6);
+  --color-input: rgba(15,9,35,0.9);
+  --color-ring: #9C85DF;
+}
+
+/* Convenience theme-scoped helpers – keep thin and semantic */
+.theme-matter body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.theme-matter .card {
+  background: var(--color-surface);
+  color: var(--color-foreground);
+  border-radius: var(--border-radius-lg, 0.5rem);
+  border: 1px solid var(--color-border);
+}
+
+.theme-matter .btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.theme-matter .btn-secondary {
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-foreground);
+}
