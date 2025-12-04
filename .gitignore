@@ -1,0 +1,47 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+.aider.*
+.aider.tags.cache.v4/
+.aider.input.history
+.aider.chat.history.md
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+nulbuild_output*.log
+
+# backup files
+*.bak
+
+# Services
+.vercel
+.vercel/
+.vercel/*
+.vercel/output/*
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+
+
