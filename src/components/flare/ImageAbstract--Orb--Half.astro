@@ -1,0 +1,291 @@
+---
+/**
+ * ImageAbstract--Orb
+ *
+ * A Three.js particle sphere with:
+ * - Dense dot distribution creating a globe/sphere effect
+ * - Central void/eye cutout (almond/lens shape)
+ * - Varying density (denser at poles)
+ * - Subtle rotation animation
+ *
+ * Based on brand design asset.
+ */
+
+interface Props {
+  /** Container size in pixels or CSS units */
+  size?: string;
+  /** Particle color */
+  color?: string;
+  /** Enable rotation animation */
+  animate?: boolean;
+  /** Rotation speed multiplier */
+  rotationSpeed?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '500px',
+  color = '#ffffff',
+  animate = true,
+  rotationSpeed = 0.3,
+  class: className = '',
+} = Astro.props;
+
+const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['orb-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-color={color}
+  data-animate={animate}
+  data-rotation-speed={rotationSpeed}
+>
+  <canvas class="orb-canvas"></canvas>
+</div>
+
+<style>
+  .orb-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .orb-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface OrbConfig {
+    color: string;
+    animate: boolean;
+    rotationSpeed: number;
+  }
+
+  function initOrb(container: HTMLElement) {
+    const canvas = container.querySelector('.orb-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+
+    // Get configuration from data attributes
+    const config: OrbConfig = {
+      color: container.dataset.color || '#ffffff',
+      animate: container.dataset.animate !== 'false',
+      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.3'),
+    };
+
+    // Scene setup
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.z = 3;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    // Create particle geometry
+    const particleCount = 8000;
+    const positions = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+
+    const radius = 1;
+    let particleIndex = 0;
+
+    // Generate particles on sphere surface with:
+    // 1. Higher density at poles
+    // 2. Central void (eye/lens shape cutout)
+    for (let i = 0; i < particleCount * 3; i++) {
+      // Use golden spiral distribution for even coverage
+      const goldenRatio = (1 + Math.sqrt(5)) / 2;
+      const idx = i / 3;
+
+      // Latitude (phi) - from 0 to PI
+      const phi = Math.acos(1 - (2 * (idx + 0.5)) / particleCount);
+
+      // Longitude (theta) - golden angle distribution
+      const theta = (2 * Math.PI * idx) / goldenRatio;
+
+      // Convert to Cartesian coordinates
+      let x = radius * Math.sin(phi) * Math.cos(theta);
+      let y = radius * Math.sin(phi) * Math.sin(theta);
+      let z = radius * Math.cos(phi);
+
+      // Create the central void (almond/eye shape)
+      // The void is roughly at the equator, cutting through X axis
+      const distFromCenter = Math.sqrt(y * y + z * z);
+      const eyeWidth = 0.35; // How wide the eye opening is
+      const eyeHeight = 0.5; // How tall the eye opening is
+
+      // Check if point is inside the "eye" void
+      const eyeTest = (Math.abs(x) / eyeWidth) + (distFromCenter / eyeHeight);
+      const isInEye = eyeTest < 0.8 && Math.abs(x) < eyeWidth * 0.7;
+
+      if (isInEye) {
+        // Skip this particle (it's in the void)
+        continue;
+      }
+
+      // Add some density variation - more particles near poles
+      const polarDensityBoost = Math.pow(Math.abs(Math.cos(phi)), 0.3);
+      if (Math.random() > 0.3 + polarDensityBoost * 0.5) {
+        continue;
+      }
+
+      // Add slight noise to positions for organic feel
+      const noise = 0.015;
+      x += (Math.random() - 0.5) * noise;
+      y += (Math.random() - 0.5) * noise;
+      z += (Math.random() - 0.5) * noise;
+
+      if (particleIndex * 3 + 2 < particleCount * 3) {
+        positions[particleIndex * 3] = x;
+        positions[particleIndex * 3 + 1] = y;
+        positions[particleIndex * 3 + 2] = z;
+
+        // Vary particle sizes slightly
+        sizes[particleIndex] = 0.015 + Math.random() * 0.01;
+        particleIndex++;
+      }
+    }
+
+    // Trim arrays to actual particle count
+    const actualPositions = positions.slice(0, particleIndex * 3);
+    const actualSizes = sizes.slice(0, particleIndex);
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(actualPositions, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(actualSizes, 1));
+
+    // Custom shader material for soft circular particles
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        color: { value: new THREE.Color(config.color) },
+        pointSize: { value: 4.0 * window.devicePixelRatio },
+      },
+      vertexShader: `
+        attribute float size;
+        varying float vAlpha;
+
+        void main() {
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          // Size attenuation based on distance
+          gl_PointSize = size * 300.0 * (1.0 / -mvPosition.z);
+
+          // Fade particles based on depth for 3D effect
+          vAlpha = smoothstep(3.5, 1.5, -mvPosition.z);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 color;
+        varying float vAlpha;
+
+        void main() {
+          // Create soft circular particle
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          // Soft edge falloff
+          float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+          alpha *= vAlpha;
+
+          if (alpha < 0.01) discard;
+
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Animation loop
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016;
+        particles.rotation.y = time * config.rotationSpeed * 0.5;
+        particles.rotation.x = Math.sin(time * 0.2) * 0.1;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Handle resize
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup on removal
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            geometry.dispose();
+            material.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Initialize all orbs on the page
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.orb-container').forEach((container) => {
+      initOrb(container as HTMLElement);
+    });
+  });
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('.orb-container').forEach((container) => {
+      if (!(container as HTMLElement).dataset.initialized) {
+        (container as HTMLElement).dataset.initialized = 'true';
+        initOrb(container as HTMLElement);
+      }
+    });
+  });
+</script>
