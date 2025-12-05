@@ -27,7 +27,7 @@
   --color-foreground: #050516;
 
   --color-surface: #FFFFFF;
-  --color-surface-muted: #F3F4F6;
+  --color-surface-muted: #f4f3f6;
 
   /* Primary / secondary semantic tokens */
   --color-primary: var(--color-ebony);           /* logo ink as primary in light mode */

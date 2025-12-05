@@ -15,6 +15,12 @@ import '../styles/global.css';
 import '../styles/themes/matter-theme.css';
 import Header from '../components/basics/Header.astro';
 import Footer from '../components/basics/Footer.astro';
+const faviconHref =
+  mode === 'light'
+    ? '/trademarks/appIcon__Dark-Matter--Light-Mode.svg'
+    : mode === 'vibrant'
+      ? '/trademarks/appIcon__Dark-Matter--Vibrant-Mode.svg'
+      : '/trademarks/appIcon__Dark-Matter--Dark-Mode.svg';
 ---
 
 <html lang="en" class="theme-matter" data-theme="matter" data-mode={mode}>
@@ -23,7 +29,7 @@ import Footer from '../components/basics/Footer.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={faviconHref} />
   </head>
   <body class="min-h-screen flex flex-col" style={`background-color: var(--color-background); color: var(--color-foreground);`}>
     <Header />

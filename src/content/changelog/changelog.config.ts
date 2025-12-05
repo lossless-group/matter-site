@@ -15,7 +15,7 @@ export const changelog = defineCollection({
   // Use glob loader to point to external directory
   loader: glob({
     pattern: '**/*.md',
-    base: '../../changelog', // Relative from src/content/ -> project root changelog/
+    base: '@changelog', // Relative from src/content/ -> project root changelog/
   }),
   // Passthrough schema - accepts any frontmatter without validation
   schema: z.object({}).passthrough(),
