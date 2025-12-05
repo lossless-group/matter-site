@@ -17,7 +17,7 @@
       "@content/*": ["src/content/*"],
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
-      "@changelog/*": ["changelog/*"], 
+      "@changelog/*": ["./changelog/*"], 
     },
     "types": ["vite/client"]
   }
