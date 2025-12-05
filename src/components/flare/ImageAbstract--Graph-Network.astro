@@ -1,0 +1,360 @@
+---
+interface Props {
+  size?: string;
+  animate?: boolean;
+  rotationSpeed?: number;
+  class?: string;
+}
+
+const {
+  size = '520px',
+  animate = true,
+  rotationSpeed = 0.25,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `graph-network-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['graph-network-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-animate={animate}
+  data-rotation-speed={rotationSpeed}
+>
+  <canvas class="graph-network-canvas"></canvas>
+</div>
+
+<style>
+  .graph-network-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .graph-network-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface GraphConfig {
+    animate: boolean;
+    rotationSpeed: number;
+  }
+
+  interface NodeData {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    cluster: number;
+  }
+
+  function initGraphNetwork(container: HTMLElement) {
+    const canvas = container.querySelector('.graph-network-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const config: GraphConfig = {
+      animate: container.dataset.animate !== 'false',
+      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.25'),
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 800;
+    const height = container.clientHeight || 480;
+    const aspect = width / height;
+    const viewHeight = 2.4;
+    const viewWidth = viewHeight * aspect;
+
+    const camera = new THREE.OrthographicCamera(
+      -viewWidth / 2,
+      viewWidth / 2,
+      viewHeight / 2,
+      -viewHeight / 2,
+      -10,
+      10
+    );
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const nodeColor = new THREE.Color('#D8B4FE');
+    const edgeColor = new THREE.Color('#B066FF');
+
+    const nodeCount = 140;
+    const nodes: NodeData[] = [];
+
+    const positions = new Float32Array(nodeCount * 3);
+    const sizes = new Float32Array(nodeCount);
+
+    const leftCenter = new THREE.Vector2(-0.9, -0.3);
+    const rightCenter = new THREE.Vector2(0.9, 0.25);
+
+    for (let i = 0; i < nodeCount; i++) {
+      const cluster = i < nodeCount * 0.5 ? 0 : 1;
+      const base = cluster === 0 ? leftCenter : rightCenter;
+      const radius = cluster === 0 ? 0.9 : 0.8;
+
+      const angle = Math.random() * Math.PI * 2;
+      const r = radius * (0.35 + Math.random() * 0.65);
+
+      const jitterX = (Math.random() - 0.5) * 0.15;
+      const jitterY = (Math.random() - 0.5) * 0.15;
+
+      const x = base.x + Math.cos(angle) * r + jitterX;
+      const y = base.y + Math.sin(angle) * r + jitterY;
+
+      const speedScale = 0.02;
+      const vx = (Math.random() - 0.5) * speedScale;
+      const vy = (Math.random() - 0.5) * speedScale;
+
+      nodes.push({ x, y, vx, vy, cluster });
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = 0;
+
+      const baseSize = cluster === 0 ? 0.018 : 0.02;
+      sizes[i] = baseSize + Math.random() * 0.012;
+    }
+
+    const nodeGeometry = new THREE.BufferGeometry();
+    nodeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    nodeGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+    const nodeMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        color: { value: nodeColor },
+      },
+      vertexShader: `
+        attribute float size;
+        varying float vAlpha;
+
+        void main() {
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          gl_PointSize = size * 900.0;
+          vAlpha = 1.0;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 color;
+        varying float vAlpha;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          float alpha = 1.0 - smoothstep(0.2, 0.5, dist);
+          alpha *= vAlpha;
+
+          if (alpha < 0.01) discard;
+
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const nodePoints = new THREE.Points(nodeGeometry, nodeMaterial);
+    scene.add(nodePoints);
+
+    const maxEdges = nodeCount * 6;
+    const edgePositions = new Float32Array(maxEdges * 2 * 3);
+    let edgeCount = 0;
+
+    const edgeThresholdNear = 0.45;
+    const edgeThresholdFar = 0.9;
+
+    function rebuildEdges() {
+      edgeCount = 0;
+
+      for (let i = 0; i < nodeCount; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodeCount; j++) {
+          const b = nodes[j];
+
+          let dx = a.x - b.x;
+          let dy = a.y - b.y;
+          const distSq = dx * dx + dy * dy;
+
+          const d = Math.sqrt(distSq);
+          if (d > edgeThresholdFar) continue;
+
+          const clusterBoost = a.cluster === b.cluster ? 1.0 : 0.6;
+          const strength = clusterBoost * (1.0 - (d - edgeThresholdNear) / (edgeThresholdFar - edgeThresholdNear));
+
+          if (d < edgeThresholdNear || Math.random() < strength * 0.6) {
+            if (edgeCount >= maxEdges) break;
+
+            const idx = edgeCount * 6;
+            edgePositions[idx] = a.x;
+            edgePositions[idx + 1] = a.y;
+            edgePositions[idx + 2] = 0;
+            edgePositions[idx + 3] = b.x;
+            edgePositions[idx + 4] = b.y;
+            edgePositions[idx + 5] = 0;
+
+            edgeCount++;
+          }
+        }
+      }
+
+      edgeGeometry.setDrawRange(0, edgeCount * 2);
+      const edgePosAttr = edgeGeometry.getAttribute('position');
+      (edgePosAttr as any).needsUpdate = true;
+    }
+
+    const edgeGeometry = new THREE.BufferGeometry();
+    edgeGeometry.setAttribute('position', new THREE.BufferAttribute(edgePositions, 3));
+    edgeGeometry.setDrawRange(0, 0);
+
+    const edgeMaterial = new THREE.LineBasicMaterial({
+      color: edgeColor,
+      transparent: true,
+      opacity: 0.55,
+      linewidth: 1,
+    });
+
+    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+    scene.add(edges);
+
+    rebuildEdges();
+
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016;
+
+        const px = nodeGeometry.getAttribute('position');
+        const posArray = (px as any).array as Float32Array;
+
+        const centerBiasStrength = 0.02;
+        const jitterStrength = 0.003;
+
+        for (let i = 0; i < nodeCount; i++) {
+          const node = nodes[i];
+
+          const wobble = i % 2 === 0 ? 1 : -1;
+          const phase = time * 0.4 + i * 0.17;
+
+          node.vx += Math.cos(phase) * jitterStrength * wobble;
+          node.vy += Math.sin(phase) * jitterStrength * wobble;
+
+          const biasX = node.cluster === 0 ? -0.05 : 0.05;
+          const biasY = node.cluster === 0 ? -0.02 : 0.02;
+          node.vx += (biasX - node.x * 0.02) * centerBiasStrength;
+          node.vy += (biasY - node.y * 0.02) * centerBiasStrength;
+
+          node.vx *= 0.96;
+          node.vy *= 0.96;
+
+          node.x += node.vx * config.rotationSpeed;
+          node.y += node.vy * config.rotationSpeed;
+
+          const limitX = viewWidth * 0.55;
+          const limitY = viewHeight * 0.55;
+
+          if (node.x < -limitX || node.x > limitX) {
+            node.vx *= -0.6;
+          }
+
+          if (node.y < -limitY || node.y > limitY) {
+            node.vy *= -0.6;
+          }
+
+          posArray[i * 3] = node.x;
+          posArray[i * 3 + 1] = node.y;
+          posArray[i * 3 + 2] = 0;
+        }
+
+        (px as any).needsUpdate = true;
+
+        if (Math.floor(time * 6) % 6 === 0) {
+          rebuildEdges();
+        }
+
+        scene.rotation.z = Math.sin(time * 0.05) * 0.08;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          const aspect = width / height;
+          const viewHeight = 2.4;
+          const viewWidth = viewHeight * aspect;
+
+          camera.left = -viewWidth / 2;
+          camera.right = viewWidth / 2;
+          camera.top = viewHeight / 2;
+          camera.bottom = -viewHeight / 2;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            nodeGeometry.dispose();
+            edgeGeometry.dispose();
+            nodeMaterial.dispose();
+            edgeMaterial.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  function initAllGraphNetworks() {
+    document.querySelectorAll('.graph-network-container').forEach((container) => {
+      const el = container as HTMLElement;
+      if (el.dataset.initialized === 'true') return;
+      el.dataset.initialized = 'true';
+      initGraphNetwork(el);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initAllGraphNetworks);
+  document.addEventListener('astro:page-load', initAllGraphNetworks);
+</script>
