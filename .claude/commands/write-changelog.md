@@ -1,0 +1,1 @@
+Please run git status and then write a changelog in changelog/* following our patterns.

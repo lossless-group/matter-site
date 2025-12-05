@@ -115,8 +115,8 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
 
-    // Much higher particle count for dense, detailed appearance
-    const particleCount = 25000;
+    // Reduced particle count for larger, more spaced particles
+    const particleCount = 18000;
     const positions = new Float32Array(particleCount * 3);
     const sizes = new Float32Array(particleCount);
     const alphas = new Float32Array(particleCount);
@@ -129,47 +129,58 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
      * Coordinate system: x in [-1, 1], y in [0, 1] (bottom to top)
      */
     function getBodyWidth(y: number): number {
-      // Head (y: 0.72 - 1.0)
-      if (y >= 0.72) {
-        const headY = (y - 0.72) / 0.28; // 0 at bottom of head, 1 at top
-        // Egg-shaped head: wider at top-middle, tapering at chin and crown
-        const headWidth = 0.16 * Math.sqrt(1 - Math.pow(headY * 2 - 1, 2) * 0.85);
-        // Slight taper toward chin
-        if (headY < 0.3) {
-          return headWidth * (0.7 + headY);
+      // Head (y: 0.75 - 1.0) - narrower, more natural oval
+      if (y >= 0.75) {
+        const headY = (y - 0.75) / 0.25; // 0 at jaw, 1 at crown
+        // Ellipse centered slightly above middle for skull shape
+        const centerY = 0.55;
+        const normalizedY = (headY - centerY) / 0.50;
+
+        // Clamp to avoid sqrt of negative
+        const ellipseFactor = Math.max(0, 1 - normalizedY * normalizedY);
+        // Narrower head width (was 0.17)
+        const headWidth = 0.13 * Math.sqrt(ellipseFactor);
+
+        // Taper more at chin/jaw - narrower jawline
+        if (headY < 0.2) {
+          return headWidth * (0.6 + headY * 1.5);
         }
         return headWidth;
       }
 
-      // Neck (y: 0.67 - 0.72) - shorter, thicker neck
-      if (y >= 0.67) {
-        const neckT = (y - 0.67) / 0.05;
-        // Neck widens toward head
-        return 0.09 + neckT * 0.03;
+      // Neck (y: 0.68 - 0.75) - natural neck, connects smoothly to jaw
+      if (y >= 0.68) {
+        const neckT = (y - 0.68) / 0.07;
+        // Neck is narrow, widens slightly toward jaw
+        // Use curve for organic feel, not linear
+        const neckBase = 0.055;
+        const jawWidth = 0.08; // Must match where head tapers to
+        const t = neckT * neckT; // Ease in
+        return neckBase + (jawWidth - neckBase) * t;
       }
 
-      // Trapezius / upper shoulder slope (y: 0.52 - 0.67)
-      if (y >= 0.52) {
-        const trapT = (y - 0.52) / 0.15;
-        // Smooth transition from broad shoulders to thicker neck
-        const neckWidth = 0.09;
-        const shoulderWidth = 0.38;
-        // Use smoothstep for organic transition
-        const t = trapT * trapT * (3 - 2 * trapT);
+      // Trapezius / neck-to-shoulder slope (y: 0.54 - 0.68)
+      // This is the key area - smooth organic curve, no "popped collar"
+      if (y >= 0.54) {
+        const trapT = (y - 0.54) / 0.14;
+        const neckWidth = 0.055;
+        const shoulderWidth = 0.36;
+        // Smoother curve - cubic ease for natural trapezius slope
+        const t = trapT * trapT * trapT; // More gradual at bottom
         return shoulderWidth + (neckWidth - shoulderWidth) * t;
       }
 
-      // Shoulders / deltoids (y: 0.44 - 0.52)
-      if (y >= 0.44) {
-        const shoulderT = (y - 0.44) / 0.08;
-        // Shoulders curve downward at edges
-        const baseWidth = 0.38 - shoulderT * 0.02;
+      // Shoulders / deltoids (y: 0.46 - 0.54)
+      if (y >= 0.46) {
+        const shoulderT = (y - 0.46) / 0.08;
+        // Shoulders curve naturally
+        const baseWidth = 0.36 - shoulderT * 0.02;
         return baseWidth;
       }
 
-      // Upper chest / pectorals (y: 0.32 - 0.44)
+      // Upper chest / pectorals (y: 0.32 - 0.46)
       if (y >= 0.32) {
-        const chestT = (y - 0.32) / 0.12;
+        const chestT = (y - 0.32) / 0.14;
         // Slight chest curve
         return 0.32 - chestT * 0.04;
       }
@@ -208,13 +219,13 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
      */
     function shoulderCurveAdjustment(x: number, y: number): number {
       // Create the deltoid/arm cutout curve on each side
-      if (y >= 0.35 && y <= 0.52) {
+      if (y >= 0.35 && y <= 0.54) {
         const absX = Math.abs(x);
-        if (absX > 0.28) {
+        if (absX > 0.26) {
           // Curve inward at the outer shoulders
-          const t = (y - 0.35) / 0.17;
-          const curveDepth = 0.08 * Math.sin(t * Math.PI);
-          if (absX > 0.38 - curveDepth) {
+          const t = (y - 0.35) / 0.19;
+          const curveDepth = 0.07 * Math.sin(t * Math.PI);
+          if (absX > 0.36 - curveDepth) {
             return -1; // Outside
           }
         }
@@ -238,36 +249,36 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
       // Check shoulder curve adjustment
       if (shoulderCurveAdjustment(x, y) < 0) continue;
 
-      // Density varies by region
-      let density = 0.5;
+      // Density varies by region - reduced overall for more spacing
+      let density = 0.4;
 
-      // Head is VERY dense (like the reference image's glowing head)
-      if (y >= 0.72) {
-        density = 1.0;
+      // Head is dense (glowing head effect)
+      if (y >= 0.75) {
+        density = 0.85;
       }
       // Upper body moderately dense
-      else if (y >= 0.45) {
-        density = 0.4 + (y - 0.45) * 1.5;
+      else if (y >= 0.46) {
+        density = 0.35 + (y - 0.46) * 1.2;
       }
       // Lower body sparser
       else {
-        density = 0.15 + y * 0.5;
+        density = 0.12 + y * 0.4;
       }
 
       // Edge particles are sparser for soft silhouette edge
-      density *= 0.3 + bodyCheck.edgeDist * 0.7;
+      density *= 0.35 + bodyCheck.edgeDist * 0.65;
 
       if (Math.random() > density) continue;
 
       // Map to 3D coordinates
       const px = x * 2.5;
-      const py = (y - 0.55) * 2.8; // Center vertically
+      const py = (y - 0.5) * 2.2; // Center vertically (head at top, torso below)
 
       // Z depth: more depth in torso, flatter head
       let zRange = 0.15;
-      if (y >= 0.72) {
+      if (y >= 0.75) {
         zRange = 0.25; // Head has more 3D roundness
-      } else if (y >= 0.45) {
+      } else if (y >= 0.46) {
         zRange = 0.20;
       }
       const pz = (Math.random() - 0.5) * zRange;
@@ -278,23 +289,23 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
       positions[baseIndex + 2] = pz;
 
       // Size varies: larger/brighter in head, smaller scattered in torso
-      // Increased base sizes for more visual punch
-      let sizeBase = 0.014 + Math.random() * 0.012;
+      // Larger particles for more visual impact (25% increase)
+      let sizeBase = 0.018 + Math.random() * 0.015;
 
-      if (y >= 0.72) {
-        // Head particles: dense, varied sizes for that "glowing" look
-        sizeBase = 0.012 + Math.random() * 0.018;
+      if (y >= 0.75) {
+        // Head particles: bright, varied sizes for glowing effect
+        sizeBase = 0.016 + Math.random() * 0.024;
         // Some larger "star" particles
         if (Math.random() < 0.2) {
-          sizeBase *= 1.6;
+          sizeBase *= 1.7;
         }
       } else if (y >= 0.5) {
-        sizeBase = 0.013 + Math.random() * 0.014;
+        sizeBase = 0.017 + Math.random() * 0.018;
       } else {
         // Lower torso: sparser, more varied
-        sizeBase = 0.010 + Math.random() * 0.016;
+        sizeBase = 0.014 + Math.random() * 0.020;
         if (Math.random() < 0.12) {
-          sizeBase *= 2.0;
+          sizeBase *= 2.2;
         }
       }
 
@@ -302,7 +313,7 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
 
       // Alpha varies for depth and glow effect
       let alpha = 0.6 + Math.random() * 0.4;
-      if (y >= 0.72) {
+      if (y >= 0.75) {
         // Head is brighter
         alpha = 0.8 + Math.random() * 0.2;
       }
@@ -336,8 +347,8 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           gl_Position = projectionMatrix * mvPosition;
 
-          // Size attenuation - larger multiplier for bolder particles
-          gl_PointSize = size * 500.0 * (1.0 / -mvPosition.z);
+          // Size attenuation - larger multiplier for bolder, more visible particles
+          gl_PointSize = size * 600.0 * (1.0 / -mvPosition.z);
 
           // Pass alpha with depth-based adjustment
           float depthFade = smoothstep(5.0, 2.0, -mvPosition.z);
@@ -354,17 +365,17 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
           vec2 center = gl_PointCoord - vec2(0.5);
           float dist = length(center);
 
-          // Soft circular particle with glow
-          float coreFalloff = 1.0 - smoothstep(0.0, 0.35, dist);
-          float glowFalloff = 1.0 - smoothstep(0.2, 0.5, dist);
+          // Soft circular particle with bright glow
+          float coreFalloff = 1.0 - smoothstep(0.0, 0.3, dist);
+          float glowFalloff = 1.0 - smoothstep(0.15, 0.5, dist);
 
-          float alpha = mix(glowFalloff * 0.6, coreFalloff, 0.7);
+          float alpha = mix(glowFalloff * 0.7, coreFalloff, 0.65);
           alpha *= vAlpha;
 
           if (alpha < 0.005) discard;
 
-          // Slight color boost in center for glow
-          vec3 finalColor = color * (0.9 + coreFalloff * 0.3);
+          // Boosted color for more vibrancy - brighter core
+          vec3 finalColor = color * (1.1 + coreFalloff * 0.4);
 
           gl_FragColor = vec4(finalColor, alpha);
         }

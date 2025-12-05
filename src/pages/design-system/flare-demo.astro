@@ -2,6 +2,7 @@
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
 import ImageAbstractHumanBody from '@components/flare/ImageAbstract--HumanBody--Particles.astro';
+import ImageAbstractHumanSVG from '@components/flare/ImageAbstract--HumanBody--SVG.astro';
 ---
 
 <BaseThemeLayout
@@ -57,22 +58,58 @@ import ImageAbstractHumanBody from '@components/flare/ImageAbstract--HumanBody--
 
     <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
       <div class="text-center">
-        <div class="inline-block mb-4 w-[220px] h-[290px]">
+        <div class="inline-block mb-4 w-[200px] h-[340px]">
           <ImageAbstractHumanBody size="100%" color="#f9fafb" rotationSpeed={0.3} />
         </div>
         <p class="text-sm text-(--color-alabaster)/60">Soft alabaster</p>
       </div>
 
       <div class="text-center">
-        <div class="inline-block mb-4 w-[220px] h-[290px]">
+        <div class="inline-block mb-4 w-[200px] h-[340px]">
           <ImageAbstractHumanBody size="100%" color="#9C85DF" rotationSpeed={0.4} />
         </div>
         <p class="text-sm text-(--color-alabaster)/60">Lilac emphasis</p>
       </div>
 
       <div class="text-center">
-        <div class="inline-block mb-4 w-[220px] h-[290px]">
+        <div class="inline-block mb-4 w-[200px] h-[340px]">
           <ImageAbstractHumanBody size="100%" color="#6643e2" animate={false} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static silhouette</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--HumanBody--SVG
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Full-body particle silhouette using SVG path for precise human contours.
+    </p>
+
+    <div class="w-[min(80vw,480px)] h-[min(100vw,640px)]">
+      <ImageAbstractHumanSVG size="100%" />
+    </div>
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[180px] h-[300px]">
+          <ImageAbstractHumanSVG size="100%" color="#f9fafb" rotationSpeed={0.3} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Soft alabaster</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[180px] h-[300px]">
+          <ImageAbstractHumanSVG size="100%" color="#9C85DF" rotationSpeed={0.4} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Lilac emphasis</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[180px] h-[300px]">
+          <ImageAbstractHumanSVG size="100%" color="#6643e2" animate={false} />
         </div>
         <p class="text-sm text-(--color-alabaster)/60">Static silhouette</p>
       </div>
