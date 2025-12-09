@@ -1,0 +1,21 @@
+---
+import BaseThemeLayout from './BaseThemeLayout.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Our Team | Dark Matter',
+  description = 'Meet the people behind Dark Matter.',
+} = Astro.props as Props;
+---
+
+<BaseThemeLayout {title} {description}>
+  <main class="px-4 py-12 max-w-5xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <slot />
+    </div>
+  </main>
+</BaseThemeLayout>

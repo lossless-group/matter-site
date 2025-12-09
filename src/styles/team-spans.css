@@ -1,0 +1,53 @@
+/* Shared styles for all team span components in Dark Matter */
+
+.team-span {
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 2rem;
+}
+
+h1.role-header {
+  font-size: 2.25rem;
+  font-weight: 300;
+  margin: 2rem 0 1rem 0;
+  color: var(--color-foreground);
+  width: 100%;
+  position: relative;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-foreground) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-left: 4px solid var(--color-accent);
+  padding-left: 1rem;
+  margin-left: 0;
+  line-height: 1.2;
+}
+
+h1.role-header::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 1rem;
+  width: 4rem;
+  height: 2px;
+  background: linear-gradient(90deg,
+    var(--color-accent) 0%,
+    rgba(105, 226, 227, 0.6) 50%,
+    transparent 100%
+  );
+  border-radius: 1px;
+}
+
+.team-span:first-child .role-header {
+  margin-top: 0;
+}
+
+.person-cards {
+  display: contents;
+}
+
+@media (max-width: 768px) {
+  .team-span {
+    margin-bottom: 1.5rem;
+  }
+}

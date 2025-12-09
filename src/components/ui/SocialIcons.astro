@@ -1,0 +1,83 @@
+---
+export interface SocialLink {
+  name: string;
+  href: string;
+  icon?: string;
+}
+
+interface Props {
+  socialLinks: SocialLink[];
+  iconSize?: 'sm' | 'md';
+  className?: string;
+}
+
+const {
+  socialLinks,
+  iconSize = 'sm',
+  className = '',
+} = Astro.props as Props;
+---
+
+<div class={`flex items-center gap-3 ${className}`}>
+  {socialLinks.map((link) => {
+    const platform = (link.icon || link.name).toLowerCase();
+    const sizeClass = iconSize === 'sm' ? 'h-4 w-4' : 'h-5 w-5';
+
+    return (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center rounded-full border border-border/40 bg-background/60 px-2.5 py-1 text-xs font-medium text-foreground/80 hover:text-foreground hover:border-border/80 hover:bg-background/80 transition-colors duration-200"
+      >
+        <span class="sr-only">{link.name}</span>
+        <span class={`inline-flex items-center justify-center ${sizeClass}`} aria-hidden="true">
+          {platform === 'linkedin' && (
+            <svg viewBox="0 0 24 24" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" role="img">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="8" cy="9" r="1.3" fill="currentColor" />
+              <path d="M7 11.5h2v6H7z" fill="currentColor" />
+              <path d="M11 11.5h1.9v1.1c.3-.7 1.1-1.3 2.1-1.3 1.6 0 2.5 1 2.5 2.8v3.4H16v-3.1c0-.9-.4-1.5-1.3-1.5-.8 0-1.4.5-1.5 1.3v3.3H11z" fill="currentColor" />
+            </svg>
+          )}
+
+          {(platform === 'x' || platform === 'twitter') && (
+            <svg viewBox="0 0 24 24" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" role="img">
+              <path fill="currentColor" d="M5 4.5h3.2L13 10.3 16.8 4.5H19l-5 7.3 5.3 7.7h-3.2L11 13.9 7.2 19.5H5l5.1-7.4z"/>
+            </svg>
+          )}
+
+          {platform === 'github' && (
+            <svg viewBox="0 0 24 24" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" role="img">
+              <path fill="currentColor" d="M12 2.25c-5.38 0-9.75 4.37-9.75 9.75 0 4.3 2.79 7.94 6.67 9.23.49.09.67-.21.67-.47 0-.23-.01-.98-.01-1.79-2.44.45-3.07-.6-3.27-1.16-.11-.29-.6-1.16-1.03-1.39-.35-.19-.85-.66-.01-.67.79-.01 1.35.73 1.54 1.03.9 1.51 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.16-.25-4.43-1.08-4.43-4.79 0-1.06.38-1.93 1.02-2.61-.1-.25-.45-1.27.1-2.65 0 0 .82-.26 2.69 1.01A9.3 9.3 0 0 1 12 6.32c.83 0 1.67.11 2.45.33 1.86-1.29 2.68-1.01 2.68-1.01.55 1.38.2 2.4.1 2.65.64.68 1.02 1.55 1.02 2.61 0 3.72-2.28 4.53-4.45 4.78.36.31.68.92.68 1.86 0 1.34-.01 2.42-.01 2.75 0 .26.18.57.68.47A9.77 9.77 0 0 0 21.75 12c0-5.38-4.37-9.75-9.75-9.75Z"/>
+            </svg>
+          )}
+
+          {platform === 'instagram' && (
+            <svg viewBox="0 0 24 24" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" role="img">
+              <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor"/>
+            </svg>
+          )}
+
+          {platform === 'medium' && (
+            <svg viewBox="0 0 24 24" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" role="img">
+              <circle cx="9" cy="12" r="4" fill="currentColor"/>
+              <ellipse cx="15.5" cy="12" rx="2.5" ry="4.2" fill="currentColor" opacity="0.8"/>
+              <rect x="18" y="8" width="1.7" height="8" rx="0.8" fill="currentColor" opacity="0.7"/>
+            </svg>
+          )}
+
+          {platform === 'substack' && (
+            <svg viewBox="0 0 24 24" class="h-full w-full" xmlns="http://www.w3.org/2000/svg" role="img">
+              <rect x="3" y="4" width="18" height="3" fill="currentColor"/>
+              <rect x="5" y="8" width="14" height="3" fill="currentColor"/>
+              <path d="M5 11.5v6.5l7-2.5 7 2.5v-6.5H5Z" fill="currentColor"/>
+            </svg>
+          )}
+        </span>
+      </a>
+    );
+  })}
+</div>
