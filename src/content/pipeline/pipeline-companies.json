@@ -8,7 +8,7 @@
     "stage": "initial-review",
     "sector": "medical devices",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "BlackLightSurgical"
   },
   {
     "conventionalName": "Encellin",
@@ -19,7 +19,7 @@
     "stage": "due-diligence",
     "sector": "biotech",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "Encellin"
   },
   {
     "conventionalName": "ExoLux Tech",
@@ -30,7 +30,7 @@
     "stage": "due-diligence",
     "sector": "medical robotics",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": null
   },
   {
     "conventionalName": "Fortem Neuroscience",
@@ -46,7 +46,7 @@
         "role": "Founder"
       }
     ],
-    "extendedMemoMD": null
+    "memoCompanyKey": "FortemNeuroscience"
   },
   {
     "conventionalName": "Mitrix Bio",
@@ -57,7 +57,7 @@
     "stage": "due-diligence",
     "sector": "longevity biotech",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "MitrixBio"
   },
   {
     "conventionalName": "ProfileHealth",
@@ -68,7 +68,7 @@
     "stage": "due-diligence",
     "sector": "healthcare AI",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "ProfileHealth"
   },
   {
     "conventionalName": "Radicle Science",
@@ -79,7 +79,7 @@
     "stage": "due-diligence",
     "sector": "clinical validation",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "RadicleScience"
   },
   {
     "conventionalName": "RavenGraph",
@@ -90,7 +90,7 @@
     "stage": "due-diligence",
     "sector": "fintech",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "RavenGraph"
   },
   {
     "conventionalName": "Reson8",
@@ -101,7 +101,7 @@
     "stage": "due-diligence",
     "sector": "longevity",
     "listOfPeopleData": [],
-    "extendedMemoMD": null
+    "memoCompanyKey": "Reson8"
   },
   {
     "conventionalName": "Stratosphere ATC",
@@ -117,6 +117,6 @@
         "role": "Head Scientist (Mayo Clinic)"
       }
     ],
-    "extendedMemoMD": null
+    "memoCompanyKey": "Stratosphere"
   }
 ]

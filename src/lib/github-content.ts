@@ -57,16 +57,20 @@ function getConfig() {
     owner: import.meta.env.GITHUB_CONTENT_OWNER || 'lossless-group',
     repo: import.meta.env.GITHUB_CONTENT_REPO || 'dark-matter-secure-data',
     branch: import.meta.env.GITHUB_CONTENT_BRANCH || 'main',
-    // Use local fallback when PAT is not configured
+    // Use local fallback for content fetching when PAT is not configured
     useLocalFallback: !pat || pat === '',
+    // Force local discovery for memo version detection (useful for development)
+    // Set MEMO_DISCOVERY_LOCAL=true in .env to use local orchestrator paths
+    forceLocalDiscovery: import.meta.env.MEMO_DISCOVERY_LOCAL === 'true',
   };
 }
 
 /**
- * Check if we're in local demo mode (no PAT configured)
+ * Check if we're in local mode (no PAT configured, or MEMO_DISCOVERY_LOCAL=true)
  */
 export function isLocalDemoMode(): boolean {
-  return getConfig().useLocalFallback;
+  const config = getConfig();
+  return config.useLocalFallback || config.forceLocalDiscovery;
 }
 
 /**
@@ -345,6 +349,391 @@ export function clearContentCache(): void {
   listCache.clear();
 }
 
+// ============================================================================
+// LATEST VERSION DISCOVERY
+// ============================================================================
+
+/**
+ * Parse a semver-style version string (e.g., "v0.0.2" or "0.0.2")
+ * Returns [major, minor, patch] as numbers, or null if invalid
+ */
+export function parseVersion(version: string): [number, number, number] | null {
+  const match = version.match(/^v?(\d+)\.(\d+)\.(\d+)$/);
+  if (!match) return null;
+  return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
+}
+
+/**
+ * Compare two version tuples. Returns:
+ *  -1 if a < b
+ *   0 if a === b
+ *   1 if a > b
+ */
+export function compareVersions(
+  a: [number, number, number],
+  b: [number, number, number]
+): -1 | 0 | 1 {
+  for (let i = 0; i < 3; i++) {
+    if (a[i] < b[i]) return -1;
+    if (a[i] > b[i]) return 1;
+  }
+  return 0;
+}
+
+/**
+ * Extract company name and version from a directory/file name
+ * E.g., "MitrixBio-v0.0.2" -> { company: "MitrixBio", version: "v0.0.2" }
+ */
+function parseVersionedName(name: string): { company: string; version: string } | null {
+  const match = name.match(/^(.+?)-(v\d+\.\d+\.\d+)(?:-.*)?$/);
+  if (!match) return null;
+  return { company: match[1], version: match[2] };
+}
+
+/**
+ * List version directories in a company's outputs folder (GitHub mode)
+ */
+async function listCompanyVersionsGitHub(
+  companyName: string,
+  baseDir: string = 'deals'
+): Promise<Array<{ version: string; path: string }>> {
+  const config = getConfig();
+  const outputsPath = `${baseDir}/${companyName}/outputs`;
+
+  const apiUrl = `${GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/contents/${outputsPath}?ref=${config.branch}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `token ${config.pat}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.warn(`[github-content] No outputs directory for: ${companyName}`);
+        return [];
+      }
+      throw new Error(`GitHub API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    // Filter to directories that match the versioned pattern
+    const versions: Array<{ version: string; path: string }> = [];
+
+    for (const item of data) {
+      if (item.type !== 'dir') continue;
+
+      const parsed = parseVersionedName(item.name);
+      if (parsed && parsed.company === companyName) {
+        versions.push({
+          version: parsed.version,
+          path: item.path,
+        });
+      }
+    }
+
+    return versions;
+  } catch (error) {
+    console.error(`[github-content] Failed to list versions for ${companyName}:`, error);
+    return [];
+  }
+}
+
+/**
+ * List version directories from local orchestrator deals folder
+ */
+async function listCompanyVersionsLocal(
+  companyName: string
+): Promise<Array<{ version: string; path: string }>> {
+  const { readdir, stat } = await import('node:fs/promises');
+  const { join } = await import('node:path');
+
+  // Path to the orchestrator deals directory
+  const orchestratorDealsPath = '/Users/mpstaton/code/lossless-monorepo/ai-labs/investment-memo-orchestrator/io/dark-matter/deals';
+  const outputsPath = join(orchestratorDealsPath, companyName, 'outputs');
+
+  try {
+    const entries = await readdir(outputsPath);
+    const versions: Array<{ version: string; path: string }> = [];
+
+    for (const entry of entries) {
+      const entryPath = join(outputsPath, entry);
+      const entryStat = await stat(entryPath);
+
+      if (!entryStat.isDirectory()) continue;
+
+      const parsed = parseVersionedName(entry);
+      if (parsed && parsed.company === companyName) {
+        versions.push({
+          version: parsed.version,
+          path: entryPath,
+        });
+      }
+    }
+
+    return versions;
+  } catch (error) {
+    // Directory doesn't exist or can't be read
+    console.warn(`[github-content:local] No outputs directory for: ${companyName}`);
+    return [];
+  }
+}
+
+/**
+ * Find the draft memo file in a version directory (GitHub mode)
+ *
+ * Handles multiple naming conventions:
+ * 1. {CompanyName}-{version}-draft.md (standard)
+ * 2. 6-{CompanyName}-{version}.md (newer pipeline format)
+ */
+async function findDraftMemoGitHub(
+  versionDirPath: string,
+  companyName: string,
+  version: string
+): Promise<string | null> {
+  const config = getConfig();
+  const apiUrl = `${GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/contents/${versionDirPath}?ref=${config.branch}`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: {
+        Authorization: `token ${config.pat}`,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      return null;
+    }
+
+    const files = data.filter((item: any) => item.type === 'file' && item.name.endsWith('.md'));
+
+    // Pattern 1: {Company}-{version}-draft.md (highest priority)
+    const draftPattern = new RegExp(`^${companyName}-${version}-draft\\.md$`, 'i');
+    for (const item of files) {
+      if (draftPattern.test(item.name)) {
+        return item.name.replace('.md', '');
+      }
+    }
+
+    // Pattern 2: 6-{Company}-{version}.md or similar numbered prefix
+    const numberedPattern = new RegExp(`^\\d+-${companyName}-${version}\\.md$`, 'i');
+    for (const item of files) {
+      if (numberedPattern.test(item.name)) {
+        return item.name.replace('.md', '');
+      }
+    }
+
+    // Pattern 3: {Company}-{version}.md (without -draft suffix)
+    const plainPattern = new RegExp(`^${companyName}-${version}\\.md$`, 'i');
+    for (const item of files) {
+      if (plainPattern.test(item.name)) {
+        return item.name.replace('.md', '');
+      }
+    }
+
+    // Fallback: any .md file that contains the company name and version
+    const loosePattern = new RegExp(`${companyName}.*${version}`, 'i');
+    for (const item of files) {
+      if (loosePattern.test(item.name)) {
+        return item.name.replace('.md', '');
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`[github-content] Failed to find draft in ${versionDirPath}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Find the draft memo file in a local version directory
+ *
+ * Handles multiple naming conventions:
+ * 1. {CompanyName}-{version}-draft.md (standard)
+ * 2. 6-{CompanyName}-{version}.md (newer pipeline format)
+ */
+async function findDraftMemoLocal(
+  versionDirPath: string,
+  companyName: string,
+  version: string
+): Promise<string | null> {
+  const { readdir } = await import('node:fs/promises');
+
+  try {
+    const files = await readdir(versionDirPath);
+
+    // Pattern 1: {Company}-{version}-draft.md (highest priority)
+    const draftPattern = new RegExp(`^${companyName}-${version}-draft\\.md$`, 'i');
+    for (const file of files) {
+      if (draftPattern.test(file)) {
+        return file.replace('.md', '');
+      }
+    }
+
+    // Pattern 2: 6-{Company}-{version}.md or similar numbered prefix
+    const numberedPattern = new RegExp(`^\\d+-${companyName}-${version}\\.md$`, 'i');
+    for (const file of files) {
+      if (numberedPattern.test(file)) {
+        return file.replace('.md', '');
+      }
+    }
+
+    // Pattern 3: {Company}-{version}.md (without -draft suffix)
+    const plainPattern = new RegExp(`^${companyName}-${version}\\.md$`, 'i');
+    for (const file of files) {
+      if (plainPattern.test(file)) {
+        return file.replace('.md', '');
+      }
+    }
+
+    // Fallback: any .md file that contains the company name and version
+    const loosePattern = new RegExp(`${companyName}.*${version}`, 'i');
+    for (const file of files) {
+      if (file.endsWith('.md') && loosePattern.test(file)) {
+        return file.replace('.md', '');
+      }
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+// Cache for latest memo slugs to reduce API calls
+const latestMemoCache = new Map<string, { slug: string | null; expires: number }>();
+const LATEST_MEMO_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+/**
+ * Get the latest memo slug for a company.
+ *
+ * This function:
+ * 1. Lists the company's outputs directory
+ * 2. Finds all version directories (e.g., MitrixBio-v0.0.1, MitrixBio-v0.0.2)
+ * 3. Sorts by version and picks the highest
+ * 4. Finds the draft memo file in that directory
+ * 5. Returns the slug (e.g., "MitrixBio-v0.0.2-draft")
+ *
+ * @param companyName - The company name (e.g., "MitrixBio")
+ * @param options - Optional: baseDir for deals folder
+ * @returns The latest memo slug, or null if no memo exists
+ */
+export async function getLatestMemoSlug(
+  companyName: string,
+  options?: { baseDir?: string }
+): Promise<string | null> {
+  const { baseDir = 'deals' } = options || {};
+  const config = getConfig();
+
+  // Check cache first
+  const cacheKey = `latest:${companyName}`;
+  const cached = latestMemoCache.get(cacheKey);
+  if (cached && cached.expires > Date.now()) {
+    console.log(`[github-content] Cache hit for latest memo: ${companyName} -> ${cached.slug}`);
+    return cached.slug;
+  }
+
+  // Use local discovery if: no PAT, or forced via env var
+  const useLocal = config.useLocalFallback || config.forceLocalDiscovery;
+  const mode = useLocal ? 'LOCAL' : 'GITHUB';
+  console.log(`[github-content] Discovering latest memo for: ${companyName} (${mode} mode)`);
+
+  // Get list of version directories
+  let versions: Array<{ version: string; path: string }>;
+
+  if (useLocal) {
+    versions = await listCompanyVersionsLocal(companyName);
+  } else {
+    versions = await listCompanyVersionsGitHub(companyName, baseDir);
+  }
+
+  if (versions.length === 0) {
+    console.log(`[github-content] No versions found for: ${companyName}`);
+    latestMemoCache.set(cacheKey, { slug: null, expires: Date.now() + LATEST_MEMO_CACHE_TTL_MS });
+    return null;
+  }
+
+  // Parse and sort versions
+  const parsedVersions = versions
+    .map(v => ({
+      ...v,
+      parsed: parseVersion(v.version),
+    }))
+    .filter(v => v.parsed !== null) as Array<{
+      version: string;
+      path: string;
+      parsed: [number, number, number];
+    }>;
+
+  if (parsedVersions.length === 0) {
+    console.log(`[github-content] No valid versions found for: ${companyName}`);
+    latestMemoCache.set(cacheKey, { slug: null, expires: Date.now() + LATEST_MEMO_CACHE_TTL_MS });
+    return null;
+  }
+
+  // Sort descending by version
+  parsedVersions.sort((a, b) => compareVersions(b.parsed, a.parsed));
+
+  const latest = parsedVersions[0];
+  console.log(`[github-content] Latest version for ${companyName}: ${latest.version}`);
+
+  // Find the draft memo in the latest version directory
+  let slug: string | null;
+
+  if (useLocal) {
+    slug = await findDraftMemoLocal(latest.path, companyName, latest.version);
+  } else {
+    slug = await findDraftMemoGitHub(latest.path, companyName, latest.version);
+  }
+
+  console.log(`[github-content] Latest memo slug for ${companyName}: ${slug}`);
+
+  // Cache the result
+  latestMemoCache.set(cacheKey, { slug, expires: Date.now() + LATEST_MEMO_CACHE_TTL_MS });
+
+  return slug;
+}
+
+/**
+ * Batch resolve latest memo slugs for multiple companies.
+ * More efficient than calling getLatestMemoSlug for each company individually.
+ *
+ * @param companyNames - Array of company names
+ * @returns Map of companyName -> slug (or null if no memo)
+ */
+export async function resolveLatestMemos(
+  companyNames: string[]
+): Promise<Map<string, string | null>> {
+  const results = new Map<string, string | null>();
+
+  // Process in parallel for efficiency
+  const promises = companyNames.map(async (name) => {
+    const slug = await getLatestMemoSlug(name);
+    results.set(name, slug);
+  });
+
+  await Promise.all(promises);
+
+  return results;
+}
+
 /**
  * Convert a URL-safe version (v002) to dotted version (v0.0.2)
  * Handles: v002 -> v0.0.2, v013 -> v0.1.3, v123 -> v1.2.3
@@ -364,12 +753,22 @@ function urlVersionToDotted(urlVersion: string): string {
  *
  * Structure: {CompanyName}/outputs/{CompanyName}-{version}/{slug}.md
  *
- * Handles two slug formats:
+ * Handles multiple slug formats:
  * - URL-safe: Aito-v002-draft -> deals/Aito/outputs/Aito-v0.0.2/Aito-v0.0.2-draft.md
  * - Dotted: Class5-Global-v0.0.2-draft -> deals/Class5-Global/outputs/Class5-Global-v0.0.2/Class5-Global-v0.0.2-draft.md
+ * - Numbered: 6-RavenGraph-v0.0.3 -> deals/RavenGraph/outputs/RavenGraph-v0.0.3/6-RavenGraph-v0.0.3.md
  */
 export function deriveGitHubPathFromSlug(slug: string, baseDir: string = 'deals'): string {
-  // Pattern 1: URL-safe version without dots (e.g., Aito-v002-draft)
+  // Pattern 1: Numbered prefix format (e.g., 6-RavenGraph-v0.0.3)
+  const numberedMatch = slug.match(/^\d+-(.+?)-(v\d+\.\d+\.\d+)$/);
+  if (numberedMatch) {
+    const companyName = numberedMatch[1]; // e.g., "RavenGraph"
+    const version = numberedMatch[2]; // e.g., "v0.0.3"
+    const versionDir = `${companyName}-${version}`;
+    return `${baseDir}/${companyName}/outputs/${versionDir}/${slug}.md`;
+  }
+
+  // Pattern 2: URL-safe version without dots (e.g., Aito-v002-draft)
   const urlVersionMatch = slug.match(/^(.+?)-(v\d{3})(-.*)?$/);
   if (urlVersionMatch) {
     const companyName = urlVersionMatch[1]; // e.g., "Aito"
@@ -384,7 +783,7 @@ export function deriveGitHubPathFromSlug(slug: string, baseDir: string = 'deals'
     return `${baseDir}/${companyName}/outputs/${versionDir}/${githubSlug}.md`;
   }
 
-  // Pattern 2: Dotted version (e.g., Class5-Global-v0.0.2-draft)
+  // Pattern 3: Dotted version (e.g., Class5-Global-v0.0.2-draft)
   const dottedVersionMatch = slug.match(/^(.+?)-(v\d+\.\d+\.\d+)(-.*)?$/);
   if (dottedVersionMatch) {
     const companyName = dottedVersionMatch[1]; // e.g., "Class5-Global"
@@ -403,7 +802,7 @@ export function deriveGitHubPathFromSlug(slug: string, baseDir: string = 'deals'
  * Fetch a memo by its slug.
  *
  * This is a convenience function that:
- * 1. In local mode: searches src/content/markdown-memos/ for matching file
+ * 1. In local mode: reads from the orchestrator deals directory
  * 2. In GitHub mode: derives path from slug structure or uses explicit path
  *
  * GitHub repo structure:
@@ -424,11 +823,14 @@ export async function fetchMemoBySlug(
   const config = getConfig();
   const { githubPath, baseDir = 'deals' } = options || {};
 
+  // Use local mode if: no PAT, or forced via MEMO_DISCOVERY_LOCAL
+  const useLocal = config.useLocalFallback || config.forceLocalDiscovery;
+
   let result: GitHubContentResult | null = null;
 
-  if (config.useLocalFallback) {
-    // Local mode: search by slug in local files
-    result = await fetchLocalContent(slug);
+  if (useLocal) {
+    // Local mode: read from orchestrator deals directory
+    result = await fetchLocalMemoContent(slug, baseDir);
   } else {
     // GitHub mode: derive path from slug or use explicit path
     const path = githubPath || deriveGitHubPathFromSlug(slug, baseDir);
@@ -447,4 +849,37 @@ export async function fetchMemoBySlug(
     frontmatter,
     body,
   };
+}
+
+/**
+ * Fetch memo content from the local orchestrator deals directory.
+ * Uses the same path derivation as GitHub mode.
+ */
+async function fetchLocalMemoContent(
+  slug: string,
+  baseDir: string = 'deals'
+): Promise<GitHubContentResult | null> {
+  const { readFile } = await import('node:fs/promises');
+  const { join } = await import('node:path');
+
+  // Path to the orchestrator deals directory
+  const orchestratorDealsPath = '/Users/mpstaton/code/lossless-monorepo/ai-labs/investment-memo-orchestrator/io/dark-matter/deals';
+
+  // Derive the file path from the slug using the same logic as GitHub
+  const relativePath = deriveGitHubPathFromSlug(slug, '');
+  const fullPath = join(orchestratorDealsPath, relativePath);
+
+  console.log(`[github-content:local] Fetching from local path: ${fullPath}`);
+
+  try {
+    const content = await readFile(fullPath, 'utf-8');
+    return {
+      content,
+      sha: 'local',
+      lastModified: undefined,
+    };
+  } catch (error) {
+    console.error(`[github-content:local] Failed to read memo: ${fullPath}`, error);
+    return null;
+  }
 }
