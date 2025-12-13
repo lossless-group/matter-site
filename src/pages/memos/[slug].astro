@@ -1,0 +1,271 @@
+---
+/**
+ * Investment Memo Page
+ *
+ * Fetches memo content from a private GitHub repository at runtime.
+ * When GITHUB_CONTENT_PAT is not configured, falls back to local files
+ * in src/content/markdown-memos/ for testing.
+ *
+ * Required env vars for production:
+ * - GITHUB_CONTENT_PAT
+ * - GITHUB_CONTENT_OWNER (defaults to "lossless-group")
+ * - GITHUB_CONTENT_REPO (defaults to "dark-matter-secure-data")
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import { fetchMemoBySlug, isLocalDemoMode } from '@lib/github-content';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+
+// This page must be SSR to fetch at runtime and protect content
+export const prerender = false;
+
+// Check auth - require passcode access
+const accessCookie = Astro.cookies.get('universal_portfolio_access');
+if (!accessCookie?.value) {
+  const redirectPath = encodeURIComponent(Astro.url.pathname);
+  return Astro.redirect(`/portfolio-gate?redirect=${redirectPath}`);
+}
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/portfolio?error=missing-slug');
+}
+
+// Log which mode we're using
+if (isLocalDemoMode()) {
+  console.log(`[memos] LOCAL DEMO MODE - fetching "${slug}" from src/content/markdown-memos/`);
+} else {
+  console.log(`[memos] GITHUB MODE - fetching "${slug}" from private repo`);
+}
+
+// Fetch the memo content
+const memo = await fetchMemoBySlug(slug);
+
+if (!memo) {
+  console.error(`[memos] Memo not found for slug: ${slug}`);
+  return Astro.redirect('/portfolio?error=memo-not-found');
+}
+
+const { frontmatter: data, body } = memo;
+
+// Process markdown to HTML
+const processor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeStringify, { allowDangerousHtml: true });
+
+const htmlContent = String(await processor.process(body));
+---
+
+<BaseThemeLayout
+  title={data?.title ?? 'Investment Memo'}
+  description={data?.company ? `Investment memo: ${data.company}` : undefined}
+>
+  {isLocalDemoMode() && (
+    <div class="bg-amber-500/10 border-b border-amber-500/30 px-4 py-2 text-center text-amber-600 dark:text-amber-400 text-sm">
+      <strong>Local Demo Mode</strong> - Content loaded from local files. Configure GITHUB_CONTENT_PAT for production.
+    </div>
+  )}
+
+  <article class="memo-container px-6 py-12">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <header class="mb-12 pb-8 border-b border-border/30">
+        <nav class="text-sm text-foreground/50 mb-4">
+          <a href="/portfolio" class="hover:text-foreground/70">Portfolio</a>
+          <span class="mx-2">/</span>
+          <a href="/portfolio/confidential" class="hover:text-foreground/70">Confidential</a>
+          <span class="mx-2">/</span>
+          <span class="text-foreground/70">Memo</span>
+        </nav>
+
+        {data?.title && (
+          <h1 class="text-3xl font-bold tracking-tight mb-4">{data.title}</h1>
+        )}
+
+        <div class="flex flex-wrap gap-6 text-sm text-foreground/60">
+          {data?.company && (
+            <div>
+              <span class="text-foreground/40 uppercase tracking-wide text-xs">Company</span>
+              <p class="font-medium text-foreground/80">{data.company}</p>
+            </div>
+          )}
+          {data?.date && (
+            <div>
+              <span class="text-foreground/40 uppercase tracking-wide text-xs">Date</span>
+              <p class="font-medium text-foreground/80">{data.date}</p>
+            </div>
+          )}
+          {data?.status && (
+            <div>
+              <span class="text-foreground/40 uppercase tracking-wide text-xs">Status</span>
+              <p class="font-medium text-foreground/80">{data.status}</p>
+            </div>
+          )}
+          {data?.preparedBy && (
+            <div>
+              <span class="text-foreground/40 uppercase tracking-wide text-xs">Prepared By</span>
+              <p class="font-medium text-foreground/80">{data.preparedBy}</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Print Button -->
+        <div class="mt-6">
+          <button
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/70 px-4 py-2 text-sm font-medium hover:bg-surface/50 transition-colors"
+            onclick="window.print()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+            </svg>
+            Print / Save PDF
+          </button>
+        </div>
+      </header>
+
+      <!-- Memo Content -->
+      <div class="memo-content prose prose-invert max-w-none" set:html={htmlContent} />
+
+      <!-- Back Link -->
+      <footer class="mt-16 pt-8 border-t border-border/20">
+        <a href="/portfolio/confidential" class="inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-foreground/70 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Back to Confidential Portfolio
+        </a>
+      </footer>
+    </div>
+  </article>
+</BaseThemeLayout>
+
+<style>
+  /* Memo prose styling */
+  .memo-content :global(h1) {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+  }
+
+  .memo-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--foreground);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  .memo-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--foreground);
+  }
+
+  .memo-content :global(p) {
+    margin-bottom: 1rem;
+    line-height: 1.75;
+    color: var(--foreground-muted, rgba(255, 255, 255, 0.8));
+  }
+
+  .memo-content :global(ul),
+  .memo-content :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .memo-content :global(li) {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .memo-content :global(a) {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .memo-content :global(a:hover) {
+    opacity: 0.8;
+  }
+
+  .memo-content :global(blockquote) {
+    border-left: 4px solid var(--primary);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--foreground-muted, rgba(255, 255, 255, 0.7));
+  }
+
+  .memo-content :global(code) {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+
+  .memo-content :global(pre) {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .memo-content :global(pre code) {
+    background: none;
+    padding: 0;
+  }
+
+  .memo-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+  }
+
+  .memo-content :global(th),
+  .memo-content :global(td) {
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  .memo-content :global(th) {
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+  }
+
+  .memo-content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  /* Print styles */
+  @media print {
+    .memo-container {
+      padding: 0;
+    }
+
+    .memo-content :global(h2) {
+      page-break-after: avoid;
+    }
+
+    .memo-content :global(pre),
+    .memo-content :global(blockquote) {
+      page-break-inside: avoid;
+    }
+  }
+</style>

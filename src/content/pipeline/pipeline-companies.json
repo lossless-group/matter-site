@@ -1,36 +1,120 @@
 [
   {
-    "conventionalName": "Example Pipeline Company",
-    "officialName": "Example Pipeline Company, Inc.",
+    "conventionalName": "Black Light Surgical",
     "logoLightMode": "/portfolio/logos/placeholder-light.svg",
     "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
-    "urlToCompanySite": "https://example-pipeline.com",
-    "blurbShortTxt": "A placeholder company in our investment pipeline. Replace with actual pipeline company data.",
+    "urlToCompanySite": null,
+    "blurbShortTxt": "Medical device company focused on surgical visualization and imaging technology.",
+    "stage": "initial-review",
+    "sector": "medical devices",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Encellin",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Encellin--Dark-Mode.png",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Encellin--Dark-Mode.png",
+    "urlToCompanySite": "https://www.encellin.com/",
+    "blurbShortTxt": "Encellin is focused on advancing next generation therapies, starting with endocrine disorders. Their technology combines novel cell encapsulation with functional cell therapies to treat chronic diseases.",
     "stage": "due-diligence",
-    "sector": "technology",
+    "sector": "biotech",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "ExoLux Tech",
+    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
+    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "urlToCompanySite": "https://exoluxtech.com/",
+    "blurbShortTxt": "Designs and manufactures medical robotics systems and high-precision components for healthcare facilities. Core products include surgical robotics for minimally invasive procedures, rehabilitation robots with adaptive AI, and diagnostic robotics for early detection.",
+    "stage": "due-diligence",
+    "sector": "medical robotics",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Fortem Neuroscience",
+    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
+    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "urlToCompanySite": null,
+    "blurbShortTxt": "Neuroscience therapeutics company founded by Dr. Keith Black, pioneering neurosurgeon at Cedars-Sinai. Focus on innovative treatments for brain tumors and neurological conditions, leveraging expertise in blood-brain barrier penetration and brain tumor vaccines.",
+    "stage": "due-diligence",
+    "sector": "neuroscience",
     "listOfPeopleData": [
       {
-        "name": "Alex Johnson",
-        "role": "Founder & CEO",
-        "linkedInProfile": "https://linkedin.com/in/alexjohnson"
+        "name": "Dr. Keith Black",
+        "role": "Founder"
       }
     ],
     "extendedMemoMD": null
   },
   {
-    "conventionalName": "Another Pipeline Prospect",
-    "officialName": "Another Pipeline Prospect, LLC",
+    "conventionalName": "Mitrix Bio",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__MitrixBio--Brand--Dark-Mode.svg",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__MitrixBio--Brand--Dark-Mode.svg",
+    "urlToCompanySite": "https://mitrix.bio/",
+    "blurbShortTxt": "Develops bioreactor-grown mitochondrial transplantation therapies to address age-related diseases and cellular energy decline. Core innovation includes cultivating young mitochondria at scale and encasing them in organ-targeting Mitlets for supplementation.",
+    "stage": "due-diligence",
+    "sector": "longevity biotech",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "ProfileHealth",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__ProfileHealth--Light-Mode.svg",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__ProfileHealth--Dark-Mode.svg",
+    "urlToCompanySite": "https://profilehealth.com",
+    "blurbShortTxt": "Building AI to unleash doctors, not replace them. Agentic AI platform for clinical practices, improving efficiency in clinic settings through intelligent automation.",
+    "stage": "due-diligence",
+    "sector": "healthcare AI",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Radicle Science",
     "logoLightMode": "/portfolio/logos/placeholder-light.svg",
-    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
-    "urlToCompanySite": "https://another-prospect.com",
-    "blurbShortTxt": "Another placeholder company demonstrating the pipeline card structure. Replace with actual prospect data.",
-    "stage": "initial-review",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__RadicleScience--Dark-Mode.png",
+    "urlToCompanySite": "https://radiclescience.com/",
+    "blurbShortTxt": "Proof-as-a-Service platform delivering decades of wellness R&D and clinical validation in under 12 months at 1/10th the cost. Creates portfolios of patentable, clinically proven formulas with compliant health claims.",
+    "stage": "due-diligence",
+    "sector": "clinical validation",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "RavenGraph",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/appIcon__RavenGraph.svg",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/appIcon__RavenGraph.svg",
+    "urlToCompanySite": "https://ravengraph.com/",
+    "blurbShortTxt": "AI-native Data-as-a-Service platform providing financial investors with realtime, graph-based knowledge about financial markets and investment opportunities. Targeting quants as initial adopters.",
+    "stage": "due-diligence",
     "sector": "fintech",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Reson8",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Reson8--Dark-Mode.webp",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Reson8--Dark-Mode.webp",
+    "urlToCompanySite": "https://reson8.xyz/",
+    "blurbShortTxt": "Breakthrough technology using wave frequencies to heal DNA damage, improve overall health, and slow down aging. Leveraging emerging research in frequency-based therapeutic interventions.",
+    "stage": "due-diligence",
+    "sector": "longevity",
+    "listOfPeopleData": [],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Stratosphere ATC",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Stratosphere--Dark-Mode.webp",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Stratosphere--Dark-Mode.webp",
+    "urlToCompanySite": null,
+    "blurbShortTxt": "Hypobaric hypoxia chambers simulating high-altitude environments (up to 29,000 ft) at sea level. True altitude technology for enhanced athletic performance, recovery, and longevity. Partnered with UFC Performance Institute.",
+    "stage": "initial-review",
+    "sector": "sports performance",
     "listOfPeopleData": [
       {
-        "name": "Sarah Chen",
-        "role": "Co-founder",
-        "linkedInProfile": "https://linkedin.com/in/sarahchen"
+        "name": "Dr. Bruce Johnson",
+        "role": "Head Scientist (Mayo Clinic)"
       }
     ],
     "extendedMemoMD": null
