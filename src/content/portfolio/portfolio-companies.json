@@ -1,0 +1,36 @@
+[
+  {
+    "conventionalName": "Example Direct Investment",
+    "officialName": "Example Direct Investment, Inc.",
+    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
+    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "urlToPortfolioSite": "https://example.com",
+    "blurbShortTxt": "A placeholder company demonstrating the portfolio card structure. Replace with actual portfolio company data.",
+    "category": "direct",
+    "listOfPeopleData": [
+      {
+        "name": "Jane Doe",
+        "role": "CEO",
+        "linkedInProfile": "https://linkedin.com/in/janedoe"
+      }
+    ],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Example LP Commitment",
+    "officialName": "Example LP Fund I",
+    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
+    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "urlToPortfolioSite": "https://example-fund.com",
+    "blurbShortTxt": "A placeholder fund demonstrating the LP commitment card structure. Replace with actual fund data.",
+    "category": "lp",
+    "listOfPeopleData": [
+      {
+        "name": "John Smith",
+        "role": "General Partner",
+        "linkedInProfile": "https://linkedin.com/in/johnsmith"
+      }
+    ],
+    "extendedMemoMD": null
+  }
+]

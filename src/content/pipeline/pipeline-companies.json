@@ -1,0 +1,38 @@
+[
+  {
+    "conventionalName": "Example Pipeline Company",
+    "officialName": "Example Pipeline Company, Inc.",
+    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
+    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "urlToCompanySite": "https://example-pipeline.com",
+    "blurbShortTxt": "A placeholder company in our investment pipeline. Replace with actual pipeline company data.",
+    "stage": "due-diligence",
+    "sector": "technology",
+    "listOfPeopleData": [
+      {
+        "name": "Alex Johnson",
+        "role": "Founder & CEO",
+        "linkedInProfile": "https://linkedin.com/in/alexjohnson"
+      }
+    ],
+    "extendedMemoMD": null
+  },
+  {
+    "conventionalName": "Another Pipeline Prospect",
+    "officialName": "Another Pipeline Prospect, LLC",
+    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
+    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "urlToCompanySite": "https://another-prospect.com",
+    "blurbShortTxt": "Another placeholder company demonstrating the pipeline card structure. Replace with actual prospect data.",
+    "stage": "initial-review",
+    "sector": "fintech",
+    "listOfPeopleData": [
+      {
+        "name": "Sarah Chen",
+        "role": "Co-founder",
+        "linkedInProfile": "https://linkedin.com/in/sarahchen"
+      }
+    ],
+    "extendedMemoMD": null
+  }
+]

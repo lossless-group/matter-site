@@ -1,0 +1,119 @@
+---
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import portfolioData from '@content/portfolio/portfolio-companies.json';
+
+// Public page - can be prerendered for performance
+export const prerender = true;
+
+// Separate companies by category
+const directInvestments = portfolioData.filter(c => c.category === 'direct');
+const lpCommitments = portfolioData.filter(c => c.category === 'lp');
+const allCompanies = portfolioData;
+---
+
+<BaseThemeLayout title="Portfolio | Dark Matter" description="Our portfolio of investments and fund commitments">
+  <section class="px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header class="mb-12">
+        <h1 class="text-4xl font-bold tracking-tight">Portfolio</h1>
+        <p class="mt-4 text-lg text-foreground/70 max-w-2xl">
+          Companies and funds we've backed. Building the future through strategic investments.
+        </p>
+      </header>
+
+      <!-- Direct Investments Section -->
+      {directInvestments.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">Direct Investments</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {directInvestments.map((company) => (
+              <a
+                href={company.urlToPortfolioSite}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group p-6 rounded-xl border border-border/40 bg-surface/30 hover:border-primary/50 hover:bg-surface/50 transition-all duration-200"
+              >
+                <!-- Dark mode logo -->
+                <img
+                  src={company.logoDarkMode || company.logoLightMode}
+                  alt={company.conventionalName}
+                  class="h-10 w-auto object-contain hidden dark:block"
+                  loading="lazy"
+                />
+                <!-- Light mode logo -->
+                <img
+                  src={company.logoLightMode}
+                  alt={company.conventionalName}
+                  class="h-10 w-auto object-contain dark:hidden"
+                  loading="lazy"
+                />
+                <p class="mt-4 text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  {company.conventionalName}
+                </p>
+                <p class="mt-1 text-xs text-foreground/50 line-clamp-2">
+                  {company.blurbShortTxt}
+                </p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- LP Commitments Section -->
+      {lpCommitments.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">LP Commitments</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {lpCommitments.map((company) => (
+              <a
+                href={company.urlToPortfolioSite}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group p-6 rounded-xl border border-border/40 bg-surface/30 hover:border-primary/50 hover:bg-surface/50 transition-all duration-200"
+              >
+                <!-- Dark mode logo -->
+                <img
+                  src={company.logoDarkMode || company.logoLightMode}
+                  alt={company.conventionalName}
+                  class="h-10 w-auto object-contain hidden dark:block"
+                  loading="lazy"
+                />
+                <!-- Light mode logo -->
+                <img
+                  src={company.logoLightMode}
+                  alt={company.conventionalName}
+                  class="h-10 w-auto object-contain dark:hidden"
+                  loading="lazy"
+                />
+                <p class="mt-4 text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  {company.conventionalName}
+                </p>
+                <p class="mt-1 text-xs text-foreground/50 line-clamp-2">
+                  {company.blurbShortTxt}
+                </p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Confidential Access CTA -->
+      <section class="mt-16 p-8 rounded-2xl border border-border/30 bg-surface/20 text-center">
+        <h3 class="text-lg font-semibold mb-2">Looking for more details?</h3>
+        <p class="text-foreground/60 text-sm mb-4">
+          Authorized investors can access confidential portfolio information.
+        </p>
+        <a
+          href="/portfolio-gate"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          Access Confidential View
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </section>
+    </div>
+  </section>
+</BaseThemeLayout>
