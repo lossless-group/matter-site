@@ -2,6 +2,9 @@
 
 ![Dark Matter Trademark](https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Dark-Matter--Dark-Mode.svg)
 
+## Version 0.1.0 as of December 13, 2025
+Includes confidential access, Level 1, as well as portfolio and pipeline pages with Markdown rendering of investment memos.
+
 <p align="center">
   <span style="font-size: 18px; font-weight: 500; color: #374151;">A modern web application built with</span>
   <span style="font-size: 20px; color: #ef4444; margin: 0 4px;">❤️</span>
