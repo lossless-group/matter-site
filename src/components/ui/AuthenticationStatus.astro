@@ -1,0 +1,40 @@
+---
+/**
+ * AuthenticationStatus - Displays current authentication level as a status chip
+ *
+ * Usage:
+ *   <AuthenticationStatus level="general-passcode" />
+ *   <AuthenticationStatus level="unauthenticated" />
+ */
+
+export interface Props {
+  level: 'unauthenticated' | 'general-passcode';
+  class?: string;
+}
+
+const { level, class: className = '' } = Astro.props;
+
+const config = {
+  'unauthenticated': {
+    bg: 'bg-amber-500/10',
+    text: 'text-amber-400',
+    border: 'border-amber-500/30',
+    dot: 'bg-amber-400',
+    label: 'Unauthenticated',
+  },
+  'general-passcode': {
+    bg: 'bg-emerald-500/10',
+    text: 'text-emerald-400',
+    border: 'border-emerald-500/30',
+    dot: 'bg-emerald-400',
+    label: 'Authenticated',
+  },
+};
+
+const { bg, text, border, dot, label } = config[level];
+---
+
+<div class={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium tracking-wide uppercase ${bg} ${text} ${border} ${className}`}>
+  <span class={`inline-block h-1.5 w-1.5 rounded-full ${dot}`}></span>
+  <span>{label}</span>
+</div>
