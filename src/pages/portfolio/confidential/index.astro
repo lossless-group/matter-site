@@ -1,0 +1,180 @@
+---
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import AuthenticationStatus from '@components/ui/AuthenticationStatus.astro';
+import portfolioData from '@content/portfolio/portfolio-companies.json';
+
+// SSR only - protected by middleware
+export const prerender = false;
+
+// Check auth status (middleware handles redirect, but we read for UI)
+const accessCookie = Astro.cookies.get('universal_portfolio_access');
+const authLevel = accessCookie?.value ? 'general-passcode' : 'unauthenticated';
+
+// Group by category
+const directInvestments = portfolioData.filter(c => c.category === 'direct');
+const lpCommitments = portfolioData.filter(c => c.category === 'lp');
+---
+
+<BaseThemeLayout title="Confidential Portfolio | Dark Matter" description="Protected portfolio information for authorized viewers">
+  <section class="px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header class="mb-12">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
+            <nav class="text-sm text-foreground/50 mb-2">
+              <a href="/portfolio" class="hover:text-foreground/70">Portfolio</a>
+              <span class="mx-2">/</span>
+              <span class="text-foreground/70">Confidential</span>
+            </nav>
+            <h1 class="text-4xl font-bold tracking-tight">Confidential Portfolio</h1>
+            <p class="mt-4 text-lg text-foreground/70 max-w-2xl">
+              Detailed investment information for authorized team members and partners.
+            </p>
+          </div>
+          <AuthenticationStatus level={authLevel} class="shrink-0" />
+        </div>
+      </header>
+
+      <!-- Direct Investments Section -->
+      {directInvestments.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">Direct Investments</h2>
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {directInvestments.map((company) => (
+              <div class="p-6 rounded-xl border border-border/40 bg-surface/30 hover:bg-surface/50 transition-colors">
+                <!-- Header -->
+                <div class="flex items-start justify-between gap-4 mb-4">
+                  <img
+                    src={company.logoDarkMode || company.logoLightMode}
+                    alt={company.conventionalName}
+                    class="h-10 w-auto object-contain"
+                  />
+                  {company.urlToPortfolioSite && (
+                    <a
+                      href={company.urlToPortfolioSite}
+                      target="_blank"
+                      rel="noopener"
+                      class="text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
+                    >
+                      Visit ↗
+                    </a>
+                  )}
+                </div>
+
+                <!-- Company Info -->
+                <h3 class="font-semibold text-foreground">{company.conventionalName}</h3>
+                <p class="mt-2 text-sm text-foreground/60 line-clamp-3">
+                  {company.blurbShortTxt}
+                </p>
+
+                <!-- Team Members -->
+                {company.listOfPeopleData && company.listOfPeopleData.length > 0 && (
+                  <div class="mt-4 pt-4 border-t border-border/20">
+                    <p class="text-[10px] text-foreground/40 uppercase tracking-wide mb-2">Team</p>
+                    <div class="space-y-1.5">
+                      {company.listOfPeopleData.map((person) => (
+                        <div class="flex items-center justify-between text-sm">
+                          <span class="text-foreground/80">{person.name}</span>
+                          <span class="text-foreground/40 text-xs">{person.role}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <!-- Memo Link -->
+                {company.extendedMemoMD && (
+                  <a
+                    href={`/memos/${company.extendedMemoMD}`}
+                    class="mt-4 inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                    </svg>
+                    View Investment Memo
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- LP Commitments Section -->
+      {lpCommitments.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">LP Commitments</h2>
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {lpCommitments.map((company) => (
+              <div class="p-6 rounded-xl border border-border/40 bg-surface/30 hover:bg-surface/50 transition-colors">
+                <!-- Header -->
+                <div class="flex items-start justify-between gap-4 mb-4">
+                  <img
+                    src={company.logoDarkMode || company.logoLightMode}
+                    alt={company.conventionalName}
+                    class="h-10 w-auto object-contain"
+                  />
+                  {company.urlToPortfolioSite && (
+                    <a
+                      href={company.urlToPortfolioSite}
+                      target="_blank"
+                      rel="noopener"
+                      class="text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
+                    >
+                      Visit ↗
+                    </a>
+                  )}
+                </div>
+
+                <!-- Company Info -->
+                <h3 class="font-semibold text-foreground">{company.conventionalName}</h3>
+                <p class="mt-2 text-sm text-foreground/60 line-clamp-3">
+                  {company.blurbShortTxt}
+                </p>
+
+                <!-- Team Members -->
+                {company.listOfPeopleData && company.listOfPeopleData.length > 0 && (
+                  <div class="mt-4 pt-4 border-t border-border/20">
+                    <p class="text-[10px] text-foreground/40 uppercase tracking-wide mb-2">Key People</p>
+                    <div class="space-y-1.5">
+                      {company.listOfPeopleData.map((person) => (
+                        <div class="flex items-center justify-between text-sm">
+                          <span class="text-foreground/80">{person.name}</span>
+                          <span class="text-foreground/40 text-xs">{person.role}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <!-- Memo Link -->
+                {company.extendedMemoMD && (
+                  <a
+                    href={`/memos/${company.extendedMemoMD}`}
+                    class="mt-4 inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                    </svg>
+                    View Investment Memo
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Back Link -->
+      <div class="mt-12 pt-8 border-t border-border/20">
+        <a href="/portfolio" class="inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-foreground/70 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Back to Public Portfolio
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseThemeLayout>
