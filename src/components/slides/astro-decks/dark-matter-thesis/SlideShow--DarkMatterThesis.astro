@@ -1,0 +1,440 @@
+---
+/**
+ * SlideShow--DarkMatterThesis.astro
+ *
+ * A component-based slide deck featuring the Dark Matter thesis
+ * with Three.js Orb illustrations and three-mode styling.
+ *
+ * Based on WhyNowWhyUs-v7 "Orbital Narrative" design.
+ */
+import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Why Now, Why Dark Matter?',
+  subtitle = 'A venture-built thesis at the edge of bioscience, data, and longevity.',
+} = Astro.props;
+
+// Why Now content
+const whyNowPoints = [
+  {
+    title: 'Bioscience Explosion',
+    description: 'Breakthroughs in genomics, epigenetics, proteomics, and other biosciences are enabling new ways to understand and treat disease.',
+  },
+  {
+    title: 'Unprecedented Data',
+    description: 'Newly discovered biomarkers, combined with real-time data collection, give us continuous, measurable signals about biological age, risk, and response.',
+  },
+  {
+    title: 'Leaps in Demand',
+    description: 'Consumers and institutions are demanding personalized, data-driven, future-forward health innovations, not one-size-fits-all care.',
+  },
+  {
+    title: 'Entrepreneurial Talent',
+    description: 'Repeat founders from software and infrastructure now want to apply their company-building craft to breakthroughs in health and longevity.',
+  },
+];
+
+// Why Us content
+const whyUsPoints = [
+  {
+    title: 'Cutting Edge Access',
+    description: 'Trusted networks at the intersection of Silicon Valley, bioscience research, inventors, and company builders.',
+  },
+  {
+    title: 'Eye-Popping Track Record',
+    description: 'Investing partners with a track record several standard deviations above venture in general, including biotech and health.',
+  },
+  {
+    title: 'Profound Hustle',
+    description: 'Deep domain experience paired with the entrepreneurial energy of a modern venture firm.',
+  },
+  {
+    title: 'Genuine Passion & Networked Support',
+    description: 'Geekery, alignment, and wide, deep relationships across the ecosystem give Dark Matter the right to win the most interesting opportunities.',
+  },
+];
+---
+
+<!-- Slide 1: Title with Orb -->
+<section class="title-slide" data-transition="fade">
+  <div class="slide-content title-content">
+    <p class="eyebrow">Dark Matter Bio</p>
+    <h1 class="main-title">{title}</h1>
+    <p class="subtitle">{subtitle}</p>
+    <div class="orb-hero">
+      <ImageAbstractOrb size="min(50vw, 300px)" rotationSpeed={0.15} />
+    </div>
+  </div>
+</section>
+
+<!-- Slide 2: Why Now Section Header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-primary">Why Now</span>
+    <h2>The Timing Window</h2>
+    <p class="section-intro">Four converging forces creating unprecedented opportunity</p>
+  </div>
+</section>
+
+<!-- Slide 3-6: Why Now Points -->
+{whyNowPoints.map((point, index) => (
+  <section data-transition="slide">
+    <div class="slide-content point-content">
+      <div class="point-number number-primary">{String(index + 1).padStart(2, '0')}</div>
+      <h2 class="point-title">{point.title}</h2>
+      <p class="point-description">{point.description}</p>
+    </div>
+  </section>
+))}
+
+<!-- Slide 7: Transition with Mini Orb -->
+<section data-transition="fade">
+  <div class="slide-content transition-content">
+    <div class="mini-orb">
+      <ImageAbstractOrb size="120px" color="#9C85DF" rotationSpeed={0.4} />
+    </div>
+  </div>
+</section>
+
+<!-- Slide 8: Why Dark Matter Section Header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-secondary">Why Dark Matter</span>
+    <h2>Our Unfair Advantage</h2>
+    <p class="section-intro">What sets us apart in the longevity investment landscape</p>
+  </div>
+</section>
+
+<!-- Slide 9-12: Why Us Points -->
+{whyUsPoints.map((point, index) => (
+  <section data-transition="slide">
+    <div class="slide-content point-content">
+      <div class="point-number number-secondary">{String(index + 1).padStart(2, '0')}</div>
+      <h2 class="point-title">{point.title}</h2>
+      <p class="point-description">{point.description}</p>
+    </div>
+  </section>
+))}
+
+<!-- Slide 13: Closing -->
+<section data-transition="fade">
+  <div class="slide-content closing-content">
+    <div class="closing-orb">
+      <ImageAbstractOrb size="min(40vw, 200px)" color="#CDC4ED" rotationSpeed={0.2} />
+    </div>
+    <p class="closing-tagline">Investing at the edge of what's knowable.</p>
+    <p class="closing-contact">fund@darkmatter.bio</p>
+  </div>
+</section>
+
+<style is:global>
+  /* ==========================================================================
+     DARK MATTER THESIS SLIDE DECK STYLES
+     Supports light, dark, and vibrant modes
+     ========================================================================== */
+
+  /* Base slide content container */
+  .slide-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 2rem;
+  }
+
+  /* ==========================================================================
+     TITLE SLIDE
+     ========================================================================== */
+  .title-content .eyebrow {
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+
+  .title-content .main-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    max-width: 90%;
+  }
+
+  .title-content .subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    opacity: 0.7;
+    max-width: 80%;
+    margin-bottom: 2rem;
+  }
+
+  .orb-hero {
+    margin-top: 1rem;
+  }
+
+  /* ==========================================================================
+     SECTION HEADERS
+     ========================================================================== */
+  .section-header-content h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-intro {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    opacity: 0.7;
+    max-width: 70%;
+  }
+
+  .section-badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    font-size: clamp(0.7rem, 1.2vw, 0.875rem);
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 2rem;
+  }
+
+  /* ==========================================================================
+     POINT SLIDES
+     ========================================================================== */
+  .point-content {
+    max-width: 800px;
+  }
+
+  .point-number {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .point-title {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .point-description {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    line-height: 1.6;
+    opacity: 0.8;
+    max-width: 90%;
+  }
+
+  /* ==========================================================================
+     TRANSITION SLIDE
+     ========================================================================== */
+  .transition-content {
+    min-height: 100%;
+  }
+
+  .mini-orb {
+    animation: orbPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* ==========================================================================
+     CLOSING SLIDE
+     ========================================================================== */
+  .closing-content {
+    gap: 2rem;
+  }
+
+  .closing-tagline {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-style: italic;
+    opacity: 0.8;
+    margin-top: 1rem;
+  }
+
+  .closing-contact {
+    font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+    opacity: 0.6;
+    letter-spacing: 0.1em;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  [data-theme="matter"][data-mode="light"] .title-slide,
+  [data-theme="matter"][data-mode="light"] section {
+    background: var(--color-alabaster);
+  }
+
+  [data-theme="matter"][data-mode="light"] .eyebrow {
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-theme="matter"][data-mode="light"] .main-title,
+  [data-theme="matter"][data-mode="light"] .section-header-content h2,
+  [data-theme="matter"][data-mode="light"] .point-title {
+    color: var(--color-foreground);
+  }
+
+  [data-theme="matter"][data-mode="light"] .subtitle,
+  [data-theme="matter"][data-mode="light"] .section-intro,
+  [data-theme="matter"][data-mode="light"] .point-description,
+  [data-theme="matter"][data-mode="light"] .closing-tagline,
+  [data-theme="matter"][data-mode="light"] .closing-contact {
+    color: var(--color-foreground);
+  }
+
+  [data-theme="matter"][data-mode="light"] .badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+    background: rgba(108, 99, 255, 0.05);
+  }
+
+  [data-theme="matter"][data-mode="light"] .badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.25);
+    background: rgba(156, 133, 223, 0.05);
+  }
+
+  [data-theme="matter"][data-mode="light"] .number-primary {
+    color: var(--color-marjorelle-purple);
+    background: rgba(108, 99, 255, 0.08);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  [data-theme="matter"][data-mode="light"] .number-secondary {
+    color: var(--color-lilac);
+    background: rgba(156, 133, 223, 0.08);
+    border: 1px solid rgba(156, 133, 223, 0.2);
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  [data-theme="matter"][data-mode="dark"] .title-slide,
+  [data-theme="matter"][data-mode="dark"] section {
+    background: var(--color-void);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .eyebrow {
+    color: var(--color-lilac);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .main-title,
+  [data-theme="matter"][data-mode="dark"] .section-header-content h2,
+  [data-theme="matter"][data-mode="dark"] .point-title {
+    color: var(--color-alabaster);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .subtitle,
+  [data-theme="matter"][data-mode="dark"] .section-intro,
+  [data-theme="matter"][data-mode="dark"] .point-description,
+  [data-theme="matter"][data-mode="dark"] .closing-tagline,
+  [data-theme="matter"][data-mode="dark"] .closing-contact {
+    color: var(--color-alabaster);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.4);
+    background: rgba(108, 99, 255, 0.1);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.4);
+    background: rgba(156, 133, 223, 0.1);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .number-primary {
+    color: var(--color-marjorelle-purple);
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.4);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .number-secondary {
+    color: var(--color-lilac);
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(156, 133, 223, 0.4);
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE - Enhanced Glow Effects
+     ========================================================================== */
+  [data-theme="matter"][data-mode="vibrant"] .title-slide,
+  [data-theme="matter"][data-mode="vibrant"] section {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 50%, var(--color-void) 100%);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .eyebrow {
+    color: var(--color-lilac);
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.5);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .main-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .section-header-content h2,
+  [data-theme="matter"][data-mode="vibrant"] .point-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .subtitle,
+  [data-theme="matter"][data-mode="vibrant"] .section-intro,
+  [data-theme="matter"][data-mode="vibrant"] .point-description,
+  [data-theme="matter"][data-mode="vibrant"] .closing-tagline,
+  [data-theme="matter"][data-mode="vibrant"] .closing-contact {
+    color: var(--color-alabaster);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.6);
+    background: rgba(108, 99, 255, 0.15);
+    box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.6);
+    background: rgba(156, 133, 223, 0.15);
+    box-shadow: 0 0 20px rgba(156, 133, 223, 0.3);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .number-primary {
+    color: var(--color-marjorelle-purple);
+    background: rgba(15, 9, 35, 0.9);
+    border: 1px solid rgba(108, 99, 255, 0.6);
+    box-shadow: 0 0 25px rgba(108, 99, 255, 0.4);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .number-secondary {
+    color: var(--color-lilac);
+    background: rgba(15, 9, 35, 0.9);
+    border: 1px solid rgba(156, 133, 223, 0.6);
+    box-shadow: 0 0 25px rgba(156, 133, 223, 0.4);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .closing-tagline {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  }
+</style>

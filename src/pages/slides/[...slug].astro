@@ -13,6 +13,9 @@ import MarkdownSlideDeck from '@layouts/MarkdownSlideDeck.astro';
 import { getComponentDeck, getAllComponentDecks } from '../../data/componentDecks';
 import { markdownDecks, getMarkdownDeckBySlug } from '../../data/markdownDecks';
 
+// Import component decks
+import SlideShowDarkMatterThesis from '@components/slides/astro-decks/dark-matter-thesis/SlideShow--DarkMatterThesis.astro';
+
 // Force static generation for this page
 export const prerender = true;
 
@@ -44,9 +47,15 @@ const { slug } = Astro.params;
 const { type, deck, markdownContent } = Astro.props;
 ---
 
-{type === 'component' && deck ? (
-  <!-- Component decks would render their specific component here -->
-  <!-- For now, show a placeholder until component decks are created -->
+{type === 'component' && deck?.component === 'SlideShowDarkMatterThesis' ? (
+  <OneSlideDeck
+    title={deck.title}
+    description={deck.description}
+  >
+    <SlideShowDarkMatterThesis />
+  </OneSlideDeck>
+) : type === 'component' && deck ? (
+  <!-- Fallback for unknown component decks -->
   <OneSlideDeck
     title={deck.title}
     description={deck.description}

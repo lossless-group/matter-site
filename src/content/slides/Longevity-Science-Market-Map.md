@@ -4,8 +4,8 @@ description: "The convergence of real-time data, biohacking, and AI in the pursu
 author: "Dark Matter"
 date: "2025-12-14"
 tags: ["longevity", "AI", "biohacking", "market-map", "healthtech"]
-coverImage: "/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp"
-shareImage: "/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp"
+coverImage: "/share-banners/shareBanner__Dark-Matter-Bio_Market-Maps.webp"
+shareImage: "/share-banners/shareBanner__Dark-Matter-Bio_Market-Maps.webp"
 ---
 
 # Longevity Science

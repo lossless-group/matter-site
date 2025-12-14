@@ -24,16 +24,16 @@ export interface ComponentDeck {
  * Key is the URL slug.
  */
 export const componentDecks: Record<string, ComponentDeck> = {
-  // Example entry - uncomment and modify when you have component decks
-  // 'dark-matter-strategy': {
-  //   title: 'Dark Matter Investment Strategy',
-  //   description: 'Overview of Dark Matter Bio Longevity Fund',
-  //   component: 'SlideShowDarkMatterStrategy',
-  //   author: 'Dark Matter',
-  //   date: '2025-01-01',
-  //   shareImage: '/share-banners/dark-matter-strategy.jpg',
-  //   type: 'component',
-  // },
+  'dark-matter-thesis': {
+    title: 'Why Now, Why Dark Matter?',
+    description: 'A venture-built thesis at the edge of bioscience, data, and longevity.',
+    component: 'SlideShowDarkMatterThesis',
+    author: 'Dark Matter',
+    date: '2025-01-15',
+    coverImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    shareImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'component',
+  },
 };
 
 /**
