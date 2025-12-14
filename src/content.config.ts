@@ -7,8 +7,10 @@
 
 import { narratives } from './content/narratives/narratives.config';
 import { changelog } from './content/changelog/changelog.config';
+import { slides } from './content/slides/slides.config';
 
 export const collections = {
   narratives,
   changelog,
+  slides,
 };

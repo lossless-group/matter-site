@@ -1,0 +1,340 @@
+---
+/**
+ * SlidesControlButtons Component
+ * Control buttons for RevealJS presentations
+ * Includes Exit, Restart, Fullscreen, and THREE-MODE Toggle functionality
+ * Cycles: light -> dark -> vibrant -> light
+ */
+---
+
+<div class="control-buttons">
+  <!-- Exit button -->
+  <a href="/slides/" class="control-button exit-button" title="Back to Presentations">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+    Exit
+  </a>
+
+  <!-- Restart button -->
+  <button class="control-button restart-button" title="Restart Presentation" onclick="Reveal.slide(0, 0)">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+      <path d="M21 3v5h-5"/>
+      <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+      <path d="M3 21v-5h5"/>
+    </svg>
+    Restart
+  </button>
+
+  <!-- Fullscreen button -->
+  <button class="control-button fullscreen-button" title="Toggle Fullscreen" onclick="toggleFullscreen()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    </svg>
+    Fullscreen
+  </button>
+
+  <!-- Mode Toggle button - THREE MODES -->
+  <button class="control-button mode-toggle-button" title="Cycle color mode" onclick="cycleMode()">
+    <!-- Sun icon: shown in light mode -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon sun-icon">
+      <circle cx="12" cy="12" r="5"/>
+      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+    </svg>
+    <!-- Moon icon: shown in dark mode -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon moon-icon">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    <!-- Star icon: shown in vibrant mode -->
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mode-icon star-icon">
+      <path d="M12 2l2.39 6.26L21 9.27l-4.5 4.38L17.48 21 12 17.77 6.52 21 7.5 13.65 3 9.27l6.61-1.01L12 2z"/>
+    </svg>
+    Mode
+  </button>
+</div>
+
+<style>
+  /* ========================================
+     Control Buttons - Base & Dark Mode (default)
+     ======================================== */
+  .control-buttons {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    gap: 0.75rem;
+    pointer-events: auto;
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    /* Dark mode defaults */
+    background: rgba(15, 9, 35, 0.85);
+    color: var(--color-ink);
+    border: 1px solid rgba(156, 133, 223, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .control-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    /* Dark mode defaults - solid backgrounds */
+    background: rgba(31, 41, 55, 0.9);
+    color: var(--color-ink);
+    border: 1px solid rgba(156, 133, 223, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .control-button svg {
+    stroke-width: 2.2px;
+    fill: none;
+    transition: stroke 0.2s ease;
+    stroke: currentColor;
+  }
+
+  .control-button:hover {
+    transform: translateY(-1px);
+    background: rgba(31, 41, 55, 1);
+    border-color: rgba(156, 133, 223, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .exit-button {
+    background: var(--color-lilac);
+    color: #050516;
+    border-color: rgba(156, 133, 223, 0.6);
+  }
+
+  .exit-button:hover {
+    background: var(--color-marjorelle-purple);
+    border-color: var(--color-lilac);
+  }
+
+  .exit-button svg {
+    stroke: #050516;
+  }
+
+  /* ========================================
+     Light Mode Overrides
+     ======================================== */
+  :global([data-theme="matter"][data-mode="light"]) .control-buttons {
+    background: rgba(249, 250, 251, 0.95);
+    border: 1px solid rgba(209, 213, 219, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .control-button {
+    background: white;
+    color: #050516;
+    border: 1px solid rgba(209, 213, 219, 0.8);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .control-button:hover {
+    background: #f4f3f6;
+    border-color: rgba(102, 67, 226, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .exit-button {
+    background: var(--color-marjorelle-purple);
+    color: white;
+    border-color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .exit-button svg {
+    stroke: white;
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .exit-button:hover {
+    background: var(--color-lilac);
+    border-color: var(--color-lilac);
+  }
+
+  /* ========================================
+     Vibrant Mode Overrides - Enhanced Glow
+     ======================================== */
+  :global([data-theme="matter"][data-mode="vibrant"]) .control-buttons {
+    background: rgba(15, 9, 35, 0.9);
+    border: 1px solid rgba(102, 67, 226, 0.5);
+    box-shadow: 0 4px 30px rgba(102, 67, 226, 0.2), 0 0 60px rgba(102, 67, 226, 0.1);
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .control-button {
+    background: rgba(26, 10, 53, 0.9);
+    color: var(--color-ink);
+    border: 1px solid rgba(102, 67, 226, 0.4);
+    box-shadow: 0 2px 12px rgba(102, 67, 226, 0.15);
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .control-button:hover {
+    background: rgba(26, 10, 53, 1);
+    border-color: rgba(102, 67, 226, 0.7);
+    box-shadow: 0 4px 20px rgba(102, 67, 226, 0.3);
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .exit-button {
+    background: var(--color-marjorelle-purple);
+    color: white;
+    border-color: var(--color-lilac);
+    box-shadow: 0 0 20px rgba(102, 67, 226, 0.4);
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .exit-button:hover {
+    box-shadow: 0 0 30px rgba(102, 67, 226, 0.6);
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .exit-button svg {
+    stroke: white;
+  }
+
+  /* ========================================
+     Mode Toggle Icons - CSS-based visibility
+     ======================================== */
+  .mode-icon {
+    display: none;
+  }
+
+  /* Light mode: show sun */
+  :global([data-theme="matter"][data-mode="light"]) .sun-icon {
+    display: block;
+  }
+
+  /* Dark mode: show moon */
+  :global([data-theme="matter"][data-mode="dark"]) .moon-icon {
+    display: block;
+  }
+
+  /* Vibrant mode: show star */
+  :global([data-theme="matter"][data-mode="vibrant"]) .star-icon {
+    display: block;
+  }
+
+  /* Default fallback (before JS runs) */
+  .moon-icon {
+    display: block;
+  }
+
+  :global([data-mode="light"]) .moon-icon,
+  :global([data-mode="vibrant"]) .moon-icon {
+    display: none;
+  }
+
+  /* ========================================
+     Responsive - Hide text on small screens
+     ======================================== */
+  @media (max-width: 768px) {
+    .control-buttons {
+      top: 0.5rem;
+      padding: 0.4rem;
+      gap: 0.5rem;
+    }
+
+    .control-button {
+      padding: 0.5rem;
+      font-size: 0;
+    }
+
+    .control-button svg {
+      margin: 0;
+    }
+  }
+
+  /* ========================================
+     Fullscreen Styles
+     ======================================== */
+  :fullscreen .control-buttons {
+    opacity: 0.3;
+    transition: all 0.3s ease;
+  }
+
+  :fullscreen .control-buttons:hover {
+    opacity: 1;
+  }
+</style>
+
+<script is:inline>
+  const MODES = ['light', 'dark', 'vibrant'];
+  const STORAGE_KEY = 'dark-matter-mode';
+
+  // Fullscreen toggle
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }
+
+  // Mode cycling function
+  function cycleMode() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-mode') || 'dark';
+    const idx = MODES.indexOf(current);
+    const next = MODES[(idx + 1) % MODES.length];
+
+    html.setAttribute('data-mode', next);
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {}
+
+    updateModeButton(next);
+  }
+
+  // Update mode toggle button state
+  function updateModeButton(mode) {
+    const button = document.querySelector('.mode-toggle-button');
+    if (button) {
+      const modeNames = { light: 'light', dark: 'dark', vibrant: 'vibrant' };
+      const label = `Current: ${modeNames[mode]}. Click to change.`;
+      button.setAttribute('title', label);
+      button.setAttribute('aria-label', label);
+    }
+  }
+
+  // Initialize mode on load
+  function initSlidesMode() {
+    let savedMode;
+    try {
+      savedMode = localStorage.getItem(STORAGE_KEY);
+    } catch {}
+
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const mode = (savedMode && MODES.includes(savedMode))
+      ? savedMode
+      : (systemPrefersDark ? 'dark' : 'light');
+
+    document.documentElement.setAttribute('data-mode', mode);
+    updateModeButton(mode);
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initSlidesMode();
+
+    // Listen for system mode changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      let stored;
+      try { stored = localStorage.getItem(STORAGE_KEY); } catch {}
+      if (!stored) {
+        const newMode = e.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-mode', newMode);
+        updateModeButton(newMode);
+      }
+    });
+  });
+</script>

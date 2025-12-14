@@ -1,0 +1,255 @@
+---
+/**
+ * TitleSlidePreviewCard Component
+ *
+ * Card component for displaying presentation previews on the slides index page.
+ * Supports Dark Matter's three-mode theme system.
+ */
+
+interface Props {
+  title: string;
+  description: string;
+  slug: string;
+  date?: string;
+  icon?: string;
+  coverImage?: string;
+  shareImage?: string;
+  type?: 'component' | 'standalone' | 'markdown';
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  slug,
+  date,
+  icon,
+  coverImage,
+  shareImage,
+  type = 'component',
+  class: className = '',
+} = Astro.props;
+
+// Use coverImage if available, fall back to shareImage
+const displayImage = coverImage || shareImage;
+
+// Format date if provided
+const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}) : null;
+
+// Type badge
+const typeBadge = type === 'markdown' ? 'MD' : type === 'standalone' ? 'Page' : 'Deck';
+---
+
+<a
+  href={`/slides/${slug}`}
+  class:list={['presentation-card', className]}
+>
+  {displayImage ? (
+    <div class="card-image">
+      <img src={displayImage} alt={title} loading="lazy" />
+    </div>
+  ) : (
+    <div class="card-placeholder">
+      <span class="placeholder-icon">{icon || '📊'}</span>
+    </div>
+  )}
+
+  <div class="card-content">
+    <div class="card-header">
+      <h3 class="card-title">{title}</h3>
+      <span class="card-badge">{typeBadge}</span>
+    </div>
+
+    <p class="card-description">{description}</p>
+
+    {formattedDate && (
+      <time class="card-date" datetime={date}>{formattedDate}</time>
+    )}
+  </div>
+</a>
+
+<style>
+  /* ========================================
+     Card Base Styles - Dark Mode Default
+     ======================================== */
+  .presentation-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    /* Dark mode defaults */
+    background: var(--fx-card-bg, rgba(15, 9, 35, 0.8));
+    border: 1px solid var(--fx-card-border, rgba(102, 67, 226, 0.2));
+    box-shadow: var(--fx-card-shadow, 0 0 0 1px rgba(15, 23, 42, 0.6));
+  }
+
+  .presentation-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--fx-card-border-hover, rgba(102, 67, 226, 0.5));
+    box-shadow: var(--fx-card-shadow-hover, 0 0 30px rgba(102, 67, 226, 0.2));
+  }
+
+  /* Card Image */
+  .card-image {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: rgba(31, 41, 55, 0.5);
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .presentation-card:hover .card-image img {
+    transform: scale(1.05);
+  }
+
+  /* Placeholder when no image */
+  .card-placeholder {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.15), rgba(156, 133, 223, 0.1));
+  }
+
+  .placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.6;
+  }
+
+  /* Card Content */
+  .card-content {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+    color: var(--color-foreground);
+  }
+
+  .card-badge {
+    flex-shrink: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.25rem;
+    background: var(--color-lilac);
+    color: #050516;
+  }
+
+  .card-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--color-muted-foreground);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-date {
+    font-size: 0.75rem;
+    color: var(--color-muted-foreground);
+    opacity: 0.7;
+    margin-top: auto;
+  }
+
+  /* ========================================
+     Light Mode Overrides
+     ======================================== */
+  :global([data-theme="matter"][data-mode="light"]) .presentation-card {
+    background: var(--fx-card-bg, rgba(255, 255, 255, 0.9));
+    border-color: var(--fx-card-border, rgba(102, 67, 226, 0.12));
+    box-shadow: var(--fx-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.04));
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .presentation-card:hover {
+    border-color: var(--fx-card-border-hover, rgba(102, 67, 226, 0.25));
+    box-shadow: var(--fx-card-shadow-hover, 0 4px 16px rgba(102, 67, 226, 0.08));
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .card-placeholder {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.08), rgba(156, 133, 223, 0.05));
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .card-image {
+    background: rgba(244, 243, 246, 0.8);
+  }
+
+  :global([data-theme="matter"][data-mode="light"]) .card-badge {
+    background: var(--color-marjorelle-purple);
+    color: white;
+  }
+
+  /* ========================================
+     Vibrant Mode Overrides - Enhanced Glow
+     ======================================== */
+  :global([data-theme="matter"][data-mode="vibrant"]) .presentation-card {
+    background: var(--fx-card-bg, linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8)));
+    border-color: var(--fx-card-border, rgba(102, 67, 226, 0.4));
+    box-shadow: var(--fx-card-shadow, 0 0 20px rgba(102, 67, 226, 0.15));
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .presentation-card:hover {
+    border-color: var(--fx-card-border-hover, rgba(102, 67, 226, 0.8));
+    box-shadow: var(--fx-card-shadow-hover, 0 0 40px rgba(102, 67, 226, 0.3));
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .card-placeholder {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.25), rgba(156, 133, 223, 0.15));
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .card-title {
+    text-shadow: 0 0 20px rgba(102, 67, 226, 0.3);
+  }
+
+  :global([data-theme="matter"][data-mode="vibrant"]) .card-badge {
+    background: var(--color-marjorelle-purple);
+    color: white;
+    box-shadow: 0 0 10px rgba(102, 67, 226, 0.4);
+  }
+
+  /* ========================================
+     Responsive
+     ======================================== */
+  @media (max-width: 640px) {
+    .card-content {
+      padding: 1rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .card-description {
+      font-size: 0.8125rem;
+    }
+  }
+</style>

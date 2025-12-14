@@ -1,0 +1,74 @@
+---
+/**
+ * Dynamic Slide Routing
+ *
+ * Routes to:
+ * 1. Component decks (from componentDecks.ts)
+ * 2. Markdown decks (from slides content collection)
+ *
+ * Uses prerender = true for static generation at build time.
+ */
+import OneSlideDeck from '@layouts/OneSlideDeck.astro';
+import MarkdownSlideDeck from '@layouts/MarkdownSlideDeck.astro';
+import { getComponentDeck, getAllComponentDecks } from '../../data/componentDecks';
+import { markdownDecks, getMarkdownDeckBySlug } from '../../data/markdownDecks';
+
+// Force static generation for this page
+export const prerender = true;
+
+// Generate static paths for all decks
+export async function getStaticPaths() {
+  const paths: Array<{ params: { slug: string }; props: any }> = [];
+
+  // Add component deck paths
+  const componentDecks = getAllComponentDecks();
+  for (const { slug, deck } of componentDecks) {
+    paths.push({
+      params: { slug },
+      props: { type: 'component', deck, markdownContent: null }
+    });
+  }
+
+  // Add markdown deck paths
+  for (const [slug, deck] of Object.entries(markdownDecks)) {
+    paths.push({
+      params: { slug },
+      props: { type: 'markdown', deck, markdownContent: deck.content }
+    });
+  }
+
+  return paths;
+}
+
+const { slug } = Astro.params;
+const { type, deck, markdownContent } = Astro.props;
+---
+
+{type === 'component' && deck ? (
+  <!-- Component decks would render their specific component here -->
+  <!-- For now, show a placeholder until component decks are created -->
+  <OneSlideDeck
+    title={deck.title}
+    description={deck.description}
+  >
+    <section>
+      <h1>{deck.title}</h1>
+      <p>{deck.description}</p>
+      <p><em>Component deck: {deck.component}</em></p>
+    </section>
+  </OneSlideDeck>
+) : type === 'markdown' && markdownContent ? (
+  <MarkdownSlideDeck
+    title={deck.title}
+    description={deck.description}
+    content={markdownContent}
+  />
+) : (
+  <OneSlideDeck title="Not Found">
+    <section>
+      <h1>Presentation Not Found</h1>
+      <p>The requested presentation "{slug}" could not be found.</p>
+      <p><a href="/slides/">Return to presentations</a></p>
+    </section>
+  </OneSlideDeck>
+)}

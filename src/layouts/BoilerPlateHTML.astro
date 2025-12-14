@@ -1,0 +1,83 @@
+---
+/**
+ * BoilerPlateHTML.astro
+ * Base HTML boilerplate with mode switching logic.
+ * NO header/footer - used as foundation for slide decks and other full-page layouts.
+ *
+ * Slots:
+ * - default: Main body content
+ * - head: Additional content for <head> (stylesheets, scripts, meta tags)
+ */
+
+export interface Props {
+  title: string;
+  description?: string;
+  bodyClass?: string;
+  mode?: 'light' | 'dark' | 'vibrant';
+}
+
+const {
+  title,
+  description = 'Dark Matter presentation',
+  bodyClass = '',
+  mode = 'dark',
+} = Astro.props;
+
+import '../styles/global.css';
+import '../styles/themes/matter-theme.css';
+
+// Favicon based on mode
+const faviconHref =
+  mode === 'light'
+    ? '/trademarks/appIcon__Dark-Matter--Light-Mode.svg'
+    : mode === 'vibrant'
+      ? '/trademarks/appIcon__Dark-Matter--Vibrant-Mode.svg'
+      : '/trademarks/appIcon__Dark-Matter--Dark-Mode.svg';
+---
+
+<html lang="en" class="theme-matter" data-theme="matter" data-mode={mode}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={faviconHref} />
+
+    <!-- Named slot for additional head content (stylesheets, scripts, etc.) -->
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+
+    <script is:inline>
+      // Early mode application to avoid FOUC
+      (function() {
+        const MODES = ['light', 'dark', 'vibrant'];
+        const STORAGE_KEY = 'dark-matter-mode';
+
+        let savedMode;
+        try {
+          savedMode = localStorage.getItem(STORAGE_KEY);
+        } catch {}
+
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const mode = (savedMode && MODES.includes(savedMode))
+          ? savedMode
+          : (systemPrefersDark ? 'dark' : 'light');
+
+        const html = document.documentElement;
+        html.setAttribute('data-mode', mode);
+
+        // React to system changes only when no stored preference exists
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          let stored;
+          try { stored = localStorage.getItem(STORAGE_KEY); } catch {}
+          if (!stored) {
+            const newMode = e.matches ? 'dark' : 'light';
+            html.setAttribute('data-mode', newMode);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

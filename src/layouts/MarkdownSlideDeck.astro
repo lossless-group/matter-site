@@ -1,0 +1,271 @@
+---
+/**
+ * MarkdownSlideDeck.astro
+ * Renders markdown content as RevealJS slides.
+ * Supports Dark Matter's three-mode theme system.
+ * Uses remark-gfm for GitHub Flavored Markdown (tables, etc.)
+ *
+ * Inherits theming from OneSlideDeck.
+ */
+import OneSlideDeck from './OneSlideDeck.astro';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+
+interface Props {
+  title: string;
+  description?: string;
+  content: string;
+}
+
+const { title, description = '', content } = Astro.props;
+
+if (!content) {
+  throw new Error('No content provided to MarkdownSlideDeck');
+}
+
+// Process markdown with remark-gfm for full GFM support
+async function processMarkdown(markdown: string): Promise<string> {
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(markdown);
+
+  return String(result);
+}
+
+// Convert markdown to RevealJS slide sections
+async function markdownToSlides(markdown: string): Promise<string> {
+  // Split by horizontal rules (---) which separate slides
+  const slideBlocks = markdown.split(/\n---\n/);
+
+  let html = '';
+
+  for (const block of slideBlocks) {
+    if (!block.trim()) continue;
+
+    // Process each slide's markdown with remark-gfm
+    const slideContent = await processMarkdown(block);
+
+    html += `<section class="slide">${slideContent}</section>\n`;
+  }
+
+  return html;
+}
+
+const slidesHtml = await markdownToSlides(content);
+---
+
+<OneSlideDeck title={title} description={description}>
+  <Fragment set:html={slidesHtml} />
+</OneSlideDeck>
+
+<style is:global>
+  /* ========================================
+     Markdown Slide Styling - Three Mode System
+     Inherits theme from OneSlideDeck
+     ======================================== */
+
+  .slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    height: 100%;
+  }
+
+  .slide h1 {
+    font-size: clamp(2rem, 6vw, 4rem);
+    margin-bottom: 1rem;
+    color: var(--slide-text-primary);
+  }
+
+  .slide h2 {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+    color: var(--slide-text-primary);
+  }
+
+  .slide h3 {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    margin-bottom: 0.75rem;
+    color: var(--slide-text-secondary);
+  }
+
+  .slide p {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    line-height: 1.6;
+    max-width: 80%;
+    color: var(--slide-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .slide ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    text-align: left;
+  }
+
+  .slide li {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--slide-text-secondary);
+  }
+
+  .slide li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--slide-accent);
+  }
+
+  .slide strong {
+    color: var(--slide-accent-bright);
+    font-weight: 700;
+  }
+
+  .slide em {
+    color: var(--slide-text-secondary);
+    font-style: italic;
+  }
+
+  /* ========================================
+     Table Styling (GFM Tables)
+     ======================================== */
+  .slide table {
+    border-collapse: collapse;
+    margin: 1rem auto;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
+    width: auto;
+    max-width: 90%;
+  }
+
+  .slide th,
+  .slide td {
+    padding: 0.5rem 1rem;
+    text-align: left;
+    border: 1px solid var(--slide-accent);
+  }
+
+  .slide th {
+    background: var(--slide-accent);
+    color: var(--slide-bg-primary);
+    font-weight: 600;
+  }
+
+  .slide td {
+    color: var(--slide-text-secondary);
+  }
+
+  .slide tr:nth-child(even) td {
+    background: var(--slide-bg-secondary);
+  }
+
+  /* Light mode table adjustments */
+  [data-theme="matter"][data-mode="light"] .slide th {
+    background: var(--color-marjorelle-purple);
+    color: white;
+  }
+
+  [data-theme="matter"][data-mode="light"] .slide td {
+    border-color: rgba(102, 67, 226, 0.3);
+  }
+
+  /* Vibrant mode table glow */
+  [data-theme="matter"][data-mode="vibrant"] .slide table {
+    box-shadow: 0 0 20px rgba(102, 67, 226, 0.2);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .slide th {
+    background: var(--color-marjorelle-purple);
+    box-shadow: 0 0 10px rgba(102, 67, 226, 0.4);
+  }
+
+  .slide code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+  }
+
+  .slide pre {
+    text-align: left;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    max-width: 90%;
+  }
+
+  .slide pre code {
+    padding: 0;
+    background: transparent;
+  }
+
+  /* ========================================
+     Dark Mode Styling
+     ======================================== */
+  [data-theme="matter"][data-mode="dark"] .slide code {
+    background: rgba(31, 41, 55, 0.6);
+    color: var(--color-lilac);
+  }
+
+  [data-theme="matter"][data-mode="dark"] .slide pre {
+    background: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(156, 133, 223, 0.2);
+  }
+
+  /* ========================================
+     Light Mode Styling
+     ======================================== */
+  [data-theme="matter"][data-mode="light"] .slide code {
+    background: rgba(229, 231, 235, 0.6);
+    color: var(--color-marjorelle-purple);
+  }
+
+  [data-theme="matter"][data-mode="light"] .slide pre {
+    background: rgba(244, 243, 246, 0.9);
+    border: 1px solid rgba(209, 213, 219, 0.5);
+  }
+
+  [data-theme="matter"][data-mode="light"] .slide li::before {
+    color: var(--color-marjorelle-purple);
+  }
+
+  /* ========================================
+     Vibrant Mode Styling - Enhanced Glow
+     ======================================== */
+  [data-theme="matter"][data-mode="vibrant"] .slide h1,
+  [data-theme="matter"][data-mode="vibrant"] .slide h2 {
+    text-shadow: var(--slide-glow);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .slide code {
+    background: rgba(31, 41, 55, 0.6);
+    color: var(--color-lilac);
+    box-shadow: 0 0 8px rgba(102, 67, 226, 0.2);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .slide pre {
+    background: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(102, 67, 226, 0.3);
+    box-shadow: 0 0 20px rgba(102, 67, 226, 0.15);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .slide li::before {
+    color: var(--color-marjorelle-purple);
+    text-shadow: 0 0 8px rgba(102, 67, 226, 0.4);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .slide strong {
+    text-shadow: 0 0 10px rgba(102, 67, 226, 0.3);
+  }
+</style>

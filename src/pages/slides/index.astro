@@ -1,0 +1,270 @@
+---
+/**
+ * Slides Index Page
+ *
+ * Auto-discovers presentations from three sources:
+ * 1. Component decks (from componentDecks.ts)
+ * 2. Standalone .astro pages (from this directory)
+ * 3. Markdown decks (from slides content collection)
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import TitleSlidePreviewCard from '@components/slides/TitleSlidePreviewCard.astro';
+import { getAllComponentDecks } from '../../data/componentDecks';
+import { getAllMarkdownDecks } from '../../data/markdownDecks';
+
+// Unified presentation interface
+interface Presentation {
+  title: string;
+  slug: string;
+  description: string;
+  date?: string;
+  author?: string;
+  tags?: string[];
+  icon?: string;
+  coverImage?: string;
+  shareImage?: string;
+  type: 'component' | 'standalone' | 'markdown';
+}
+
+const presentations: Presentation[] = [];
+
+// 1. Load component decks
+const componentDecks = getAllComponentDecks();
+for (const { slug, deck } of componentDecks) {
+  presentations.push({
+    title: deck.title,
+    slug,
+    description: deck.description,
+    date: deck.date,
+    author: deck.author,
+    tags: deck.tags,
+    coverImage: deck.coverImage,
+    shareImage: deck.shareImage,
+    type: 'component',
+  });
+}
+
+// 2. Discover standalone .astro pages in this directory
+// Using lazy loading to avoid importing slide deck CSS into the index page
+const standalonePages = import.meta.glob('./*.astro');
+for (const [path, importFn] of Object.entries(standalonePages)) {
+  // Skip index.astro and [...slug].astro
+  if (path === './index.astro' || path === './[...slug].astro') continue;
+
+  // Extract slug from filename
+  const fileName = path.replace('./', '').replace('.astro', '');
+
+  // Try to load the module to get metadata
+  try {
+    const module = await importFn() as { presentation?: Partial<Presentation> };
+    if (module.presentation) {
+      presentations.push({
+        title: module.presentation.title || fileName,
+        slug: fileName,
+        description: module.presentation.description || '',
+        date: module.presentation.date,
+        author: module.presentation.author,
+        tags: module.presentation.tags,
+        coverImage: module.presentation.coverImage,
+        shareImage: module.presentation.shareImage,
+        type: 'standalone',
+      });
+    }
+  } catch (error) {
+    // If module fails to load, still add basic entry
+    presentations.push({
+      title: fileName.replace(/-/g, ' '),
+      slug: fileName,
+      description: 'Standalone presentation',
+      type: 'standalone',
+    });
+  }
+}
+
+// 3. Load markdown decks
+const markdownDecks = getAllMarkdownDecks();
+for (const deck of markdownDecks) {
+  presentations.push({
+    title: deck.title || deck.slug,
+    slug: deck.slug,
+    description: deck.description || '',
+    date: deck.date,
+    author: deck.author,
+    tags: deck.tags,
+    icon: '📝',
+    coverImage: deck.coverImage,
+    shareImage: deck.shareImage,
+    type: 'markdown',
+  });
+}
+
+// Sort by date (newest first), then by title
+presentations.sort((a, b) => {
+  if (a.date && b.date) {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  }
+  if (a.date) return -1;
+  if (b.date) return 1;
+  return a.title.localeCompare(b.title);
+});
+---
+
+<BaseThemeLayout title="Presentations | Dark Matter" description="Browse all available presentations">
+  <div class="presentations-page">
+    <header class="page-header">
+      <h1>Presentations</h1>
+      <p class="page-description">
+        Interactive slide decks and presentations
+      </p>
+    </header>
+
+    {presentations.length > 0 ? (
+      <section class="presentations-grid">
+        {presentations.map(presentation => (
+          <TitleSlidePreviewCard
+            title={presentation.title}
+            description={presentation.description}
+            slug={presentation.slug}
+            date={presentation.date}
+            icon={presentation.icon}
+            coverImage={presentation.coverImage}
+            shareImage={presentation.shareImage}
+            type={presentation.type}
+          />
+        ))}
+      </section>
+    ) : (
+      <section class="empty-state">
+        <p>No presentations available yet.</p>
+        <p class="empty-hint">Add presentations to:</p>
+        <ul>
+          <li><code>src/content/slides/*.md</code> for markdown presentations</li>
+          <li><code>src/pages/slides/*.astro</code> for standalone pages</li>
+          <li><code>src/data/componentDecks.ts</code> for component decks</li>
+        </ul>
+      </section>
+    )}
+
+    <footer class="keyboard-hints">
+      <h3>Keyboard Shortcuts</h3>
+      <ul>
+        <li><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> Navigate slides</li>
+        <li><kbd>F</kbd> Fullscreen</li>
+        <li><kbd>S</kbd> Speaker notes</li>
+        <li><kbd>ESC</kbd> Slide overview</li>
+        <li><kbd>B</kbd> Pause (blank screen)</li>
+      </ul>
+    </footer>
+  </div>
+</BaseThemeLayout>
+
+<style>
+  .presentations-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .page-header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
+  }
+
+  .page-description {
+    color: var(--color-muted-foreground);
+    font-size: 1.125rem;
+  }
+
+  .presentations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-muted-foreground);
+  }
+
+  .empty-state p {
+    margin-bottom: 1rem;
+  }
+
+  .empty-hint {
+    font-weight: 500;
+    color: var(--color-foreground);
+  }
+
+  .empty-state ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .empty-state code {
+    background: var(--color-surface);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .keyboard-hints {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .keyboard-hints h3 {
+    margin-bottom: 1rem;
+    color: var(--color-foreground);
+  }
+
+  .keyboard-hints ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .keyboard-hints li {
+    color: var(--color-muted-foreground);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  kbd {
+    background: var(--color-muted);
+    color: var(--color-foreground);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 640px) {
+    .presentations-page {
+      padding: 1rem;
+    }
+
+    .presentations-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>
