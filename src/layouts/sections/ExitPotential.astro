@@ -1,0 +1,1071 @@
+---
+/**
+ * ExitPotential Section: "Exit Potential"
+ *
+ * A section showcasing the two primary exit paths for longevity investments:
+ * - IPOs in public markets
+ * - Acquisitions by big pharma
+ * - Example deal structure
+ *
+ * Features:
+ * - Hero with key exit thesis
+ * - Two-path comparison (IPO vs M&A)
+ * - Key statistics cards
+ * - Example deal structure
+ * - Citations with inline popovers and Sources section
+ * - Supports light, dark, and vibrant visual modes
+ *
+ * Based on research from Longevity Exit Potential.md
+ */
+
+import type { CitationReference } from '@lib/citations/types';
+import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
+import InlineCitation from '@components/citations/InlineCitation.astro';
+import Sources from '@components/citations/Sources.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Exit Potential',
+  subtitle = 'Two proven paths to liquidity for longevity investments',
+} = Astro.props as Props;
+
+// =============================================================================
+// Citation Library (hex codes from "Longevity Exit Potential.md")
+// =============================================================================
+const citations: Record<string, CitationReference> = {
+  kh56wu: {
+    hexCode: 'kh56wu',
+    title: 'Longevity Biotech Market Growth: How Fast Is Anti-Aging Science Advancing',
+    url: 'https://patentpc.com/blog/longevity-biotech-market-growth-how-fast-is-anti-aging-science-advancing-new-stats',
+    source: 'PatentPC',
+    publishedDate: '2025-11-14',
+  },
+  '2y30de': {
+    hexCode: '2y30de',
+    title: 'Longevity Startup Funding Sees Fewer Moonshots, But Plenty Of...',
+    url: 'https://news.crunchbase.com/venture/longevity-startup-funding-2025-newlimit-data/',
+    source: 'Crunchbase News',
+    publishedDate: '2025-11-17',
+  },
+  ct5ss8: {
+    hexCode: 'ct5ss8',
+    title: 'Biotech IPOs in 2025',
+    url: 'https://www.wellington.com/en/insights/biotech-ipos-in-2025',
+    source: 'Wellington Management',
+    publishedDate: '2024-08-22',
+  },
+  '4729z2': {
+    hexCode: '4729z2',
+    title: '13 anti-aging biotech companies leading longevity in 2025',
+    url: 'https://www.labiotech.eu/best-biotech/anti-aging-biotech-companies/',
+    source: 'Labiotech',
+    publishedDate: '2025-10-27',
+  },
+  s0d2yp: {
+    hexCode: 's0d2yp',
+    title: 'Top 10 Global Companies in Anti-aging Therapeutics Market 2025',
+    url: 'https://www.sphericalinsights.com/blogs/top-10-global-companies-in-anti-aging-therapeutics-market-2025-strategic-overview-future-trends-2024-2035',
+    source: 'Spherical Insights',
+    publishedDate: '2025-08-19',
+  },
+};
+
+// =============================================================================
+// Data with Citations
+// =============================================================================
+
+// Hero statistics
+const heroStats = [
+  {
+    stat: '$2B+',
+    label: 'Longevity IPOs in 2023',
+    citationKey: 'kh56wu',
+  },
+  {
+    stat: '17.9%',
+    label: 'Anti-aging Market CAGR',
+    citationKey: 's0d2yp',
+  },
+  {
+    stat: '$5B+',
+    label: 'Startup Funding in 2023',
+    citationKey: 'kh56wu',
+  },
+];
+
+// IPO path details
+const ipoPath = {
+  title: 'IPOs in Public Markets',
+  icon: '📈',
+  description: 'Biotech IPOs remain a core liquidity event, especially for companies with differentiated clinical data in age-related disease.',
+  points: [
+    {
+      title: 'Quality Over Quantity',
+      text: 'The post-2021 correction led to a disciplined IPO market focused on clinical-stage, de-risked assets.',
+      citationKey: 'ct5ss8',
+    },
+    {
+      title: '100% Clinical-Stage',
+      text: 'By 2023, all US biotech IPOs had clinical-stage assets, with roughly one-third at Phase III.',
+      citationKey: 'ct5ss8',
+    },
+    {
+      title: 'Mainstream Theme',
+      text: 'Longevity-focused biotechs raised over $2 billion via IPOs in 2023 alone, signaling aging biology as investable.',
+      citationKey: 'kh56wu',
+    },
+    {
+      title: 'Data-Driven Stories',
+      text: 'Investors reward platforms that pair bold aging biology with credible, near-term milestones.',
+      citationKey: '2y30de',
+    },
+  ],
+};
+
+// M&A path details
+const maPath = {
+  title: 'Acquisitions by Big Pharma',
+  icon: '🏢',
+  description: 'Large pharma companies facing patent cliffs are increasingly acquiring longevity-adjacent assets to sustain growth.',
+  points: [
+    {
+      title: 'Massive Market Growth',
+      text: 'Global anti-aging therapeutics projected to grow from $5.7B (2024) to $34.6B by 2035.',
+      citationKey: 's0d2yp',
+    },
+    {
+      title: 'M&A as Core Return Driver',
+      text: 'Institutional investors expect continued M&A as pharma uses acquisitions to access innovative platforms.',
+      citationKey: 'ct5ss8',
+    },
+    {
+      title: 'Strategic Fit',
+      text: 'Longevity mechanisms intersect with existing pharma markets—cardiometabolic, oncology, ophthalmology.',
+      citationKey: '4729z2',
+    },
+    {
+      title: 'VC Capital Precursor',
+      text: 'Longevity VC funds raised over $3B in 2023, seeding future acquisition targets.',
+      citationKey: 'kh56wu',
+    },
+  ],
+};
+
+// Deal structure example
+const dealExample = {
+  title: 'Example Deal Structure',
+  subtitle: 'Pharma–Senolytics Acquisition Model',
+  rationale: [
+    'Large pharma seeking next-generation assets that modify fundamental aging biology',
+    'Senolytics address shared mechanisms across multiple age-related diseases',
+    'One asset with potential across several multi-billion-dollar indications',
+  ],
+  terms: [
+    { label: 'Target', value: 'Clinical-stage senolytics company' },
+    { label: 'Buyer', value: 'Top-10 global pharma' },
+    { label: 'Upfront', value: '$500M–$1B cash' },
+    { label: 'Biobucks', value: '$2B–$4B milestones' },
+  ],
+  citationKey: '4729z2',
+};
+
+// Market growth projection
+const marketGrowth = {
+  from: '$5.7B',
+  to: '$34.6B',
+  period: '2024–2035',
+  cagr: '17.9%',
+  citationKey: 's0d2yp',
+};
+
+// =============================================================================
+// Build Citation Index (assigns sequential numbers)
+// =============================================================================
+
+// Collect all citation keys in order of appearance
+const allCitationKeys = [
+  ...heroStats.map(s => s.citationKey),
+  ...ipoPath.points.map(p => p.citationKey),
+  ...maPath.points.map(p => p.citationKey),
+  dealExample.citationKey,
+  marketGrowth.citationKey,
+];
+
+// Build the citation references array (deduplicated by buildCitationIndex)
+const citationRefs = allCitationKeys
+  .map(key => citations[key])
+  .filter((c): c is CitationReference => c !== undefined);
+
+// Build indexed map
+const citationIndex = buildCitationIndex(citationRefs);
+
+// Helper to get indexed citation
+const getCite = (key: string) => citationIndex.get(key);
+---
+
+<section class="exit-potential-section relative overflow-hidden">
+  <!-- Hero Opening -->
+  <div class="hero-opening min-h-[70vh] flex flex-col items-center justify-center px-6 py-20 relative">
+    <div class="hero-gradient absolute inset-0"></div>
+
+    <!-- Eyebrow -->
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-6 relative z-10">
+      Returns
+    </p>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- Hero stats row -->
+    <div class="hero-stats flex flex-wrap justify-center gap-8 sm:gap-12 mt-16 relative z-10">
+      {heroStats.map((item, index) => (
+        <div
+          class="hero-stat-item text-center reveal-item"
+          data-reveal="fade-up"
+          style={`--delay: ${index * 100 + 400}ms;`}
+        >
+          <span class="hero-stat-number text-4xl sm:text-5xl font-bold block">
+            {item.stat}
+          </span>
+          <span class="hero-stat-label text-sm mt-2 block">
+            {item.label}
+            {getCite(item.citationKey) && (
+              <InlineCitation {...getCite(item.citationKey)!} />
+            )}
+          </span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Two Exit Paths -->
+  <div class="paths-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-6xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Exit Paths
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Two Proven Routes to Liquidity
+        </h2>
+      </div>
+
+      <!-- Paths grid -->
+      <div class="paths-grid grid gap-8 lg:grid-cols-2">
+        <!-- IPO Path -->
+        <article class="path-card path-ipo reveal-item" data-reveal="fade-up" style="--delay: 100ms;">
+          <div class="path-inner group relative p-8 rounded-2xl backdrop-blur-sm h-full">
+            <!-- Header -->
+            <div class="path-header flex items-center gap-4 mb-6">
+              <span class="path-icon text-4xl">{ipoPath.icon}</span>
+              <div>
+                <h3 class="path-title text-xl sm:text-2xl font-bold">{ipoPath.title}</h3>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="path-description text-sm leading-relaxed mb-6">
+              {ipoPath.description}
+            </p>
+
+            <!-- Points -->
+            <ul class="path-points space-y-4">
+              {ipoPath.points.map((point) => (
+                <li class="path-point">
+                  <h4 class="point-title text-sm font-semibold mb-1">{point.title}</h4>
+                  <p class="point-text text-sm leading-relaxed">
+                    {point.text}
+                    {getCite(point.citationKey) && (
+                      <InlineCitation {...getCite(point.citationKey)!} />
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+
+        <!-- M&A Path -->
+        <article class="path-card path-ma reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+          <div class="path-inner group relative p-8 rounded-2xl backdrop-blur-sm h-full">
+            <!-- Header -->
+            <div class="path-header flex items-center gap-4 mb-6">
+              <span class="path-icon text-4xl">{maPath.icon}</span>
+              <div>
+                <h3 class="path-title text-xl sm:text-2xl font-bold">{maPath.title}</h3>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="path-description text-sm leading-relaxed mb-6">
+              {maPath.description}
+            </p>
+
+            <!-- Points -->
+            <ul class="path-points space-y-4">
+              {maPath.points.map((point) => (
+                <li class="path-point">
+                  <h4 class="point-title text-sm font-semibold mb-1">{point.title}</h4>
+                  <p class="point-text text-sm leading-relaxed">
+                    {point.text}
+                    {getCite(point.citationKey) && (
+                      <InlineCitation {...getCite(point.citationKey)!} />
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Market Growth -->
+  <div class="growth-section py-24 sm:py-32 px-6 relative">
+    <div class="growth-gradient absolute inset-0"></div>
+    <div class="max-w-4xl mx-auto relative z-10">
+      <div class="growth-card reveal-item text-center" data-reveal="fade-up">
+        <span class="growth-badge inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-8">
+          Market Opportunity
+        </span>
+
+        <h2 class="growth-title text-2xl sm:text-3xl font-bold mb-8">
+          Anti-Aging Therapeutics Market
+        </h2>
+
+        <!-- Growth visualization -->
+        <div class="growth-visual flex items-center justify-center gap-4 sm:gap-8 mb-8">
+          <div class="growth-from text-center">
+            <span class="growth-value text-3xl sm:text-5xl font-bold block">{marketGrowth.from}</span>
+            <span class="growth-year text-sm mt-2 block">2024</span>
+          </div>
+
+          <div class="growth-arrow flex flex-col items-center">
+            <svg class="arrow-icon w-12 h-8 sm:w-16 sm:h-10" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 20 H56 M44 8 L56 20 L44 32" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="growth-cagr text-xs font-semibold mt-1">{marketGrowth.cagr} CAGR</span>
+          </div>
+
+          <div class="growth-to text-center">
+            <span class="growth-value text-3xl sm:text-5xl font-bold block">{marketGrowth.to}</span>
+            <span class="growth-year text-sm mt-2 block">2035</span>
+          </div>
+        </div>
+
+        <p class="growth-citation text-sm">
+          Global anti-aging therapeutics market projection
+          {getCite(marketGrowth.citationKey) && (
+            <InlineCitation {...getCite(marketGrowth.citationKey)!} />
+          )}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Deal Example -->
+  <div class="deal-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-deal inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Deal Structure
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          {dealExample.title}
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg">
+          {dealExample.subtitle}
+        </p>
+      </div>
+
+      <div class="deal-grid grid gap-8 lg:grid-cols-2">
+        <!-- Strategic Rationale -->
+        <div class="deal-rationale reveal-item" data-reveal="fade-up" style="--delay: 100ms;">
+          <div class="rationale-inner p-8 rounded-2xl h-full">
+            <h3 class="rationale-title text-lg font-bold mb-6">Strategic Rationale</h3>
+            <ul class="rationale-list space-y-4">
+              {dealExample.rationale.map((item) => (
+                <li class="rationale-item flex items-start gap-3 text-sm leading-relaxed">
+                  <span class="rationale-dot flex-shrink-0 w-2 h-2 rounded-full mt-1.5"></span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="rationale-citation mt-6 text-xs">
+              Based on recent longevity M&A activity
+              {getCite(dealExample.citationKey) && (
+                <InlineCitation {...getCite(dealExample.citationKey)!} />
+              )}
+            </p>
+          </div>
+        </div>
+
+        <!-- Deal Terms -->
+        <div class="deal-terms reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+          <div class="terms-inner p-8 rounded-2xl h-full">
+            <h3 class="terms-title text-lg font-bold mb-6">Illustrative Terms</h3>
+            <dl class="terms-list space-y-4">
+              {dealExample.terms.map((term) => (
+                <div class="term-item flex justify-between items-baseline gap-4 pb-3 border-b border-current/10">
+                  <dt class="term-label text-sm font-medium">{term.label}</dt>
+                  <dd class="term-value text-sm font-bold text-right">{term.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing CTA -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="closing-gradient absolute inset-0"></div>
+
+    <div class="closing-content reveal-item text-center relative z-10" data-reveal="fade-up">
+      <p class="closing-eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-4">
+        The Opportunity
+      </p>
+      <h3 class="closing-headline text-3xl sm:text-4xl md:text-5xl font-bold max-w-3xl">
+        Exits Don't Require Full Lifespan Extension
+      </h3>
+      <p class="closing-text mt-6 text-lg sm:text-xl max-w-xl mx-auto">
+        Credible age-related disease indications are sufficient for pharma-scale exits
+      </p>
+    </div>
+  </div>
+
+  <!-- Sources Section -->
+  <div class="sources-wrapper px-6 py-16">
+    <div class="max-w-5xl mx-auto">
+      <Sources citations={citationsToArray(citationIndex)} />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  /* Base reveal states */
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  /* Revealed state */
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hero opening animations */
+  .hero-opening .eyebrow-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Scroll hint animation */
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scaleY(1.2);
+    }
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .exit-potential-section {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(16, 185, 129, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .eyebrow-text,
+  :global([data-mode="light"]) .closing-eyebrow {
+    color: #10b981;
+    opacity: 0.8;
+  }
+
+  :global([data-mode="light"]) .headline-text,
+  :global([data-mode="light"]) .closing-headline {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .subtitle-text,
+  :global([data-mode="light"]) .section-subtitle {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .scroll-hint {
+    color: #10b981;
+    opacity: 0.4;
+  }
+
+  :global([data-mode="light"]) .hero-stat-number {
+    color: #10b981;
+  }
+
+  :global([data-mode="light"]) .hero-stat-label {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-deal {
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  /* Path cards - Light */
+  :global([data-mode="light"]) .path-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.12);
+  }
+
+  :global([data-mode="light"]) .path-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .path-description {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .point-title {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .point-text {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  /* Growth section - Light */
+  :global([data-mode="light"]) .growth-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(16, 185, 129, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .growth-badge {
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  :global([data-mode="light"]) .growth-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .growth-value {
+    color: #10b981;
+  }
+
+  :global([data-mode="light"]) .growth-year {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .growth-arrow {
+    color: #10b981;
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .growth-cagr {
+    color: #10b981;
+  }
+
+  :global([data-mode="light"]) .growth-citation {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* Deal section - Light */
+  :global([data-mode="light"]) .rationale-inner,
+  :global([data-mode="light"]) .terms-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  :global([data-mode="light"]) .rationale-title,
+  :global([data-mode="light"]) .terms-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .rationale-item {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .rationale-dot {
+    background: #f59e0b;
+  }
+
+  :global([data-mode="light"]) .rationale-citation {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .term-label {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .term-value {
+    color: #f59e0b;
+  }
+
+  :global([data-mode="light"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(16, 185, 129, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .exit-potential-section {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(52, 211, 153, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .eyebrow-text,
+  :global([data-mode="dark"]) .closing-eyebrow {
+    color: #34d399;
+    opacity: 0.8;
+  }
+
+  :global([data-mode="dark"]) .headline-text,
+  :global([data-mode="dark"]) .closing-headline {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .subtitle-text,
+  :global([data-mode="dark"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .scroll-hint {
+    color: #34d399;
+    opacity: 0.4;
+  }
+
+  :global([data-mode="dark"]) .hero-stat-number {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .hero-stat-label {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .section-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-deal {
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  /* Path cards - Dark */
+  :global([data-mode="dark"]) .path-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .path-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .path-description {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .point-title {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .point-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* Growth section - Dark */
+  :global([data-mode="dark"]) .growth-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(52, 211, 153, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .growth-badge {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="dark"]) .growth-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .growth-value {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-year {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .growth-arrow {
+    color: #34d399;
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .growth-cagr {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-citation {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* Deal section - Dark */
+  :global([data-mode="dark"]) .rationale-inner,
+  :global([data-mode="dark"]) .terms-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .rationale-title,
+  :global([data-mode="dark"]) .terms-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .rationale-item {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .rationale-dot {
+    background: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .rationale-citation {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .term-label {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .term-value {
+    color: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(52, 211, 153, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .exit-potential-section {
+    background: linear-gradient(180deg, var(--color-void) 0%, #0a1f1a 30%, #0d0518 70%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(52, 211, 153, 0.25), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .eyebrow-text,
+  :global([data-mode="vibrant"]) .closing-eyebrow {
+    color: #34d399;
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .headline-text,
+  :global([data-mode="vibrant"]) .closing-headline {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .subtitle-text,
+  :global([data-mode="vibrant"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint {
+    color: #34d399;
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  :global([data-mode="vibrant"]) .hero-stat-number {
+    color: #34d399;
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .hero-stat-label {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .section-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.5);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-deal {
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+  }
+
+  /* Path cards - Vibrant */
+  :global([data-mode="vibrant"]) .path-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(10, 31, 26, 0.8));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .path-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .path-description {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .point-title {
+    color: var(--color-lilac);
+    text-shadow: 0 0 10px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .point-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  /* Growth section - Vibrant */
+  :global([data-mode="vibrant"]) .growth-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(52, 211, 153, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .growth-badge {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .growth-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .growth-value {
+    color: #34d399;
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .growth-year {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .growth-arrow {
+    color: #34d399;
+  }
+
+  :global([data-mode="vibrant"]) .growth-cagr {
+    color: #34d399;
+    text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .growth-citation {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  /* Deal section - Vibrant */
+  :global([data-mode="vibrant"]) .rationale-inner,
+  :global([data-mode="vibrant"]) .terms-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .rationale-title,
+  :global([data-mode="vibrant"]) .terms-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .rationale-item {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .rationale-dot {
+    background: #fbbf24;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .rationale-citation {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .term-label {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .term-value {
+    color: #fbbf24;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(52, 211, 153, 0.2), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.exit-potential-section .reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>
