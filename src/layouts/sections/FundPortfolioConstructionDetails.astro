@@ -1,0 +1,1114 @@
+---
+/**
+ * FundPortfolioConstructionDetails Section: "Fund Strategy & Portfolio Construction"
+ *
+ * A detailed infographic section showcasing the fund's structure:
+ * - Fund size, term, and economics
+ * - Geographic focus (70/30 split)
+ * - Stage allocation (Seed/A-B/Follow-ons)
+ * - Investment approach and check sizes
+ * - Follow-on capital allocation strategy
+ *
+ * Features:
+ * - Hero with key fund metrics
+ * - Visual stage allocation bars
+ * - Geographic breakdown
+ * - Tiered follow-on pyramid
+ * - Supports light, dark, and vibrant visual modes
+ *
+ * Based on research from DarkMatter Construction.md
+ */
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Fund Strategy',
+  subtitle = 'Portfolio construction designed for category-defining longevity outcomes',
+} = Astro.props as Props;
+
+// =============================================================================
+// Data
+// =============================================================================
+
+// Hero metrics
+const heroMetrics = [
+  { value: '$100M', label: 'Fund Size' },
+  { value: '10', label: 'Year Term', suffix: 'yrs' },
+  { value: '25', label: 'Target Investments' },
+];
+
+// Fund economics
+const economics = [
+  { label: 'Management Fee', value: '2%', description: 'Annual on committed capital' },
+  { label: 'Carried Interest', value: '20-25%', description: 'Performance fee, back-ended' },
+  { label: 'GP Commitment', value: 'Meaningful', description: 'Personal capital alongside LPs' },
+];
+
+// Geographic allocation
+const geography = [
+  {
+    region: 'U.S. / Europe',
+    percentage: 70,
+    description: 'Best-in-class research hubs with deep biotech talent and established exit markets',
+  },
+  {
+    region: 'Rest of World',
+    percentage: 30,
+    description: 'Opportunistic positions in Israel, Asia, and emerging innovation clusters',
+  },
+];
+
+// Stage allocation
+const stages = [
+  {
+    stage: 'Seed',
+    percentage: 50,
+    color: 'seed',
+    description: 'Lead or co-lead in technical and scientific founding teams',
+    focus: 'Core longevity biology, platform technologies, enabling tools',
+  },
+  {
+    stage: 'Series A/B',
+    percentage: 30,
+    color: 'series',
+    description: 'Scale capital into companies showing human data and traction',
+    focus: 'Clinical validation, strategic partnerships, commercial progress',
+  },
+  {
+    stage: 'Follow-ons',
+    percentage: 20,
+    color: 'followon',
+    description: 'Systematic double-down into top decile outcomes',
+    focus: 'Concentrated capital behind proven winners',
+  },
+];
+
+// Check sizes
+const checkSizes = [
+  { label: 'Initial Check', value: '$2.75M–$3.0M', description: 'Per company at entry' },
+  { label: 'Target Ownership', value: '10–15%+', description: 'At seed entry' },
+  { label: 'Winner Reserves', value: '$5M–$10M', description: 'Per breakout company' },
+];
+
+// Follow-on tiers
+const followOnTiers = [
+  {
+    tier: 'Top 3-5',
+    exposure: '$5M–$10M+',
+    strategy: 'Lead or participate meaningfully in multiple subsequent rounds',
+    ownership: 'High-single to low-double digit ownership into late stages',
+    highlight: true,
+  },
+  {
+    tier: 'Next 8-10',
+    exposure: '$3M–$5M',
+    strategy: 'Support through key de-risking milestones',
+    ownership: 'First-in-human data, partnerships, reimbursement validation',
+    highlight: false,
+  },
+  {
+    tier: 'Remaining',
+    exposure: 'Pro-rata only',
+    strategy: 'Capital not trapped in low-conviction situations',
+    ownership: 'Preserve dry powder for true outliers',
+    highlight: false,
+  },
+];
+
+// LP benefits
+const lpBenefits = [
+  {
+    title: 'Balanced Diversification',
+    description: '~25 core positions across the longevity stack with meaningful concentration in winners',
+  },
+  {
+    title: 'Stage Mix Advantage',
+    description: 'Seed taps early entry pricing; A/B compounds into validated companies',
+  },
+  {
+    title: 'Systematic Framework',
+    description: 'Written reserve rules avoid emotional decisions, focusing on highest risk-adjusted MOIC',
+  },
+];
+---
+
+<section class="fund-construction-section relative overflow-hidden">
+  <!-- Hero Opening -->
+  <div class="hero-opening min-h-[70vh] flex flex-col items-center justify-center px-6 py-20 relative">
+    <div class="hero-gradient absolute inset-0"></div>
+
+    <!-- Eyebrow -->
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-6 relative z-10">
+      Portfolio Construction
+    </p>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- Hero metrics -->
+    <div class="hero-metrics flex flex-wrap justify-center gap-12 sm:gap-16 mt-16 relative z-10">
+      {heroMetrics.map((metric, index) => (
+        <div
+          class="hero-metric text-center reveal-item"
+          data-reveal="fade-up"
+          style={`--delay: ${index * 100 + 400}ms;`}
+        >
+          <span class="metric-value text-5xl sm:text-6xl md:text-7xl font-bold block">
+            {metric.value}
+          </span>
+          <span class="metric-label text-sm sm:text-base mt-2 block uppercase tracking-wider">
+            {metric.label}
+          </span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Economics & Alignment -->
+  <div class="economics-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Economics
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          LP-GP Alignment
+        </h2>
+      </div>
+
+      <div class="economics-grid grid gap-6 sm:grid-cols-3">
+        {economics.map((item, index) => (
+          <div
+            class="economics-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="economics-inner p-6 sm:p-8 rounded-2xl text-center h-full">
+              <span class="economics-value text-3xl sm:text-4xl font-bold block mb-2">
+                {item.value}
+              </span>
+              <span class="economics-label text-sm font-semibold uppercase tracking-wider block mb-2">
+                {item.label}
+              </span>
+              <p class="economics-description text-xs sm:text-sm">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Stage Allocation -->
+  <div class="stages-section py-24 sm:py-32 px-6 relative">
+    <div class="stages-gradient absolute inset-0"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-stages inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Capital Deployment
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Stage Allocation
+        </h2>
+      </div>
+
+      <!-- Visual bar allocation -->
+      <div class="stage-bars mb-12 reveal-item" data-reveal="fade-up" style="--delay: 100ms;">
+        <div class="stage-bar-container flex rounded-xl overflow-hidden h-16 sm:h-20">
+          {stages.map((stage) => (
+            <div
+              class={`stage-bar stage-bar-${stage.color} flex items-center justify-center`}
+              style={`width: ${stage.percentage}%;`}
+            >
+              <span class="stage-bar-label text-sm sm:text-base font-bold">
+                {stage.percentage}%
+              </span>
+            </div>
+          ))}
+        </div>
+        <div class="stage-bar-legend flex mt-4">
+          {stages.map((stage) => (
+            <div class="stage-legend-item" style={`width: ${stage.percentage}%;`}>
+              <span class={`stage-legend-label stage-legend-${stage.color} text-xs sm:text-sm font-semibold`}>
+                {stage.stage}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Stage details -->
+      <div class="stage-details grid gap-6 md:grid-cols-3">
+        {stages.map((stage, index) => (
+          <div
+            class={`stage-card stage-card-${stage.color} reveal-item`}
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100 + 200}ms;`}
+          >
+            <div class="stage-inner p-6 rounded-xl h-full">
+              <div class="stage-header flex items-baseline gap-2 mb-3">
+                <span class={`stage-percentage stage-percentage-${stage.color} text-2xl font-bold`}>
+                  {stage.percentage}%
+                </span>
+                <span class="stage-name text-lg font-semibold">{stage.stage}</span>
+              </div>
+              <p class="stage-description text-sm mb-3">{stage.description}</p>
+              <p class="stage-focus text-xs">{stage.focus}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Geographic Focus -->
+  <div class="geography-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-geo inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Geography
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Geographic Focus
+        </h2>
+      </div>
+
+      <div class="geography-visual reveal-item" data-reveal="fade-up" style="--delay: 100ms;">
+        <!-- Donut-style visual -->
+        <div class="geo-donut-container flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+          <!-- Donut chart representation -->
+          <div class="geo-donut relative w-48 h-48 sm:w-56 sm:h-56">
+            <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
+              <!-- Background circle -->
+              <circle
+                cx="50" cy="50" r="40"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="16"
+                class="geo-donut-bg"
+              />
+              <!-- US/Europe segment (70%) -->
+              <circle
+                cx="50" cy="50" r="40"
+                fill="none"
+                stroke-width="16"
+                stroke-dasharray="175.93 251.33"
+                stroke-dashoffset="0"
+                class="geo-donut-primary"
+              />
+            </svg>
+            <div class="geo-donut-center absolute inset-0 flex flex-col items-center justify-center">
+              <span class="geo-donut-value text-2xl sm:text-3xl font-bold">70/30</span>
+              <span class="geo-donut-label text-xs uppercase tracking-wider">Split</span>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="geo-legend space-y-6">
+            {geography.map((geo, index) => (
+              <div class={`geo-legend-item geo-legend-${index === 0 ? 'primary' : 'secondary'}`}>
+                <div class="flex items-center gap-3 mb-2">
+                  <span class={`geo-dot w-4 h-4 rounded-full geo-dot-${index === 0 ? 'primary' : 'secondary'}`}></span>
+                  <span class="geo-region text-lg font-bold">{geo.region}</span>
+                  <span class="geo-percentage text-lg font-bold">{geo.percentage}%</span>
+                </div>
+                <p class="geo-description text-sm max-w-xs">{geo.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Check Sizes -->
+  <div class="checks-section py-24 sm:py-32 px-6 relative">
+    <div class="checks-gradient absolute inset-0"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-checks inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Investment Approach
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Check Sizes & Ownership
+        </h2>
+      </div>
+
+      <div class="checks-grid grid gap-6 sm:grid-cols-3">
+        {checkSizes.map((check, index) => (
+          <div
+            class="check-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="check-inner p-6 sm:p-8 rounded-2xl text-center h-full">
+              <span class="check-value text-2xl sm:text-3xl font-bold block mb-2">
+                {check.value}
+              </span>
+              <span class="check-label text-sm font-semibold uppercase tracking-wider block mb-2">
+                {check.label}
+              </span>
+              <p class="check-description text-xs sm:text-sm">
+                {check.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Follow-On Strategy -->
+  <div class="followon-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-followon inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Capital Concentration
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Follow-On Strategy
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          Concentrate capital behind the most promising longevity platforms as evidence accumulates
+        </p>
+      </div>
+
+      <!-- Pyramid visualization -->
+      <div class="followon-pyramid space-y-4">
+        {followOnTiers.map((tier, index) => (
+          <div
+            class={`followon-tier ${tier.highlight ? 'followon-tier-highlight' : ''} reveal-item`}
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div
+              class="tier-inner p-6 rounded-xl"
+              style={`margin-left: ${index * 8}%; margin-right: ${index * 8}%;`}
+            >
+              <div class="tier-header flex flex-wrap items-baseline justify-between gap-4 mb-3">
+                <div class="flex items-baseline gap-3">
+                  <span class="tier-name text-lg font-bold">{tier.tier}</span>
+                  <span class="tier-label text-xs uppercase tracking-wider">Companies</span>
+                </div>
+                <span class="tier-exposure text-xl sm:text-2xl font-bold">{tier.exposure}</span>
+              </div>
+              <p class="tier-strategy text-sm mb-1">{tier.strategy}</p>
+              <p class="tier-ownership text-xs">{tier.ownership}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: LP Benefits -->
+  <div class="benefits-section py-24 sm:py-32 px-6 relative">
+    <div class="benefits-gradient absolute inset-0"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-benefits inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          LP Value
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          How This Serves LPs
+        </h2>
+      </div>
+
+      <div class="benefits-grid grid gap-6 md:grid-cols-3">
+        {lpBenefits.map((benefit, index) => (
+          <div
+            class="benefit-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="benefit-inner p-6 sm:p-8 rounded-2xl h-full">
+              <div class="benefit-number text-4xl font-bold mb-4">{index + 1}</div>
+              <h3 class="benefit-title text-lg font-bold mb-3">{benefit.title}</h3>
+              <p class="benefit-description text-sm">{benefit.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="closing-gradient absolute inset-0"></div>
+
+    <div class="closing-content reveal-item text-center relative z-10" data-reveal="fade-up">
+      <p class="closing-eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-4">
+        Institutional Grade
+      </p>
+      <h3 class="closing-headline text-3xl sm:text-4xl md:text-5xl font-bold max-w-3xl">
+        Venture Returns from the Longevity Ecosystem
+      </h3>
+      <p class="closing-text mt-6 text-lg sm:text-xl max-w-xl mx-auto">
+        Category-defining companies through critical inflection points
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-opening .eyebrow-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.2); }
+  }
+
+  /* Stage bar base */
+  .stage-bar {
+    transition: all 0.3s ease;
+  }
+
+  .stage-bar:hover {
+    filter: brightness(1.1);
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .fund-construction-section {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(59, 130, 246, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .eyebrow-text,
+  :global([data-mode="light"]) .closing-eyebrow {
+    color: #3b82f6;
+  }
+
+  :global([data-mode="light"]) .headline-text,
+  :global([data-mode="light"]) .closing-headline,
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .subtitle-text,
+  :global([data-mode="light"]) .section-subtitle,
+  :global([data-mode="light"]) .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .scroll-hint {
+    color: #3b82f6;
+    opacity: 0.4;
+  }
+
+  :global([data-mode="light"]) .metric-value {
+    color: #3b82f6;
+  }
+
+  :global([data-mode="light"]) .metric-label {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .section-badge {
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-stages {
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-geo {
+    color: #06b6d4;
+    border: 1px solid rgba(6, 182, 212, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-checks {
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-followon {
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-benefits {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  /* Economics cards - Light */
+  :global([data-mode="light"]) .economics-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+  }
+
+  :global([data-mode="light"]) .economics-value {
+    color: #3b82f6;
+  }
+
+  :global([data-mode="light"]) .economics-label {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .economics-description {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* Stage bars - Light */
+  :global([data-mode="light"]) .stages-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(139, 92, 246, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .stage-bar-seed { background: #8b5cf6; color: white; }
+  :global([data-mode="light"]) .stage-bar-series { background: #a78bfa; color: white; }
+  :global([data-mode="light"]) .stage-bar-followon { background: #c4b5fd; color: #5b21b6; }
+
+  :global([data-mode="light"]) .stage-legend-seed { color: #8b5cf6; }
+  :global([data-mode="light"]) .stage-legend-series { color: #a78bfa; }
+  :global([data-mode="light"]) .stage-legend-followon { color: #c4b5fd; }
+
+  :global([data-mode="light"]) .stage-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+  }
+
+  :global([data-mode="light"]) .stage-percentage-seed { color: #8b5cf6; }
+  :global([data-mode="light"]) .stage-percentage-series { color: #a78bfa; }
+  :global([data-mode="light"]) .stage-percentage-followon { color: #c4b5fd; }
+
+  :global([data-mode="light"]) .stage-name { color: var(--color-foreground); }
+  :global([data-mode="light"]) .stage-description { color: var(--color-foreground); opacity: 0.7; }
+  :global([data-mode="light"]) .stage-focus { color: var(--color-foreground); opacity: 0.5; }
+
+  /* Geography - Light */
+  :global([data-mode="light"]) .geo-donut-bg { color: rgba(6, 182, 212, 0.1); }
+  :global([data-mode="light"]) .geo-donut-primary { stroke: #06b6d4; }
+  :global([data-mode="light"]) .geo-donut-value { color: #06b6d4; }
+  :global([data-mode="light"]) .geo-donut-label { color: var(--color-foreground); opacity: 0.6; }
+  :global([data-mode="light"]) .geo-dot-primary { background: #06b6d4; }
+  :global([data-mode="light"]) .geo-dot-secondary { background: #67e8f9; }
+  :global([data-mode="light"]) .geo-region { color: var(--color-foreground); }
+  :global([data-mode="light"]) .geo-percentage { color: #06b6d4; }
+  :global([data-mode="light"]) .geo-description { color: var(--color-foreground); opacity: 0.6; }
+
+  /* Check sizes - Light */
+  :global([data-mode="light"]) .checks-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(16, 185, 129, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .check-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+  }
+
+  :global([data-mode="light"]) .check-value { color: #10b981; }
+  :global([data-mode="light"]) .check-label { color: var(--color-foreground); }
+  :global([data-mode="light"]) .check-description { color: var(--color-foreground); opacity: 0.6; }
+
+  /* Follow-on - Light */
+  :global([data-mode="light"]) .tier-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  :global([data-mode="light"]) .followon-tier-highlight .tier-inner {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  :global([data-mode="light"]) .tier-name { color: var(--color-foreground); }
+  :global([data-mode="light"]) .tier-label { color: var(--color-foreground); opacity: 0.5; }
+  :global([data-mode="light"]) .tier-exposure { color: #f59e0b; }
+  :global([data-mode="light"]) .tier-strategy { color: var(--color-foreground); opacity: 0.7; }
+  :global([data-mode="light"]) .tier-ownership { color: var(--color-foreground); opacity: 0.5; }
+
+  /* Benefits - Light */
+  :global([data-mode="light"]) .benefits-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(108, 99, 255, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .benefit-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="light"]) .benefit-number { color: var(--color-marjorelle-purple); opacity: 0.3; }
+  :global([data-mode="light"]) .benefit-title { color: var(--color-foreground); }
+  :global([data-mode="light"]) .benefit-description { color: var(--color-foreground); opacity: 0.6; }
+
+  :global([data-mode="light"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(59, 130, 246, 0.06), transparent 70%);
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .fund-construction-section {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(59, 130, 246, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .eyebrow-text,
+  :global([data-mode="dark"]) .closing-eyebrow {
+    color: #60a5fa;
+  }
+
+  :global([data-mode="dark"]) .headline-text,
+  :global([data-mode="dark"]) .closing-headline,
+  :global([data-mode="dark"]) .section-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .subtitle-text,
+  :global([data-mode="dark"]) .section-subtitle,
+  :global([data-mode="dark"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .scroll-hint {
+    color: #60a5fa;
+    opacity: 0.4;
+  }
+
+  :global([data-mode="dark"]) .metric-value {
+    color: #60a5fa;
+  }
+
+  :global([data-mode="dark"]) .metric-label {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .section-badge {
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-stages {
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-geo {
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-checks {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-followon {
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-benefits {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  /* Economics cards - Dark */
+  :global([data-mode="dark"]) .economics-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(96, 165, 250, 0.2);
+  }
+
+  :global([data-mode="dark"]) .economics-value { color: #60a5fa; }
+  :global([data-mode="dark"]) .economics-label { color: var(--color-alabaster); }
+  :global([data-mode="dark"]) .economics-description { color: var(--color-alabaster); opacity: 0.6; }
+
+  /* Stage bars - Dark */
+  :global([data-mode="dark"]) .stages-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(167, 139, 250, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .stage-bar-seed { background: #8b5cf6; color: white; }
+  :global([data-mode="dark"]) .stage-bar-series { background: #a78bfa; color: white; }
+  :global([data-mode="dark"]) .stage-bar-followon { background: #c4b5fd; color: #1e1b4b; }
+
+  :global([data-mode="dark"]) .stage-legend-seed { color: #a78bfa; }
+  :global([data-mode="dark"]) .stage-legend-series { color: #c4b5fd; }
+  :global([data-mode="dark"]) .stage-legend-followon { color: #ddd6fe; }
+
+  :global([data-mode="dark"]) .stage-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(167, 139, 250, 0.2);
+  }
+
+  :global([data-mode="dark"]) .stage-percentage-seed { color: #a78bfa; }
+  :global([data-mode="dark"]) .stage-percentage-series { color: #c4b5fd; }
+  :global([data-mode="dark"]) .stage-percentage-followon { color: #ddd6fe; }
+
+  :global([data-mode="dark"]) .stage-name { color: var(--color-alabaster); }
+  :global([data-mode="dark"]) .stage-description { color: var(--color-alabaster); opacity: 0.6; }
+  :global([data-mode="dark"]) .stage-focus { color: var(--color-alabaster); opacity: 0.4; }
+
+  /* Geography - Dark */
+  :global([data-mode="dark"]) .geo-donut-bg { color: rgba(34, 211, 238, 0.1); }
+  :global([data-mode="dark"]) .geo-donut-primary { stroke: #22d3ee; }
+  :global([data-mode="dark"]) .geo-donut-value { color: #22d3ee; }
+  :global([data-mode="dark"]) .geo-donut-label { color: var(--color-alabaster); opacity: 0.6; }
+  :global([data-mode="dark"]) .geo-dot-primary { background: #22d3ee; }
+  :global([data-mode="dark"]) .geo-dot-secondary { background: #67e8f9; }
+  :global([data-mode="dark"]) .geo-region { color: var(--color-alabaster); }
+  :global([data-mode="dark"]) .geo-percentage { color: #22d3ee; }
+  :global([data-mode="dark"]) .geo-description { color: var(--color-alabaster); opacity: 0.6; }
+
+  /* Check sizes - Dark */
+  :global([data-mode="dark"]) .checks-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(52, 211, 153, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .check-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="dark"]) .check-value { color: #34d399; }
+  :global([data-mode="dark"]) .check-label { color: var(--color-alabaster); }
+  :global([data-mode="dark"]) .check-description { color: var(--color-alabaster); opacity: 0.6; }
+
+  /* Follow-on - Dark */
+  :global([data-mode="dark"]) .tier-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .followon-tier-highlight .tier-inner {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.4);
+  }
+
+  :global([data-mode="dark"]) .tier-name { color: var(--color-alabaster); }
+  :global([data-mode="dark"]) .tier-label { color: var(--color-alabaster); opacity: 0.5; }
+  :global([data-mode="dark"]) .tier-exposure { color: #fbbf24; }
+  :global([data-mode="dark"]) .tier-strategy { color: var(--color-alabaster); opacity: 0.6; }
+  :global([data-mode="dark"]) .tier-ownership { color: var(--color-alabaster); opacity: 0.4; }
+
+  /* Benefits - Dark */
+  :global([data-mode="dark"]) .benefits-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(156, 133, 223, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .benefit-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(156, 133, 223, 0.2);
+  }
+
+  :global([data-mode="dark"]) .benefit-number { color: var(--color-lilac); opacity: 0.3; }
+  :global([data-mode="dark"]) .benefit-title { color: var(--color-alabaster); }
+  :global([data-mode="dark"]) .benefit-description { color: var(--color-alabaster); opacity: 0.6; }
+
+  :global([data-mode="dark"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(96, 165, 250, 0.1), transparent 70%);
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .fund-construction-section {
+    background: linear-gradient(180deg, var(--color-void) 0%, #0a1628 30%, #0d0518 70%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(59, 130, 246, 0.25), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .eyebrow-text,
+  :global([data-mode="vibrant"]) .closing-eyebrow {
+    color: #60a5fa;
+    text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .headline-text,
+  :global([data-mode="vibrant"]) .closing-headline,
+  :global([data-mode="vibrant"]) .section-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .subtitle-text,
+  :global([data-mode="vibrant"]) .section-subtitle,
+  :global([data-mode="vibrant"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint {
+    color: #60a5fa;
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  :global([data-mode="vibrant"]) .metric-value {
+    color: #60a5fa;
+    text-shadow: 0 0 30px rgba(96, 165, 250, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .metric-label {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .section-badge {
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.5);
+    box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-stages {
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.5);
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-geo {
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.5);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-checks {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-followon {
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-benefits {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.5);
+    box-shadow: 0 0 15px rgba(156, 133, 223, 0.2);
+  }
+
+  /* Economics - Vibrant */
+  :global([data-mode="vibrant"]) .economics-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(10, 22, 40, 0.8));
+    border: 1px solid rgba(96, 165, 250, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .economics-value {
+    color: #60a5fa;
+    text-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .economics-label { color: var(--color-alabaster); }
+  :global([data-mode="vibrant"]) .economics-description { color: var(--color-alabaster); opacity: 0.7; }
+
+  /* Stage bars - Vibrant */
+  :global([data-mode="vibrant"]) .stages-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(167, 139, 250, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .stage-bar-seed {
+    background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+    color: white;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  }
+  :global([data-mode="vibrant"]) .stage-bar-series {
+    background: linear-gradient(90deg, #a78bfa, #c4b5fd);
+    color: white;
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+  }
+  :global([data-mode="vibrant"]) .stage-bar-followon {
+    background: linear-gradient(90deg, #c4b5fd, #ddd6fe);
+    color: #1e1b4b;
+    box-shadow: 0 0 10px rgba(196, 181, 253, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .stage-legend-seed { color: #a78bfa; text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
+  :global([data-mode="vibrant"]) .stage-legend-series { color: #c4b5fd; }
+  :global([data-mode="vibrant"]) .stage-legend-followon { color: #ddd6fe; }
+
+  :global([data-mode="vibrant"]) .stage-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(167, 139, 250, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .stage-percentage-seed { color: #a78bfa; text-shadow: 0 0 10px rgba(167, 139, 250, 0.5); }
+  :global([data-mode="vibrant"]) .stage-percentage-series { color: #c4b5fd; }
+  :global([data-mode="vibrant"]) .stage-percentage-followon { color: #ddd6fe; }
+
+  :global([data-mode="vibrant"]) .stage-name { color: var(--color-alabaster); }
+  :global([data-mode="vibrant"]) .stage-description { color: var(--color-alabaster); opacity: 0.7; }
+  :global([data-mode="vibrant"]) .stage-focus { color: var(--color-alabaster); opacity: 0.5; }
+
+  /* Geography - Vibrant */
+  :global([data-mode="vibrant"]) .geo-donut-bg { color: rgba(34, 211, 238, 0.15); }
+  :global([data-mode="vibrant"]) .geo-donut-primary { stroke: #22d3ee; filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5)); }
+  :global([data-mode="vibrant"]) .geo-donut-value { color: #22d3ee; text-shadow: 0 0 15px rgba(34, 211, 238, 0.5); }
+  :global([data-mode="vibrant"]) .geo-donut-label { color: var(--color-alabaster); opacity: 0.7; }
+  :global([data-mode="vibrant"]) .geo-dot-primary { background: #22d3ee; box-shadow: 0 0 10px rgba(34, 211, 238, 0.5); }
+  :global([data-mode="vibrant"]) .geo-dot-secondary { background: #67e8f9; box-shadow: 0 0 8px rgba(103, 232, 249, 0.4); }
+  :global([data-mode="vibrant"]) .geo-region { color: var(--color-alabaster); }
+  :global([data-mode="vibrant"]) .geo-percentage { color: #22d3ee; text-shadow: 0 0 10px rgba(34, 211, 238, 0.5); }
+  :global([data-mode="vibrant"]) .geo-description { color: var(--color-alabaster); opacity: 0.7; }
+
+  /* Check sizes - Vibrant */
+  :global([data-mode="vibrant"]) .checks-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(52, 211, 153, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .check-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(10, 31, 26, 0.8));
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .check-value { color: #34d399; text-shadow: 0 0 15px rgba(52, 211, 153, 0.5); }
+  :global([data-mode="vibrant"]) .check-label { color: var(--color-alabaster); }
+  :global([data-mode="vibrant"]) .check-description { color: var(--color-alabaster); opacity: 0.7; }
+
+  /* Follow-on - Vibrant */
+  :global([data-mode="vibrant"]) .tier-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .followon-tier-highlight .tier-inner {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(26, 10, 53, 0.9));
+    border-color: rgba(251, 191, 36, 0.5);
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .tier-name { color: var(--color-alabaster); }
+  :global([data-mode="vibrant"]) .tier-label { color: var(--color-alabaster); opacity: 0.6; }
+  :global([data-mode="vibrant"]) .tier-exposure { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+  :global([data-mode="vibrant"]) .tier-strategy { color: var(--color-alabaster); opacity: 0.7; }
+  :global([data-mode="vibrant"]) .tier-ownership { color: var(--color-alabaster); opacity: 0.5; }
+
+  /* Benefits - Vibrant */
+  :global([data-mode="vibrant"]) .benefits-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(156, 133, 223, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .benefit-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .benefit-number { color: var(--color-lilac); opacity: 0.4; text-shadow: 0 0 20px var(--color-lilac); }
+  :global([data-mode="vibrant"]) .benefit-title { color: var(--color-alabaster); }
+  :global([data-mode="vibrant"]) .benefit-description { color: var(--color-alabaster); opacity: 0.7; }
+
+  :global([data-mode="vibrant"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(96, 165, 250, 0.2), transparent 70%);
+  }
+</style>
+
+<script>
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.fund-construction-section .reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>
