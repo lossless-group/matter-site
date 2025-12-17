@@ -7,14 +7,20 @@
  *
  * Features:
  * - Hero: $1T+ annual cost headline
- * - Disease cluster cost cards
+ * - Disease cluster cost cards with inline citations
  * - Healthspan vs Lifespan visualization
  * - US demographics and cost projections
  * - Opportunity framing for longevity biotech
+ * - Sources section with all referenced research
  * - Supports light, dark, and vibrant visual modes
  *
  * Based on research from "The Aging Crisis.md"
  */
+
+import type { CitationReference } from '@lib/citations/types';
+import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
+import InlineCitation from '@components/citations/InlineCitation.astro';
+import Sources from '@components/citations/Sources.astro';
 
 interface Props {
   title?: string;
@@ -26,6 +32,65 @@ const {
   subtitle = 'Age-related diseases cost $1T+ annually in global healthcare',
 } = Astro.props as Props;
 
+// =============================================================================
+// Citation Library (hex codes from "The Aging Crisis.md")
+// =============================================================================
+const citations: Record<string, CitationReference> = {
+  alyqs4: {
+    hexCode: 'alyqs4',
+    title: 'Key Drivers of 2025 Health Care Cost Increases',
+    url: 'https://parrottbenefitgroup.com/key-drivers-of-2025-health-care-cost-increases/',
+    source: 'Parrott Benefit Group',
+    publishedDate: '2024-11-22',
+  },
+  vw99oj: {
+    hexCode: 'vw99oj',
+    title: 'Why Health Care Costs Are Rising in 2025',
+    url: 'https://watkinsinsurancegroup.com/blog/why-health-care-costs-are-rising-in-2025/',
+    source: 'Watkins Insurance Group',
+    publishedDate: '2025-01-30',
+  },
+  m761t3: {
+    hexCode: 'm761t3',
+    title: 'Global Healthcare Costs Projected to Rise More Than 10% in 2026',
+    url: 'https://worldatwork.org/publications/workspan-daily/global-healthcare-costs-projected-to-rise-more-than-10-in-2026',
+    source: 'WorldatWork',
+    publishedDate: '2025-11-13',
+  },
+  k9m6ww: {
+    hexCode: 'k9m6ww',
+    title: 'How heavy is the medical expense burden among the older adults',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10313336/',
+    source: 'NIH/PMC',
+    publishedDate: '2023-06-16',
+  },
+  '67utob': {
+    hexCode: '67utob',
+    title: 'Fidelity Investments® Releases 2025 Retiree Health Care Cost Estimate',
+    url: 'https://newsroom.fidelity.com/pressreleases/fidelity-investments--releases-2025-retiree-health-care-cost-estimate--a-timely-reminder-for-all-gen/s/3c62e988-12e2-4dc8-afb4-f44b06c6d52e',
+    source: 'Fidelity Investments',
+    publishedDate: '2025-07-30',
+  },
+  dvh7iv: {
+    hexCode: 'dvh7iv',
+    title: 'Rising Healthcare Costs: GLP-1 & Containment Strategies',
+    url: 'https://www.definitivehc.com/blog/rising-healthcare-costs',
+    source: 'Definitive Healthcare',
+    publishedDate: '2025-09-12',
+  },
+  qg3qsq: {
+    hexCode: 'qg3qsq',
+    title: '2025 Healthcare Cost Outlook | Drivers & Trend Insights',
+    url: 'https://www.bbrown.com/us/insight/2025-healthcare-cost-outlook-drivers-trend-insights/',
+    source: 'Brown & Brown',
+    publishedDate: '2024-10-28',
+  },
+};
+
+// =============================================================================
+// Data with Citations
+// =============================================================================
+
 // Disease cluster costs
 const diseaseCosts = [
   {
@@ -34,6 +99,7 @@ const diseaseCosts = [
     timeframe: 'by 2050 (US)',
     description: 'Leading cause of death globally, costs projected to triple from current levels.',
     icon: '❤️',
+    citationKey: 'alyqs4',
   },
   {
     disease: 'Diabetes',
@@ -41,6 +107,7 @@ const diseaseCosts = [
     timeframe: 'per year (global)',
     description: 'Approaching $1T annually worldwide in direct health expenditure.',
     icon: '🩸',
+    citationKey: null, // IDF data, not in our source set
   },
   {
     disease: 'Cancer',
@@ -48,6 +115,7 @@ const diseaseCosts = [
     timeframe: 'cost driver',
     description: 'Now the leading condition driving insurer medical costs globally, cited by 57% of insurers.',
     icon: '🔬',
+    citationKey: 'm761t3',
   },
   {
     disease: 'Chronic Conditions',
@@ -55,6 +123,7 @@ const diseaseCosts = [
     timeframe: 'of US spend',
     description: 'Nearly all US healthcare spending goes to chronic and mental health conditions.',
     icon: '💊',
+    citationKey: 'vw99oj',
   },
 ];
 
@@ -64,6 +133,7 @@ const healthspanData = {
   lifespan: 80,
   gap: 15,
   gapDescription: 'Years living with chronic disease, disability, or frailty',
+  citationKey: 'k9m6ww',
 };
 
 // US demographics
@@ -72,21 +142,25 @@ const usStats = [
     stat: '55M+',
     label: 'Americans 65+',
     description: 'Already over 55 million Americans aged 65 or older today.',
+    citationKey: 'vw99oj',
   },
   {
     stat: '80M',
     label: 'By 2040',
     description: 'Projected 65+ population will reach almost 80 million.',
+    citationKey: 'alyqs4',
   },
   {
     stat: '20%',
     label: 'of Population',
     description: '1 in 5 Americans will be 65+ by 2030.',
+    citationKey: 'alyqs4',
   },
   {
     stat: '5×',
     label: 'Cost Multiplier',
     description: 'Per-person spending for 65+ is 5× higher than for children.',
+    citationKey: 'alyqs4',
   },
 ];
 
@@ -96,21 +170,44 @@ const costImplications = [
     stat: '$172,500',
     label: 'Per Retiree',
     description: 'Average healthcare cost during retirement, more than doubled since 2002.',
-    source: 'Fidelity 2025',
+    citationKey: '67utob',
   },
   {
     stat: '7-8%',
     label: 'Annual Increase',
     description: 'Expected healthcare cost growth for US employers in 2025.',
-    source: 'Industry Projections',
+    citationKey: 'qg3qsq',
   },
   {
     stat: '2.5×',
     label: 'vs Working Age',
     description: 'Per-capita spending for 65+ compared to working-age adults.',
-    source: 'CDC',
+    citationKey: 'alyqs4',
   },
 ];
+
+// =============================================================================
+// Build Citation Index (assigns sequential numbers)
+// =============================================================================
+
+// Collect all citation keys in order of appearance
+const allCitationKeys = [
+  ...diseaseCosts.map(d => d.citationKey),
+  healthspanData.citationKey,
+  ...usStats.map(s => s.citationKey),
+  ...costImplications.map(c => c.citationKey),
+].filter((key): key is string => key !== null);
+
+// Build the citation references array
+const citationRefs = allCitationKeys
+  .map(key => citations[key])
+  .filter((c): c is CitationReference => c !== undefined);
+
+// Build indexed map
+const citationIndex = buildCitationIndex(citationRefs);
+
+// Helper to get indexed citation
+const getCite = (key: string | null) => key ? citationIndex.get(key) : undefined;
 ---
 
 <section class="aging-crisis-section relative overflow-hidden">
@@ -187,6 +284,9 @@ const costImplications = [
                   </div>
                   <p class="disease-description text-sm leading-relaxed">
                     {item.description}
+                    {getCite(item.citationKey) && (
+                      <InlineCitation {...getCite(item.citationKey)!} />
+                    )}
                   </p>
                 </div>
               </div>
@@ -243,6 +343,9 @@ const costImplications = [
           <span class="gap-unit text-xl ml-2">years</span>
           <p class="gap-description mt-2 text-base sm:text-lg max-w-md mx-auto">
             {healthspanData.gapDescription}
+            {getCite(healthspanData.citationKey) && (
+              <InlineCitation {...getCite(healthspanData.citationKey)!} />
+            )}
           </p>
         </div>
       </div>
@@ -282,6 +385,9 @@ const costImplications = [
               </span>
               <p class="stat-description text-xs sm:text-sm leading-relaxed">
                 {item.description}
+                {getCite(item.citationKey) && (
+                  <InlineCitation {...getCite(item.citationKey)!} />
+                )}
               </p>
             </div>
           </article>
@@ -322,12 +428,12 @@ const costImplications = [
               <span class="cost-label text-sm font-semibold uppercase tracking-wider block mb-3">
                 {item.label}
               </span>
-              <p class="cost-description text-sm leading-relaxed mb-3">
+              <p class="cost-description text-sm leading-relaxed">
                 {item.description}
+                {getCite(item.citationKey) && (
+                  <InlineCitation {...getCite(item.citationKey)!} />
+                )}
               </p>
-              <span class="cost-source text-xs uppercase tracking-widest">
-                {item.source}
-              </span>
             </div>
           </article>
         ))}
@@ -352,6 +458,13 @@ const costImplications = [
       <p class="closing-subtext mt-4 text-base max-w-xl mx-auto">
         If 90% of spend is tied to chronic conditions linked to aging, even single-digit percentage reductions cascade into hundreds of billions in savings.
       </p>
+    </div>
+  </div>
+
+  <!-- Sources Section -->
+  <div class="sources-wrapper px-6 pb-16 relative z-10">
+    <div class="max-w-4xl mx-auto">
+      <Sources citations={citationsToArray(citationIndex)} />
     </div>
   </div>
 </section>
@@ -573,10 +686,6 @@ const costImplications = [
     opacity: 0.65;
   }
 
-  :global([data-mode="light"]) .cost-source {
-    color: var(--color-foreground);
-    opacity: 0.4;
-  }
 
   /* Light mode healthspan section */
   :global([data-mode="light"]) .healthspan-gradient {
@@ -764,10 +873,6 @@ const costImplications = [
     opacity: 0.6;
   }
 
-  :global([data-mode="dark"]) .cost-source {
-    color: var(--color-alabaster);
-    opacity: 0.4;
-  }
 
   /* Dark mode healthspan section */
   :global([data-mode="dark"]) .healthspan-gradient {
@@ -969,10 +1074,6 @@ const costImplications = [
     opacity: 0.7;
   }
 
-  :global([data-mode="vibrant"]) .cost-source {
-    color: var(--color-alabaster);
-    opacity: 0.5;
-  }
 
   /* Vibrant mode healthspan section */
   :global([data-mode="vibrant"]) .healthspan-gradient {
