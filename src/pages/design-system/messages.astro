@@ -9,6 +9,7 @@ import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 
 // Import message section components
 import AgingPopulation from '@sections/AgingPopulation.astro';
+import TheAgingCrisis from '@sections/TheAgingCrisis.astro';
 ---
 
 <BaseThemeLayout title="Messages - Design System" mode="dark">
@@ -17,6 +18,12 @@ import AgingPopulation from '@sections/AgingPopulation.astro';
     <p class="text-(--color-muted-foreground)">
       Slide message designs from <code class="bg-(--color-muted) px-2 py-1 rounded text-sm">layouts/sections/</code>
     </p>
+  </div>
+
+  <!-- The Aging Crisis Section -->
+  <div class="variant-section">
+    <div class="variant-label">The Aging Crisis: The Problem We're Solving</div>
+    <TheAgingCrisis />
   </div>
 
   <!-- Aging Population Section -->
