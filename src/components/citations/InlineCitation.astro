@@ -2,8 +2,9 @@
 /**
  * InlineCitation Component
  *
- * Renders an inline citation marker [n] with a hover popover showing
- * the source title, publication, and link to the original.
+ * Renders an inline citation marker [n] with a hover popover.
+ * Uses data attributes to store citation info, with a global popover
+ * container that gets populated on hover.
  *
  * Supports light/dark/vibrant modes via CSS custom properties.
  */
@@ -29,34 +30,19 @@ const { index, hexCode, title, url, source, publishedDate } = Astro.props;
 const displaySource = source || new URL(url).hostname.replace('www.', '');
 ---
 
-<span class="citation-wrapper" data-hex={hexCode}>
-  <sup class="citation-marker" tabindex="0" role="button" aria-describedby={`popover-${hexCode}`}>
-    [{index}]
-  </sup>
-  <div class="citation-popover" id={`popover-${hexCode}`} role="tooltip">
-    <div class="popover-arrow"></div>
-    <div class="popover-content">
-      <p class="popover-title">{title}</p>
-      <p class="popover-source">{displaySource}</p>
-      {publishedDate && <p class="popover-date">{publishedDate}</p>}
-      <a href={url} target="_blank" rel="noopener noreferrer" class="popover-link">
-        <span>View Source</span>
-        <svg class="popover-link-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
-      </a>
-    </div>
-  </div>
-</span>
+<sup
+  class="citation-marker"
+  tabindex="0"
+  role="button"
+  data-citation-title={title}
+  data-citation-source={displaySource}
+  data-citation-url={url}
+  data-citation-date={publishedDate || ''}
+>
+  [{index}]
+</sup>
 
 <style>
-  .citation-wrapper {
-    position: relative;
-    display: inline;
-  }
-
   .citation-marker {
     cursor: help;
     font-weight: 600;
@@ -72,82 +58,6 @@ const displaySource = source || new URL(url).hostname.replace('www.', '');
     outline-offset: 2px;
   }
 
-  .citation-popover {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-    z-index: 1000;
-    pointer-events: none;
-    transform-origin: bottom center;
-  }
-
-  .citation-wrapper:hover .citation-popover,
-  .citation-wrapper:focus-within .citation-popover {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  .popover-arrow {
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-    width: 12px;
-    height: 12px;
-    z-index: -1;
-  }
-
-  .popover-content {
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    min-width: 220px;
-    max-width: 320px;
-    text-align: left;
-  }
-
-  .popover-title {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    line-height: 1.4;
-    margin: 0 0 0.375rem 0;
-  }
-
-  .popover-source {
-    font-size: 0.6875rem;
-    margin: 0 0 0.25rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .popover-date {
-    font-size: 0.6875rem;
-    margin: 0 0 0.5rem 0;
-  }
-
-  .popover-link {
-    font-size: 0.75rem;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0;
-    transition: all 0.15s ease;
-  }
-
-  .popover-link:hover {
-    text-decoration: underline;
-  }
-
-  .popover-link-icon {
-    flex-shrink: 0;
-  }
-
   /* ==========================================================================
      LIGHT MODE
      ========================================================================== */
@@ -161,36 +71,6 @@ const displaySource = source || new URL(url).hostname.replace('www.', '');
     background: rgba(108, 99, 255, 0.2);
   }
 
-  :global([data-mode="light"]) .popover-content {
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.1);
-  }
-
-  :global([data-mode="light"]) .popover-arrow {
-    background: white;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  :global([data-mode="light"]) .popover-title {
-    color: var(--color-foreground);
-  }
-
-  :global([data-mode="light"]) .popover-source {
-    color: var(--color-marjorelle-purple);
-    opacity: 0.8;
-  }
-
-  :global([data-mode="light"]) .popover-date {
-    color: var(--color-foreground);
-    opacity: 0.5;
-  }
-
-  :global([data-mode="light"]) .popover-link {
-    color: var(--color-marjorelle-purple);
-  }
-
   /* ==========================================================================
      DARK MODE
      ========================================================================== */
@@ -202,36 +82,6 @@ const displaySource = source || new URL(url).hostname.replace('www.', '');
   :global([data-mode="dark"]) .citation-marker:hover {
     color: var(--color-lilac);
     background: rgba(156, 133, 223, 0.25);
-  }
-
-  :global([data-mode="dark"]) .popover-content {
-    background: rgba(15, 9, 35, 0.98);
-    border: 1px solid rgba(156, 133, 223, 0.25);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), 0 0 1px rgba(156, 133, 223, 0.3);
-  }
-
-  :global([data-mode="dark"]) .popover-arrow {
-    background: rgba(15, 9, 35, 0.98);
-    border-right: 1px solid rgba(156, 133, 223, 0.25);
-    border-bottom: 1px solid rgba(156, 133, 223, 0.25);
-  }
-
-  :global([data-mode="dark"]) .popover-title {
-    color: var(--color-alabaster);
-  }
-
-  :global([data-mode="dark"]) .popover-source {
-    color: var(--color-lilac);
-    opacity: 0.8;
-  }
-
-  :global([data-mode="dark"]) .popover-date {
-    color: var(--color-alabaster);
-    opacity: 0.5;
-  }
-
-  :global([data-mode="dark"]) .popover-link {
-    color: var(--color-lilac);
   }
 
   /* ==========================================================================
@@ -248,40 +98,258 @@ const displaySource = source || new URL(url).hostname.replace('www.', '');
     background: rgba(156, 133, 223, 0.3);
     box-shadow: 0 0 15px rgba(156, 133, 223, 0.3);
   }
-
-  :global([data-mode="vibrant"]) .popover-content {
-    background: linear-gradient(135deg, rgba(15, 9, 35, 0.98), rgba(26, 10, 53, 0.95));
-    border: 1px solid rgba(156, 133, 223, 0.4);
-    box-shadow: 0 4px 40px rgba(102, 67, 226, 0.3), 0 0 1px rgba(156, 133, 223, 0.5), inset 0 0 20px rgba(102, 67, 226, 0.05);
-  }
-
-  :global([data-mode="vibrant"]) .popover-arrow {
-    background: rgba(15, 9, 35, 0.98);
-    border-right: 1px solid rgba(156, 133, 223, 0.4);
-    border-bottom: 1px solid rgba(156, 133, 223, 0.4);
-  }
-
-  :global([data-mode="vibrant"]) .popover-title {
-    color: var(--color-alabaster);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  }
-
-  :global([data-mode="vibrant"]) .popover-source {
-    color: var(--color-lilac);
-    text-shadow: 0 0 10px var(--color-lilac);
-  }
-
-  :global([data-mode="vibrant"]) .popover-date {
-    color: var(--color-alabaster);
-    opacity: 0.6;
-  }
-
-  :global([data-mode="vibrant"]) .popover-link {
-    color: var(--color-lilac);
-    text-shadow: 0 0 10px var(--color-lilac);
-  }
-
-  :global([data-mode="vibrant"]) .popover-link:hover {
-    filter: drop-shadow(0 0 5px var(--color-lilac));
-  }
 </style>
+
+<script>
+  // Global citation popover system
+  // Creates a single popover element that gets positioned and populated on hover
+
+  function initCitationPopover() {
+    // Only create the popover once
+    if (document.getElementById('citation-popover-global')) return;
+
+    // Create the global popover element
+    const popover = document.createElement('div');
+    popover.id = 'citation-popover-global';
+    popover.className = 'citation-popover-global';
+    popover.innerHTML = `
+      <div class="popover-arrow"></div>
+      <div class="popover-content">
+        <div class="popover-title"></div>
+        <div class="popover-source"></div>
+        <div class="popover-date"></div>
+        <a class="popover-link" target="_blank" rel="noopener noreferrer">
+          <span>View Source</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+    `;
+
+    // Add styles for the global popover
+    const style = document.createElement('style');
+    style.textContent = `
+      .citation-popover-global {
+        position: fixed;
+        z-index: 99999;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.15s ease, visibility 0.15s ease;
+      }
+      .citation-popover-global.is-visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+      .citation-popover-global .popover-arrow {
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 12px;
+        height: 12px;
+        z-index: -1;
+      }
+      .citation-popover-global .popover-content {
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        min-width: 220px;
+        max-width: 320px;
+        text-align: left;
+      }
+      .citation-popover-global .popover-title {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        line-height: 1.4;
+        margin: 0 0 0.375rem 0;
+      }
+      .citation-popover-global .popover-source {
+        font-size: 0.6875rem;
+        margin: 0 0 0.25rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .citation-popover-global .popover-date {
+        font-size: 0.6875rem;
+        margin: 0 0 0.5rem 0;
+      }
+      .citation-popover-global .popover-date:empty {
+        display: none;
+      }
+      .citation-popover-global .popover-link {
+        font-size: 0.75rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0;
+      }
+      .citation-popover-global .popover-link:hover {
+        text-decoration: underline;
+      }
+
+      /* Light mode */
+      [data-mode="light"] .citation-popover-global .popover-content {
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      }
+      [data-mode="light"] .citation-popover-global .popover-arrow {
+        background: white;
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      [data-mode="light"] .citation-popover-global .popover-title { color: #1a1a2e; }
+      [data-mode="light"] .citation-popover-global .popover-source { color: #6c63ff; opacity: 0.8; }
+      [data-mode="light"] .citation-popover-global .popover-date { color: #1a1a2e; opacity: 0.5; }
+      [data-mode="light"] .citation-popover-global .popover-link { color: #6c63ff; }
+
+      /* Dark mode */
+      [data-mode="dark"] .citation-popover-global .popover-content {
+        background: rgba(15, 9, 35, 0.98);
+        border: 1px solid rgba(156, 133, 223, 0.25);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      }
+      [data-mode="dark"] .citation-popover-global .popover-arrow {
+        background: rgba(15, 9, 35, 0.98);
+        border-left: 1px solid rgba(156, 133, 223, 0.25);
+        border-top: 1px solid rgba(156, 133, 223, 0.25);
+      }
+      [data-mode="dark"] .citation-popover-global .popover-title { color: #f5f5f5; }
+      [data-mode="dark"] .citation-popover-global .popover-source { color: #9c85df; opacity: 0.8; }
+      [data-mode="dark"] .citation-popover-global .popover-date { color: #f5f5f5; opacity: 0.5; }
+      [data-mode="dark"] .citation-popover-global .popover-link { color: #9c85df; }
+
+      /* Vibrant mode */
+      [data-mode="vibrant"] .citation-popover-global .popover-content {
+        background: linear-gradient(135deg, rgba(15, 9, 35, 0.98), rgba(26, 10, 53, 0.95));
+        border: 1px solid rgba(156, 133, 223, 0.4);
+        box-shadow: 0 4px 40px rgba(102, 67, 226, 0.3);
+      }
+      [data-mode="vibrant"] .citation-popover-global .popover-arrow {
+        background: rgba(15, 9, 35, 0.98);
+        border-left: 1px solid rgba(156, 133, 223, 0.4);
+        border-top: 1px solid rgba(156, 133, 223, 0.4);
+      }
+      [data-mode="vibrant"] .citation-popover-global .popover-title { color: #f5f5f5; }
+      [data-mode="vibrant"] .citation-popover-global .popover-source { color: #9c85df; }
+      [data-mode="vibrant"] .citation-popover-global .popover-date { color: #f5f5f5; opacity: 0.6; }
+      [data-mode="vibrant"] .citation-popover-global .popover-link { color: #9c85df; }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(popover);
+
+    // Get popover elements
+    const arrow = popover.querySelector('.popover-arrow') as HTMLElement;
+    const titleEl = popover.querySelector('.popover-title') as HTMLElement;
+    const sourceEl = popover.querySelector('.popover-source') as HTMLElement;
+    const dateEl = popover.querySelector('.popover-date') as HTMLElement;
+    const linkEl = popover.querySelector('.popover-link') as HTMLAnchorElement;
+
+    let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+    let currentMarker: HTMLElement | null = null;
+
+    function showPopover(marker: HTMLElement) {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+
+      currentMarker = marker;
+
+      // Populate from data attributes
+      titleEl.textContent = marker.dataset.citationTitle || '';
+      sourceEl.textContent = marker.dataset.citationSource || '';
+      dateEl.textContent = marker.dataset.citationDate || '';
+      linkEl.href = marker.dataset.citationUrl || '#';
+
+      // Position the popover
+      const rect = marker.getBoundingClientRect();
+
+      // First show invisibly to measure
+      popover.style.visibility = 'hidden';
+      popover.style.opacity = '0';
+      popover.classList.add('is-visible');
+
+      requestAnimationFrame(() => {
+        const popoverRect = popover.getBoundingClientRect();
+
+        let left = rect.left + (rect.width / 2) - (popoverRect.width / 2);
+        let top = rect.bottom + 8;
+
+        // Keep in viewport
+        const padding = 12;
+        if (left < padding) left = padding;
+        if (left + popoverRect.width > window.innerWidth - padding) {
+          left = window.innerWidth - popoverRect.width - padding;
+        }
+
+        // Flip above if needed
+        if (top + popoverRect.height > window.innerHeight - padding) {
+          top = rect.top - popoverRect.height - 8;
+          arrow.style.top = 'auto';
+          arrow.style.bottom = '-6px';
+        } else {
+          arrow.style.top = '-6px';
+          arrow.style.bottom = 'auto';
+        }
+
+        popover.style.left = `${left}px`;
+        popover.style.top = `${top}px`;
+        popover.style.visibility = '';
+        popover.style.opacity = '';
+      });
+    }
+
+    function hidePopover() {
+      hideTimeout = setTimeout(() => {
+        popover.classList.remove('is-visible');
+        currentMarker = null;
+      }, 150);
+    }
+
+    // Event delegation for all citation markers
+    document.addEventListener('mouseenter', (e) => {
+      const marker = (e.target as HTMLElement).closest('.citation-marker');
+      if (marker) showPopover(marker as HTMLElement);
+    }, true);
+
+    document.addEventListener('mouseleave', (e) => {
+      const marker = (e.target as HTMLElement).closest('.citation-marker');
+      if (marker) hidePopover();
+    }, true);
+
+    // Keep popover open when hovering over it
+    popover.addEventListener('mouseenter', () => {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    });
+
+    popover.addEventListener('mouseleave', hidePopover);
+
+    // Focus events
+    document.addEventListener('focusin', (e) => {
+      const marker = (e.target as HTMLElement).closest('.citation-marker');
+      if (marker) showPopover(marker as HTMLElement);
+    });
+
+    document.addEventListener('focusout', (e) => {
+      const marker = (e.target as HTMLElement).closest('.citation-marker');
+      if (marker) hidePopover();
+    });
+  }
+
+  // Initialize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCitationPopover);
+  } else {
+    initCitationPopover();
+  }
+  document.addEventListener('astro:page-load', initCitationPopover);
+</script>
