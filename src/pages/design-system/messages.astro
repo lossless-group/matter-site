@@ -1,0 +1,50 @@
+---
+/**
+ * Design System: Messages Showcase
+ *
+ * A page for iterating on different slide messages and data visualizations.
+ * Displays section components that present key fund messaging.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+
+// Import message section components
+import AgingPopulation from '@sections/AgingPopulation.astro';
+---
+
+<BaseThemeLayout title="Messages - Design System" mode="dark">
+  <div class="design-system-header py-8 px-6 text-center border-b border-(--color-border)">
+    <h1 class="text-3xl font-bold mb-2">Message Variants</h1>
+    <p class="text-(--color-muted-foreground)">
+      Slide message designs from <code class="bg-(--color-muted) px-2 py-1 rounded text-sm">layouts/sections/</code>
+    </p>
+  </div>
+
+  <!-- Aging Population Section -->
+  <div class="variant-section">
+    <div class="variant-label">Aging Population: The Longevity Opportunity</div>
+    <AgingPopulation />
+  </div>
+</BaseThemeLayout>
+
+<style>
+  .variant-section {
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .variant-label {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
+  }
+</style>

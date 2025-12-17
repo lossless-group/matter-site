@@ -1,0 +1,862 @@
+---
+/**
+ * AgingPopulation Section: "The Longevity Opportunity"
+ *
+ * A data-driven section showcasing the global aging demographic shift
+ * and the investment opportunity in the longevity economy.
+ *
+ * Features:
+ * - Hero statistic: 2B people 60+ by 2050
+ * - Supporting data cards with scroll reveal
+ * - Sections for demographic data, science breakthroughs, and economy
+ * - Supports light, dark, and vibrant visual modes
+ *
+ * Based on research from Longevity Economy 2.md
+ */
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'The Global Aging Wave',
+  subtitle = 'A demographic shift creating a multi-trillion dollar opportunity',
+} = Astro.props as Props;
+
+// Key demographic statistics
+const demographicStats = [
+  {
+    stat: '2.1B',
+    label: 'People 60+ by 2050',
+    description: 'The UN projects the global population aged 60+ will roughly double to 2.1 billion by 2050.',
+    source: 'United Nations',
+  },
+  {
+    stat: '1.6B',
+    label: 'People 65+ by 2050',
+    description: 'Population aged 65+ expected to reach around 1.6 billion, nearly double today\'s 857 million.',
+    source: 'NIH',
+  },
+  {
+    stat: '3x',
+    label: 'Growth in 80+ Population',
+    description: 'The "oldest old" (80+) will more than triple from 127M in 2015 to 447M by 2050.',
+    source: 'NIH',
+  },
+  {
+    stat: '1 in 4',
+    label: 'Asians over 60 by 2050',
+    description: 'In Asia, one in four people will be over 60, with some economies nearing 40% aged 65+.',
+    source: 'HelpAge International',
+  },
+];
+
+// Scientific breakthroughs
+const scienceBreakthroughs = [
+  {
+    title: 'CRISPR & Genetic Interventions',
+    description: 'Evolved from basic gene editing to base editing, prime editing, and epigenome editing—enabling precise interventions in age-related pathways.',
+    icon: 'dna',
+  },
+  {
+    title: 'Senolytics',
+    description: 'Drugs that selectively clear senescent "zombie" cells, implicated in chronic inflammation and age-related diseases.',
+    icon: 'cell',
+  },
+  {
+    title: 'AI-Driven Drug Discovery',
+    description: 'Applied to multi-omics datasets and biomarker streams to identify aging signatures and enable biological-age-driven interventions.',
+    icon: 'brain',
+  },
+];
+
+// Economy data
+const economyPoints = [
+  {
+    stat: '25%',
+    label: 'of Global Consumption',
+    description: 'Seniors will account for one-quarter of global consumption by 2050, double their share in 1997.',
+  },
+  {
+    stat: '$7T+',
+    label: 'Longevity Economy',
+    description: 'Healthcare, financial products, housing, caregiving, and consumer markets serving older adults.',
+  },
+  {
+    stat: '77 years',
+    label: 'Life Expectancy by 2050',
+    description: 'Global life expectancy projected to reach 77 years by 2050, up from 73 years in 2023.',
+  },
+];
+---
+
+<section class="aging-population-section relative overflow-hidden">
+  <!-- Hero: The Big Number -->
+  <div class="hero-opening min-h-[80vh] flex flex-col items-center justify-center px-6 py-20 relative">
+    <div class="hero-gradient absolute inset-0"></div>
+
+    <!-- Eyebrow -->
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-6 relative z-10">
+      Why Now
+    </p>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- The Big Stat -->
+    <div class="big-stat-wrapper mt-16 relative z-10 reveal-item" data-reveal="scale-up">
+      <div class="big-stat text-center">
+        <span class="big-stat-number text-7xl sm:text-8xl md:text-9xl font-bold tracking-tight">2B</span>
+        <p class="big-stat-label text-lg sm:text-xl mt-4 font-medium">people over 60 by 2050</p>
+        <p class="big-stat-source text-xs mt-2 uppercase tracking-widest">United Nations</p>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Demographic Statistics -->
+  <div class="demographics-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-6xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-primary inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Demographics
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          A Defining Global Trend
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          The UN describes global aging as "a defining trend of our time" and a "major success story"
+        </p>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {demographicStats.map((item, index) => (
+          <article
+            class="stat-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="stat-card-inner group relative p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500 h-full">
+              <span class="stat-number text-4xl sm:text-5xl font-bold block mb-2">
+                {item.stat}
+              </span>
+              <span class="stat-label text-sm font-semibold uppercase tracking-wider block mb-3">
+                {item.label}
+              </span>
+              <p class="stat-description text-sm leading-relaxed mb-4">
+                {item.description}
+              </p>
+              <span class="stat-source text-xs uppercase tracking-widest">
+                {item.source}
+              </span>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Scientific Breakthroughs -->
+  <div class="science-section py-24 sm:py-32 px-6 relative">
+    <div class="science-gradient absolute inset-0"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-secondary inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Breakthroughs
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Science at an Inflection Point
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          Validated genomic tools, mechanism-based geroscience, and AI-native R&D have transformed longevity into an investable category
+        </p>
+      </div>
+
+      <!-- Breakthrough cards -->
+      <div class="breakthrough-cards space-y-6">
+        {scienceBreakthroughs.map((item, index) => (
+          <article
+            class="breakthrough-card reveal-item"
+            data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="breakthrough-inner group relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500">
+              <!-- Icon placeholder -->
+              <div class="breakthrough-icon flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center">
+                <span class="text-2xl">
+                  {item.icon === 'dna' && '🧬'}
+                  {item.icon === 'cell' && '🔬'}
+                  {item.icon === 'brain' && '🧠'}
+                </span>
+              </div>
+
+              <!-- Content -->
+              <div class="flex-1">
+                <h3 class="breakthrough-title text-lg sm:text-xl font-semibold mb-2 transition-colors">
+                  {item.title}
+                </h3>
+                <p class="breakthrough-body text-sm sm:text-base leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: The Longevity Economy -->
+  <div class="economy-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-5xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-accent inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Opportunity
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          The Longevity Economy
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          A multi-trillion dollar market underpinned by demographic certainty
+        </p>
+      </div>
+
+      <!-- Economy stats row -->
+      <div class="economy-grid grid gap-6 sm:gap-8 md:grid-cols-3">
+        {economyPoints.map((item, index) => (
+          <article
+            class="economy-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 150}ms;`}
+          >
+            <div class="economy-inner group relative p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500 text-center h-full">
+              <span class="economy-number text-5xl sm:text-6xl font-bold block mb-2">
+                {item.stat}
+              </span>
+              <span class="economy-label text-sm font-semibold uppercase tracking-wider block mb-3">
+                {item.label}
+              </span>
+              <p class="economy-description text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing CTA -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="closing-gradient absolute inset-0"></div>
+
+    <div class="closing-content reveal-item text-center relative z-10" data-reveal="fade-up">
+      <p class="closing-eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-4">
+        Join Us
+      </p>
+      <h3 class="closing-headline text-3xl sm:text-4xl md:text-5xl font-bold max-w-2xl">
+        Capture the $7T+ Longevity Economy
+      </h3>
+      <p class="closing-text mt-6 text-lg sm:text-xl max-w-xl mx-auto">
+        Demographic inevitability meets scientific readiness
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  /* Base reveal states */
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  .reveal-item[data-reveal="slide-right"] {
+    transform: translateX(-60px);
+  }
+
+  .reveal-item[data-reveal="slide-left"] {
+    transform: translateX(60px);
+  }
+
+  .reveal-item[data-reveal="scale-up"] {
+    transform: scale(0.8);
+  }
+
+  /* Revealed state */
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* Hero opening animations */
+  .hero-opening .eyebrow-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .big-stat-wrapper {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeInScale 1s ease 0.8s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInScale {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Scroll hint animation */
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scaleY(1.2);
+    }
+  }
+
+  /* Big stat pulse */
+  .big-stat-number {
+    animation: statPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes statPulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+
+  /* ==========================================================================
+     LIGHT MODE — Clean, professional, subtle
+     ========================================================================== */
+  :global([data-mode="light"]) .aging-population-section {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(156, 133, 223, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .eyebrow-text,
+  :global([data-mode="light"]) .closing-eyebrow {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="light"]) .headline-text,
+  :global([data-mode="light"]) .closing-headline {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .subtitle-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .scroll-hint {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.4;
+  }
+
+  :global([data-mode="light"]) .big-stat-number {
+    background: linear-gradient(135deg, var(--color-marjorelle-purple), var(--color-lilac));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="light"]) .big-stat-label {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .big-stat-source {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .section-subtitle {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .section-badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-accent {
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  /* Light mode cards */
+  :global([data-mode="light"]) .stat-card-inner,
+  :global([data-mode="light"]) .breakthrough-inner,
+  :global([data-mode="light"]) .economy-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.12);
+  }
+
+  :global([data-mode="light"]) .stat-card-inner:hover,
+  :global([data-mode="light"]) .breakthrough-inner:hover,
+  :global([data-mode="light"]) .economy-inner:hover {
+    border-color: rgba(108, 99, 255, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+  }
+
+  :global([data-mode="light"]) .stat-number,
+  :global([data-mode="light"]) .economy-number {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .stat-label,
+  :global([data-mode="light"]) .economy-label {
+    color: var(--color-foreground);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="light"]) .stat-description,
+  :global([data-mode="light"]) .breakthrough-body,
+  :global([data-mode="light"]) .economy-description {
+    color: var(--color-foreground);
+    opacity: 0.65;
+  }
+
+  :global([data-mode="light"]) .stat-source {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .breakthrough-icon {
+    background: rgba(108, 99, 255, 0.1);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="light"]) .breakthrough-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .group:hover .breakthrough-title {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .science-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(156, 133, 223, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     DARK MODE — Deep, mysterious, glowing
+     ========================================================================== */
+  :global([data-mode="dark"]) .aging-population-section {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .eyebrow-text,
+  :global([data-mode="dark"]) .closing-eyebrow {
+    color: var(--color-lilac);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .headline-text,
+  :global([data-mode="dark"]) .closing-headline {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .subtitle-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.4;
+  }
+
+  :global([data-mode="dark"]) .big-stat-number {
+    background: linear-gradient(135deg, var(--color-lilac), var(--color-marjorelle-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="dark"]) .big-stat-label {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .big-stat-source {
+    color: var(--color-lilac);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .section-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .section-badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-accent {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  /* Dark mode cards */
+  :global([data-mode="dark"]) .stat-card-inner,
+  :global([data-mode="dark"]) .breakthrough-inner,
+  :global([data-mode="dark"]) .economy-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .stat-card-inner:hover,
+  :global([data-mode="dark"]) .breakthrough-inner:hover,
+  :global([data-mode="dark"]) .economy-inner:hover {
+    border-color: rgba(108, 99, 255, 0.5);
+    background: rgba(102, 67, 226, 0.08);
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.15);
+  }
+
+  :global([data-mode="dark"]) .stat-number,
+  :global([data-mode="dark"]) .economy-number {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .stat-label,
+  :global([data-mode="dark"]) .economy-label {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="dark"]) .stat-description,
+  :global([data-mode="dark"]) .breakthrough-body,
+  :global([data-mode="dark"]) .economy-description {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .stat-source {
+    color: var(--color-lilac);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .breakthrough-icon {
+    background: rgba(102, 67, 226, 0.15);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) .breakthrough-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .group:hover .breakthrough-title {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .science-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE — Intense, energetic, dramatic
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .aging-population-section {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 30%, #0d0518 70%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.25), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .eyebrow-text,
+  :global([data-mode="vibrant"]) .closing-eyebrow {
+    color: var(--color-lilac);
+    opacity: 0.9;
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.4);
+  }
+
+  :global([data-mode="vibrant"]) .headline-text,
+  :global([data-mode="vibrant"]) .closing-headline {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .subtitle-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  :global([data-mode="vibrant"]) .big-stat-number {
+    background: linear-gradient(135deg, #a855f7, var(--color-lilac), var(--color-marjorelle-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(156, 133, 223, 0.5));
+  }
+
+  :global([data-mode="vibrant"]) .big-stat-label {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .big-stat-source {
+    color: var(--color-lilac);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .section-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-primary {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.5);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-secondary {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.5);
+    box-shadow: 0 0 15px rgba(156, 133, 223, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-accent {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
+  }
+
+  /* Vibrant mode cards */
+  :global([data-mode="vibrant"]) .stat-card-inner,
+  :global([data-mode="vibrant"]) .breakthrough-inner,
+  :global([data-mode="vibrant"]) .economy-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .stat-card-inner:hover,
+  :global([data-mode="vibrant"]) .breakthrough-inner:hover,
+  :global([data-mode="vibrant"]) .economy-inner:hover {
+    border-color: rgba(108, 99, 255, 0.7);
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.15), rgba(26, 10, 53, 0.9));
+    box-shadow: 0 0 50px rgba(102, 67, 226, 0.25), inset 0 0 30px rgba(102, 67, 226, 0.05);
+  }
+
+  :global([data-mode="vibrant"]) .stat-number,
+  :global([data-mode="vibrant"]) .economy-number {
+    color: var(--color-lilac);
+    text-shadow: 0 0 20px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .stat-label,
+  :global([data-mode="vibrant"]) .economy-label {
+    color: var(--color-alabaster);
+    opacity: 0.9;
+  }
+
+  :global([data-mode="vibrant"]) .stat-description,
+  :global([data-mode="vibrant"]) .breakthrough-body,
+  :global([data-mode="vibrant"]) .economy-description {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .stat-source {
+    color: var(--color-lilac);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .breakthrough-icon {
+    background: rgba(102, 67, 226, 0.2);
+    border: 1px solid rgba(108, 99, 255, 0.4);
+    box-shadow: 0 0 15px rgba(102, 67, 226, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .breakthrough-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .group:hover .breakthrough-title {
+    color: var(--color-lilac);
+    text-shadow: 0 0 20px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .science-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.2), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.aging-population-section .reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>
