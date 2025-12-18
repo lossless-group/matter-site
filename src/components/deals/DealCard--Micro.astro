@@ -1,0 +1,342 @@
+---
+/**
+ * DealCard--Micro Component
+ *
+ * A compact deal/company card for pipeline grids.
+ * Features:
+ * - Dark/light mode logo switching
+ * - Company name with hover accent color
+ * - Short description (blurb)
+ * - Optional sector badge
+ * - Configurable accent color based on stage
+ *
+ * Supports light/dark/vibrant visual modes.
+ */
+
+export type StageColor = 'amber' | 'blue' | 'green' | 'purple' | 'cyan';
+
+interface Props {
+  /** Company display name */
+  name: string;
+  /** Short description/blurb */
+  description?: string;
+  /** Logo for light mode */
+  logoLightMode: string;
+  /** Logo for dark mode (falls back to light mode) */
+  logoDarkMode?: string;
+  /** External URL to company site */
+  href?: string | null;
+  /** Sector/category badge text */
+  sector?: string;
+  /** Accent color for hover states */
+  accentColor?: StageColor;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  name,
+  description,
+  logoLightMode,
+  logoDarkMode,
+  href,
+  sector,
+  accentColor = 'amber',
+  class: className = '',
+} = Astro.props;
+
+// Use light mode logo as fallback for dark mode
+const darkLogo = logoDarkMode || logoLightMode;
+
+// Determine if this should be a link or a div
+const isLink = href && href.trim() !== '';
+const Tag = isLink ? 'a' : 'div';
+const linkProps = isLink ? { href, target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<Tag
+  {...linkProps}
+  class:list={[
+    'deal-card-micro',
+    `deal-card-${accentColor}`,
+    { 'deal-card-link': isLink },
+    className,
+  ]}
+>
+  <div class="deal-inner">
+    <!-- Dark mode logo -->
+    <img
+      src={darkLogo}
+      alt={name}
+      class="deal-logo deal-logo-dark"
+      loading="lazy"
+    />
+    <!-- Light mode logo -->
+    <img
+      src={logoLightMode}
+      alt={name}
+      class="deal-logo deal-logo-light"
+      loading="lazy"
+    />
+
+    <p class="deal-name">{name}</p>
+
+    {description && (
+      <p class="deal-description">{description}</p>
+    )}
+
+    {sector && (
+      <span class="deal-sector">{sector}</span>
+    )}
+  </div>
+</Tag>
+
+<style>
+  .deal-card-micro {
+    display: block;
+    text-decoration: none;
+  }
+
+  .deal-inner {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s ease;
+    height: 100%;
+  }
+
+  .deal-card-link .deal-inner {
+    cursor: pointer;
+  }
+
+  .deal-logo {
+    height: 2.5rem;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .deal-logo-dark {
+    display: none;
+  }
+
+  .deal-logo-light {
+    display: block;
+  }
+
+  .deal-name {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .deal-description {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .deal-sector {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.25rem;
+  }
+
+  /* ==========================================================================
+     ACCENT COLOR VARIANTS
+     ========================================================================== */
+
+  /* Amber (default - Due Diligence) */
+  .deal-card-amber.deal-card-link .deal-inner:hover {
+    border-color: rgba(245, 158, 11, 0.5);
+  }
+  .deal-card-amber.deal-card-link:hover .deal-name {
+    color: #fbbf24;
+  }
+
+  /* Blue (Initial Review) */
+  .deal-card-blue.deal-card-link .deal-inner:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+  .deal-card-blue.deal-card-link:hover .deal-name {
+    color: #60a5fa;
+  }
+
+  /* Green */
+  .deal-card-green.deal-card-link .deal-inner:hover {
+    border-color: rgba(52, 211, 153, 0.5);
+  }
+  .deal-card-green.deal-card-link:hover .deal-name {
+    color: #6ee7b7;
+  }
+
+  /* Purple */
+  .deal-card-purple.deal-card-link .deal-inner:hover {
+    border-color: rgba(108, 99, 255, 0.5);
+  }
+  .deal-card-purple.deal-card-link:hover .deal-name {
+    color: var(--color-lilac);
+  }
+
+  /* Cyan */
+  .deal-card-cyan.deal-card-link .deal-inner:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+  }
+  .deal-card-cyan.deal-card-link:hover .deal-name {
+    color: #67e8f9;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .deal-inner {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-mode="light"]) .deal-card-link .deal-inner:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  :global([data-mode="light"]) .deal-logo-dark {
+    display: none;
+  }
+
+  :global([data-mode="light"]) .deal-logo-light {
+    display: block;
+  }
+
+  :global([data-mode="light"]) .deal-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .deal-description {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .deal-sector {
+    color: var(--color-foreground);
+    opacity: 0.4;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  /* Light mode accent colors */
+  :global([data-mode="light"]) .deal-card-amber.deal-card-link:hover .deal-name {
+    color: #d97706;
+  }
+  :global([data-mode="light"]) .deal-card-blue.deal-card-link:hover .deal-name {
+    color: #2563eb;
+  }
+  :global([data-mode="light"]) .deal-card-green.deal-card-link:hover .deal-name {
+    color: #059669;
+  }
+  :global([data-mode="light"]) .deal-card-purple.deal-card-link:hover .deal-name {
+    color: var(--color-marjorelle-purple);
+  }
+  :global([data-mode="light"]) .deal-card-cyan.deal-card-link:hover .deal-name {
+    color: #0891b2;
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .deal-inner {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .deal-card-link .deal-inner:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  :global([data-mode="dark"]) .deal-logo-dark {
+    display: block;
+  }
+
+  :global([data-mode="dark"]) .deal-logo-light {
+    display: none;
+  }
+
+  :global([data-mode="dark"]) .deal-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="dark"]) .deal-description {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .deal-sector {
+    color: var(--color-foreground);
+    opacity: 0.4;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .deal-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.6), rgba(26, 10, 53, 0.4));
+    border-color: rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .deal-card-link .deal-inner:hover {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.8), rgba(26, 10, 53, 0.6));
+    box-shadow: 0 0 30px rgba(102, 67, 226, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .deal-logo-dark {
+    display: block;
+  }
+
+  :global([data-mode="vibrant"]) .deal-logo-light {
+    display: none;
+  }
+
+  :global([data-mode="vibrant"]) .deal-name {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .deal-description {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .deal-sector {
+    color: var(--color-lilac);
+    opacity: 0.7;
+    background: rgba(108, 99, 255, 0.15);
+  }
+
+  /* Vibrant mode accent hover glows */
+  :global([data-mode="vibrant"]) .deal-card-amber.deal-card-link .deal-inner:hover {
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.15);
+  }
+  :global([data-mode="vibrant"]) .deal-card-blue.deal-card-link .deal-inner:hover {
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+  }
+  :global([data-mode="vibrant"]) .deal-card-green.deal-card-link .deal-inner:hover {
+    border-color: rgba(52, 211, 153, 0.6);
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.15);
+  }
+  :global([data-mode="vibrant"]) .deal-card-purple.deal-card-link .deal-inner:hover {
+    border-color: rgba(108, 99, 255, 0.6);
+    box-shadow: 0 0 30px rgba(108, 99, 255, 0.2);
+  }
+  :global([data-mode="vibrant"]) .deal-card-cyan.deal-card-link .deal-inner:hover {
+    border-color: rgba(34, 211, 238, 0.6);
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+  }
+</style>

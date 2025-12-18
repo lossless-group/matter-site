@@ -1,0 +1,604 @@
+---
+/**
+ * Design System: Deal Cards
+ *
+ * Documents deal/company card components:
+ * - DealCard--Micro: Compact card for public pipeline grids
+ * - DealCard--Micro--Confidential: Extended card with memo links and contacts
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import DealCardMicro from '@components/deals/DealCard--Micro.astro';
+import DealCardConfidential from '@components/deals/DealCard--Micro--Confidential.astro';
+
+// Sample data from actual pipeline
+const sampleDeals = [
+  {
+    name: 'Mitrix Bio',
+    description: 'Develops bioreactor-grown mitochondrial transplantation therapies to address age-related diseases and cellular energy decline.',
+    logoLightMode: 'https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__MitrixBio--Brand--Dark-Mode.svg',
+    logoDarkMode: 'https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__MitrixBio--Brand--Dark-Mode.svg',
+    href: 'https://mitrix.bio/',
+    sector: 'longevity biotech',
+    contacts: [],
+    memoSlug: null,
+  },
+  {
+    name: 'ProfileHealth',
+    description: 'Building AI to unleash doctors, not replace them. Agentic AI platform for clinical practices.',
+    logoLightMode: 'https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__ProfileHealth--Light-Mode.svg',
+    logoDarkMode: 'https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__ProfileHealth--Dark-Mode.svg',
+    href: 'https://profilehealth.com',
+    sector: 'healthcare AI',
+    contacts: [],
+    memoSlug: null,
+  },
+  {
+    name: 'Fortem Neuroscience',
+    description: 'Neuroscience therapeutics company founded by Dr. Keith Black, pioneering neurosurgeon at Cedars-Sinai.',
+    logoLightMode: '/portfolio/logos/placeholder-light.svg',
+    logoDarkMode: '/portfolio/logos/placeholder-dark.svg',
+    href: null,
+    sector: 'neuroscience',
+    contacts: [
+      { name: 'Dr. Keith Black', role: 'Founder' },
+    ],
+    memoSlug: 'fortem-neuroscience-2024-q4',
+  },
+  {
+    name: 'Encellin',
+    description: 'Advancing next generation therapies with novel cell encapsulation and functional cell therapies.',
+    logoLightMode: 'https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Encellin--Dark-Mode.png',
+    logoDarkMode: 'https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Encellin--Dark-Mode.png',
+    href: 'https://www.encellin.com/',
+    sector: 'biotech',
+    contacts: [],
+    memoSlug: 'encellin-2024-q4',
+  },
+];
+---
+
+<BaseThemeLayout title="Deal Cards - Design System" mode="dark">
+  <div class="design-system-container max-w-5xl mx-auto px-6 py-12">
+    <!-- Header -->
+    <header class="mb-16">
+      <nav class="text-sm text-foreground/50 mb-4">
+        <a href="/design-system" class="hover:text-foreground/70">Design System</a>
+        <span class="mx-2">/</span>
+        <span class="text-foreground/70">Deals</span>
+      </nav>
+      <h1 class="text-4xl font-bold mb-4">Deal Cards</h1>
+      <p class="text-lg text-(--color-muted-foreground) max-w-2xl">
+        Components for displaying pipeline companies and investment opportunities.
+        Two variants for public and confidential contexts.
+      </p>
+    </header>
+
+    <!-- DealCard--Micro Section -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">DealCard--Micro</h2>
+      <p class="section-description">
+        Compact deal card for public pipeline grids. Shows logo, company name, description, and sector badge.
+        Supports link and non-link variants based on whether a URL is provided.
+      </p>
+      <p class="section-path">
+        <code class="code-inline">src/components/deals/DealCard--Micro.astro</code>
+      </p>
+
+      <!-- Props Table -->
+      <div class="props-section mt-8 mb-8">
+        <h3 class="props-label">Props</h3>
+        <div class="props-table">
+          <div class="prop-row prop-header">
+            <span>Prop</span>
+            <span>Type</span>
+            <span>Required</span>
+            <span>Description</span>
+          </div>
+          <div class="prop-row">
+            <code>name</code>
+            <span>string</span>
+            <span class="required">Yes</span>
+            <span>Company display name</span>
+          </div>
+          <div class="prop-row">
+            <code>description</code>
+            <span>string</span>
+            <span class="optional">No</span>
+            <span>Short description/blurb</span>
+          </div>
+          <div class="prop-row">
+            <code>logoLightMode</code>
+            <span>string</span>
+            <span class="required">Yes</span>
+            <span>Logo URL for light mode</span>
+          </div>
+          <div class="prop-row">
+            <code>logoDarkMode</code>
+            <span>string</span>
+            <span class="optional">No</span>
+            <span>Logo URL for dark mode (fallback to light)</span>
+          </div>
+          <div class="prop-row">
+            <code>href</code>
+            <span>string | null</span>
+            <span class="optional">No</span>
+            <span>External company URL (renders as link if provided)</span>
+          </div>
+          <div class="prop-row">
+            <code>sector</code>
+            <span>string</span>
+            <span class="optional">No</span>
+            <span>Sector/category badge text</span>
+          </div>
+          <div class="prop-row">
+            <code>accentColor</code>
+            <span>StageColor</span>
+            <span class="optional">No</span>
+            <span>Accent color: amber | blue | green | purple | cyan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Examples -->
+      <div class="examples-section">
+        <h3 class="examples-label">Live Examples</h3>
+        <div class="example-grid-4">
+          {sampleDeals.slice(0, 4).map((deal, i) => (
+            <DealCardMicro
+              name={deal.name}
+              description={deal.description}
+              logoLightMode={deal.logoLightMode}
+              logoDarkMode={deal.logoDarkMode}
+              href={deal.href}
+              sector={deal.sector}
+              accentColor={i % 2 === 0 ? 'amber' : 'blue'}
+            />
+          ))}
+        </div>
+      </div>
+
+      <!-- Usage -->
+      <div class="usage-section mt-8">
+        <h3 class="usage-label">Usage</h3>
+        <pre class="code-block"><code>{`---
+import DealCardMicro from '@components/deals/DealCard--Micro.astro';
+---
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+  {deals.map((deal) => (
+    <DealCardMicro
+      name={deal.conventionalName}
+      description={deal.blurbShortTxt}
+      logoLightMode={deal.logoLightMode}
+      logoDarkMode={deal.logoDarkMode}
+      href={deal.urlToCompanySite}
+      sector={deal.sector}
+      accentColor="amber"
+    />
+  ))}
+</div>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- DealCard--Micro--Confidential Section -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">DealCard--Micro--Confidential</h2>
+      <p class="section-description">
+        Extended deal card for confidential pipeline views. Includes action buttons for memo links
+        and company sites, plus a key contacts section. Used in authenticated areas.
+      </p>
+      <p class="section-path">
+        <code class="code-inline">src/components/deals/DealCard--Micro--Confidential.astro</code>
+      </p>
+
+      <!-- Props Table -->
+      <div class="props-section mt-8 mb-8">
+        <h3 class="props-label">Props</h3>
+        <div class="props-table">
+          <div class="prop-row prop-header">
+            <span>Prop</span>
+            <span>Type</span>
+            <span>Required</span>
+            <span>Description</span>
+          </div>
+          <div class="prop-row">
+            <code>name</code>
+            <span>string</span>
+            <span class="required">Yes</span>
+            <span>Company display name</span>
+          </div>
+          <div class="prop-row">
+            <code>description</code>
+            <span>string</span>
+            <span class="optional">No</span>
+            <span>Short description/blurb</span>
+          </div>
+          <div class="prop-row">
+            <code>logo</code>
+            <span>string</span>
+            <span class="required">Yes</span>
+            <span>Logo URL (typically dark mode)</span>
+          </div>
+          <div class="prop-row">
+            <code>companySiteUrl</code>
+            <span>string | null</span>
+            <span class="optional">No</span>
+            <span>External company URL</span>
+          </div>
+          <div class="prop-row">
+            <code>memoSlug</code>
+            <span>string | null</span>
+            <span class="optional">No</span>
+            <span>Internal memo slug for /memos link</span>
+          </div>
+          <div class="prop-row">
+            <code>sector</code>
+            <span>string</span>
+            <span class="optional">No</span>
+            <span>Sector/category badge</span>
+          </div>
+          <div class="prop-row">
+            <code>contacts</code>
+            <span>PersonData[]</span>
+            <span class="optional">No</span>
+            <span>Key contacts list ({`{ name, role }`})</span>
+          </div>
+          <div class="prop-row">
+            <code>accentColor</code>
+            <span>StageColor</span>
+            <span class="optional">No</span>
+            <span>Accent color: amber | blue | green | purple | cyan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Examples -->
+      <div class="examples-section">
+        <h3 class="examples-label">Live Examples</h3>
+        <div class="example-grid-3">
+          <DealCardConfidential
+            name={sampleDeals[2].name}
+            description={sampleDeals[2].description}
+            logo={sampleDeals[2].logoDarkMode}
+            companySiteUrl={sampleDeals[2].href}
+            memoSlug={sampleDeals[2].memoSlug}
+            sector={sampleDeals[2].sector}
+            contacts={sampleDeals[2].contacts}
+            accentColor="amber"
+          />
+          <DealCardConfidential
+            name={sampleDeals[3].name}
+            description={sampleDeals[3].description}
+            logo={sampleDeals[3].logoDarkMode}
+            companySiteUrl={sampleDeals[3].href}
+            memoSlug={sampleDeals[3].memoSlug}
+            sector={sampleDeals[3].sector}
+            contacts={sampleDeals[3].contacts}
+            accentColor="amber"
+          />
+          <DealCardConfidential
+            name={sampleDeals[1].name}
+            description={sampleDeals[1].description}
+            logo={sampleDeals[1].logoDarkMode}
+            companySiteUrl={sampleDeals[1].href}
+            memoSlug={null}
+            sector={sampleDeals[1].sector}
+            contacts={[]}
+            accentColor="blue"
+          />
+        </div>
+      </div>
+
+      <!-- Usage -->
+      <div class="usage-section mt-8">
+        <h3 class="usage-label">Usage</h3>
+        <pre class="code-block"><code>{`---
+import DealCardConfidential from '@components/deals/DealCard--Micro--Confidential.astro';
+---
+
+<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+  {deals.map((deal) => (
+    <DealCardConfidential
+      name={deal.conventionalName}
+      description={deal.blurbShortTxt}
+      logo={deal.logoDarkMode || deal.logoLightMode}
+      companySiteUrl={deal.urlToCompanySite}
+      memoSlug={deal.resolvedMemoSlug}
+      sector={deal.sector}
+      contacts={deal.listOfPeopleData}
+      accentColor="amber"
+    />
+  ))}
+</div>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- Accent Colors -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">Accent Colors</h2>
+      <p class="section-description mb-6">
+        Both components support 5 accent colors for stage-based or category-based styling.
+      </p>
+      <div class="color-grid">
+        <div class="color-item">
+          <span class="color-swatch color-amber"></span>
+          <span class="color-name">amber</span>
+          <span class="color-use">Due Diligence</span>
+        </div>
+        <div class="color-item">
+          <span class="color-swatch color-blue"></span>
+          <span class="color-name">blue</span>
+          <span class="color-use">Initial Review</span>
+        </div>
+        <div class="color-item">
+          <span class="color-swatch color-green"></span>
+          <span class="color-name">green</span>
+          <span class="color-use">Portfolio</span>
+        </div>
+        <div class="color-item">
+          <span class="color-swatch color-purple"></span>
+          <span class="color-name">purple</span>
+          <span class="color-use">Featured</span>
+        </div>
+        <div class="color-item">
+          <span class="color-swatch color-cyan"></span>
+          <span class="color-name">cyan</span>
+          <span class="color-use">Watching</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- File Locations -->
+    <section class="mb-16">
+      <h2 class="section-title">File Locations</h2>
+      <div class="file-list">
+        <div class="file-item">
+          <code>src/components/deals/DealCard--Micro.astro</code>
+          <span>Public pipeline card</span>
+        </div>
+        <div class="file-item">
+          <code>src/components/deals/DealCard--Micro--Confidential.astro</code>
+          <span>Confidential pipeline card</span>
+        </div>
+        <div class="file-item">
+          <code>src/pages/pipeline/index.astro</code>
+          <span>Public pipeline page</span>
+        </div>
+        <div class="file-item">
+          <code>src/pages/pipeline/confidential/index.astro</code>
+          <span>Confidential pipeline page</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseThemeLayout>
+
+<style>
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-lilac);
+  }
+
+  .section-description {
+    color: var(--color-muted-foreground);
+    max-width: 48rem;
+  }
+
+  .section-path {
+    margin-top: 0.5rem;
+  }
+
+  .code-inline {
+    background: rgba(156, 133, 223, 0.15);
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+    font-family: monospace;
+  }
+
+  .component-section {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Props Table */
+  .props-label,
+  .examples-label,
+  .usage-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .props-table {
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .prop-row {
+    display: grid;
+    grid-template-columns: 140px 120px 80px 1fr;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground);
+  }
+
+  .prop-row:last-child {
+    border-bottom: none;
+  }
+
+  .prop-header {
+    background: var(--color-muted);
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+
+  .prop-row code {
+    color: #34d399;
+    font-family: monospace;
+  }
+
+  .required {
+    color: #f59e0b;
+  }
+
+  .optional {
+    color: var(--color-muted-foreground);
+  }
+
+  /* Example Grids */
+  .example-grid-4 {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    .example-grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .example-grid-3 {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .example-grid-3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .example-grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Code Block */
+  .code-block {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+  }
+
+  .code-block code {
+    font-family: monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-alabaster);
+    white-space: pre;
+  }
+
+  /* Color Grid */
+  .color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .color-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+  }
+
+  .color-swatch {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.375rem;
+  }
+
+  .color-amber { background: #f59e0b; }
+  .color-blue { background: #3b82f6; }
+  .color-green { background: #34d399; }
+  .color-purple { background: #6c63ff; }
+  .color-cyan { background: #22d3ee; }
+
+  .color-name {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+  }
+
+  .color-use {
+    font-size: 0.75rem;
+    color: var(--color-muted-foreground);
+  }
+
+  /* File List */
+  .file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.08);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .file-item code {
+    font-size: 0.8125rem;
+    color: var(--color-lilac);
+  }
+
+  .file-item span {
+    color: var(--color-muted-foreground);
+    font-size: 0.75rem;
+  }
+
+  /* Light mode */
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .code-inline {
+    background: rgba(108, 99, 255, 0.1);
+  }
+
+  :global([data-mode="light"]) .code-block {
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  :global([data-mode="light"]) .code-block code {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .file-item {
+    background: rgba(108, 99, 255, 0.03);
+    border-color: rgba(108, 99, 255, 0.1);
+  }
+
+  :global([data-mode="light"]) .file-item code {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .color-item {
+    background: rgba(0, 0, 0, 0.02);
+  }
+</style>

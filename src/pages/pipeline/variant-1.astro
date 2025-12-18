@@ -1,0 +1,98 @@
+---
+/**
+ * Pipeline Variant 1
+ *
+ * Uses the DealCard--Micro component for displaying pipeline companies.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import DealCardMicro from '@components/deals/DealCard--Micro.astro';
+import pipelineData from '@content/pipeline/pipeline-companies.json';
+
+// Public page - can be prerendered for performance
+export const prerender = true;
+
+// Group by stage
+const dueDiligence = pipelineData.filter(c => c.stage === 'due-diligence');
+const initialReview = pipelineData.filter(c => c.stage === 'initial-review');
+---
+
+<BaseThemeLayout title="Pipeline | Dark Matter" description="Companies in our investment pipeline">
+  <section class="px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header class="mb-12">
+        <h1 class="text-4xl font-bold tracking-tight">Pipeline</h1>
+        <p class="mt-4 text-lg text-foreground/70 max-w-2xl">
+          Companies we're evaluating for potential investment. Our active deal flow.
+        </p>
+      </header>
+
+      <!-- Due Diligence Section -->
+      {dueDiligence.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">
+            <span class="inline-flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+              Due Diligence
+            </span>
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {dueDiligence.map((company) => (
+              <DealCardMicro
+                name={company.conventionalName}
+                description={company.blurbShortTxt}
+                logoLightMode={company.logoLightMode}
+                logoDarkMode={company.logoDarkMode}
+                href={company.urlToCompanySite}
+                sector={company.sector}
+                accentColor="amber"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Initial Review Section -->
+      {initialReview.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">
+            <span class="inline-flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-blue-500"></span>
+              Initial Review
+            </span>
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {initialReview.map((company) => (
+              <DealCardMicro
+                name={company.conventionalName}
+                description={company.blurbShortTxt}
+                logoLightMode={company.logoLightMode}
+                logoDarkMode={company.logoDarkMode}
+                href={company.urlToCompanySite}
+                sector={company.sector}
+                accentColor="blue"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Confidential Access CTA -->
+      <section class="mt-16 p-8 rounded-2xl border border-border/30 bg-surface/20 text-center">
+        <h3 class="text-lg font-semibold mb-2">Looking for detailed deal memos?</h3>
+        <p class="text-foreground/60 text-sm mb-4">
+          Authorized team members can access confidential pipeline information and investment memos.
+        </p>
+        <a
+          href="/pipeline/confidential"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
+          Access Confidential View
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </section>
+    </div>
+  </section>
+</BaseThemeLayout>

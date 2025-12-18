@@ -1,0 +1,501 @@
+---
+/**
+ * DealCard--Micro--Confidential Component
+ *
+ * A confidential deal card with additional features for authorized viewers:
+ * - Logo with action buttons (memo link, company site)
+ * - Company name and sector badge
+ * - Description with 3-line clamp
+ * - Key contacts section
+ * - Stage-based accent colors
+ *
+ * Supports light/dark/vibrant visual modes.
+ */
+
+export type StageColor = 'amber' | 'blue' | 'green' | 'purple' | 'cyan';
+
+export interface PersonData {
+  name: string;
+  role: string;
+}
+
+interface Props {
+  /** Company display name */
+  name: string;
+  /** Short description/blurb */
+  description?: string;
+  /** Logo URL (dark mode preferred) */
+  logo: string;
+  /** External URL to company site */
+  companySiteUrl?: string | null;
+  /** Internal memo slug (e.g., "company-name-2024-01") */
+  memoSlug?: string | null;
+  /** Sector/category badge text */
+  sector?: string;
+  /** Key contacts list */
+  contacts?: PersonData[];
+  /** Accent color for the card */
+  accentColor?: StageColor;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  name,
+  description,
+  logo,
+  companySiteUrl,
+  memoSlug,
+  sector,
+  contacts = [],
+  accentColor = 'amber',
+  class: className = '',
+} = Astro.props;
+
+const hasContacts = contacts && contacts.length > 0;
+---
+
+<article class:list={['deal-card-confidential', `deal-accent-${accentColor}`, className]}>
+  <!-- Header: Logo + Action Buttons -->
+  <div class="card-header">
+    <img
+      src={logo}
+      alt={name}
+      class="card-logo"
+      loading="lazy"
+    />
+    <div class="card-actions">
+      {memoSlug && (
+        <a
+          href={`/memos/${memoSlug}`}
+          class="action-btn action-btn-memo"
+          aria-label="View deal memo"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-5-5Z"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M14 2v5h5"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8 13h8"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M8 17h6"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="action-tooltip">View deal memo</span>
+        </a>
+      )}
+      {companySiteUrl && (
+        <a
+          href={companySiteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="action-btn action-btn-site"
+          aria-label="Visit company site"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M14 5H19V10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M10 14L19 5"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M19 14V19H5V5H10"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="action-tooltip">Visit company site</span>
+        </a>
+      )}
+    </div>
+  </div>
+
+  <!-- Company Info -->
+  <h3 class="card-name">{name}</h3>
+
+  {sector && (
+    <span class="card-sector">{sector}</span>
+  )}
+
+  {description && (
+    <p class="card-description">{description}</p>
+  )}
+
+  <!-- Key Contacts -->
+  {hasContacts && (
+    <div class="card-contacts">
+      <p class="contacts-label">Key Contacts</p>
+      <div class="contacts-list">
+        {contacts.map((person) => (
+          <div class="contact-row">
+            <span class="contact-name">{person.name}</span>
+            <span class="contact-role">{person.role}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</article>
+
+<style>
+  .deal-card-confidential {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-logo {
+    height: 2.5rem;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease;
+  }
+
+  .action-btn:focus {
+    outline: none;
+    ring: 2px;
+  }
+
+  .action-tooltip {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    z-index: 20;
+    margin-top: 0.25rem;
+    width: max-content;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    background: rgba(15, 23, 42, 0.9);
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .action-btn:hover .action-tooltip,
+  .action-btn:focus .action-tooltip {
+    opacity: 1;
+  }
+
+  .card-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .card-sector {
+    display: inline-block;
+    margin-top: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.25rem;
+  }
+
+  .card-description {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-contacts {
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+
+  .contacts-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .contacts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.875rem;
+  }
+
+  .contact-name {
+    /* Styled per mode */
+  }
+
+  .contact-role {
+    font-size: 0.75rem;
+  }
+
+  /* ==========================================================================
+     ACCENT COLOR VARIANTS
+     ========================================================================== */
+
+  /* Amber */
+  .deal-accent-amber {
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.05);
+  }
+  .deal-accent-amber:hover {
+    background: rgba(245, 158, 11, 0.1);
+  }
+  .deal-accent-amber .action-btn-memo {
+    background: rgba(245, 158, 11, 0.1);
+    ring: 1px solid rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+  }
+  .deal-accent-amber .action-btn-memo:hover {
+    background: rgba(245, 158, 11, 0.2);
+  }
+  .deal-accent-amber .card-sector {
+    color: rgba(251, 191, 36, 0.8);
+    background: rgba(245, 158, 11, 0.1);
+  }
+  .deal-accent-amber .card-contacts {
+    border-top: 1px solid rgba(245, 158, 11, 0.1);
+  }
+
+  /* Blue */
+  .deal-accent-blue {
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    background: rgba(59, 130, 246, 0.05);
+  }
+  .deal-accent-blue:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+  .deal-accent-blue .action-btn-memo {
+    background: rgba(59, 130, 246, 0.1);
+    ring: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+  }
+  .deal-accent-blue .action-btn-memo:hover {
+    background: rgba(59, 130, 246, 0.2);
+  }
+  .deal-accent-blue .card-sector {
+    color: rgba(96, 165, 250, 0.8);
+    background: rgba(59, 130, 246, 0.1);
+  }
+  .deal-accent-blue .card-contacts {
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
+  }
+
+  /* Green */
+  .deal-accent-green {
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    background: rgba(52, 211, 153, 0.05);
+  }
+  .deal-accent-green:hover {
+    background: rgba(52, 211, 153, 0.1);
+  }
+  .deal-accent-green .action-btn-memo {
+    background: rgba(52, 211, 153, 0.1);
+    ring: 1px solid rgba(52, 211, 153, 0.3);
+    color: #6ee7b7;
+  }
+  .deal-accent-green .action-btn-memo:hover {
+    background: rgba(52, 211, 153, 0.2);
+  }
+  .deal-accent-green .card-sector {
+    color: rgba(110, 231, 183, 0.8);
+    background: rgba(52, 211, 153, 0.1);
+  }
+  .deal-accent-green .card-contacts {
+    border-top: 1px solid rgba(52, 211, 153, 0.1);
+  }
+
+  /* Purple */
+  .deal-accent-purple {
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    background: rgba(108, 99, 255, 0.05);
+  }
+  .deal-accent-purple:hover {
+    background: rgba(108, 99, 255, 0.1);
+  }
+  .deal-accent-purple .action-btn-memo {
+    background: rgba(108, 99, 255, 0.1);
+    ring: 1px solid rgba(108, 99, 255, 0.3);
+    color: var(--color-lilac);
+  }
+  .deal-accent-purple .action-btn-memo:hover {
+    background: rgba(108, 99, 255, 0.2);
+  }
+  .deal-accent-purple .card-sector {
+    color: var(--color-lilac);
+    opacity: 0.8;
+    background: rgba(108, 99, 255, 0.1);
+  }
+  .deal-accent-purple .card-contacts {
+    border-top: 1px solid rgba(108, 99, 255, 0.1);
+  }
+
+  /* Cyan */
+  .deal-accent-cyan {
+    border: 1px solid rgba(34, 211, 238, 0.2);
+    background: rgba(34, 211, 238, 0.05);
+  }
+  .deal-accent-cyan:hover {
+    background: rgba(34, 211, 238, 0.1);
+  }
+  .deal-accent-cyan .action-btn-memo {
+    background: rgba(34, 211, 238, 0.1);
+    ring: 1px solid rgba(34, 211, 238, 0.3);
+    color: #67e8f9;
+  }
+  .deal-accent-cyan .action-btn-memo:hover {
+    background: rgba(34, 211, 238, 0.2);
+  }
+  .deal-accent-cyan .card-sector {
+    color: rgba(103, 232, 249, 0.8);
+    background: rgba(34, 211, 238, 0.1);
+  }
+  .deal-accent-cyan .card-contacts {
+    border-top: 1px solid rgba(34, 211, 238, 0.1);
+  }
+
+  /* Site button (neutral across all variants) */
+  .action-btn-site {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .action-btn-site:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* ==========================================================================
+     DARK MODE (default)
+     ========================================================================== */
+  .card-name {
+    color: var(--color-foreground);
+  }
+
+  .card-description {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  .contacts-label {
+    color: var(--color-foreground);
+    opacity: 0.4;
+  }
+
+  .contact-name {
+    color: var(--color-foreground);
+    opacity: 0.8;
+  }
+
+  .contact-role {
+    color: var(--color-foreground);
+    opacity: 0.4;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .action-btn-site {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  :global([data-mode="light"]) .action-btn-site:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .deal-card-confidential {
+    backdrop-filter: blur(8px);
+  }
+
+  :global([data-mode="vibrant"]) .deal-accent-amber:hover,
+  :global([data-mode="vibrant"]) .deal-accent-blue:hover,
+  :global([data-mode="vibrant"]) .deal-accent-green:hover,
+  :global([data-mode="vibrant"]) .deal-accent-purple:hover,
+  :global([data-mode="vibrant"]) .deal-accent-cyan:hover {
+    box-shadow: 0 0 30px rgba(102, 67, 226, 0.1);
+  }
+</style>

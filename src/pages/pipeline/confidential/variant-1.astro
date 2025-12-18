@@ -1,0 +1,123 @@
+---
+/**
+ * Confidential Pipeline Variant 1
+ *
+ * Uses the DealCard--Micro--Confidential component for displaying pipeline companies.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import AuthenticationStatus from '@components/ui/AuthenticationStatus.astro';
+import DealCardConfidential from '@components/deals/DealCard--Micro--Confidential.astro';
+import pipelineData from '@content/pipeline/pipeline-companies.json';
+import { resolveLatestMemos } from '@lib/github-content';
+
+// SSR only - protected by middleware
+export const prerender = false;
+
+// Check auth status (middleware handles redirect, but we read for UI)
+const accessCookie = Astro.cookies.get('universal_portfolio_access');
+const authLevel = accessCookie?.value ? 'general-passcode' : 'unauthenticated';
+
+// Get all company keys that need memo resolution
+const companyKeys = pipelineData
+  .map(c => c.memoCompanyKey)
+  .filter((key): key is string => key !== null);
+
+// Resolve latest memo slugs for all companies (runs in parallel)
+const memoSlugs = await resolveLatestMemos(companyKeys);
+
+// Enhance pipeline data with resolved memo slugs
+const enhancedPipelineData = pipelineData.map(company => ({
+  ...company,
+  resolvedMemoSlug: company.memoCompanyKey ? memoSlugs.get(company.memoCompanyKey) || null : null,
+}));
+
+// Group by stage
+const dueDiligence = enhancedPipelineData.filter(c => c.stage === 'due-diligence');
+const initialReview = enhancedPipelineData.filter(c => c.stage === 'initial-review');
+---
+
+<BaseThemeLayout title="Confidential Pipeline | Dark Matter" description="Protected pipeline information for authorized viewers">
+  <section class="px-6 py-16">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header class="mb-12">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
+            <nav class="text-sm text-foreground/50 mb-2">
+              <a href="/pipeline" class="hover:text-foreground/70">Pipeline</a>
+              <span class="mx-2">/</span>
+              <span class="text-foreground/70">Confidential</span>
+            </nav>
+            <h1 class="text-4xl font-bold tracking-tight">Confidential Pipeline</h1>
+            <p class="mt-4 text-lg text-foreground/70 max-w-2xl">
+              Detailed deal flow and evaluation notes for authorized team members.
+            </p>
+          </div>
+          <AuthenticationStatus level={authLevel} class="shrink-0" />
+        </div>
+      </header>
+
+      <!-- Due Diligence Section -->
+      {dueDiligence.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">
+            <span class="inline-flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+              Due Diligence
+            </span>
+          </h2>
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {dueDiligence.map((company) => (
+              <DealCardConfidential
+                name={company.conventionalName}
+                description={company.blurbShortTxt}
+                logo={company.logoDarkMode || company.logoLightMode}
+                companySiteUrl={company.urlToCompanySite}
+                memoSlug={company.resolvedMemoSlug}
+                sector={company.sector}
+                contacts={company.listOfPeopleData}
+                accentColor="amber"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Initial Review Section -->
+      {initialReview.length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-xl font-semibold mb-6 text-foreground/80">
+            <span class="inline-flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
+              Initial Review
+            </span>
+          </h2>
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {initialReview.map((company) => (
+              <DealCardConfidential
+                name={company.conventionalName}
+                description={company.blurbShortTxt}
+                logo={company.logoDarkMode || company.logoLightMode}
+                companySiteUrl={company.urlToCompanySite}
+                memoSlug={company.resolvedMemoSlug}
+                sector={company.sector}
+                contacts={company.listOfPeopleData}
+                accentColor="blue"
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Back Link -->
+      <div class="mt-12 pt-8 border-t border-border/20">
+        <a href="/pipeline" class="inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-foreground/70 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Back to Public Pipeline
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseThemeLayout>
