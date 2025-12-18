@@ -47,6 +47,8 @@
     "classifiers": "Founding Partner, Team",
     "bio": "Driving user acquisition, partnerships, and go-to-market execution.",
     "image": "/photos/headshotOf__Anthony-Borquez.jpeg",
-    "socialLinks": []
+    "socialLinks": [
+      { "name": "linkedin", "href": "https://www.linkedin.com/in/anthony-borquez-81283070/", "icon": "linkedin" }
+    ]
   }
 ]

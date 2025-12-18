@@ -1,0 +1,256 @@
+---
+/**
+ * TeamMemberCard--Wide
+ *
+ * Wide/horizontal team member card with alternating photo position.
+ * Features larger photo, pillar badge, and editorial layout.
+ * Used for narrative-style team pages.
+ */
+import SocialIcons from '../ui/SocialIcons.astro';
+
+export interface SocialLink {
+  name: string;
+  href: string;
+  icon?: string;
+}
+
+export interface PillarBadge {
+  label: string;
+  color: 'purple' | 'blue' | 'cyan' | 'green' | 'amber';
+}
+
+interface Props {
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+  socialLinks?: SocialLink[];
+  pillar?: PillarBadge;
+  reversed?: boolean;
+  showDivider?: boolean;
+  class?: string;
+}
+
+const {
+  name,
+  role,
+  bio,
+  image,
+  socialLinks = [],
+  pillar = { label: 'Team', color: 'green' },
+  reversed = false,
+  showDivider = false,
+  class: className = '',
+} = Astro.props;
+
+// Map social links for SocialIcons component
+const mappedSocialLinks = socialLinks.map((link) => ({
+  name: link.name,
+  href: link.href,
+  icon: link.icon || link.name.toLowerCase(),
+}));
+---
+
+<article
+  class:list={[
+    'member-row',
+    'flex flex-col lg:flex-row items-center gap-8 lg:gap-12 py-16',
+    { 'lg:flex-row-reverse': reversed },
+    { 'border-t': showDivider },
+    className,
+  ]}
+>
+  <!-- Photo Column -->
+  <div class="photo-column flex-shrink-0">
+    <div class="photo-wrapper relative">
+      <div class="photo-frame w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden">
+        <img
+          src={image}
+          alt={name}
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div class:list={[
+        'photo-accent',
+        'absolute -z-10 top-3 w-full h-full rounded-2xl',
+        reversed ? '-left-3' : '-right-3',
+      ]}></div>
+    </div>
+  </div>
+
+  <!-- Content Column -->
+  <div class:list={[
+    'content-column flex-1',
+    'text-center',
+    reversed ? 'lg:text-right' : 'lg:text-left',
+  ]}>
+    <!-- Pillar badge -->
+    <span class={`pillar-badge pillar-${pillar.color} inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full mb-4`}>
+      {pillar.label}
+    </span>
+
+    <h2 class="member-name text-2xl sm:text-3xl font-bold mb-2">
+      {name}
+    </h2>
+
+    <p class="member-role text-base font-medium uppercase tracking-wider mb-4">
+      {role}
+    </p>
+
+    <p class="member-bio text-base leading-relaxed mb-6">
+      {bio}
+    </p>
+
+    {mappedSocialLinks.length > 0 && (
+      <div class:list={[
+        'social-wrapper flex',
+        'justify-center',
+        reversed ? 'lg:justify-end' : 'lg:justify-start',
+      ]}>
+        <SocialIcons
+          socialLinks={mappedSocialLinks}
+          iconSize="md"
+        />
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  /* ==========================================================================
+     DARK MODE (default)
+     ========================================================================== */
+  .member-row {
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  .photo-accent {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.3), rgba(156, 133, 223, 0.1));
+  }
+
+  .member-name {
+    color: var(--color-alabaster);
+  }
+
+  .member-role {
+    color: var(--color-lilac);
+  }
+
+  .member-bio {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  /* Pillar badges */
+  .pillar-purple {
+    background: rgba(108, 99, 255, 0.2);
+    color: var(--color-lilac);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  .pillar-blue {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+  }
+
+  .pillar-cyan {
+    background: rgba(34, 211, 238, 0.2);
+    color: #67e8f9;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+  }
+
+  .pillar-green {
+    background: rgba(52, 211, 153, 0.2);
+    color: #6ee7b7;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  .pillar-amber {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fcd34d;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .member-row {
+    border-color: rgba(108, 99, 255, 0.1);
+  }
+
+  :global([data-mode="light"]) .photo-accent {
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(156, 133, 223, 0.05));
+  }
+
+  :global([data-mode="light"]) .member-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .member-role {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .member-bio {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .pillar-purple {
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .pillar-blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+
+  :global([data-mode="light"]) .pillar-cyan {
+    background: rgba(6, 182, 212, 0.1);
+    color: #0891b2;
+  }
+
+  :global([data-mode="light"]) .pillar-green {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  :global([data-mode="light"]) .pillar-amber {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .photo-accent {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.5), rgba(156, 133, 223, 0.2));
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .member-role {
+    text-shadow: 0 0 15px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-purple {
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-blue {
+    box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-cyan {
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-green {
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-amber {
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+  }
+</style>

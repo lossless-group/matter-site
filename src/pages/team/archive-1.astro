@@ -1,0 +1,50 @@
+---
+import TeamLayout from '../../layouts/TeamLayout.astro';
+import ManagingPartnersSpan from '../../components/team/ManagingPartnersSpan.astro';
+import FoundingTeamSpan from '../../components/team/FoundingTeamSpan.astro';
+
+import teamData from '../../content/people/team.json';
+import type { TeamMember } from '../../types/team';
+
+const teamMembers = teamData as TeamMember[];
+
+const groupByRole = (members: TeamMember[]) => {
+  const initialValue: Record<string, TeamMember[]> = {
+    managingPartners: [],
+    foundingTeam: [],
+  };
+
+  return members.reduce((acc, member) => {
+    if (!member.classifiers) return acc;
+
+    const classifiers = Array.isArray(member.classifiers)
+      ? member.classifiers
+      : [member.classifiers];
+
+    const classifierMap: Record<string, keyof typeof acc> = {
+      'Managing Partner': 'managingPartners',
+      'Founding Principal': 'foundingTeam',
+      'Founding Partner': 'foundingTeam',
+      'Founding Team': 'foundingTeam',
+    };
+
+    const matchedRole = Object.keys(classifierMap).find((role) =>
+      classifiers.some((c) => c.toLowerCase().includes(role.toLowerCase())),
+    );
+
+    if (!matchedRole) return acc;
+
+    const groupKey = classifierMap[matchedRole];
+
+    acc[groupKey].push(member);
+    return acc;
+  }, initialValue);
+};
+
+const groupedTeamData = groupByRole(teamMembers);
+---
+
+<TeamLayout>
+  <ManagingPartnersSpan members={groupedTeamData.managingPartners} />
+  <FoundingTeamSpan members={groupedTeamData.foundingTeam} />
+</TeamLayout>
