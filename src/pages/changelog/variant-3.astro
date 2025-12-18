@@ -183,9 +183,8 @@ function formatRelativeDate(date: Date): string {
                     {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                   {entry.data.augmented_with && (
-                    <span class="meta-item ai-badge">
+                    <span class="meta-item ai-badge" title={entry.data.augmented_with}>
                       <ClaudeTrademark height="14px" />
-                      {entry.data.augmented_with.replace(/^Claude\s*/i, '')}
                     </span>
                   )}
                 </div>

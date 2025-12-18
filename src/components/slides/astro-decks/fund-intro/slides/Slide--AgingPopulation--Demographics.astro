@@ -1,0 +1,75 @@
+---
+import SectionHeader from './elements/SectionHeader.astro';
+import StatCard from './elements/StatCard.astro';
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
+const stats = [
+  {
+    stat: '2.1B',
+    label: 'People 60+ by 2050',
+    description: 'The UN projects the global population aged 60+ will roughly double to 2.1 billion by 2050.',
+  },
+  {
+    stat: '1.6B',
+    label: 'People 65+ by 2050',
+    description: "Population aged 65+ expected to reach around 1.6 billion, nearly double today's 857 million.",
+  },
+  {
+    stat: '3x',
+    label: 'Growth in 80+ Population',
+    description: 'The "oldest old" (80+) will more than triple from 127M in 2015 to 447M by 2050.',
+  },
+  {
+    stat: '1 in 4',
+    label: 'Asians over 60 by 2050',
+    description: 'In Asia, one in four people will be over 60, with some economies nearing 40% aged 65+.',
+  },
+];
+---
+
+<section data-transition="slide">
+  <div class="slide-content ap-demographics">
+    <SectionHeader
+      badge="Demographics"
+      title="A Defining Global Trend"
+      subtitle='The UN describes global aging as "a defining trend of our time" and a "major success story"'
+    />
+
+    <div class="ap-grid">
+      {stats.map((s) => (
+        <StatCard stat={s.stat} label={s.label} description={s.description}>
+          {s.stat === '2.1B' && (
+            <InlineCitation
+              index={1}
+              hexCode="1ucdcd"
+              title="Population ageing: Navigating the demographic shift"
+              url="https://www.helpage.org/news/population-ageing-navigating-the-demographic-shift/"
+              source="HelpAge International"
+              publishedDate="2024-07-11"
+            />
+          )}
+        </StatCard>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ap-demographics {
+    justify-content: flex-start;
+    gap: 2rem;
+  }
+
+  .ap-grid {
+    width: min(1100px, 100%);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .ap-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

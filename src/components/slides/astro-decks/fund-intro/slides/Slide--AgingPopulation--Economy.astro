@@ -1,0 +1,59 @@
+---
+import SectionHeader from './elements/SectionHeader.astro';
+import EconomyCard from './elements/EconomyCard.astro';
+
+const points = [
+  {
+    stat: '25%',
+    label: 'of Global Consumption',
+    description: 'Seniors will account for one-quarter of global consumption by 2050, double their share in 1997.',
+  },
+  {
+    stat: '$7T+',
+    label: 'Longevity Economy',
+    description: 'Healthcare, financial products, housing, caregiving, and consumer markets serving older adults.',
+  },
+  {
+    stat: '77 years',
+    label: 'Life Expectancy by 2050',
+    description: 'Global life expectancy projected to reach 77 years by 2050, up from 73 years in 2023.',
+  },
+];
+---
+
+<section data-transition="slide">
+  <div class="slide-content ap-economy">
+    <SectionHeader
+      badge="Opportunity"
+      title="The Longevity Economy"
+      subtitle="A multi-trillion dollar market underpinned by demographic certainty"
+    />
+
+    <div class="ap-grid">
+      {points.map((p) => (
+        <EconomyCard stat={p.stat} label={p.label} description={p.description} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ap-economy {
+    justify-content: flex-start;
+    gap: 2rem;
+  }
+
+  .ap-grid {
+    width: min(1100px, 100%);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+
+  @media (max-width: 1000px) {
+    .ap-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

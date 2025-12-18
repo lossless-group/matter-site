@@ -1,0 +1,85 @@
+---
+import SectionHeader from './elements/SectionHeader.astro';
+import BreakthroughCard from './elements/BreakthroughCard.astro';
+
+const breakthroughs = [
+  {
+    title: 'CRISPR & Genetic Interventions',
+    description: 'Evolved from basic gene editing to base editing, prime editing, and epigenome editing—enabling precise interventions in age-related pathways.',
+    icon: 'dna',
+  },
+  {
+    title: 'Senolytics',
+    description: 'Drugs that selectively clear senescent "zombie" cells, implicated in chronic inflammation and age-related diseases.',
+    icon: 'cell',
+  },
+  {
+    title: 'AI-Driven Drug Discovery',
+    description: 'Applied to multi-omics datasets and biomarker streams to identify aging signatures and enable biological-age-driven interventions.',
+    icon: 'brain',
+  },
+];
+---
+
+<section data-transition="slide">
+  <div class="slide-content ap-breakthroughs">
+    <SectionHeader
+      badge="Breakthroughs"
+      title="Science at an Inflection Point"
+      subtitle="Validated genomic tools, mechanism-based geroscience, and AI-native R&D have transformed longevity into an investable category"
+    />
+
+    <div class="ap-stack">
+      {breakthroughs.map((b) => (
+        <BreakthroughCard icon={b.icon} title={b.title} description={b.description} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ap-breakthroughs {
+    justify-content: flex-start;
+    gap: 1.25rem;
+  }
+
+  .ap-stack {
+    width: min(1000px, 100%);
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  /* Compact the header and cards so the slide never overflows vertically */
+  :global(.ap-breakthroughs .ap-section-header) {
+    max-width: 56rem;
+  }
+
+  :global(.ap-breakthroughs .ap-title) {
+    font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  }
+
+  :global(.ap-breakthroughs .ap-subtitle) {
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    margin-top: 0.5rem;
+  }
+
+  :global(.ap-breakthroughs .ap-breakthrough-card) {
+    padding: 1rem;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 1rem;
+    border-radius: 1rem;
+  }
+
+  :global(.ap-breakthroughs .ap-icon) {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.875rem;
+    font-size: 1.25rem;
+  }
+
+  :global(.ap-breakthroughs .ap-body) {
+    margin-top: 0.35rem;
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    line-height: 1.35;
+  }
+</style>

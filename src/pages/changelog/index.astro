@@ -162,9 +162,8 @@ function getCategoryStyle(category?: string) {
                         </span>
                       )}
                       {entry.data.augmented_with && (
-                        <span class="entry-ai">
+                        <span class="entry-ai" title={entry.data.augmented_with}>
                           <ClaudeTrademark height="14px" />
-                          {entry.data.augmented_with.replace(/^Claude\s*/i, '')}
                         </span>
                       )}
                     </div>

@@ -108,9 +108,8 @@ const categoryStyle = categoryColors[data.category || ''] || categoryColors.Feat
             </div>
           )}
           {data.augmented_with && (
-            <div class="meta-item ai-badge">
+            <div class="meta-item ai-badge" title={data.augmented_with}>
               <ClaudeTrademark height="16px" />
-              <span>{data.augmented_with.replace(/^Claude\s*/i, '')}</span>
             </div>
           )}
         </div>

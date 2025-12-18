@@ -1,0 +1,64 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+const { icon, title, description } = Astro.props;
+
+const iconEmoji = icon === 'dna'
+  ? '🧬'
+  : icon === 'cell'
+    ? '🔬'
+    : icon === 'brain'
+      ? '🧠'
+      : '✨';
+---
+
+<div class="ap-breakthrough-card">
+  <div class="ap-icon" aria-hidden="true">{iconEmoji}</div>
+  <div class="ap-copy">
+    <h3 class="ap-title">{title}</h3>
+    <p class="ap-body">{description}</p>
+  </div>
+</div>
+
+<style>
+  .ap-breakthrough-card {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  .ap-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    display: grid;
+    place-items: center;
+    border-radius: 1rem;
+    background: rgba(102, 67, 226, 0.15);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    font-size: 1.5rem;
+  }
+
+  .ap-title {
+    font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+    font-weight: 700;
+    color: var(--color-alabaster);
+    margin: 0;
+  }
+
+  .ap-body {
+    margin-top: 0.5rem;
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    line-height: 1.45;
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+</style>

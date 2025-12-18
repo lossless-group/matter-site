@@ -34,6 +34,16 @@ export const componentDecks: Record<string, ComponentDeck> = {
     shareImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
     type: 'component',
   },
+  'fund-intro': {
+    title: 'Fund Intro',
+    description: 'Core narrative slides introducing the Dark Matter fund.',
+    component: 'SlideShowFundIntro',
+    author: 'Dark Matter',
+    date: '2025-12-18',
+    coverImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    shareImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'component',
+  },
 };
 
 /**

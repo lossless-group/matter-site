@@ -1,0 +1,51 @@
+---
+interface Props {
+  stat: string;
+  label: string;
+  description: string;
+}
+
+const { stat, label, description } = Astro.props;
+---
+
+<div class="ap-economy-card">
+  <div class="ap-stat">{stat}</div>
+  <div class="ap-label">{label}</div>
+  <div class="ap-description">{description}</div>
+</div>
+
+<style>
+  .ap-economy-card {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    height: 100%;
+    text-align: center;
+  }
+
+  .ap-stat {
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-lilac);
+    margin-bottom: 0.75rem;
+  }
+
+  .ap-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-alabaster);
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+  }
+
+  .ap-description {
+    font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+    line-height: 1.45;
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+</style>
