@@ -1,623 +1,324 @@
 ---
 /**
- * Design System Index
+ * Design System Hub
  *
- * Documents reusable components with examples and usage notes.
+ * Navigation page for exploring all design system documentation.
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
-import TeamMemberCard from '@components/team/TeamMemberCard.astro';
-import TeamMemberCardWide from '@components/team/TeamMemberCard--Wide.astro';
 
-// Use real team data for demos
-import teamData from '../../content/people/team.json';
+// Define design system pages with metadata
+const pages = [
+  {
+    title: 'Citations',
+    href: '/design-system/citations',
+    description: 'Hex-code citation system with inline markers, source lists, and wrapper utilities.',
+    components: ['InlineCitation', 'Sources', 'SourcesCompact', 'SourcesInline', 'CitedSection'],
+    category: 'Components',
+  },
+  {
+    title: 'People',
+    href: '/design-system/people',
+    description: 'Team member cards in compact and wide variants for grid and narrative layouts.',
+    components: ['TeamMemberCard', 'TeamMemberCard--Wide'],
+    category: 'Components',
+  },
+  {
+    title: 'Messages',
+    href: '/design-system/messages',
+    description: 'Narrative section components for fund messaging and data visualizations.',
+    components: ['TheAgingCrisis', 'AgingPopulation', 'DarkMatterDifferentiation', 'ExitPotential'],
+    category: 'Sections',
+  },
+  {
+    title: 'Vibrant Mode',
+    href: '/design-system/vibrant',
+    description: 'Showcase of the vibrant visual mode with glows and gradients.',
+    components: [],
+    category: 'Themes',
+  },
+  {
+    title: 'Flare Demo',
+    href: '/design-system/flare-demo',
+    description: 'Animated flare and glow effects for visual interest.',
+    components: [],
+    category: 'Effects',
+  },
+  {
+    title: 'Needs Modes',
+    href: '/design-system/needs-modes',
+    description: 'Components requiring light/dark/vibrant mode support.',
+    components: [],
+    category: 'Reference',
+  },
+];
 
-const markMoline = teamData.find(m => m.name === 'Mark Moline');
-const anthonyBorquez = teamData.find(m => m.name === 'Anthony Borquez');
-const skinnerLayne = teamData.find(m => m.name === 'Skinner Layne');
-const michaelStaton = teamData.find(m => m.name === 'Michael Staton');
+// Group pages by category
+const categories = pages.reduce((acc, page) => {
+  if (!acc[page.category]) acc[page.category] = [];
+  acc[page.category].push(page);
+  return acc;
+}, {} as Record<string, typeof pages>);
+
+const categoryOrder = ['Components', 'Sections', 'Themes', 'Effects', 'Reference'];
 ---
 
 <BaseThemeLayout title="Design System | Dark Matter">
-  <main class="design-system-page">
+  <main class="design-system-hub">
     <!-- Header -->
-    <header class="ds-header py-12 px-6 border-b border-(--color-border)">
-      <div class="max-w-4xl mx-auto">
-        <h1 class="text-4xl font-bold mb-4">Design System</h1>
-        <p class="text-lg text-(--color-muted-foreground)">
-          Reusable components and patterns for Dark Matter sites.
+    <header class="hub-header">
+      <div class="max-w-5xl mx-auto px-6 py-16 text-center">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">Design System</h1>
+        <p class="text-lg text-(--color-muted-foreground) max-w-2xl mx-auto">
+          Reusable components, patterns, and visual styles for Dark Matter sites.
+          Browse the documentation below.
         </p>
       </div>
     </header>
 
-    <!-- TeamMemberCard Section -->
-    <section class="ds-section py-16 px-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="section-header mb-8">
-          <span class="component-badge">Component</span>
-          <h2 class="text-3xl font-bold mt-2">TeamMemberCard</h2>
-          <p class="text-(--color-muted-foreground) mt-2">
-            <code class="code-inline">src/components/team/TeamMemberCard.astro</code>
-          </p>
-        </div>
-
-        <!-- Description -->
-        <div class="prose-block mb-10">
-          <p>
-            Displays a team member with avatar, name, role, bio, and optional social links.
-            Used for both leadership and founding team members. The parent container controls
-            sizing constraints - the card fills its container width.
-          </p>
-        </div>
-
-        <!-- Props Table -->
-        <div class="props-section mb-10">
-          <h3 class="text-xl font-semibold mb-4">Props</h3>
-          <div class="props-table">
-            <div class="prop-row prop-header">
-              <span>Prop</span>
-              <span>Type</span>
-              <span>Required</span>
-              <span>Description</span>
-            </div>
-            <div class="prop-row">
-              <code>name</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Person's display name</span>
-            </div>
-            <div class="prop-row">
-              <code>role</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Job title or role</span>
-            </div>
-            <div class="prop-row">
-              <code>bio</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Short biography text</span>
-            </div>
-            <div class="prop-row">
-              <code>image</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Path to avatar image</span>
-            </div>
-            <div class="prop-row">
-              <code>socialLinks</code>
-              <span>SocialLink[]</span>
-              <span class="optional">No</span>
-              <span>Array of social links (name, href, icon?)</span>
-            </div>
-            <div class="prop-row">
-              <code>class</code>
-              <span>string</span>
-              <span class="optional">No</span>
-              <span>Additional CSS classes</span>
-            </div>
+    <!-- Navigation Grid -->
+    <div class="hub-content max-w-5xl mx-auto px-6 pb-16">
+      {categoryOrder.map(category => categories[category] && (
+        <section class="category-section">
+          <h2 class="category-title">{category}</h2>
+          <div class="page-grid">
+            {categories[category].map(page => (
+              <a href={page.href} class="page-card group">
+                <div class="page-card-inner">
+                  <h3 class="page-title">{page.title}</h3>
+                  <p class="page-description">{page.description}</p>
+                  {page.components.length > 0 && (
+                    <div class="page-components">
+                      {page.components.slice(0, 4).map(comp => (
+                        <span class="component-tag">{comp}</span>
+                      ))}
+                      {page.components.length > 4 && (
+                        <span class="component-more">+{page.components.length - 4} more</span>
+                      )}
+                    </div>
+                  )}
+                  <span class="page-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </span>
+                </div>
+              </a>
+            ))}
           </div>
-        </div>
+        </section>
+      ))}
+    </div>
 
-        <!-- Theme Support -->
-        <div class="theme-section mb-10">
-          <h3 class="text-xl font-semibold mb-4">Theme Support</h3>
-          <p class="text-(--color-muted-foreground) mb-4">
-            The card automatically adapts to the current theme mode via CSS custom properties
-            and <code class="code-inline">:global([data-mode="..."])</code> selectors.
-          </p>
-          <div class="theme-badges">
-            <span class="theme-badge theme-dark">Dark</span>
-            <span class="theme-badge theme-light">Light</span>
-            <span class="theme-badge theme-vibrant">Vibrant</span>
+    <!-- Quick Links -->
+    <footer class="hub-footer">
+      <div class="max-w-5xl mx-auto px-6 py-8">
+        <div class="footer-inner">
+          <span class="footer-label">Quick Links</span>
+          <div class="footer-links">
+            {pages.map(page => (
+              <a href={page.href} class="footer-link">{page.title}</a>
+            ))}
           </div>
-        </div>
-
-        <!-- Styling Notes -->
-        <div class="styling-section mb-10">
-          <h3 class="text-xl font-semibold mb-4">Styling</h3>
-          <ul class="style-list">
-            <li>
-              <strong>Avatar:</strong> 96px circle (<code class="code-inline">w-24 h-24</code>) with colored border
-            </li>
-            <li>
-              <strong>Name:</strong> <code class="code-inline">text-lg</code> bold, centered
-            </li>
-            <li>
-              <strong>Role:</strong> <code class="code-inline">text-xs</code> uppercase tracking, accent color
-            </li>
-            <li>
-              <strong>Bio:</strong> <code class="code-inline">text-sm</code> with reduced opacity
-            </li>
-            <li>
-              <strong>Social links:</strong> Separated by border-top, uses SocialIcons component
-            </li>
-            <li>
-              <strong>Hover:</strong> Subtle lift (<code class="code-inline">translateY(-4px)</code>) with glow
-            </li>
-          </ul>
-        </div>
-
-        <!-- Live Examples -->
-        <div class="examples-section">
-          <h3 class="text-xl font-semibold mb-6">Examples</h3>
-
-          <div class="example-grid">
-            <!-- With social links -->
-            <div class="example-item">
-              <div class="example-label">With Social Links</div>
-              <div class="example-card-wrapper">
-                {markMoline && (
-                  <TeamMemberCard
-                    name={markMoline.name}
-                    role={markMoline.role}
-                    bio={markMoline.bio}
-                    image={markMoline.image}
-                    socialLinks={markMoline.socialLinks}
-                  />
-                )}
-              </div>
-            </div>
-
-            <!-- Without social links -->
-            <div class="example-item">
-              <div class="example-label">Without Social Links</div>
-              <div class="example-card-wrapper">
-                {anthonyBorquez && (
-                  <TeamMemberCard
-                    name={anthonyBorquez.name}
-                    role={anthonyBorquez.role}
-                    bio={anthonyBorquez.bio}
-                    image={anthonyBorquez.image}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Usage Example -->
-        <div class="usage-section mt-10">
-          <h3 class="text-xl font-semibold mb-4">Usage</h3>
-          <pre class="code-block"><code>{`---
-import TeamMemberCard from '@components/team/TeamMemberCard.astro';
----
-
-<TeamMemberCard
-  name="Jane Doe"
-  role="Managing Partner"
-  bio="Bio text here..."
-  image="/images/team/jane.jpg"
-  socialLinks={[
-    { name: 'LinkedIn', href: 'https://linkedin.com/in/jane' },
-    { name: 'X', href: 'https://x.com/jane' },
-  ]}
-/>`}</code></pre>
-        </div>
-
-        <!-- Layout Notes -->
-        <div class="layout-section mt-10">
-          <h3 class="text-xl font-semibold mb-4">Layout Integration</h3>
-          <p class="text-(--color-muted-foreground)">
-            The card fills its container width. Control card size via parent container constraints:
-          </p>
-          <pre class="code-block mt-4"><code>{`<!-- Leadership: constrained width -->
-<div class="max-w-sm">
-  <TeamMemberCard ... />
-</div>
-
-<!-- Team grid: 2 columns -->
-<div class="grid gap-6 sm:grid-cols-2">
-  {members.map(m => <TeamMemberCard {...m} />)}
-</div>`}</code></pre>
         </div>
       </div>
-    </section>
-
-    <!-- TeamMemberCard--Wide Section -->
-    <section class="ds-section py-16 px-6 border-t border-(--color-border)">
-      <div class="max-w-4xl mx-auto">
-        <div class="section-header mb-8">
-          <span class="component-badge">Component</span>
-          <h2 class="text-3xl font-bold mt-2">TeamMemberCard--Wide</h2>
-          <p class="text-(--color-muted-foreground) mt-2">
-            <code class="code-inline">src/components/team/TeamMemberCard--Wide.astro</code>
-          </p>
-        </div>
-
-        <!-- Description -->
-        <div class="prose-block mb-10">
-          <p>
-            Wide/horizontal team member card with alternating photo position and pillar badges.
-            Designed for narrative-style team pages with an editorial feel. Photo and content
-            columns can swap sides via the <code class="code-inline">reversed</code> prop.
-          </p>
-        </div>
-
-        <!-- Props Table -->
-        <div class="props-section mb-10">
-          <h3 class="text-xl font-semibold mb-4">Props</h3>
-          <div class="props-table">
-            <div class="prop-row prop-header">
-              <span>Prop</span>
-              <span>Type</span>
-              <span>Required</span>
-              <span>Description</span>
-            </div>
-            <div class="prop-row">
-              <code>name</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Person's display name</span>
-            </div>
-            <div class="prop-row">
-              <code>role</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Job title or role</span>
-            </div>
-            <div class="prop-row">
-              <code>bio</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Biography text</span>
-            </div>
-            <div class="prop-row">
-              <code>image</code>
-              <span>string</span>
-              <span class="required">Yes</span>
-              <span>Path to photo</span>
-            </div>
-            <div class="prop-row">
-              <code>socialLinks</code>
-              <span>SocialLink[]</span>
-              <span class="optional">No</span>
-              <span>Array of social links</span>
-            </div>
-            <div class="prop-row">
-              <code>pillar</code>
-              <span>PillarBadge</span>
-              <span class="optional">No</span>
-              <span>Badge with label and color (purple/blue/cyan/green/amber)</span>
-            </div>
-            <div class="prop-row">
-              <code>reversed</code>
-              <span>boolean</span>
-              <span class="optional">No</span>
-              <span>Photo on right instead of left</span>
-            </div>
-            <div class="prop-row">
-              <code>showDivider</code>
-              <span>boolean</span>
-              <span class="optional">No</span>
-              <span>Show top border separator</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pillar Colors -->
-        <div class="pillar-section mb-10">
-          <h3 class="text-xl font-semibold mb-4">Pillar Badge Colors</h3>
-          <div class="pillar-badges">
-            <span class="pillar-demo pillar-purple">purple</span>
-            <span class="pillar-demo pillar-blue">blue</span>
-            <span class="pillar-demo pillar-cyan">cyan</span>
-            <span class="pillar-demo pillar-green">green</span>
-            <span class="pillar-demo pillar-amber">amber</span>
-          </div>
-        </div>
-
-        <!-- Styling Notes -->
-        <div class="styling-section mb-10">
-          <h3 class="text-xl font-semibold mb-4">Styling</h3>
-          <ul class="style-list">
-            <li>
-              <strong>Photo:</strong> 192-224px square (<code class="code-inline">w-48 h-48 sm:w-56 sm:h-56</code>) with rounded corners and accent shadow
-            </li>
-            <li>
-              <strong>Name:</strong> <code class="code-inline">text-2xl sm:text-3xl</code> bold
-            </li>
-            <li>
-              <strong>Role:</strong> <code class="code-inline">text-base</code> uppercase tracking, accent color
-            </li>
-            <li>
-              <strong>Layout:</strong> Flexbox with <code class="code-inline">lg:flex-row</code>, stacks on mobile
-            </li>
-            <li>
-              <strong>Alignment:</strong> Text aligns left/right based on <code class="code-inline">reversed</code> prop
-            </li>
-          </ul>
-        </div>
-
-        <!-- Live Examples -->
-        <div class="examples-section">
-          <h3 class="text-xl font-semibold mb-6">Examples</h3>
-
-          <div class="wide-example-stack">
-            <!-- Default (photo left) -->
-            <div class="example-item-wide">
-              <div class="example-label">Default (Photo Left)</div>
-              {skinnerLayne && (
-                <TeamMemberCardWide
-                  name={skinnerLayne.name}
-                  role={skinnerLayne.role}
-                  bio={skinnerLayne.bio}
-                  image={skinnerLayne.image}
-                  socialLinks={skinnerLayne.socialLinks}
-                  pillar={{ label: 'Founding', color: 'green' }}
-                />
-              )}
-            </div>
-
-            <!-- Reversed (photo right) -->
-            <div class="example-item-wide">
-              <div class="example-label">Reversed (Photo Right) + Divider</div>
-              {michaelStaton && (
-                <TeamMemberCardWide
-                  name={michaelStaton.name}
-                  role={michaelStaton.role}
-                  bio={michaelStaton.bio}
-                  image={michaelStaton.image}
-                  socialLinks={michaelStaton.socialLinks}
-                  pillar={{ label: 'Operations', color: 'cyan' }}
-                  reversed={true}
-                  showDivider={true}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        <!-- Usage Example -->
-        <div class="usage-section mt-10">
-          <h3 class="text-xl font-semibold mb-4">Usage</h3>
-          <pre class="code-block"><code>{`---
-import TeamMemberCardWide from '@components/team/TeamMemberCard--Wide.astro';
----
-
-{members.map((member, index) => (
-  <TeamMemberCardWide
-    name={member.name}
-    role={member.role}
-    bio={member.bio}
-    image={member.image}
-    socialLinks={member.socialLinks}
-    pillar={{ label: 'Strategy', color: 'purple' }}
-    reversed={index % 2 !== 0}
-    showDivider={index > 0}
-  />
-))}`}</code></pre>
-        </div>
-      </div>
-    </section>
+    </footer>
   </main>
 </BaseThemeLayout>
 
 <style>
-  .design-system-page {
+  .design-system-hub {
     background: var(--color-background);
     min-height: 100vh;
   }
 
-  .ds-header h1 {
-    color: var(--color-foreground);
-  }
-
-  .component-badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #34d399;
-    border: 1px solid rgba(52, 211, 153, 0.3);
-    border-radius: 9999px;
-  }
-
-  .ds-section h2 {
-    color: var(--color-foreground);
-  }
-
-  .prose-block p {
-    color: var(--color-muted-foreground);
-    line-height: 1.7;
-  }
-
-  .code-inline {
-    background: var(--color-muted);
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.875rem;
-    font-family: monospace;
-  }
-
-  /* Props Table */
-  .props-table {
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
-
-  .prop-row {
-    display: grid;
-    grid-template-columns: 120px 100px 80px 1fr;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--color-border);
-    font-size: 0.875rem;
-    color: var(--color-muted-foreground);
-  }
-
-  .prop-row:last-child {
-    border-bottom: none;
-  }
-
-  .prop-header {
-    background: var(--color-muted);
-    font-weight: 600;
-    color: var(--color-foreground);
-  }
-
-  .prop-row code {
-    color: #34d399;
-    font-family: monospace;
-  }
-
-  .required {
-    color: #f59e0b;
-  }
-
-  .optional {
-    color: var(--color-muted-foreground);
-  }
-
-  /* Theme Badges */
-  .theme-badges {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .theme-badge {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: 0.375rem;
-  }
-
-  .theme-dark {
-    background: rgba(15, 9, 35, 0.8);
-    color: var(--color-alabaster);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .theme-light {
-    background: rgba(255, 255, 255, 0.9);
-    color: #1a1a1a;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .theme-vibrant {
-    background: linear-gradient(135deg, rgba(102, 67, 226, 0.3), rgba(52, 211, 153, 0.3));
-    color: var(--color-alabaster);
-    border: 1px solid rgba(52, 211, 153, 0.3);
-  }
-
-  /* Style List */
-  .style-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .style-list li {
-    padding: 0.5rem 0;
-    color: var(--color-muted-foreground);
+  .hub-header {
+    background: linear-gradient(180deg, rgba(156, 133, 223, 0.05) 0%, transparent 100%);
     border-bottom: 1px solid var(--color-border);
   }
 
-  .style-list li:last-child {
-    border-bottom: none;
-  }
-
-  .style-list strong {
+  .hub-header h1 {
     color: var(--color-foreground);
   }
 
-  /* Examples */
-  .example-grid {
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* Categories */
+  .category-section {
+    margin-bottom: 3rem;
   }
 
-  .example-item {
-    position: relative;
-  }
-
-  .example-label {
+  .category-title {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-muted-foreground);
-    margin-bottom: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--color-lilac);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .example-card-wrapper {
-    max-width: 320px;
-  }
-
-  /* Code Block */
-  .code-block {
-    background: rgba(15, 9, 35, 0.8);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    padding: 1rem 1.25rem;
-    overflow-x: auto;
-  }
-
-  .code-block code {
-    font-family: monospace;
-    font-size: 0.875rem;
-    line-height: 1.6;
-    color: var(--color-alabaster);
-    white-space: pre;
-  }
-
-  /* Wide card examples */
-  .wide-example-stack {
-    display: flex;
-    flex-direction: column;
+  /* Page Grid */
+  .page-grid {
+    display: grid;
     gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
-  .example-item-wide {
+  /* Page Cards */
+  .page-card {
+    display: block;
+    text-decoration: none;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .page-card-inner {
     position: relative;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.1);
+    height: 100%;
+    transition: all 0.2s ease;
   }
 
-  /* Pillar badge demos */
-  .pillar-badges {
+  .page-card:hover .page-card-inner {
+    background: rgba(156, 133, 223, 0.08);
+    border-color: rgba(156, 133, 223, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
+    transition: color 0.2s ease;
+  }
+
+  .page-card:hover .page-title {
+    color: var(--color-lilac);
+  }
+
+  .page-description {
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  /* Component Tags */
+  .page-components {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.375rem;
   }
 
-  .pillar-demo {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
+  .component-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    font-family: monospace;
+    color: var(--color-lilac);
+    background: rgba(156, 133, 223, 0.1);
+    border-radius: 0.25rem;
+  }
+
+  .component-more {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    color: var(--color-muted-foreground);
+  }
+
+  /* Arrow */
+  .page-arrow {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    color: var(--color-muted-foreground);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.2s ease;
+  }
+
+  .page-card:hover .page-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--color-lilac);
+  }
+
+  /* Footer */
+  .hub-footer {
+    border-top: 1px solid var(--color-border);
+    background: rgba(156, 133, 223, 0.02);
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-label {
+    font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-radius: 9999px;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
   }
 
-  .pillar-purple {
-    background: rgba(108, 99, 255, 0.2);
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+
+  .footer-link {
+    font-size: 0.875rem;
+    color: var(--color-muted-foreground);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .footer-link:hover {
     color: var(--color-lilac);
-    border: 1px solid rgba(108, 99, 255, 0.3);
   }
 
-  .pillar-blue {
-    background: rgba(96, 165, 250, 0.2);
-    color: #93c5fd;
-    border: 1px solid rgba(96, 165, 250, 0.3);
+  /* Light mode */
+  :global([data-mode="light"]) .hub-header {
+    background: linear-gradient(180deg, rgba(108, 99, 255, 0.03) 0%, transparent 100%);
   }
 
-  .pillar-cyan {
-    background: rgba(34, 211, 238, 0.2);
-    color: #67e8f9;
-    border: 1px solid rgba(34, 211, 238, 0.3);
+  :global([data-mode="light"]) .category-title {
+    color: var(--color-marjorelle-purple);
   }
 
-  .pillar-green {
-    background: rgba(52, 211, 153, 0.2);
-    color: #6ee7b7;
-    border: 1px solid rgba(52, 211, 153, 0.3);
+  :global([data-mode="light"]) .page-card-inner {
+    background: rgba(108, 99, 255, 0.02);
+    border-color: rgba(108, 99, 255, 0.1);
   }
 
-  .pillar-amber {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fcd34d;
-    border: 1px solid rgba(251, 191, 36, 0.3);
+  :global([data-mode="light"]) .page-card:hover .page-card-inner {
+    background: rgba(108, 99, 255, 0.05);
+    border-color: rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="light"]) .page-card:hover .page-title,
+  :global([data-mode="light"]) .page-card:hover .page-arrow {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .component-tag {
+    color: var(--color-marjorelle-purple);
+    background: rgba(108, 99, 255, 0.08);
+  }
+
+  :global([data-mode="light"]) .footer-link:hover {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .hub-footer {
+    background: rgba(108, 99, 255, 0.02);
   }
 </style>

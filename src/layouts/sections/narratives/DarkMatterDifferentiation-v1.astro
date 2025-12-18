@@ -23,6 +23,10 @@ import type { CitationReference } from '@lib/citations/types';
 import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
 import InlineCitation from '@components/citations/InlineCitation.astro';
 import Sources from '@components/citations/Sources.astro';
+import TeamMemberCardMicro from '@components/team/TeamMemberCard--Micro.astro';
+
+// Import team data from JSON
+import teamData from '../../../content/people/team.json';
 
 interface Props {
   title?: string;
@@ -141,44 +145,30 @@ const pillars = [
   },
 ];
 
-// Team members linked to pillars
-const team = [
-  {
-    name: 'Skinner Layne',
-    role: 'Strategy & Capital Formation',
-    description: 'Builds structures that bridge scientific discovery with institutional LP expectations.',
-    pillar: 'expertise',
-    photo: '/photos/headshot__Skinner-Layne.png',
-  },
-  {
-    name: 'Mark Moline',
-    role: 'Investment Analysis',
-    description: 'Translates scientific narratives into investment-grade theses.',
-    pillar: 'dealflow',
-    photo: '/photos/headshot__Mark-Moline.jpeg',
-  },
-  {
-    name: 'Thomas Vu',
-    role: 'Operations & Scale',
-    description: 'Scaling products from early validation to mass adoption.',
-    pillar: 'network',
-    photo: '/photos/headshotOf__Thomas-Vu.jpeg',
-  },
-  {
-    name: 'Anthony Borquez',
-    role: 'Commercialization',
-    description: 'Driving user acquisition, partnerships, and go-to-market execution.',
-    photo: '/photos/headshotOf__Anthony-Borquez.jpeg',
-    pillar: 'ip',
-  },
-];
+// Pillar assignments by team member name
+const pillarAssignments: Record<string, string> = {
+  'Mark Moline': 'dealflow',
+  'Skinner Layne': 'expertise',
+  'Michael Staton': 'ip',
+  'Thomas Vu': 'network',
+  'Anthony Borquez': 'ip',
+};
 
-// Pillar colors for team mapping
-const pillarColors: Record<string, string> = {
-  expertise: 'expertise',
-  dealflow: 'dealflow',
-  network: 'network',
-  ip: 'ip',
+// Transform team.json data to match section needs
+const team = teamData.map(member => ({
+  name: member.name,
+  role: member.role,
+  description: member.bio,
+  photo: member.image,
+  pillar: pillarAssignments[member.name] || 'expertise',
+}));
+
+// Pillar colors for team mapping (maps pillar ID to badge color)
+const pillarColors: Record<string, 'purple' | 'blue' | 'cyan' | 'green' | 'amber'> = {
+  expertise: 'purple',
+  dealflow: 'blue',
+  network: 'cyan',
+  ip: 'green',
 };
 
 // =============================================================================
@@ -307,42 +297,22 @@ const getCite = (key: string) => citationIndex.get(key);
       <!-- Team grid -->
       <div class="team-grid grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {team.map((member, index) => (
-          <article
-            class={`team-card team-card-${member.pillar} reveal-item`}
+          <div
+            class="reveal-item"
             data-reveal="fade-up"
             style={`--delay: ${index * 100}ms;`}
           >
-            <div class="team-inner group relative p-6 rounded-xl backdrop-blur-sm transition-all duration-500 h-full text-center">
-              <!-- Avatar -->
-              <div class="team-avatar w-16 h-16 rounded-full mx-auto mb-4 overflow-hidden">
-                <img
-                  src={member.photo}
-                  alt={member.name}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-
-              <!-- Name -->
-              <h3 class="team-name text-lg font-bold mb-1">
-                {member.name}
-              </h3>
-
-              <!-- Role -->
-              <p class="team-role text-xs font-semibold uppercase tracking-wider mb-3">
-                {member.role}
-              </p>
-
-              <!-- Description -->
-              <p class="team-description text-sm leading-relaxed">
-                {member.description}
-              </p>
-
-              <!-- Pillar indicator -->
-              <div class={`pillar-indicator pillar-indicator-${member.pillar} mt-4 inline-block px-3 py-1 rounded-full text-xs font-medium`}>
-                {pillars.find(p => p.id === member.pillar)?.title.split(' ')[0]}
-              </div>
-            </div>
-          </article>
+            <TeamMemberCardMicro
+              name={member.name}
+              role={member.role}
+              description={member.description}
+              image={member.photo}
+              pillar={{
+                label: pillars.find(p => p.id === member.pillar)?.title.split(' ')[0] || '',
+                color: pillarColors[member.pillar],
+              }}
+            />
+          </div>
         ))}
       </div>
     </div>
