@@ -1,0 +1,407 @@
+---
+/**
+ * Team Page Variant 2: Narrative Alternating Layout
+ *
+ * Features:
+ * - Clean hero with minimal text
+ * - Alternating left/right layout for each team member
+ * - Larger photos with more prominent bios
+ * - Pillar/specialty badges connecting to fund pillars
+ * - More editorial, story-driven feel
+ * - Supports dark/light/vibrant themes
+ */
+import BaseThemeLayout from '../../layouts/BaseThemeLayout.astro';
+import SocialIcons from '../../components/ui/SocialIcons.astro';
+
+import teamData from '../../content/people/team.json';
+import type { TeamMember } from '../../types/team';
+
+const teamMembers = teamData as TeamMember[];
+
+// Map social links for component
+const mapSocialLinks = (links: any[]) =>
+  links?.map((link) => ({
+    name: link.name,
+    href: link.href,
+    icon: link.name.toLowerCase(),
+  })) || [];
+
+// Pillar mapping for founding team specialties
+const pillarData: Record<string, { label: string; color: string }> = {
+  'Managing Partner': { label: 'Leadership', color: 'purple' },
+  'Strategy & Capital Formation': { label: 'Strategy', color: 'purple' },
+  'Investment Analysis': { label: 'Analysis', color: 'blue' },
+  'Venture Operations': { label: 'Operations', color: 'cyan' },
+  'Operations & Scale': { label: 'Scale', color: 'green' },
+  'Commercialization': { label: 'Growth', color: 'amber' },
+  'Founding Partner': { label: 'Founding', color: 'green' },
+};
+---
+
+<BaseThemeLayout title="Our Team | Dark Matter" description="Meet the people behind Dark Matter Longevity Fund.">
+  <main class="team-page">
+    <!-- Hero Section -->
+    <section class="hero-section min-h-[50vh] flex flex-col items-center justify-center px-6 py-24 relative">
+      <div class="hero-gradient absolute inset-0"></div>
+      <div class="relative z-10 text-center max-w-4xl mx-auto">
+        <h1 class="headline text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.1] tracking-tight mb-8">
+          The Team Behind<br />
+          <span class="headline-accent">Dark Matter</span>
+        </h1>
+        <p class="subtitle text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed">
+          Scientific depth meets investment discipline
+        </p>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Meet the team</span>
+        <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+      </div>
+    </section>
+
+    <!-- Team Members - Alternating Layout -->
+    <section class="members-section py-16 px-6">
+      <div class="max-w-4xl mx-auto">
+        {teamMembers.map((member, index) => {
+          const isEven = index % 2 === 0;
+          const pillar = pillarData[member.role] || pillarData['Founding Partner'];
+
+          return (
+            <article
+              class={`member-row flex flex-col lg:flex-row items-center gap-8 lg:gap-12 py-16 ${isEven ? '' : 'lg:flex-row-reverse'} ${index > 0 ? 'border-t border-current/10' : ''}`}
+            >
+              <!-- Photo Column - Fixed width -->
+              <div class="photo-column flex-shrink-0">
+                <div class="photo-wrapper relative">
+                  <div class="photo-frame w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      class="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class={`photo-accent absolute -z-10 top-3 ${isEven ? '-right-3' : '-left-3'} w-full h-full rounded-2xl`}></div>
+                </div>
+              </div>
+
+              <!-- Content Column - Takes remaining space -->
+              <div class={`content-column flex-1 text-center ${isEven ? 'lg:text-left' : 'lg:text-right'}`}>
+                <!-- Pillar badge -->
+                <span class={`pillar-badge pillar-${pillar.color} inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full mb-4`}>
+                  {pillar.label}
+                </span>
+
+                <h2 class="member-name text-2xl sm:text-3xl font-bold mb-2">
+                  {member.name}
+                </h2>
+
+                <p class="member-role text-base font-medium uppercase tracking-wider mb-4">
+                  {member.role}
+                </p>
+
+                <p class="member-bio text-base leading-relaxed mb-6">
+                  {member.bio}
+                </p>
+
+                {member.socialLinks && member.socialLinks.length > 0 && (
+                  <div class={`social-wrapper flex justify-center ${isEven ? 'lg:justify-start' : 'lg:justify-end'}`}>
+                    <SocialIcons
+                      socialLinks={mapSocialLinks(member.socialLinks)}
+                      iconSize="md"
+                    />
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Closing Section -->
+    <section class="closing-section py-24 px-6 relative">
+      <div class="closing-gradient absolute inset-0"></div>
+      <div class="relative z-10 text-center max-w-3xl mx-auto">
+        <p class="closing-eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-4">
+          Join Us
+        </p>
+        <h3 class="closing-headline text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+          Partner With Dark Matter
+        </h3>
+        <p class="closing-text text-lg sm:text-xl">
+          A team positioned to identify and support the next generation of longevity breakthroughs
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseThemeLayout>
+
+<style>
+  /* ==========================================================================
+     DARK MODE (default)
+     ========================================================================== */
+  .team-page {
+    background: var(--color-void);
+  }
+
+  .hero-gradient {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(102, 67, 226, 0.2), transparent 70%);
+  }
+
+  .headline {
+    color: var(--color-alabaster);
+  }
+
+  .headline-accent {
+    background: linear-gradient(135deg, var(--color-lilac), var(--color-marjorelle-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.5;
+  }
+
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.2); }
+  }
+
+  /* Member rows */
+  .member-row {
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  .photo-accent {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.3), rgba(156, 133, 223, 0.1));
+  }
+
+  .member-name {
+    color: var(--color-alabaster);
+  }
+
+  .member-role {
+    color: var(--color-lilac);
+  }
+
+  .member-bio {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  /* Pillar badges */
+  .pillar-purple {
+    background: rgba(108, 99, 255, 0.2);
+    color: var(--color-lilac);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  .pillar-blue {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+  }
+
+  .pillar-cyan {
+    background: rgba(34, 211, 238, 0.2);
+    color: #67e8f9;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+  }
+
+  .pillar-green {
+    background: rgba(52, 211, 153, 0.2);
+    color: #6ee7b7;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  .pillar-amber {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fcd34d;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  /* Closing */
+  .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.15), transparent 70%);
+  }
+
+  .closing-eyebrow {
+    color: var(--color-lilac);
+  }
+
+  .closing-headline {
+    color: var(--color-alabaster);
+  }
+
+  .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .team-page {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(156, 133, 223, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .headline {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .headline-accent {
+    background: linear-gradient(135deg, var(--color-marjorelle-purple), #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="light"]) .subtitle {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .scroll-hint {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .member-row {
+    border-color: rgba(108, 99, 255, 0.1);
+  }
+
+  :global([data-mode="light"]) .photo-accent {
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(156, 133, 223, 0.05));
+  }
+
+  :global([data-mode="light"]) .member-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .member-role {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .member-bio {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .pillar-purple {
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .pillar-blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+
+  :global([data-mode="light"]) .pillar-cyan {
+    background: rgba(6, 182, 212, 0.1);
+    color: #0891b2;
+  }
+
+  :global([data-mode="light"]) .pillar-green {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  :global([data-mode="light"]) .pillar-amber {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+  }
+
+  :global([data-mode="light"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-eyebrow {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .closing-headline {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .team-page {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 30%, #0d0518 70%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(102, 67, 226, 0.35), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .headline {
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .headline-accent {
+    text-shadow: 0 0 40px rgba(156, 133, 223, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  :global([data-mode="vibrant"]) .photo-accent {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.5), rgba(156, 133, 223, 0.2));
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .member-role {
+    text-shadow: 0 0 15px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-purple {
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-blue {
+    box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-cyan {
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-green {
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-amber {
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.25), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-headline {
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+</style>

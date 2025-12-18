@@ -1,0 +1,383 @@
+---
+/**
+ * Team Page Variant 1: Hero-Centered Layout
+ *
+ * Features:
+ * - Hero section with page title and description
+ * - Managing Partner(s) featured prominently in a centered spotlight
+ * - Founding team in a responsive 2-3 column grid below
+ * - Clean card design with hover effects
+ * - Supports dark/light/vibrant themes
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import SocialIcons from '@components/ui/SocialIcons.astro';
+
+import teamData from '@content/people/team.json';
+import type { TeamMember } from '../../types/team';
+
+const teamMembers = teamData as TeamMember[];
+
+// Group by role
+const managingPartners = teamMembers.filter((m) => {
+  const classifiers = Array.isArray(m.classifiers) ? m.classifiers : [m.classifiers];
+  return classifiers.some((c) => c?.toLowerCase().includes('managing partner'));
+});
+
+const foundingTeam = teamMembers.filter((m) => {
+  const classifiers = Array.isArray(m.classifiers) ? m.classifiers : [m.classifiers];
+  return (
+    classifiers.some(
+      (c) =>
+        c?.toLowerCase().includes('founding partner') ||
+        c?.toLowerCase().includes('founding principal') ||
+        c?.toLowerCase().includes('founding team')
+    ) && !classifiers.some((c) => c?.toLowerCase().includes('managing partner'))
+  );
+});
+
+// Map social links for component
+const mapSocialLinks = (links: any[]) =>
+  links?.map((link) => ({
+    name: link.name,
+    href: link.href,
+    icon: link.name.toLowerCase(),
+  })) || [];
+---
+
+<BaseThemeLayout title="Our Team | Dark Matter" description="Meet the people behind Dark Matter Longevity Fund.">
+  <main class="team-page">
+    <!-- Hero Section -->
+    <section class="hero-section min-h-[40vh] flex flex-col items-center justify-center px-6 py-20 relative">
+      <div class="hero-gradient absolute inset-0"></div>
+      <div class="relative z-10 text-center max-w-3xl mx-auto">
+        <p class="eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-4">
+          Dark Matter Longevity Fund
+        </p>
+        <h1 class="headline text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-6">
+          Our Team
+        </h1>
+        <p class="subtitle text-lg sm:text-xl max-w-2xl mx-auto">
+          A team that speaks both lab and late-stage capital, combining scientific depth with investment discipline.
+        </p>
+      </div>
+    </section>
+
+    <!-- Managing Partners Section -->
+    {managingPartners.length > 0 && (
+      <section class="managing-section py-20 px-6">
+        <div class="max-w-5xl mx-auto">
+          <div class="section-header text-center mb-12">
+            <span class="section-badge inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+              Leadership
+            </span>
+            <h2 class="section-title text-2xl sm:text-3xl font-bold">Managing Partners</h2>
+          </div>
+
+          <div class="flex justify-center">
+            {managingPartners.map((member) => (
+              <article class="managing-card max-w-md w-full">
+                <div class="card-inner p-8 rounded-2xl text-center">
+                  <div class="avatar-wrapper w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      class="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 class="member-name text-2xl font-bold mb-2">{member.name}</h3>
+                  <p class="member-role text-sm font-semibold uppercase tracking-wider mb-4">
+                    {member.role}
+                  </p>
+                  <p class="member-bio text-sm leading-relaxed mb-6">{member.bio}</p>
+                  {member.socialLinks && member.socialLinks.length > 0 && (
+                    <div class="social-wrapper pt-4 border-t border-current/10">
+                      <SocialIcons
+                        socialLinks={mapSocialLinks(member.socialLinks)}
+                        iconSize="sm"
+                        className="justify-center"
+                      />
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Founding Team Section -->
+    {foundingTeam.length > 0 && (
+      <section class="founding-section py-20 px-6">
+        <div class="founding-gradient absolute inset-0"></div>
+        <div class="max-w-6xl mx-auto relative z-10">
+          <div class="section-header text-center mb-12">
+            <span class="section-badge-alt inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+              Team
+            </span>
+            <h2 class="section-title text-2xl sm:text-3xl font-bold">Founding Partners</h2>
+          </div>
+
+          <div class="team-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {foundingTeam.map((member, index) => (
+              <article
+                class="team-card"
+                style={`--delay: ${index * 100}ms;`}
+              >
+                <div class="card-inner p-6 rounded-xl h-full">
+                  <div class="avatar-wrapper w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      class="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <h3 class="member-name text-lg font-bold text-center mb-1">{member.name}</h3>
+                  <p class="member-role text-xs font-semibold uppercase tracking-wider text-center mb-3">
+                    {member.role}
+                  </p>
+                  <p class="member-bio text-sm leading-relaxed text-center mb-4">{member.bio}</p>
+                  {member.socialLinks && member.socialLinks.length > 0 && (
+                    <div class="social-wrapper pt-3 border-t border-current/10">
+                      <SocialIcons
+                        socialLinks={mapSocialLinks(member.socialLinks)}
+                        iconSize="sm"
+                        className="justify-center"
+                      />
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+</BaseThemeLayout>
+
+<style>
+  /* ==========================================================================
+     DARK MODE (default)
+     ========================================================================== */
+  .team-page {
+    background: var(--color-void);
+  }
+
+  .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.15), transparent 70%);
+  }
+
+  .eyebrow {
+    color: var(--color-lilac);
+  }
+
+  .headline {
+    color: var(--color-alabaster);
+  }
+
+  .subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  .section-badge-alt {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  .section-title {
+    color: var(--color-alabaster);
+  }
+
+  /* Managing card */
+  .managing-card .card-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  .managing-card .avatar-wrapper {
+    border: 3px solid rgba(108, 99, 255, 0.4);
+  }
+
+  .managing-card .member-name {
+    color: var(--color-alabaster);
+  }
+
+  .managing-card .member-role {
+    color: var(--color-lilac);
+  }
+
+  .managing-card .member-bio {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  /* Founding section */
+  .founding-section {
+    position: relative;
+  }
+
+  .founding-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(52, 211, 153, 0.08), transparent 70%);
+  }
+
+  /* Team cards */
+  .team-card .card-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .team-card .card-inner:hover {
+    border-color: rgba(52, 211, 153, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(52, 211, 153, 0.1);
+  }
+
+  .team-card .avatar-wrapper {
+    border: 2px solid rgba(52, 211, 153, 0.3);
+  }
+
+  .team-card .member-name {
+    color: var(--color-alabaster);
+  }
+
+  .team-card .member-role {
+    color: #34d399;
+  }
+
+  .team-card .member-bio {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .team-page {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(156, 133, 223, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .eyebrow {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .headline,
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .subtitle {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .managing-card .card-inner {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="light"]) .managing-card .member-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .managing-card .member-role {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .managing-card .member-bio {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .founding-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(16, 185, 129, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .team-card .card-inner {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(16, 185, 129, 0.15);
+  }
+
+  :global([data-mode="light"]) .team-card .card-inner:hover {
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.08);
+  }
+
+  :global([data-mode="light"]) .team-card .member-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .team-card .member-role {
+    color: #10b981;
+  }
+
+  :global([data-mode="light"]) .team-card .member-bio {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .team-page {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 50%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.3), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .eyebrow {
+    color: var(--color-lilac);
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .headline {
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .managing-card .card-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border-color: rgba(108, 99, 255, 0.4);
+    box-shadow: 0 0 30px rgba(102, 67, 226, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .managing-card .avatar-wrapper {
+    box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .founding-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(52, 211, 153, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .team-card .card-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(10, 31, 26, 0.8));
+    border-color: rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .team-card .card-inner:hover {
+    border-color: rgba(52, 211, 153, 0.6);
+    box-shadow: 0 0 40px rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .team-card .avatar-wrapper {
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .team-card .member-role {
+    text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+  }
+</style>

@@ -11,17 +11,17 @@ import { defineCollection, z } from 'astro:content';
 
 // Citation reference schema
 const citationSchema = z.object({
-  title: z.string(),
-  url: z.string().url(),
-  source: z.string(),
-  publishedDate: z.string().optional(),
-  updatedDate: z.string().optional(),
+  title: z.string().optional(),
+  url: z.string().optional(),
+  source: z.string().optional(),
+  publishedDate: z.union([z.string(), z.date()]).optional(),
+  updatedDate: z.union([z.string(), z.date()]).optional(),
 });
 
 // Base stat/card schema used across sections
 const statCardSchema = z.object({
-  stat: z.string(),
-  label: z.string(),
+  stat: z.string().optional(),
+  label: z.string().optional(),
   description: z.string().optional(),
   citationKey: z.string().nullable().optional(),
 });
@@ -30,8 +30,8 @@ const statCardSchema = z.object({
 const closingSchema = z.object({
   eyebrow: z.string().optional(),
   badge: z.string().optional(),
-  headline: z.string(),
-  text: z.string(),
+  headline: z.string().optional(),
+  text: z.string().optional(),
   subtext: z.string().optional(),
 });
 
@@ -40,17 +40,17 @@ export const narratives = defineCollection({
   schema: z
     .object({
       // === Section Metadata ===
-      slug: z.string(),
-      component: z.string(),
-      componentPath: z.string(),
+      slug: z.string().optional(),
+      component: z.string().optional(),
+      componentPath: z.string().optional(),
       order: z.number().optional(),
       category: z
         .enum(['problem', 'opportunity', 'solution', 'team', 'returns', 'fund'])
         .optional(),
-      lastUpdated: z.string().optional(),
+      lastUpdated: z.union([z.string(), z.date()]).optional(),
 
       // === Display Configuration ===
-      title: z.string(),
+      title: z.string().optional(),
       subtitle: z.string().optional(),
       eyebrow: z.string().optional(),
 

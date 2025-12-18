@@ -3,7 +3,7 @@
     "name": "Mark Moline",
     "role": "Managing Partner",
     "classifiers": "Managing Partner, Team",
-    "image": "photos/headshot__Mark-Moline.jpeg",
+    "image": "/photos/headshot__Mark-Moline.jpeg",
     "bio": "Sample bio for a managing partner at Dark Matter. Replace this with real content.",
     "socialLinks": [
       { "name": "linkedin", "href": "https://www.linkedin.com/in/markbmoline/", "icon": "linkedin" }
@@ -13,7 +13,7 @@
     "name": "Skinner Layne",
     "role": "Founding Partner",
     "classifiers": "Founding Partner, Team",
-    "image": "photos/headshot__Skinner-Layne.png",
+    "image": "/photos/headshot__Skinner-Layne.png",
     "bio": "Sample bio for a founding principal at Dark Matter. Replace this with real content.",
     "socialLinks": [
       { "name": "Medium", "href": "https://medium.com/@skinnerlayne", "icon": "medium"}
@@ -23,7 +23,7 @@
     "name": "Michael Staton",
     "role": "Venture Operations",
     "classifiers": "Founding Partner, Team",
-    "image": "photos/headshotOf__Michael-Staton.jpeg",
+    "image": "/photos/headshotOf__Michael-Staton.jpeg",
     "bio": "Sample bio for a founding principal at Dark Matter. Replace this with real content.",
     "socialLinks": [
       { "name": "x", "href": "https://x.com/mpstaton", "icon": "x" },
@@ -36,9 +36,17 @@
     "role": "Founding Partner",
     "classifiers": "Founding Partner, Team",
     "bio":"Sample bio for a founding principal at Dark Matter. Replace this with real content.",
-    "image":"photos/headshotOf__Thomas-Vu.jpeg",
+    "image": "/photos/headshotOf__Thomas-Vu.jpeg",
     "socialLinks": [
       { "name": "linkedin", "href": "https://www.linkedin.com/in/thomashasfullheart/", "icon": "linkedin" }
     ]
-    }
+  },
+  {
+    "name": "Anthony Borquez",
+    "role": "Commercialization",
+    "classifiers": "Founding Partner, Team",
+    "bio": "Driving user acquisition, partnerships, and go-to-market execution.",
+    "image": "/photos/headshotOf__Anthony-Borquez.jpeg",
+    "socialLinks": []
+  }
 ]
