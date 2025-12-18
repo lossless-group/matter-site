@@ -1,0 +1,452 @@
+---
+/**
+ * Individual Changelog Entry Page
+ *
+ * Renders full markdown content for a single changelog entry
+ * with syntax highlighting and table support.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import ClaudeTrademark from '@components/icons/ClaudeTrademark.astro';
+import { getCollection } from 'astro:content';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+
+// Get the ID from the URL
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/changelog');
+}
+
+// Fetch all entries and find matching one
+const allEntries = await getCollection('changelog');
+const entry = allEntries.find((e) => {
+  // Match against ID with or without .md extension
+  const entryId = e.id.replace(/\.md$/, '');
+  return entryId === id || e.id === id;
+});
+
+if (!entry) {
+  return Astro.redirect('/changelog');
+}
+
+const { data, body } = entry;
+
+// Process markdown to HTML
+const processor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeStringify, { allowDangerousHtml: true });
+
+const htmlContent = String(await processor.process(body || ''));
+
+// Format date
+const date = new Date(data.date);
+const formattedDate = date.toLocaleDateString('en-US', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+// Category colors
+const categoryColors: Record<string, { bg: string; text: string; border: string }> = {
+  Feature: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' },
+  Component: { bg: 'bg-violet-500/10', text: 'text-violet-400', border: 'border-violet-500/30' },
+  Refactor: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
+  Fix: { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/30' },
+  Documentation: { bg: 'bg-sky-500/10', text: 'text-sky-400', border: 'border-sky-500/30' },
+  Infrastructure: { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-500/30' },
+  'Design-System': { bg: 'bg-fuchsia-500/10', text: 'text-fuchsia-400', border: 'border-fuchsia-500/30' },
+};
+
+const categoryStyle = categoryColors[data.category || ''] || categoryColors.Feature;
+---
+
+<BaseThemeLayout title={`${data.title} | Changelog | Dark Matter`}>
+  <article class="changelog-entry">
+    <div class="entry-container max-w-4xl mx-auto px-6 py-12">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href="/changelog" class="crumb">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Changelog
+        </a>
+      </nav>
+
+      <!-- Header -->
+      <header class="entry-header">
+        <div class="header-meta">
+          <time class="entry-date">{formattedDate}</time>
+          {data.category && (
+            <span class:list={['entry-category', categoryStyle.bg, categoryStyle.text, categoryStyle.border]}>
+              {data.category}
+            </span>
+          )}
+        </div>
+
+        <h1 class="entry-title">{data.title}</h1>
+
+        {data.summary && (
+          <p class="entry-summary">{data.summary}</p>
+        )}
+
+        <!-- Meta row -->
+        <div class="meta-row">
+          {data.authors && (
+            <div class="meta-item">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>{data.authors.join(', ')}</span>
+            </div>
+          )}
+          {data.augmented_with && (
+            <div class="meta-item ai-badge">
+              <ClaudeTrademark height="16px" />
+              <span>{data.augmented_with.replace(/^Claude\s*/i, '')}</span>
+            </div>
+          )}
+        </div>
+
+        <!-- Tags -->
+        {data.tags && data.tags.length > 0 && (
+          <div class="entry-tags">
+            {data.tags.map((tag: string) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <!-- Content -->
+      <div class="entry-content prose" set:html={htmlContent} />
+
+      <!-- Footer -->
+      <footer class="entry-footer">
+        <a href="/changelog" class="back-link">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Changelog
+        </a>
+      </footer>
+    </div>
+  </article>
+</BaseThemeLayout>
+
+<style>
+  .changelog-entry {
+    background: var(--color-background);
+    min-height: 100vh;
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    margin-bottom: 2rem;
+  }
+
+  .crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .crumb:hover {
+    opacity: 0.8;
+  }
+
+  /* Header */
+  .entry-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .entry-date {
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  .entry-category {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .entry-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--color-foreground);
+  }
+
+  .entry-summary {
+    font-size: 1.125rem;
+    color: var(--color-foreground);
+    opacity: 0.7;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    max-width: 48rem;
+  }
+
+  /* Meta Row */
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  .ai-badge {
+    color: #a78bfa;
+    opacity: 0.8;
+  }
+
+  /* Tags */
+  .entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.375rem;
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* Content Prose */
+  .entry-content {
+    color: var(--color-foreground);
+    line-height: 1.8;
+  }
+
+  .entry-content :global(h1) {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    color: var(--color-foreground);
+  }
+
+  .entry-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-foreground);
+  }
+
+  .entry-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-foreground);
+  }
+
+  .entry-content :global(h4) {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-foreground);
+  }
+
+  .entry-content :global(p) {
+    margin-bottom: 1.25rem;
+    opacity: 0.85;
+  }
+
+  .entry-content :global(ul),
+  .entry-content :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .entry-content :global(li) {
+    margin-bottom: 0.5rem;
+    opacity: 0.85;
+  }
+
+  .entry-content :global(a) {
+    color: #a78bfa;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+  }
+
+  .entry-content :global(a:hover) {
+    color: #c4b5fd;
+  }
+
+  .entry-content :global(code) {
+    font-size: 0.875em;
+    padding: 0.125rem 0.375rem;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 0.25rem;
+    color: #c4b5fd;
+  }
+
+  .entry-content :global(pre) {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .entry-content :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .entry-content :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 1rem 1.25rem;
+    background: rgba(139, 92, 246, 0.05);
+    border-left: 4px solid rgba(139, 92, 246, 0.5);
+    border-radius: 0 0.375rem 0.375rem 0;
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  .entry-content :global(table) {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .entry-content :global(th),
+  .entry-content :global(td) {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+  }
+
+  .entry-content :global(th) {
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 600;
+  }
+
+  .entry-content :global(hr) {
+    margin: 3rem 0;
+    border: none;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .entry-content :global(strong) {
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+
+  /* Footer */
+  .entry-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .back-link:hover {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+    color: #a78bfa;
+  }
+
+  /* Light mode */
+  :global([data-mode="light"]) .entry-content :global(a) {
+    color: #6c63ff;
+  }
+
+  :global([data-mode="light"]) .entry-content :global(a:hover) {
+    color: #5b52e5;
+  }
+
+  :global([data-mode="light"]) .entry-content :global(code) {
+    background: rgba(108, 99, 255, 0.08);
+    border-color: rgba(108, 99, 255, 0.15);
+    color: #6c63ff;
+  }
+
+  :global([data-mode="light"]) .entry-content :global(pre) {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  :global([data-mode="light"]) .entry-content :global(blockquote) {
+    background: rgba(108, 99, 255, 0.05);
+    border-color: rgba(108, 99, 255, 0.4);
+  }
+
+  :global([data-mode="light"]) .back-link:hover {
+    background: rgba(108, 99, 255, 0.1);
+    border-color: rgba(108, 99, 255, 0.3);
+    color: #6c63ff;
+  }
+
+  :global([data-mode="light"]) .ai-badge {
+    color: #6c63ff;
+  }
+</style>

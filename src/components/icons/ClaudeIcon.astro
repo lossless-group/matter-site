@@ -1,0 +1,40 @@
+---
+/**
+ * Claude Icon
+ *
+ * A compact, elegant sparkle icon representing Claude AI assistance.
+ * 4-pointed star with center circle, inspired by AI/sparkle iconography.
+ */
+interface Props {
+  class?: string;
+  size?: string | number;
+}
+
+const { class: className = '', size = '1em' } = Astro.props;
+const sizeStr = typeof size === 'number' ? `${size}px` : size;
+---
+
+<svg
+  class:list={['claude-icon', className]}
+  viewBox="0 0 16 16"
+  fill="currentColor"
+  width={sizeStr}
+  height={sizeStr}
+  aria-hidden="true"
+>
+  <!-- 4-pointed star -->
+  <path
+    d="M8 0l1.669 4.747L16 8l-6.331 3.253L8 16l-1.669-4.747L0 8l6.331-3.253L8 0z"
+    fill-opacity="0.9"
+  />
+  <!-- Center circle -->
+  <circle cx="8" cy="8" r="2" fill-opacity="0.6" />
+</svg>
+
+<style>
+  .claude-icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+</style>

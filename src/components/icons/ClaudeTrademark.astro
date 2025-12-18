@@ -1,0 +1,78 @@
+---
+/**
+ * Claude Trademark
+ *
+ * Official Claude trademark with automatic dark/light mode switching.
+ * Uses the same pattern as SiteBrandMarkModeWrapper.
+ */
+interface Props {
+  class?: string;
+  width?: number | string;
+  height?: number | string;
+}
+
+const {
+  class: className = '',
+  width = 'auto',
+  height = '1em',
+} = Astro.props;
+---
+
+<span class:list={['claude-trademark-wrapper', className]}>
+  <img
+    src="/trademarks/trademark__Claude--Light-Mode.svg"
+    alt="Claude"
+    width={width}
+    height={height}
+    loading="eager"
+    decoding="async"
+    class="claude-light"
+  />
+  <img
+    src="/trademarks/trademark__Claude--Dark-Mode.svg"
+    alt="Claude"
+    width={width}
+    height={height}
+    loading="eager"
+    decoding="async"
+    class="claude-dark"
+  />
+</span>
+
+<style is:global>
+  .claude-trademark-wrapper {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
+
+  .claude-trademark-wrapper img {
+    display: none;
+    height: 1em;
+    width: auto;
+  }
+
+  /* Light mode (default): show light logo */
+  .claude-trademark-wrapper .claude-light {
+    display: inline-block;
+  }
+  .claude-trademark-wrapper .claude-dark {
+    display: none;
+  }
+
+  /* Dark mode: show dark logo */
+  html[data-mode="dark"] .claude-trademark-wrapper .claude-light {
+    display: none;
+  }
+  html[data-mode="dark"] .claude-trademark-wrapper .claude-dark {
+    display: inline-block;
+  }
+
+  /* Vibrant mode: show dark logo (works better on vibrant backgrounds) */
+  html[data-mode="vibrant"] .claude-trademark-wrapper .claude-light {
+    display: none;
+  }
+  html[data-mode="vibrant"] .claude-trademark-wrapper .claude-dark {
+    display: inline-block;
+  }
+</style>

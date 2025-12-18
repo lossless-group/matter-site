@@ -1,0 +1,464 @@
+---
+/**
+ * Changelog Index - Timeline Variant
+ *
+ * A Linear/Stripe-inspired timeline changelog with vertical line,
+ * dated entries, category badges, and expandable details.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import ClaudeTrademark from '@components/icons/ClaudeTrademark.astro';
+import { getCollection } from 'astro:content';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+
+// Get all changelog entries sorted by date (newest first)
+const allEntries = await getCollection('changelog');
+const sortedEntries = allEntries
+  .filter(entry => entry.data.title && entry.data.date)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Group by month/year
+type GroupedEntries = Record<string, typeof sortedEntries>;
+const groupedByMonth: GroupedEntries = sortedEntries.reduce((acc, entry) => {
+  const date = new Date(entry.data.date);
+  const key = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  if (!acc[key]) acc[key] = [];
+  acc[key].push(entry);
+  return acc;
+}, {} as GroupedEntries);
+
+// Process markdown for each entry (just the summary/first section)
+const processor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeStringify, { allowDangerousHtml: true });
+
+// Category colors
+const categoryColors: Record<string, { bg: string; text: string; border: string }> = {
+  Feature: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' },
+  Component: { bg: 'bg-violet-500/10', text: 'text-violet-400', border: 'border-violet-500/30' },
+  Refactor: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
+  Fix: { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/30' },
+  Documentation: { bg: 'bg-sky-500/10', text: 'text-sky-400', border: 'border-sky-500/30' },
+  Infrastructure: { bg: 'bg-slate-500/10', text: 'text-slate-400', border: 'border-slate-500/30' },
+  'Design-System': { bg: 'bg-fuchsia-500/10', text: 'text-fuchsia-400', border: 'border-fuchsia-500/30' },
+};
+
+function getCategoryStyle(category?: string) {
+  return categoryColors[category || ''] || categoryColors.Feature;
+}
+---
+
+<BaseThemeLayout title="Changelog | Dark Matter">
+  <main class="changelog-page">
+    <!-- Hero Header -->
+    <header class="changelog-header">
+      <div class="max-w-4xl mx-auto px-6 py-16 text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm mb-6">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Development Timeline</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent">
+          Changelog
+        </h1>
+        <p class="text-lg text-foreground/60 max-w-2xl mx-auto">
+          Track the evolution of Dark Matter's design system, components, and features.
+          Every commit, every breakthrough, documented.
+        </p>
+
+        <!-- Variant Switcher -->
+        <div class="flex justify-center gap-2 mt-8">
+          <a href="/changelog" class="variant-tab active">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            Timeline
+          </a>
+          <a href="/changelog/variant-1" class="variant-tab">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            </svg>
+            Cards
+          </a>
+          <a href="/changelog/variant-3" class="variant-tab">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            Releases
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Timeline Content -->
+    <div class="timeline-container max-w-4xl mx-auto px-6 pb-24">
+      {Object.entries(groupedByMonth).map(([monthYear, entries]) => (
+        <section class="month-group">
+          <!-- Month Header -->
+          <div class="month-header">
+            <div class="month-dot"></div>
+            <h2 class="month-title">{monthYear}</h2>
+            <span class="month-count">{entries.length} {entries.length === 1 ? 'update' : 'updates'}</span>
+          </div>
+
+          <!-- Entries -->
+          <div class="entries-list">
+            {entries.map((entry) => {
+              const date = new Date(entry.data.date);
+              const dayStr = date.toLocaleDateString('en-US', { day: 'numeric', weekday: 'short' });
+              const style = getCategoryStyle(entry.data.category);
+
+              return (
+                <article class="timeline-entry" data-entry-id={entry.id}>
+                  <div class="entry-timeline">
+                    <div class="entry-line"></div>
+                    <div class="entry-dot"></div>
+                  </div>
+
+                  <div class="entry-content">
+                    <div class="entry-header">
+                      <time class="entry-date">{dayStr}</time>
+                      {entry.data.category && (
+                        <span class:list={['entry-category', style.bg, style.text, style.border]}>
+                          {entry.data.category}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 class="entry-title">
+                      <a href={`/changelog/${entry.id}`} class="entry-link">
+                        {entry.data.title}
+                      </a>
+                    </h3>
+
+                    {entry.data.summary && (
+                      <p class="entry-summary">{entry.data.summary}</p>
+                    )}
+
+                    {entry.data.tags && entry.data.tags.length > 0 && (
+                      <div class="entry-tags">
+                        {entry.data.tags.slice(0, 4).map((tag: string) => (
+                          <span class="entry-tag">{tag}</span>
+                        ))}
+                        {entry.data.tags.length > 4 && (
+                          <span class="entry-tag-more">+{entry.data.tags.length - 4}</span>
+                        )}
+                      </div>
+                    )}
+
+                    <div class="entry-meta">
+                      {entry.data.authors && (
+                        <span class="entry-authors">
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                          {entry.data.authors.join(', ')}
+                        </span>
+                      )}
+                      {entry.data.augmented_with && (
+                        <span class="entry-ai">
+                          <ClaudeTrademark height="14px" />
+                          {entry.data.augmented_with.replace(/^Claude\s*/i, '')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+
+      <!-- End marker -->
+      <div class="timeline-end">
+        <div class="end-dot"></div>
+        <span class="end-text">Beginning of time</span>
+      </div>
+    </div>
+  </main>
+</BaseThemeLayout>
+
+<style>
+  .changelog-page {
+    background: var(--color-background);
+    min-height: 100vh;
+  }
+
+  .changelog-header {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Variant Switcher */
+  .variant-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .variant-tab:hover {
+    opacity: 0.8;
+    background: rgba(139, 92, 246, 0.1);
+  }
+
+  .variant-tab.active {
+    opacity: 1;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+
+  /* Timeline Container */
+  .timeline-container {
+    position: relative;
+  }
+
+  /* Month Groups */
+  .month-group {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .month-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    background: var(--color-background);
+    z-index: 10;
+  }
+
+  .month-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+    flex-shrink: 0;
+  }
+
+  .month-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+
+  .month-count {
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    opacity: 0.4;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.25rem;
+  }
+
+  /* Entries List */
+  .entries-list {
+    padding-left: 6px;
+    border-left: 2px solid rgba(139, 92, 246, 0.2);
+    margin-left: 5px;
+  }
+
+  /* Timeline Entry */
+  .timeline-entry {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    position: relative;
+  }
+
+  .entry-timeline {
+    position: relative;
+    width: 24px;
+    flex-shrink: 0;
+    margin-left: -7px;
+  }
+
+  .entry-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(139, 92, 246, 0.5);
+    border: 2px solid var(--color-background);
+    position: absolute;
+    left: 50%;
+    top: 0.5rem;
+    transform: translateX(-50%);
+    transition: all 0.2s ease;
+  }
+
+  .timeline-entry:hover .entry-dot {
+    background: #8b5cf6;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+    transform: translateX(-50%) scale(1.2);
+  }
+
+  /* Entry Content */
+  .entry-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .entry-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .entry-date {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .entry-category {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .entry-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .entry-link {
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .entry-link:hover {
+    color: #a78bfa;
+  }
+
+  .entry-summary {
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Tags */
+  .entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .entry-tag {
+    font-size: 0.6875rem;
+    padding: 0.125rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  .entry-tag-more {
+    font-size: 0.6875rem;
+    padding: 0.125rem 0.5rem;
+    color: var(--color-foreground);
+    opacity: 0.4;
+  }
+
+  /* Entry Meta */
+  .entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    opacity: 0.4;
+  }
+
+  .entry-authors,
+  .entry-ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  /* Timeline End */
+  .timeline-end {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 2rem;
+    color: var(--color-foreground);
+    opacity: 0.3;
+  }
+
+  .end-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+  }
+
+  .end-text {
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+
+  /* Light mode adjustments */
+  :global([data-mode="light"]) .changelog-header {
+    background: linear-gradient(180deg, rgba(108, 99, 255, 0.03) 0%, transparent 100%);
+  }
+
+  :global([data-mode="light"]) .variant-tab:hover,
+  :global([data-mode="light"]) .variant-tab.active {
+    background: rgba(108, 99, 255, 0.1);
+    border-color: rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="light"]) .month-dot {
+    background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+    box-shadow: 0 0 12px rgba(108, 99, 255, 0.4);
+  }
+
+  :global([data-mode="light"]) .entries-list {
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="light"]) .entry-dot {
+    background: rgba(108, 99, 255, 0.4);
+  }
+
+  :global([data-mode="light"]) .timeline-entry:hover .entry-dot {
+    background: #6c63ff;
+    box-shadow: 0 0 8px rgba(108, 99, 255, 0.5);
+  }
+
+  :global([data-mode="light"]) .entry-link:hover {
+    color: #6c63ff;
+  }
+</style>

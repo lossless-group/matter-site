@@ -1,0 +1,592 @@
+---
+/**
+ * Changelog Variant 3 - GitHub Releases Style
+ *
+ * A GitHub releases-inspired changelog with collapsible sections,
+ * release tags, and full markdown content rendering.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import ClaudeTrademark from '@components/icons/ClaudeTrademark.astro';
+import { getCollection } from 'astro:content';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+
+// Get all changelog entries sorted by date (newest first)
+const allEntries = await getCollection('changelog');
+const sortedEntries = allEntries
+  .filter(entry => entry.data.title && entry.data.date)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Create markdown processor
+const processor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeStringify, { allowDangerousHtml: true });
+
+// Process first 500 chars of each entry for preview
+async function getPreviewHtml(body: string): Promise<string> {
+  // Find first meaningful content after frontmatter
+  const lines = body.split('\n');
+  let previewLines: string[] = [];
+  let foundOverview = false;
+  let lineCount = 0;
+
+  for (const line of lines) {
+    if (line.includes('### Overview') || line.includes('## Overview')) {
+      foundOverview = true;
+      continue;
+    }
+    if (foundOverview && line.trim()) {
+      previewLines.push(line);
+      lineCount++;
+      if (lineCount >= 5) break;
+    }
+    if (line.startsWith('## Changes') || line.startsWith('### 1.')) break;
+  }
+
+  const previewText = previewLines.join('\n') || body.slice(0, 500);
+  return String(await processor.process(previewText));
+}
+
+// Pre-process entries with previews
+const entriesWithPreviews = await Promise.all(
+  sortedEntries.map(async (entry) => ({
+    ...entry,
+    previewHtml: await getPreviewHtml(entry.body || ''),
+  }))
+);
+
+// Generate release versions
+function getVersionTag(entry: typeof sortedEntries[0], index: number) {
+  const date = new Date(entry.data.date);
+  const dateStr = date.toISOString().split('T')[0].replace(/-/g, '.');
+  return `v${dateStr}.${sortedEntries.length - index}`;
+}
+
+// Category to label mapping
+const categoryLabels: Record<string, { text: string; class: string }> = {
+  Feature: { text: 'Feature', class: 'label-feature' },
+  Component: { text: 'Component', class: 'label-component' },
+  Refactor: { text: 'Refactor', class: 'label-refactor' },
+  Fix: { text: 'Bug Fix', class: 'label-fix' },
+  Documentation: { text: 'Docs', class: 'label-docs' },
+  Infrastructure: { text: 'Infra', class: 'label-infra' },
+  'Design-System': { text: 'Design', class: 'label-design' },
+};
+
+function formatRelativeDate(date: Date): string {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days} days ago`;
+  if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+  if (days < 365) return `${Math.floor(days / 30)} months ago`;
+  return `${Math.floor(days / 365)} years ago`;
+}
+---
+
+<BaseThemeLayout title="Releases | Dark Matter">
+  <main class="releases-page">
+    <!-- Hero Header -->
+    <header class="releases-header">
+      <div class="max-w-5xl mx-auto px-6 py-12">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div>
+            <h1 class="text-3xl sm:text-4xl font-bold mb-2">Releases</h1>
+            <p class="text-foreground/60">
+              {sortedEntries.length} releases published
+            </p>
+          </div>
+
+          <!-- Variant Switcher -->
+          <div class="flex gap-2">
+            <a href="/changelog" class="variant-tab">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              Timeline
+            </a>
+            <a href="/changelog/variant-1" class="variant-tab">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              Cards
+            </a>
+            <a href="/changelog/variant-3" class="variant-tab active">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              Releases
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Releases List -->
+    <div class="releases-container max-w-5xl mx-auto px-6 pb-24">
+      {entriesWithPreviews.map((entry, index) => {
+        const isLatest = index === 0;
+        const date = new Date(entry.data.date);
+        const version = getVersionTag(entry, index);
+        const label = categoryLabels[entry.data.category || ''] || categoryLabels.Feature;
+
+        return (
+          <article class:list={['release-item', { 'latest': isLatest }]}>
+            <!-- Left sidebar with version info -->
+            <aside class="release-sidebar">
+              <div class="version-info">
+                <a href={`/changelog/${entry.id}`} class="version-tag">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                  {version}
+                </a>
+                {isLatest && <span class="latest-badge">Latest</span>}
+              </div>
+              <time class="release-date" datetime={date.toISOString()}>
+                {formatRelativeDate(date)}
+              </time>
+            </aside>
+
+            <!-- Main content -->
+            <div class="release-content">
+              <!-- Header -->
+              <header class="release-header">
+                <div class="release-title-row">
+                  <h2 class="release-title">
+                    <a href={`/changelog/${entry.id}`}>{entry.data.title}</a>
+                  </h2>
+                  <span class:list={['release-label', label.class]}>{label.text}</span>
+                </div>
+
+                <div class="release-meta">
+                  {entry.data.authors && (
+                    <span class="meta-item">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      {entry.data.authors.join(', ')}
+                    </span>
+                  )}
+                  <span class="meta-item">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                  {entry.data.augmented_with && (
+                    <span class="meta-item ai-badge">
+                      <ClaudeTrademark height="14px" />
+                      {entry.data.augmented_with.replace(/^Claude\s*/i, '')}
+                    </span>
+                  )}
+                </div>
+              </header>
+
+              <!-- Collapsible Content -->
+              <details class="release-details" open={isLatest}>
+                <summary class="details-toggle">
+                  <svg class="chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  <span class="toggle-text">Release notes</span>
+                </summary>
+
+                <div class="release-body">
+                  <!-- Summary/Preview -->
+                  {entry.data.summary && (
+                    <div class="release-summary">
+                      <p>{entry.data.summary}</p>
+                    </div>
+                  )}
+
+                  <!-- Preview Content -->
+                  <div class="release-preview prose" set:html={entry.previewHtml} />
+
+                  <!-- Tags -->
+                  {entry.data.tags && entry.data.tags.length > 0 && (
+                    <div class="release-tags">
+                      {entry.data.tags.map((tag: string) => (
+                        <span class="tag">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <!-- View Full -->
+                  <a href={`/changelog/${entry.id}`} class="view-full">
+                    View full release notes
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              </details>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </main>
+</BaseThemeLayout>
+
+<style>
+  .releases-page {
+    background: var(--color-background);
+    min-height: 100vh;
+  }
+
+  .releases-header {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Variant Switcher */
+  .variant-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .variant-tab:hover {
+    opacity: 0.8;
+    background: rgba(139, 92, 246, 0.1);
+  }
+
+  .variant-tab.active {
+    opacity: 1;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+
+  /* Release Items */
+  .release-item {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .release-item.latest {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+    margin: 0 -1.5rem;
+    padding: 2rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+  }
+
+  /* Sidebar */
+  .release-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .version-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .version-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #10b981;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .version-tag:hover {
+    color: #34d399;
+  }
+
+  .latest-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border-radius: 9999px;
+  }
+
+  .release-date {
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  /* Content */
+  .release-content {
+    min-width: 0;
+  }
+
+  .release-header {
+    margin-bottom: 1rem;
+  }
+
+  .release-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .release-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .release-title a {
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .release-title a:hover {
+    color: #a78bfa;
+  }
+
+  /* Labels */
+  .release-label {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-radius: 9999px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .label-feature { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+  .label-component { background: rgba(139, 92, 246, 0.1); color: #a78bfa; border-color: rgba(139, 92, 246, 0.3); }
+  .label-refactor { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
+  .label-fix { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+  .label-docs { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; border-color: rgba(14, 165, 233, 0.3); }
+  .label-infra { background: rgba(100, 116, 139, 0.1); color: #94a3b8; border-color: rgba(100, 116, 139, 0.3); }
+  .label-design { background: rgba(217, 70, 239, 0.1); color: #d946ef; border-color: rgba(217, 70, 239, 0.3); }
+
+  /* Meta */
+  .release-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .ai-badge {
+    opacity: 0.7;
+    color: #a78bfa;
+  }
+
+  /* Collapsible Details */
+  .release-details {
+    margin-top: 1rem;
+  }
+
+  .details-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    cursor: pointer;
+    list-style: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .details-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .details-toggle:hover {
+    opacity: 1;
+  }
+
+  .chevron {
+    transition: transform 0.2s ease;
+  }
+
+  .release-details[open] .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Release Body */
+  .release-body {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 0.75rem;
+  }
+
+  .release-summary {
+    padding: 0.75rem 1rem;
+    background: rgba(139, 92, 246, 0.05);
+    border-left: 3px solid rgba(139, 92, 246, 0.5);
+    border-radius: 0 0.375rem 0.375rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .release-summary p {
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.8;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Preview Content */
+  .release-preview {
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.7;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .release-preview :global(ul) {
+    padding-left: 1.25rem;
+    margin: 0.5rem 0;
+  }
+
+  .release-preview :global(li) {
+    margin: 0.25rem 0;
+  }
+
+  .release-preview :global(strong) {
+    color: var(--color-foreground);
+    opacity: 0.9;
+  }
+
+  .release-preview :global(code) {
+    font-size: 0.8125rem;
+    padding: 0.125rem 0.375rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0.25rem;
+  }
+
+  /* Tags */
+  .release-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* View Full Link */
+  .view-full {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .view-full:hover {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: rgba(139, 92, 246, 0.3);
+    color: #a78bfa;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .release-item {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .release-sidebar {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .version-info {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Light mode */
+  :global([data-mode="light"]) .release-item.latest {
+    background: linear-gradient(90deg, rgba(108, 99, 255, 0.03) 0%, transparent 50%);
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="light"]) .release-title a:hover {
+    color: #6c63ff;
+  }
+
+  :global([data-mode="light"]) .variant-tab:hover,
+  :global([data-mode="light"]) .variant-tab.active {
+    background: rgba(108, 99, 255, 0.1);
+    border-color: rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="light"]) .release-summary {
+    background: rgba(108, 99, 255, 0.05);
+    border-color: rgba(108, 99, 255, 0.4);
+  }
+
+  :global([data-mode="light"]) .view-full:hover {
+    background: rgba(108, 99, 255, 0.1);
+    border-color: rgba(108, 99, 255, 0.3);
+    color: #6c63ff;
+  }
+
+  :global([data-mode="light"]) .ai-badge {
+    color: #6c63ff;
+  }
+</style>
