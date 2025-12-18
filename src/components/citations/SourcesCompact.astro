@@ -1,0 +1,187 @@
+---
+/**
+ * SourcesCompact Component
+ *
+ * A compact variant of the Sources component for tight spaces like cards,
+ * sidebars, or inline sections. Smaller typography, tighter spacing.
+ *
+ * Supports light/dark/vibrant modes via CSS custom properties.
+ */
+
+import type { IndexedCitation } from '@lib/citations/types';
+
+interface Props {
+  /** Array of indexed citations to display */
+  citations: IndexedCitation[];
+  /** Section title (default: "Sources") */
+  title?: string;
+  /** Hide the title */
+  hideTitle?: boolean;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const { citations, title = 'Sources', hideTitle = false, class: className = '' } = Astro.props;
+
+// Sort by index to ensure correct order
+const sortedCitations = [...citations].sort((a, b) => a.index - b.index);
+
+// Extract domain from URL for display
+const getDomain = (url: string): string => {
+  try {
+    return new URL(url).hostname.replace('www.', '');
+  } catch {
+    return url;
+  }
+};
+---
+
+{sortedCitations.length > 0 && (
+  <div class:list={['sources-compact', className]}>
+    {!hideTitle && <h3 class="sources-compact-title">{title}</h3>}
+    <ol class="sources-compact-list">
+      {sortedCitations.map((citation) => (
+        <li class="sources-compact-item">
+          <span class="sources-compact-index">[{citation.index}]</span>
+          <a
+            href={citation.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="sources-compact-link"
+            title={citation.title}
+          >
+            {citation.source || getDomain(citation.url)}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+)}
+
+<style>
+  .sources-compact {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .sources-compact-title {
+    font-size: 0.625rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .sources-compact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .sources-compact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+  }
+
+  .sources-compact-index {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sources-compact-link {
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .sources-compact-link:hover {
+    text-decoration: underline;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .sources-compact {
+    background: rgba(108, 99, 255, 0.03);
+    border: 1px solid rgba(108, 99, 255, 0.08);
+  }
+
+  :global([data-mode="light"]) .sources-compact-title {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .sources-compact-index {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .sources-compact-link {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .sources-compact-link:hover {
+    color: var(--color-marjorelle-purple);
+    opacity: 1;
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .sources-compact {
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.1);
+  }
+
+  :global([data-mode="dark"]) .sources-compact-title {
+    color: var(--color-lilac);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .sources-compact-index {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .sources-compact-link {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .sources-compact-link:hover {
+    color: var(--color-lilac);
+    opacity: 1;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .sources-compact {
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .sources-compact-title {
+    color: var(--color-lilac);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .sources-compact-index {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .sources-compact-link {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .sources-compact-link:hover {
+    color: var(--color-lilac);
+    opacity: 1;
+    text-shadow: 0 0 8px var(--color-lilac);
+  }
+</style>

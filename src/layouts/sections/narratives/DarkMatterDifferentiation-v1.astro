@@ -1,0 +1,870 @@
+---
+/**
+ * DarkMatterDifferentiation Section: "Our Differentiation"
+ *
+ * A section showcasing the fund's unique competitive advantages:
+ * - Deep scientific expertise in longevity biology
+ * - Proprietary deal flow via Stanford, Cedars-Sinai partnerships
+ * - Relationships with longevity leaders
+ * - Focus on IP-protected, scalable solutions
+ * - Team positioning
+ *
+ * Features:
+ * - Hero with fund's core value proposition
+ * - Four differentiation pillars with detailed explanations
+ * - Team section linking people to pillars
+ * - Citations with inline popovers and Sources section
+ * - Supports light, dark, and vibrant visual modes
+ *
+ * Based on research from DarkMatter Differentiation.md
+ */
+
+import type { CitationReference } from '@lib/citations/types';
+import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
+import InlineCitation from '@components/citations/InlineCitation.astro';
+import Sources from '@components/citations/Sources.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'Our Differentiation',
+  subtitle = 'Scientific depth, exclusive access, and tight focus on defensible longevity technologies',
+} = Astro.props as Props;
+
+// =============================================================================
+// Citation Library (hex codes from "DarkMatter Differentiation.md")
+// =============================================================================
+const citations: Record<string, CitationReference> = {
+  '1d3uza': {
+    hexCode: '1d3uza',
+    title: 'Cedars-Sinai Heads Up $6.5M Multicenter Aging Research Grant',
+    url: 'https://www.cedars-sinai.org/newsroom/cedars-sinai-ucla-and-usc-join-forces-to-extend-human-healthspan/',
+    source: 'Cedars-Sinai',
+    publishedDate: '2025-10-16',
+  },
+  '4v5z4c': {
+    hexCode: '4v5z4c',
+    title: "Stanford Medicine's Longevity and Healthy Aging Pilot Grants 2025",
+    url: 'https://seedfunding.stanford.edu/opportunities/stanford-medicines-longevity-and-healthy-aging-pilot-grants-2025-2026',
+    source: 'Stanford Seed Funding',
+    publishedDate: '2025-07-01',
+  },
+  hi3ous: {
+    hexCode: 'hi3ous',
+    title: 'Stanford Medicine Center for Longevity and Healthy Aging',
+    url: 'https://aging.stanford.edu',
+    source: 'Stanford Medicine',
+    publishedDate: '2025-12-12',
+  },
+  pa7m9m: {
+    hexCode: 'pa7m9m',
+    title: 'Stanford Center on Longevity: Home',
+    url: 'https://longevity.stanford.edu',
+    source: 'Stanford',
+    publishedDate: '2025-11-12',
+  },
+  a8ony5: {
+    hexCode: 'a8ony5',
+    title: 'SCL Corporate Affiliates Program',
+    url: 'https://longevity.stanford.edu/scl-corporate-affiliates-program/',
+    source: 'Stanford Center on Longevity',
+    publishedDate: '2025-07-31',
+  },
+  afb7dp: {
+    hexCode: 'afb7dp',
+    title: 'Healthy Aging Research - Cedars-Sinai Health Sciences University',
+    url: 'https://www.cedars-sinai.edu/health-sciences-university/research/departments-institutes/smidt-heart-institute/healthy-aging.html',
+    source: 'Cedars-Sinai',
+  },
+};
+
+// =============================================================================
+// Data with Citations
+// =============================================================================
+
+// Four differentiation pillars
+const pillars = [
+  {
+    id: 'expertise',
+    icon: '🧬',
+    title: 'Deep Scientific Expertise',
+    subtitle: 'in longevity biology',
+    bullets: [
+      'Decades of experience across biology, data science, and company-building',
+      'Embedded in leading geroscience centers working to extend healthspan',
+      'Distinguish true mechanism-based therapies from superficial wellness products',
+      'Support portfolio companies with trial design, regulatory strategy, and biomarker selection',
+    ],
+    citationKeys: ['1d3uza', 'afb7dp'],
+  },
+  {
+    id: 'dealflow',
+    icon: '🔬',
+    title: 'Proprietary Deal Flow',
+    subtitle: 'via Stanford & Cedars-Sinai partnerships',
+    bullets: [
+      'Early visibility into spin-outs, pilot projects, and translational teams',
+      'Access to key investigators and clinical trial infrastructure',
+      'Co-design company formation around validated science and IP',
+      'NIH-backed aging clinical trials and gerotherapeutics programs',
+    ],
+    citationKeys: ['4v5z4c', 'hi3ous', 'pa7m9m', 'a8ony5', '1d3uza', 'afb7dp'],
+  },
+  {
+    id: 'network',
+    icon: '🌐',
+    title: 'Longevity Leader Network',
+    subtitle: 'Ben Greenfield, Bryan Johnson, Peter Attia',
+    bullets: [
+      'Platforms reaching millions of longevity-focused consumers and clinicians',
+      'Real-world testing grounds with highly engaged, data-rich users',
+      'Credible distribution, education, and awareness channels',
+      'Direct feedback from athletes, biohackers, and prevention-oriented patients',
+    ],
+    citationKeys: [],
+  },
+  {
+    id: 'ip',
+    icon: '🛡️',
+    title: 'IP-Protected, Scalable Solutions',
+    subtitle: 'Focus on defensible platforms',
+    bullets: [
+      'Novel therapeutics targeting fundamental aging pathways',
+      'Diagnostic, digital, and AI-driven tools for personalized interventions',
+      'Strong intellectual property moats and clear regulatory paths',
+      'Measurable impact on healthspan—clinically meaningful outcomes',
+    ],
+    citationKeys: ['1d3uza', 'afb7dp', '4v5z4c', 'hi3ous'],
+  },
+];
+
+// Team members linked to pillars
+const team = [
+  {
+    name: 'Skinner Layne',
+    role: 'Strategy & Capital Formation',
+    description: 'Builds structures that bridge scientific discovery with institutional LP expectations.',
+    pillar: 'expertise',
+    photo: '/photos/headshot__Skinner-Layne.png',
+  },
+  {
+    name: 'Mark Moline',
+    role: 'Investment Analysis',
+    description: 'Translates scientific narratives into investment-grade theses.',
+    pillar: 'dealflow',
+    photo: '/photos/headshot__Mark-Moline.jpeg',
+  },
+  {
+    name: 'Thomas Vu',
+    role: 'Operations & Scale',
+    description: 'Scaling products from early validation to mass adoption.',
+    pillar: 'network',
+    photo: '/photos/headshotOf__Thomas-Vu.jpeg',
+  },
+  {
+    name: 'Anthony Borquez',
+    role: 'Commercialization',
+    description: 'Driving user acquisition, partnerships, and go-to-market execution.',
+    photo: '/photos/headshotOf__Anthony-Borquez.jpeg',
+    pillar: 'ip',
+  },
+];
+
+// Pillar colors for team mapping
+const pillarColors: Record<string, string> = {
+  expertise: 'expertise',
+  dealflow: 'dealflow',
+  network: 'network',
+  ip: 'ip',
+};
+
+// =============================================================================
+// Build Citation Index (assigns sequential numbers)
+// =============================================================================
+
+// Collect all citation keys in order of appearance
+const allCitationKeys = pillars.flatMap(p => p.citationKeys);
+
+// Build the citation references array (deduplicated by buildCitationIndex)
+const citationRefs = allCitationKeys
+  .map(key => citations[key])
+  .filter((c): c is CitationReference => c !== undefined);
+
+// Build indexed map
+const citationIndex = buildCitationIndex(citationRefs);
+
+// Helper to get indexed citation
+const getCite = (key: string) => citationIndex.get(key);
+---
+
+<section class="differentiation-section relative overflow-hidden">
+  <!-- Hero Opening -->
+  <div class="hero-opening min-h-[60vh] flex flex-col items-center justify-center px-6 py-20 relative">
+    <div class="hero-gradient absolute inset-0"></div>
+
+    <!-- Eyebrow -->
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-6 relative z-10">
+      Why Dark Matter
+    </p>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Four Pillars -->
+  <div class="pillars-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-6xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Competitive Advantages
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Four Pillars of Differentiation
+        </h2>
+      </div>
+
+      <!-- Pillars grid -->
+      <div class="pillars-grid grid gap-8 md:grid-cols-2">
+        {pillars.map((pillar, index) => (
+          <article
+            class={`pillar-card pillar-${pillar.id} reveal-item`}
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="pillar-inner group relative p-8 rounded-2xl backdrop-blur-sm transition-all duration-500 h-full">
+              <!-- Icon -->
+              <div class="pillar-icon text-4xl mb-4">
+                {pillar.icon}
+              </div>
+
+              <!-- Title -->
+              <h3 class="pillar-title text-xl sm:text-2xl font-bold mb-1">
+                {pillar.title}
+              </h3>
+              <p class="pillar-subtitle text-sm font-medium uppercase tracking-wider mb-6">
+                {pillar.subtitle}
+              </p>
+
+              <!-- Bullets -->
+              <ul class="pillar-bullets space-y-3">
+                {pillar.bullets.map((bullet, bulletIndex) => (
+                  <li class="pillar-bullet flex items-start gap-3 text-sm leading-relaxed">
+                    <span class="bullet-dot flex-shrink-0 w-1.5 h-1.5 rounded-full mt-2"></span>
+                    <span>
+                      {bullet}
+                      {/* Add citations to last bullet of each pillar */}
+                      {bulletIndex === pillar.bullets.length - 1 && pillar.citationKeys.length > 0 && (
+                        pillar.citationKeys.slice(0, 2).map(key => {
+                          const cite = getCite(key);
+                          return cite ? <InlineCitation {...cite} /> : null;
+                        })
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Team -->
+  <div class="team-section py-24 sm:py-32 px-6 relative">
+    <div class="team-gradient absolute inset-0"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge-team inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          The Team
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Team-Enabled Advantages
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          Our differentiation is not theoretical—it's embedded in who we are
+        </p>
+      </div>
+
+      <!-- Team grid -->
+      <div class="team-grid grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {team.map((member, index) => (
+          <article
+            class={`team-card team-card-${member.pillar} reveal-item`}
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="team-inner group relative p-6 rounded-xl backdrop-blur-sm transition-all duration-500 h-full text-center">
+              <!-- Avatar -->
+              <div class="team-avatar w-16 h-16 rounded-full mx-auto mb-4 overflow-hidden">
+                <img
+                  src={member.photo}
+                  alt={member.name}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+
+              <!-- Name -->
+              <h3 class="team-name text-lg font-bold mb-1">
+                {member.name}
+              </h3>
+
+              <!-- Role -->
+              <p class="team-role text-xs font-semibold uppercase tracking-wider mb-3">
+                {member.role}
+              </p>
+
+              <!-- Description -->
+              <p class="team-description text-sm leading-relaxed">
+                {member.description}
+              </p>
+
+              <!-- Pillar indicator -->
+              <div class={`pillar-indicator pillar-indicator-${member.pillar} mt-4 inline-block px-3 py-1 rounded-full text-xs font-medium`}>
+                {pillars.find(p => p.id === member.pillar)?.title.split(' ')[0]}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing CTA -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="closing-gradient absolute inset-0"></div>
+
+    <div class="closing-content reveal-item text-center relative z-10" data-reveal="fade-up">
+      <p class="closing-eyebrow text-xs sm:text-sm font-medium tracking-[0.35em] uppercase mb-4">
+        Partner With Us
+      </p>
+      <h3 class="closing-headline text-3xl sm:text-4xl md:text-5xl font-bold max-w-2xl">
+        A Team That Speaks Both Lab and Late-Stage Capital
+      </h3>
+      <p class="closing-text mt-6 text-lg sm:text-xl max-w-xl mx-auto">
+        Scientific depth meets investment discipline
+      </p>
+    </div>
+  </div>
+
+  <!-- Sources Section -->
+  <div class="sources-wrapper px-6 py-16">
+    <div class="max-w-5xl mx-auto">
+      <Sources citations={citationsToArray(citationIndex)} />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  /* Base reveal states */
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  /* Revealed state */
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hero opening animations */
+  .hero-opening .eyebrow-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Scroll hint animation */
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scaleY(1.2);
+    }
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .differentiation-section {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(156, 133, 223, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .eyebrow-text,
+  :global([data-mode="light"]) .closing-eyebrow {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="light"]) .headline-text,
+  :global([data-mode="light"]) .closing-headline {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .subtitle-text,
+  :global([data-mode="light"]) .section-subtitle {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .scroll-hint {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.4;
+  }
+
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-team {
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  /* Pillar cards - Light */
+  :global([data-mode="light"]) .pillar-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.12);
+  }
+
+  :global([data-mode="light"]) .pillar-inner:hover {
+    border-color: rgba(108, 99, 255, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+  }
+
+  :global([data-mode="light"]) .pillar-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .pillar-subtitle {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="light"]) .pillar-bullet {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .bullet-dot {
+    background: var(--color-marjorelle-purple);
+  }
+
+  /* Team cards - Light */
+  :global([data-mode="light"]) .team-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(156, 133, 223, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .team-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.12);
+  }
+
+  :global([data-mode="light"]) .team-inner:hover {
+    border-color: rgba(108, 99, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.08);
+  }
+
+  :global([data-mode="light"]) .team-avatar {
+    border: 2px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="light"]) .team-name {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .team-role {
+    color: var(--color-marjorelle-purple);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="light"]) .team-description {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .pillar-indicator {
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .differentiation-section {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .eyebrow-text,
+  :global([data-mode="dark"]) .closing-eyebrow {
+    color: var(--color-lilac);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .headline-text,
+  :global([data-mode="dark"]) .closing-headline {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .subtitle-text,
+  :global([data-mode="dark"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.4;
+  }
+
+  :global([data-mode="dark"]) .section-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-team {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  /* Pillar cards - Dark */
+  :global([data-mode="dark"]) .pillar-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .pillar-inner:hover {
+    border-color: rgba(108, 99, 255, 0.5);
+    background: rgba(102, 67, 226, 0.08);
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.15);
+  }
+
+  :global([data-mode="dark"]) .pillar-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .pillar-subtitle {
+    color: var(--color-lilac);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="dark"]) .pillar-bullet {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .bullet-dot {
+    background: var(--color-lilac);
+  }
+
+  /* Team cards - Dark */
+  :global([data-mode="dark"]) .team-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .team-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .team-inner:hover {
+    border-color: rgba(108, 99, 255, 0.5);
+    box-shadow: 0 0 40px rgba(102, 67, 226, 0.15);
+  }
+
+  :global([data-mode="dark"]) .team-avatar {
+    border: 2px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) .team-name {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .team-role {
+    color: var(--color-lilac);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="dark"]) .team-description {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .pillar-indicator {
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .differentiation-section {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a35 30%, #0d0518 70%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.25), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .eyebrow-text,
+  :global([data-mode="vibrant"]) .closing-eyebrow {
+    color: var(--color-lilac);
+    opacity: 0.9;
+    text-shadow: 0 0 20px rgba(156, 133, 223, 0.4);
+  }
+
+  :global([data-mode="vibrant"]) .headline-text,
+  :global([data-mode="vibrant"]) .closing-headline {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .subtitle-text,
+  :global([data-mode="vibrant"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint {
+    color: var(--color-lilac);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  :global([data-mode="vibrant"]) .section-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.5);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-team {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.2);
+  }
+
+  /* Pillar cards - Vibrant */
+  :global([data-mode="vibrant"]) .pillar-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-inner:hover {
+    border-color: rgba(108, 99, 255, 0.7);
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.15), rgba(26, 10, 53, 0.9));
+    box-shadow: 0 0 50px rgba(102, 67, 226, 0.25), inset 0 0 30px rgba(102, 67, 226, 0.05);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-subtitle {
+    color: var(--color-lilac);
+    text-shadow: 0 0 10px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .pillar-bullet {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .bullet-dot {
+    background: var(--color-lilac);
+    box-shadow: 0 0 8px var(--color-lilac);
+  }
+
+  /* Team cards - Vibrant */
+  :global([data-mode="vibrant"]) .team-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(102, 67, 226, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .team-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 53, 0.8));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .team-inner:hover {
+    border-color: rgba(108, 99, 255, 0.7);
+    box-shadow: 0 0 50px rgba(102, 67, 226, 0.25);
+  }
+
+  :global([data-mode="vibrant"]) .team-avatar {
+    border: 2px solid rgba(156, 133, 223, 0.5);
+    box-shadow: 0 0 15px rgba(102, 67, 226, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .team-name {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .team-role {
+    color: var(--color-lilac);
+    text-shadow: 0 0 10px var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .team-description {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .pillar-indicator {
+    background: rgba(108, 99, 255, 0.2);
+    color: var(--color-lilac);
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(156, 133, 223, 0.2), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.differentiation-section .reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

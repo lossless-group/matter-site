@@ -1,0 +1,95 @@
+---
+/**
+ * CitedSection Component
+ *
+ * A wrapper component for content sections that include citations.
+ * Handles citation indexing and renders the appropriate Sources variant.
+ *
+ * Usage:
+ * ```astro
+ * ---
+ * import CitedSection from '@components/citations/CitedSection.astro';
+ * import InlineCitation from '@components/citations/InlineCitation.astro';
+ * import { buildCitationIndex } from '@lib/citations/types';
+ *
+ * const citations = [
+ *   { hexCode: 'abc123', title: '...', url: '...' },
+ * ];
+ * const citationIndex = buildCitationIndex(citations);
+ * ---
+ *
+ * <CitedSection citations={citations} sourcesVariant="compact">
+ *   <p>Some content with a citation
+ *     <InlineCitation {...citationIndex.get('abc123')} />
+ *   </p>
+ * </CitedSection>
+ * ```
+ */
+
+import type { CitationReference, IndexedCitation } from '@lib/citations/types';
+import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
+import Sources from './Sources.astro';
+import SourcesCompact from './SourcesCompact.astro';
+import SourcesInline from './SourcesInline.astro';
+
+type SourcesVariant = 'full' | 'compact' | 'inline' | 'none';
+
+interface Props {
+  /** Array of citation references used in this section */
+  citations: CitationReference[];
+  /** Which Sources variant to render (default: 'full') */
+  sourcesVariant?: SourcesVariant;
+  /** Title for the Sources section */
+  sourcesTitle?: string;
+  /** Additional CSS classes for the wrapper */
+  class?: string;
+  /** Element tag to use for the wrapper (default: 'section') */
+  as?: 'section' | 'div' | 'article';
+}
+
+const {
+  citations,
+  sourcesVariant = 'full',
+  sourcesTitle = 'Sources',
+  class: className = '',
+  as: Tag = 'section',
+} = Astro.props;
+
+// Build the citation index for proper ordering
+const citationIndex = buildCitationIndex(citations);
+const citationsArray = citationsToArray(citationIndex);
+---
+
+<Tag class:list={['cited-section', className]}>
+  <div class="cited-section-content">
+    <slot />
+  </div>
+
+  {sourcesVariant !== 'none' && citationsArray.length > 0 && (
+    <div class="cited-section-sources">
+      {sourcesVariant === 'full' && (
+        <Sources citations={citationsArray} title={sourcesTitle} />
+      )}
+      {sourcesVariant === 'compact' && (
+        <SourcesCompact citations={citationsArray} title={sourcesTitle} />
+      )}
+      {sourcesVariant === 'inline' && (
+        <SourcesInline citations={citationsArray} />
+      )}
+    </div>
+  )}
+</Tag>
+
+<style>
+  .cited-section {
+    position: relative;
+  }
+
+  .cited-section-content {
+    /* Content flows naturally */
+  }
+
+  .cited-section-sources {
+    /* Sources rendered at end of section */
+  }
+</style>

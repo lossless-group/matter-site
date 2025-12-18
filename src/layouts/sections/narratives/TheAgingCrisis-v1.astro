@@ -1,0 +1,1174 @@
+---
+/**
+ * TheAgingCrisis Section: "The Problem We're Solving"
+ *
+ * A data-driven section showcasing the healthcare cost crisis driven by
+ * age-related diseases and the healthspan-lifespan gap.
+ *
+ * Features:
+ * - Hero: $1T+ annual cost headline
+ * - Disease cluster cost cards with inline citations
+ * - Healthspan vs Lifespan visualization
+ * - US demographics and cost projections
+ * - Opportunity framing for longevity biotech
+ * - Sources section with all referenced research
+ * - Supports light, dark, and vibrant visual modes
+ *
+ * Based on research from "The Aging Crisis.md"
+ */
+
+import type { CitationReference } from '@lib/citations/types';
+import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
+import InlineCitation from '@components/citations/InlineCitation.astro';
+import SourcesCompact from '@components/citations/SourcesCompact.astro';
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'The Aging Crisis',
+  subtitle = 'Age-related diseases cost $1T+ annually in global healthcare',
+} = Astro.props as Props;
+
+// =============================================================================
+// Citation Library (hex codes from "The Aging Crisis.md")
+// =============================================================================
+const citations: Record<string, CitationReference> = {
+  alyqs4: {
+    hexCode: 'alyqs4',
+    title: 'Key Drivers of 2025 Health Care Cost Increases',
+    url: 'https://parrottbenefitgroup.com/key-drivers-of-2025-health-care-cost-increases/',
+    source: 'Parrott Benefit Group',
+    publishedDate: '2024-11-22',
+  },
+  vw99oj: {
+    hexCode: 'vw99oj',
+    title: 'Why Health Care Costs Are Rising in 2025',
+    url: 'https://watkinsinsurancegroup.com/blog/why-health-care-costs-are-rising-in-2025/',
+    source: 'Watkins Insurance Group',
+    publishedDate: '2025-01-30',
+  },
+  m761t3: {
+    hexCode: 'm761t3',
+    title: 'Global Healthcare Costs Projected to Rise More Than 10% in 2026',
+    url: 'https://worldatwork.org/publications/workspan-daily/global-healthcare-costs-projected-to-rise-more-than-10-in-2026',
+    source: 'WorldatWork',
+    publishedDate: '2025-11-13',
+  },
+  k9m6ww: {
+    hexCode: 'k9m6ww',
+    title: 'How heavy is the medical expense burden among the older adults',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10313336/',
+    source: 'NIH/PMC',
+    publishedDate: '2023-06-16',
+  },
+  '67utob': {
+    hexCode: '67utob',
+    title: 'Fidelity Investments® Releases 2025 Retiree Health Care Cost Estimate',
+    url: 'https://newsroom.fidelity.com/pressreleases/fidelity-investments--releases-2025-retiree-health-care-cost-estimate--a-timely-reminder-for-all-gen/s/3c62e988-12e2-4dc8-afb4-f44b06c6d52e',
+    source: 'Fidelity Investments',
+    publishedDate: '2025-07-30',
+  },
+  dvh7iv: {
+    hexCode: 'dvh7iv',
+    title: 'Rising Healthcare Costs: GLP-1 & Containment Strategies',
+    url: 'https://www.definitivehc.com/blog/rising-healthcare-costs',
+    source: 'Definitive Healthcare',
+    publishedDate: '2025-09-12',
+  },
+  qg3qsq: {
+    hexCode: 'qg3qsq',
+    title: '2025 Healthcare Cost Outlook | Drivers & Trend Insights',
+    url: 'https://www.bbrown.com/us/insight/2025-healthcare-cost-outlook-drivers-trend-insights/',
+    source: 'Brown & Brown',
+    publishedDate: '2024-10-28',
+  },
+};
+
+// =============================================================================
+// Data with Citations
+// =============================================================================
+
+// Disease cluster costs
+const diseaseCosts = [
+  {
+    disease: 'Cardiovascular Disease',
+    cost: '$1.8T',
+    timeframe: 'by 2050 (US)',
+    description: 'Leading cause of death globally, costs projected to triple from current levels.',
+    icon: '❤️',
+    citationKey: 'alyqs4',
+  },
+  {
+    disease: 'Diabetes',
+    cost: '$966B',
+    timeframe: 'per year (global)',
+    description: 'Approaching $1T annually worldwide in direct health expenditure.',
+    icon: '🩸',
+    citationKey: null, // IDF data, not in our source set
+  },
+  {
+    disease: 'Cancer',
+    cost: '#1',
+    timeframe: 'cost driver',
+    description: 'Now the leading condition driving insurer medical costs globally, cited by 57% of insurers.',
+    icon: '🔬',
+    citationKey: 'm761t3',
+  },
+  {
+    disease: 'Chronic Conditions',
+    cost: '90%',
+    timeframe: 'of US spend',
+    description: 'Nearly all US healthcare spending goes to chronic and mental health conditions.',
+    icon: '💊',
+    citationKey: 'vw99oj',
+  },
+];
+
+// Healthspan vs Lifespan data
+const healthspanData = {
+  healthspan: 65,
+  lifespan: 80,
+  gap: 15,
+  gapDescription: 'Years living with chronic disease, disability, or frailty',
+  citationKey: 'k9m6ww',
+};
+
+// US demographics
+const usStats = [
+  {
+    stat: '55M+',
+    label: 'Americans 65+',
+    description: 'Already over 55 million Americans aged 65 or older today.',
+    citationKey: 'vw99oj',
+  },
+  {
+    stat: '80M',
+    label: 'By 2040',
+    description: 'Projected 65+ population will reach almost 80 million.',
+    citationKey: 'alyqs4',
+  },
+  {
+    stat: '20%',
+    label: 'of Population',
+    description: '1 in 5 Americans will be 65+ by 2030.',
+    citationKey: 'alyqs4',
+  },
+  {
+    stat: '5×',
+    label: 'Cost Multiplier',
+    description: 'Per-person spending for 65+ is 5× higher than for children.',
+    citationKey: 'alyqs4',
+  },
+];
+
+// Cost implications
+const costImplications = [
+  {
+    stat: '$172,500',
+    label: 'Per Retiree',
+    description: 'Average healthcare cost during retirement, more than doubled since 2002.',
+    citationKey: '67utob',
+  },
+  {
+    stat: '7-8%',
+    label: 'Annual Increase',
+    description: 'Expected healthcare cost growth for US employers in 2025.',
+    citationKey: 'qg3qsq',
+  },
+  {
+    stat: '2.5×',
+    label: 'vs Working Age',
+    description: 'Per-capita spending for 65+ compared to working-age adults.',
+    citationKey: 'alyqs4',
+  },
+];
+
+// =============================================================================
+// Build Citation Index (assigns sequential numbers)
+// =============================================================================
+
+// Collect all citation keys in order of appearance
+const allCitationKeys = [
+  ...diseaseCosts.map(d => d.citationKey),
+  healthspanData.citationKey,
+  ...usStats.map(s => s.citationKey),
+  ...costImplications.map(c => c.citationKey),
+].filter((key): key is string => key !== null);
+
+// Build the citation references array
+const citationRefs = allCitationKeys
+  .map(key => citations[key])
+  .filter((c): c is CitationReference => c !== undefined);
+
+// Build indexed map
+const citationIndex = buildCitationIndex(citationRefs);
+
+// Helper to get indexed citation
+const getCite = (key: string | null) => key ? citationIndex.get(key) : undefined;
+---
+
+<section class="aging-crisis-section relative overflow-hidden">
+  <!-- Hero: The Crisis -->
+  <div class="hero-opening min-h-[80vh] flex flex-col items-center justify-center px-6 py-20 relative">
+    <div class="hero-gradient absolute inset-0"></div>
+
+    <!-- Problem badge -->
+    <div class="problem-badge inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 relative z-10">
+      <span class="badge-dot w-2 h-2 rounded-full animate-pulse"></span>
+      <span class="text-xs font-semibold tracking-[0.25em] uppercase">The Problem</span>
+    </div>
+
+    <!-- Main headline -->
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center leading-[1.1] tracking-tight max-w-4xl relative z-10">
+      {title}
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-center max-w-2xl relative z-10">
+      {subtitle}
+    </p>
+
+    <!-- The Big Cost -->
+    <div class="big-cost-wrapper mt-16 relative z-10 reveal-item" data-reveal="scale-up">
+      <div class="big-cost text-center">
+        <span class="big-cost-currency text-3xl sm:text-4xl font-medium">$</span>
+        <span class="big-cost-number text-7xl sm:text-8xl md:text-9xl font-bold tracking-tight">1T+</span>
+        <p class="big-cost-label text-lg sm:text-xl mt-4 font-medium">annual global healthcare costs</p>
+        <p class="big-cost-diseases text-sm mt-2">Alzheimer's • Cancer • CVD • Diabetes • Renal Failure</p>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="scroll-hint-text text-xs uppercase tracking-[0.25em]">Explore</span>
+      <div class="scroll-hint-line w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+    </div>
+  </div>
+
+  <!-- Section: Disease Cost Clusters -->
+  <div class="disease-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-6xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-danger inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Trillion-Dollar Diseases
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          A Handful of Conditions Drive Trillions in Cost
+        </h2>
+      </div>
+
+      <!-- Disease cards grid -->
+      <div class="disease-grid grid gap-6 sm:gap-8 md:grid-cols-2">
+        {diseaseCosts.map((item, index) => (
+          <article
+            class="disease-card reveal-item"
+            data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="disease-inner group relative p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500">
+              <div class="flex items-start gap-4">
+                <!-- Icon -->
+                <span class="disease-icon text-3xl">{item.icon}</span>
+
+                <div class="flex-1">
+                  <h3 class="disease-name text-lg sm:text-xl font-semibold mb-1">
+                    {item.disease}
+                  </h3>
+                  <div class="disease-cost-row flex items-baseline gap-2 mb-2">
+                    <span class="disease-cost text-2xl sm:text-3xl font-bold">{item.cost}</span>
+                    <span class="disease-timeframe text-sm">{item.timeframe}</span>
+                  </div>
+                  <p class="disease-description text-sm leading-relaxed">
+                    {item.description}
+                    {getCite(item.citationKey) && (
+                      <InlineCitation {...getCite(item.citationKey)!} />
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Healthspan vs Lifespan Gap -->
+  <div class="healthspan-section py-24 sm:py-32 px-6 relative">
+    <div class="healthspan-gradient absolute inset-0"></div>
+    <div class="max-w-4xl mx-auto relative z-10">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-warning inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          The Gap
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          We Extended Life, Not Healthy Life
+        </h2>
+      </div>
+
+      <!-- Visual gap representation -->
+      <div class="gap-visual reveal-item p-8 sm:p-12 rounded-3xl" data-reveal="fade-up" style="--delay: 200ms;">
+        <div class="gap-bars flex flex-col gap-6">
+          <!-- Healthspan bar -->
+          <div class="bar-row">
+            <div class="bar-label flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold uppercase tracking-wider">Healthspan</span>
+              <span class="bar-value text-2xl font-bold">{healthspanData.healthspan} years</span>
+            </div>
+            <div class="bar-track h-4 rounded-full overflow-hidden">
+              <div class="bar-fill bar-fill-healthy h-full rounded-full" style="width: 81.25%;"></div>
+            </div>
+          </div>
+
+          <!-- Lifespan bar -->
+          <div class="bar-row">
+            <div class="bar-label flex justify-between items-center mb-2">
+              <span class="text-sm font-semibold uppercase tracking-wider">Lifespan</span>
+              <span class="bar-value text-2xl font-bold">{healthspanData.lifespan}+ years</span>
+            </div>
+            <div class="bar-track h-4 rounded-full overflow-hidden">
+              <div class="bar-fill bar-fill-life h-full rounded-full" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gap callout -->
+        <div class="gap-callout mt-8 pt-8 border-t text-center">
+          <span class="gap-number text-5xl sm:text-6xl font-bold">{healthspanData.gap}</span>
+          <span class="gap-unit text-xl ml-2">years</span>
+          <p class="gap-description mt-2 text-base sm:text-lg max-w-md mx-auto">
+            {healthspanData.gapDescription}
+            {getCite(healthspanData.citationKey) && (
+              <InlineCitation {...getCite(healthspanData.citationKey)!} />
+            )}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: US Demographics -->
+  <div class="demographics-section py-24 sm:py-32 px-6 relative">
+    <div class="max-w-6xl mx-auto">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-info inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          US Demographics
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          A Silver Tsunami is Coming
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          Fewer workers per retiree, escalating fiscal pressure on healthcare systems
+        </p>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid grid gap-6 sm:gap-8 grid-cols-2 lg:grid-cols-4">
+        {usStats.map((item, index) => (
+          <article
+            class="us-stat-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 100}ms;`}
+          >
+            <div class="stat-inner group relative p-6 rounded-2xl backdrop-blur-sm transition-all duration-500 text-center h-full">
+              <span class="stat-number text-3xl sm:text-4xl font-bold block mb-2">
+                {item.stat}
+              </span>
+              <span class="stat-label text-sm font-semibold uppercase tracking-wider block mb-3">
+                {item.label}
+              </span>
+              <p class="stat-description text-xs sm:text-sm leading-relaxed">
+                {item.description}
+                {getCite(item.citationKey) && (
+                  <InlineCitation {...getCite(item.citationKey)!} />
+                )}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Cost Implications -->
+  <div class="cost-section py-24 sm:py-32 px-6 relative">
+    <div class="cost-gradient absolute inset-0"></div>
+    <div class="max-w-5xl mx-auto relative z-10">
+      <!-- Section header -->
+      <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
+        <span class="section-badge section-badge-danger inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-4">
+          Cost Reality
+        </span>
+        <h2 class="section-title text-2xl sm:text-3xl md:text-4xl font-bold">
+          Structural, Compounding Medical Inflation
+        </h2>
+        <p class="section-subtitle mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+          Without interventions that alter the trajectory of age-related disease, cost curves remain exponential
+        </p>
+      </div>
+
+      <!-- Cost cards -->
+      <div class="cost-grid grid gap-6 sm:gap-8 md:grid-cols-3">
+        {costImplications.map((item, index) => (
+          <article
+            class="cost-card reveal-item"
+            data-reveal="fade-up"
+            style={`--delay: ${index * 150}ms;`}
+          >
+            <div class="cost-inner group relative p-6 sm:p-8 rounded-2xl backdrop-blur-sm transition-all duration-500 text-center h-full">
+              <span class="cost-number text-4xl sm:text-5xl font-bold block mb-2">
+                {item.stat}
+              </span>
+              <span class="cost-label text-sm font-semibold uppercase tracking-wider block mb-3">
+                {item.label}
+              </span>
+              <p class="cost-description text-sm leading-relaxed">
+                {item.description}
+                {getCite(item.citationKey) && (
+                  <InlineCitation {...getCite(item.citationKey)!} />
+                )}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing: The Opportunity -->
+  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
+    <div class="closing-gradient absolute inset-0"></div>
+
+    <div class="closing-content reveal-item text-center relative z-10 max-w-3xl" data-reveal="fade-up">
+      <span class="section-badge section-badge-success inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase rounded-full mb-6">
+        The Opportunity
+      </span>
+      <h3 class="closing-headline text-3xl sm:text-4xl md:text-5xl font-bold">
+        Biotech Can Bend the Cost Curve
+      </h3>
+      <p class="closing-text mt-6 text-lg sm:text-xl">
+        Solutions that extend healthspan, reduce costs, and improve lives
+      </p>
+      <p class="closing-subtext mt-4 text-base max-w-xl mx-auto">
+        If 90% of spend is tied to chronic conditions linked to aging, even single-digit percentage reductions cascade into hundreds of billions in savings.
+      </p>
+    </div>
+  </div>
+
+  <!-- Sources Section (Compact variant) -->
+  <div class="sources-wrapper px-6 pb-16 relative z-10">
+    <div class="max-w-4xl mx-auto">
+      <SourcesCompact citations={citationsToArray(citationIndex)} title="Sources" />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ==========================================================================
+     BASE STYLES (shared across all modes)
+     ========================================================================== */
+
+  /* Base reveal states */
+  .reveal-item {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
+  }
+
+  .reveal-item[data-reveal="fade-up"] {
+    transform: translateY(40px);
+  }
+
+  .reveal-item[data-reveal="slide-right"] {
+    transform: translateX(-60px);
+  }
+
+  .reveal-item[data-reveal="slide-left"] {
+    transform: translateX(60px);
+  }
+
+  .reveal-item[data-reveal="scale-up"] {
+    transform: scale(0.8);
+  }
+
+  .reveal-item.revealed {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* Hero animations */
+  .hero-opening .problem-badge {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-opening .headline-text {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-opening .subtitle-text {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-opening .big-cost-wrapper {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: fadeInScale 1s ease 0.8s forwards;
+  }
+
+  .hero-opening .scroll-hint {
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInScale {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .scroll-hint-line {
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.2); }
+  }
+
+  /* Bar animations */
+  .bar-fill {
+    animation: barGrow 1.5s ease-out forwards;
+    transform-origin: left;
+  }
+
+  @keyframes barGrow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .aging-crisis-section {
+    background: var(--color-alabaster);
+  }
+
+  :global([data-mode="light"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(239, 68, 68, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .problem-badge {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #dc2626;
+  }
+
+  :global([data-mode="light"]) .badge-dot {
+    background: #dc2626;
+  }
+
+  :global([data-mode="light"]) .headline-text,
+  :global([data-mode="light"]) .closing-headline {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .subtitle-text {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .big-cost-currency,
+  :global([data-mode="light"]) .big-cost-number {
+    background: linear-gradient(135deg, #dc2626, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="light"]) .big-cost-label {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .big-cost-diseases {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .scroll-hint {
+    color: #dc2626;
+    opacity: 0.4;
+  }
+
+  :global([data-mode="light"]) .section-title {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .section-subtitle {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .section-badge-danger {
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-warning {
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-info {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+  }
+
+  :global([data-mode="light"]) .section-badge-success {
+    color: #059669;
+    border: 1px solid rgba(5, 150, 105, 0.25);
+  }
+
+  /* Light mode cards */
+  :global([data-mode="light"]) .disease-inner,
+  :global([data-mode="light"]) .stat-inner,
+  :global([data-mode="light"]) .cost-inner {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-mode="light"]) .disease-inner:hover,
+  :global([data-mode="light"]) .stat-inner:hover,
+  :global([data-mode="light"]) .cost-inner:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  :global([data-mode="light"]) .disease-name,
+  :global([data-mode="light"]) .stat-label,
+  :global([data-mode="light"]) .cost-label {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .disease-cost,
+  :global([data-mode="light"]) .stat-number,
+  :global([data-mode="light"]) .cost-number {
+    color: #dc2626;
+  }
+
+  :global([data-mode="light"]) .disease-timeframe {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .disease-description,
+  :global([data-mode="light"]) .stat-description,
+  :global([data-mode="light"]) .cost-description {
+    color: var(--color-foreground);
+    opacity: 0.65;
+  }
+
+
+  /* Light mode healthspan section */
+  :global([data-mode="light"]) .healthspan-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(217, 119, 6, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .gap-visual {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-mode="light"]) .bar-label,
+  :global([data-mode="light"]) .bar-value {
+    color: var(--color-foreground);
+  }
+
+  :global([data-mode="light"]) .bar-track {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  :global([data-mode="light"]) .bar-fill-healthy {
+    background: linear-gradient(90deg, #059669, #10b981);
+  }
+
+  :global([data-mode="light"]) .bar-fill-life {
+    background: linear-gradient(90deg, #059669 81.25%, #d97706 81.25%, #dc2626);
+  }
+
+  :global([data-mode="light"]) .gap-callout {
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-mode="light"]) .gap-number {
+    color: #dc2626;
+  }
+
+  :global([data-mode="light"]) .gap-unit {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .gap-description {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="light"]) .cost-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(220, 38, 38, 0.04), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(5, 150, 105, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="light"]) .closing-text {
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="light"]) .closing-subtext {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .aging-crisis-section {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(239, 68, 68, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .problem-badge {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .badge-dot {
+    background: #f87171;
+  }
+
+  :global([data-mode="dark"]) .headline-text,
+  :global([data-mode="dark"]) .closing-headline {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .subtitle-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .big-cost-currency,
+  :global([data-mode="dark"]) .big-cost-number {
+    background: linear-gradient(135deg, #f87171, #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="dark"]) .big-cost-label {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .big-cost-diseases {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .scroll-hint {
+    color: #f87171;
+    opacity: 0.4;
+  }
+
+  :global([data-mode="dark"]) .section-title {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .section-badge-danger {
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-warning {
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-info {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) .section-badge-success {
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.3);
+  }
+
+  /* Dark mode cards */
+  :global([data-mode="dark"]) .disease-inner,
+  :global([data-mode="dark"]) .stat-inner,
+  :global([data-mode="dark"]) .cost-inner {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(248, 113, 113, 0.15);
+  }
+
+  :global([data-mode="dark"]) .disease-inner:hover,
+  :global([data-mode="dark"]) .stat-inner:hover,
+  :global([data-mode="dark"]) .cost-inner:hover {
+    border-color: rgba(248, 113, 113, 0.4);
+    background: rgba(248, 113, 113, 0.05);
+    box-shadow: 0 0 40px rgba(248, 113, 113, 0.1);
+  }
+
+  :global([data-mode="dark"]) .disease-name,
+  :global([data-mode="dark"]) .stat-label,
+  :global([data-mode="dark"]) .cost-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .disease-cost,
+  :global([data-mode="dark"]) .stat-number,
+  :global([data-mode="dark"]) .cost-number {
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .disease-timeframe {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .disease-description,
+  :global([data-mode="dark"]) .stat-description,
+  :global([data-mode="dark"]) .cost-description {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+
+  /* Dark mode healthspan section */
+  :global([data-mode="dark"]) .healthspan-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(251, 191, 36, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .gap-visual {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .bar-label,
+  :global([data-mode="dark"]) .bar-value {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .bar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .bar-fill-healthy {
+    background: linear-gradient(90deg, #10b981, #34d399);
+  }
+
+  :global([data-mode="dark"]) .bar-fill-life {
+    background: linear-gradient(90deg, #10b981 81.25%, #fbbf24 81.25%, #f87171);
+  }
+
+  :global([data-mode="dark"]) .gap-callout {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .gap-number {
+    color: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .gap-unit {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .gap-description {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="dark"]) .cost-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(248, 113, 113, 0.06), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(52, 211, 153, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="dark"]) .closing-subtext {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .aging-crisis-section {
+    background: linear-gradient(180deg, var(--color-void) 0%, #1a0a0a 30%, #0d0508 70%, var(--color-void) 100%);
+  }
+
+  :global([data-mode="vibrant"]) .hero-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(239, 68, 68, 0.2), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .problem-badge {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .badge-dot {
+    background: #fca5a5;
+    box-shadow: 0 0 10px #fca5a5;
+  }
+
+  :global([data-mode="vibrant"]) .headline-text,
+  :global([data-mode="vibrant"]) .closing-headline {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .subtitle-text {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .big-cost-currency,
+  :global([data-mode="vibrant"]) .big-cost-number {
+    background: linear-gradient(135deg, #fca5a5, #fdba74, #fcd34d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(252, 165, 165, 0.5));
+  }
+
+  :global([data-mode="vibrant"]) .big-cost-label {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .big-cost-diseases {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint {
+    color: #fca5a5;
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .scroll-hint-line {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  :global([data-mode="vibrant"]) .section-title {
+    color: var(--color-alabaster);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .section-subtitle {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-danger {
+    color: #fca5a5;
+    border: 1px solid rgba(252, 165, 165, 0.5);
+    box-shadow: 0 0 15px rgba(252, 165, 165, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-warning {
+    color: #fcd34d;
+    border: 1px solid rgba(252, 211, 77, 0.5);
+    box-shadow: 0 0 15px rgba(252, 211, 77, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-info {
+    color: var(--color-lilac);
+    border: 1px solid rgba(156, 133, 223, 0.5);
+    box-shadow: 0 0 15px rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .section-badge-success {
+    color: #6ee7b7;
+    border: 1px solid rgba(110, 231, 183, 0.5);
+    box-shadow: 0 0 15px rgba(110, 231, 183, 0.3);
+  }
+
+  /* Vibrant mode cards */
+  :global([data-mode="vibrant"]) .disease-inner,
+  :global([data-mode="vibrant"]) .stat-inner,
+  :global([data-mode="vibrant"]) .cost-inner {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 10, 0.8));
+    border: 1px solid rgba(252, 165, 165, 0.25);
+  }
+
+  :global([data-mode="vibrant"]) .disease-inner:hover,
+  :global([data-mode="vibrant"]) .stat-inner:hover,
+  :global([data-mode="vibrant"]) .cost-inner:hover {
+    border-color: rgba(252, 165, 165, 0.6);
+    background: linear-gradient(135deg, rgba(252, 165, 165, 0.1), rgba(26, 10, 10, 0.9));
+    box-shadow: 0 0 50px rgba(252, 165, 165, 0.2), inset 0 0 30px rgba(252, 165, 165, 0.05);
+  }
+
+  :global([data-mode="vibrant"]) .disease-name,
+  :global([data-mode="vibrant"]) .stat-label,
+  :global([data-mode="vibrant"]) .cost-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .disease-cost,
+  :global([data-mode="vibrant"]) .stat-number,
+  :global([data-mode="vibrant"]) .cost-number {
+    color: #fca5a5;
+    text-shadow: 0 0 20px #fca5a5;
+  }
+
+  :global([data-mode="vibrant"]) .disease-timeframe {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+
+  :global([data-mode="vibrant"]) .disease-description,
+  :global([data-mode="vibrant"]) .stat-description,
+  :global([data-mode="vibrant"]) .cost-description {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+
+  /* Vibrant mode healthspan section */
+  :global([data-mode="vibrant"]) .healthspan-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(252, 211, 77, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .gap-visual {
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.9), rgba(26, 10, 10, 0.8));
+    border: 1px solid rgba(252, 211, 77, 0.3);
+    box-shadow: 0 0 40px rgba(252, 211, 77, 0.1);
+  }
+
+  :global([data-mode="vibrant"]) .bar-label,
+  :global([data-mode="vibrant"]) .bar-value {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="vibrant"]) .bar-track {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .bar-fill-healthy {
+    background: linear-gradient(90deg, #10b981, #6ee7b7);
+    box-shadow: 0 0 15px rgba(110, 231, 183, 0.5);
+  }
+
+  :global([data-mode="vibrant"]) .bar-fill-life {
+    background: linear-gradient(90deg, #10b981 81.25%, #fcd34d 81.25%, #fca5a5);
+    box-shadow: 0 0 15px rgba(252, 211, 77, 0.3);
+  }
+
+  :global([data-mode="vibrant"]) .gap-callout {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  :global([data-mode="vibrant"]) .gap-number {
+    color: #fcd34d;
+    text-shadow: 0 0 20px #fcd34d;
+  }
+
+  :global([data-mode="vibrant"]) .gap-unit {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .gap-description {
+    color: var(--color-alabaster);
+    opacity: 0.7;
+  }
+
+  :global([data-mode="vibrant"]) .cost-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 50%, rgba(252, 165, 165, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-gradient {
+    background: radial-gradient(ellipse 60% 40% at 50% 70%, rgba(110, 231, 183, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="vibrant"]) .closing-text {
+    color: var(--color-alabaster);
+    opacity: 0.8;
+  }
+
+  :global([data-mode="vibrant"]) .closing-subtext {
+    color: var(--color-alabaster);
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  function initScrollReveal() {
+    const revealItems = document.querySelectorAll('.aging-crisis-section .reveal-item');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = parseInt(
+              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+            );
+            setTimeout(() => {
+              entry.target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px',
+      }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+  }
+
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

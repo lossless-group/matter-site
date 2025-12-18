@@ -1,0 +1,146 @@
+---
+/**
+ * SourcesInline Component
+ *
+ * A minimal inline variant for citations - renders as a single line or
+ * subtle footer. Best for cards, captions, or tight layouts where you
+ * just need to indicate sources exist.
+ *
+ * Supports light/dark/vibrant modes via CSS custom properties.
+ */
+
+import type { IndexedCitation } from '@lib/citations/types';
+
+interface Props {
+  /** Array of indexed citations to display */
+  citations: IndexedCitation[];
+  /** Prefix text (default: "Sources:") */
+  prefix?: string;
+  /** Show full titles on hover */
+  showTitles?: boolean;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const { citations, prefix = 'Sources:', showTitles = true, class: className = '' } = Astro.props;
+
+// Sort by index to ensure correct order
+const sortedCitations = [...citations].sort((a, b) => a.index - b.index);
+
+// Extract domain from URL for display
+const getDomain = (url: string): string => {
+  try {
+    return new URL(url).hostname.replace('www.', '');
+  } catch {
+    return url;
+  }
+};
+---
+
+{sortedCitations.length > 0 && (
+  <div class:list={['sources-inline', className]}>
+    <span class="sources-inline-prefix">{prefix}</span>
+    <span class="sources-inline-links">
+      {sortedCitations.map((citation, i) => (
+        <>
+          <a
+            href={citation.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="sources-inline-link"
+            title={showTitles ? citation.title : undefined}
+          >
+            [{citation.index}]
+          </a>
+          {i < sortedCitations.length - 1 && <span class="sources-inline-sep">,</span>}
+        </>
+      ))}
+    </span>
+  </div>
+)}
+
+<style>
+  .sources-inline {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.375rem;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+  }
+
+  .sources-inline-prefix {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .sources-inline-links {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.125rem;
+  }
+
+  .sources-inline-link {
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.15s ease;
+  }
+
+  .sources-inline-link:hover {
+    text-decoration: underline;
+  }
+
+  .sources-inline-sep {
+    opacity: 0.4;
+    margin-right: 0.125rem;
+  }
+
+  /* ==========================================================================
+     LIGHT MODE
+     ========================================================================== */
+  :global([data-mode="light"]) .sources-inline-prefix {
+    color: var(--color-foreground);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="light"]) .sources-inline-link {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .sources-inline-link:hover {
+    color: var(--color-marjorelle-purple);
+  }
+
+  /* ==========================================================================
+     DARK MODE
+     ========================================================================== */
+  :global([data-mode="dark"]) .sources-inline-prefix {
+    color: var(--color-alabaster);
+    opacity: 0.4;
+  }
+
+  :global([data-mode="dark"]) .sources-inline-link {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .sources-inline-link:hover {
+    color: var(--color-lilac);
+  }
+
+  /* ==========================================================================
+     VIBRANT MODE
+     ========================================================================== */
+  :global([data-mode="vibrant"]) .sources-inline-prefix {
+    color: var(--color-alabaster);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="vibrant"]) .sources-inline-link {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="vibrant"]) .sources-inline-link:hover {
+    color: var(--color-lilac);
+    text-shadow: 0 0 8px var(--color-lilac);
+  }
+</style>

@@ -1,0 +1,703 @@
+---
+/**
+ * Design System: Citations
+ *
+ * Documents all citation-related components:
+ * - InlineCitation: Inline [n] marker with hover popover
+ * - Sources: Full sources section with titles and metadata
+ * - SourcesCompact: Compact variant for tight spaces
+ * - SourcesInline: Minimal inline variant
+ * - CitedSection: Wrapper component for citation management
+ *
+ * Also documents the citation types and utility functions.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import type { CitationReference } from '@lib/citations/types';
+import { buildCitationIndex, citationsToArray } from '@lib/citations/types';
+
+// Import citation components
+import InlineCitation from '@components/citations/InlineCitation.astro';
+import Sources from '@components/citations/Sources.astro';
+import SourcesCompact from '@components/citations/SourcesCompact.astro';
+import SourcesInline from '@components/citations/SourcesInline.astro';
+import CitedSection from '@components/citations/CitedSection.astro';
+
+// =============================================================================
+// Sample Citation Data (from TheAgingCrisis section)
+// =============================================================================
+const sampleCitations: CitationReference[] = [
+  {
+    hexCode: 'alyqs4',
+    title: 'Key Drivers of 2025 Health Care Cost Increases',
+    url: 'https://parrottbenefitgroup.com/key-drivers-of-2025-health-care-cost-increases/',
+    source: 'Parrott Benefit Group',
+    publishedDate: '2024-11-22',
+  },
+  {
+    hexCode: 'vw99oj',
+    title: 'Why Health Care Costs Are Rising in 2025',
+    url: 'https://watkinsinsurancegroup.com/blog/why-health-care-costs-are-rising-in-2025/',
+    source: 'Watkins Insurance Group',
+    publishedDate: '2025-01-30',
+  },
+  {
+    hexCode: 'm761t3',
+    title: 'Global Healthcare Costs Projected to Rise More Than 10% in 2026',
+    url: 'https://worldatwork.org/publications/workspan-daily/global-healthcare-costs-projected-to-rise-more-than-10-in-2026',
+    source: 'WorldatWork',
+    publishedDate: '2025-11-13',
+  },
+  {
+    hexCode: 'k9m6ww',
+    title: 'How heavy is the medical expense burden among the older adults',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10313336/',
+    source: 'NIH/PMC',
+    publishedDate: '2023-06-16',
+  },
+  {
+    hexCode: '67utob',
+    title: 'Fidelity Investments Releases 2025 Retiree Health Care Cost Estimate',
+    url: 'https://newsroom.fidelity.com/pressreleases/fidelity-investments--releases-2025-retiree-health-care-cost-estimate--a-timely-reminder-for-all-gen/s/3c62e988-12e2-4dc8-afb4-f44b06c6d52e',
+    source: 'Fidelity Investments',
+    publishedDate: '2025-07-30',
+  },
+];
+
+// Build citation index
+const citationIndex = buildCitationIndex(sampleCitations);
+const citationsArray = citationsToArray(citationIndex);
+
+// Helper to get a citation by hex code
+const getCite = (hexCode: string) => citationIndex.get(hexCode);
+---
+
+<BaseThemeLayout title="Citations - Design System" mode="dark">
+  <div class="design-system-container max-w-5xl mx-auto px-6 py-12">
+    <!-- Header -->
+    <header class="mb-16 text-center">
+      <h1 class="text-4xl font-bold mb-4">Citation System</h1>
+      <p class="text-lg text-(--color-muted-foreground) max-w-2xl mx-auto">
+        A hex-code based citation system that converts to sequential integers at render time.
+        Components for inline citations, source lists, and wrapper utilities.
+      </p>
+    </header>
+
+    <!-- Architecture Overview -->
+    <section class="mb-16">
+      <h2 class="section-title">Architecture</h2>
+      <div class="architecture-card p-6 rounded-xl">
+        <p class="mb-4">The citation system uses <strong>hex codes</strong> (e.g., <code>alyqs4</code>) as stable identifiers that get converted to <strong>sequential integers</strong> ([1], [2], [3]) at render time based on order of appearance.</p>
+        <div class="grid md:grid-cols-2 gap-6 mt-6">
+          <div>
+            <h4 class="font-semibold mb-2 text-(--color-lilac)">Key Types</h4>
+            <ul class="text-sm space-y-1">
+              <li><code>CitationReference</code> - Source definition with hexCode, title, url</li>
+              <li><code>IndexedCitation</code> - Citation with assigned index number</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-2 text-(--color-lilac)">Utilities</h4>
+            <ul class="text-sm space-y-1">
+              <li><code>buildCitationIndex()</code> - Assigns sequential indices</li>
+              <li><code>citationsToArray()</code> - Converts map to sorted array</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- InlineCitation Component -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">InlineCitation</h2>
+      <p class="section-description">
+        Renders an inline citation marker [n] with a hover popover showing source details.
+        Uses a global popover pattern for reliable cross-browser behavior.
+      </p>
+
+      <div class="component-demo">
+        <h3 class="demo-label">Live Example</h3>
+        <div class="demo-box">
+          <p class="text-base leading-relaxed">
+            Healthcare costs are projected to rise 7-8% annually for US employers{getCite('alyqs4') && <InlineCitation {...getCite('alyqs4')!} />},
+            driven primarily by chronic conditions which account for 90% of US healthcare spend{getCite('vw99oj') && <InlineCitation {...getCite('vw99oj')!} />}.
+            Cancer has become the leading condition driving insurer costs globally{getCite('m761t3') && <InlineCitation {...getCite('m761t3')!} />}.
+          </p>
+        </div>
+      </div>
+
+      <div class="props-table mt-6">
+        <h3 class="props-label">Props</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>index</code></td>
+              <td>number</td>
+              <td>Sequential index for display (1, 2, 3...)</td>
+            </tr>
+            <tr>
+              <td><code>hexCode</code></td>
+              <td>string</td>
+              <td>Hex code identifier for the citation</td>
+            </tr>
+            <tr>
+              <td><code>title</code></td>
+              <td>string</td>
+              <td>Title of the source</td>
+            </tr>
+            <tr>
+              <td><code>url</code></td>
+              <td>string</td>
+              <td>URL to the source</td>
+            </tr>
+            <tr>
+              <td><code>source?</code></td>
+              <td>string</td>
+              <td>Publication name or domain</td>
+            </tr>
+            <tr>
+              <td><code>publishedDate?</code></td>
+              <td>string</td>
+              <td>Published date for display</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-example mt-6">
+        <h3 class="code-label">Usage</h3>
+        <pre><code>{`const cite = citationIndex.get('alyqs4');
+<p>Some text<InlineCitation {...cite} /></p>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- Sources Component -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">Sources</h2>
+      <p class="section-description">
+        Full sources section with titles, metadata, and external links.
+        Best for end-of-section or end-of-page source listings.
+      </p>
+
+      <div class="component-demo">
+        <h3 class="demo-label">Live Example</h3>
+        <div class="demo-box">
+          <Sources citations={citationsArray} title="Sources" />
+        </div>
+      </div>
+
+      <div class="props-table mt-6">
+        <h3 class="props-label">Props</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>citations</code></td>
+              <td>IndexedCitation[]</td>
+              <td>-</td>
+              <td>Array of indexed citations to display</td>
+            </tr>
+            <tr>
+              <td><code>title?</code></td>
+              <td>string</td>
+              <td>"Sources"</td>
+              <td>Section title</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-example mt-6">
+        <h3 class="code-label">Usage</h3>
+        <pre><code>{`<Sources
+  citations={citationsToArray(citationIndex)}
+  title="References"
+/>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- SourcesCompact Component -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">SourcesCompact</h2>
+      <p class="section-description">
+        Compact variant for tight spaces like cards, sidebars, or inline sections.
+        Shows source names in an inline flex layout with smaller typography.
+      </p>
+
+      <div class="component-demo">
+        <h3 class="demo-label">Live Example</h3>
+        <div class="demo-box">
+          <SourcesCompact citations={citationsArray} title="Sources" />
+        </div>
+      </div>
+
+      <div class="component-demo mt-6">
+        <h3 class="demo-label">Without Title</h3>
+        <div class="demo-box">
+          <SourcesCompact citations={citationsArray} hideTitle={true} />
+        </div>
+      </div>
+
+      <div class="props-table mt-6">
+        <h3 class="props-label">Props</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>citations</code></td>
+              <td>IndexedCitation[]</td>
+              <td>-</td>
+              <td>Array of indexed citations</td>
+            </tr>
+            <tr>
+              <td><code>title?</code></td>
+              <td>string</td>
+              <td>"Sources"</td>
+              <td>Section title</td>
+            </tr>
+            <tr>
+              <td><code>hideTitle?</code></td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Hide the title</td>
+            </tr>
+            <tr>
+              <td><code>class?</code></td>
+              <td>string</td>
+              <td>""</td>
+              <td>Additional CSS classes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-example mt-6">
+        <h3 class="code-label">Usage</h3>
+        <pre><code>{`<SourcesCompact
+  citations={citationsArray}
+  title="Sources"
+  hideTitle={false}
+/>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- SourcesInline Component -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">SourcesInline</h2>
+      <p class="section-description">
+        Minimal inline variant for tight spaces. Renders as a single line with clickable [n] indices.
+        Best for captions, cards, or subtle source attribution.
+      </p>
+
+      <div class="component-demo">
+        <h3 class="demo-label">Live Example</h3>
+        <div class="demo-box">
+          <p class="text-sm mb-3">Healthcare costs are rising due to aging demographics and chronic disease burden.</p>
+          <SourcesInline citations={citationsArray} />
+        </div>
+      </div>
+
+      <div class="component-demo mt-6">
+        <h3 class="demo-label">Custom Prefix</h3>
+        <div class="demo-box">
+          <SourcesInline citations={citationsArray.slice(0, 3)} prefix="References:" />
+        </div>
+      </div>
+
+      <div class="props-table mt-6">
+        <h3 class="props-label">Props</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>citations</code></td>
+              <td>IndexedCitation[]</td>
+              <td>-</td>
+              <td>Array of indexed citations</td>
+            </tr>
+            <tr>
+              <td><code>prefix?</code></td>
+              <td>string</td>
+              <td>"Sources:"</td>
+              <td>Prefix text</td>
+            </tr>
+            <tr>
+              <td><code>showTitles?</code></td>
+              <td>boolean</td>
+              <td>true</td>
+              <td>Show full titles on hover</td>
+            </tr>
+            <tr>
+              <td><code>class?</code></td>
+              <td>string</td>
+              <td>""</td>
+              <td>Additional CSS classes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-example mt-6">
+        <h3 class="code-label">Usage</h3>
+        <pre><code>{`<SourcesInline
+  citations={citationsArray}
+  prefix="Refs:"
+  showTitles={true}
+/>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- CitedSection Component -->
+    <section class="component-section mb-16">
+      <h2 class="section-title">CitedSection</h2>
+      <p class="section-description">
+        Wrapper component that handles citation indexing and renders the appropriate Sources variant.
+        Simplifies the pattern of content + sources by handling the boilerplate.
+      </p>
+
+      <div class="component-demo">
+        <h3 class="demo-label">Live Example (Compact Variant)</h3>
+        <div class="demo-box">
+          <CitedSection citations={sampleCitations.slice(0, 3)} sourcesVariant="compact">
+            <p class="text-base leading-relaxed mb-4">
+              This is content inside a CitedSection. The sources are automatically rendered
+              at the end based on the <code>sourcesVariant</code> prop.
+            </p>
+          </CitedSection>
+        </div>
+      </div>
+
+      <div class="component-demo mt-6">
+        <h3 class="demo-label">Inline Variant</h3>
+        <div class="demo-box">
+          <CitedSection citations={sampleCitations.slice(0, 3)} sourcesVariant="inline">
+            <p class="text-sm">A brief stat card with minimal source attribution.</p>
+          </CitedSection>
+        </div>
+      </div>
+
+      <div class="props-table mt-6">
+        <h3 class="props-label">Props</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Prop</th>
+              <th>Type</th>
+              <th>Default</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>citations</code></td>
+              <td>CitationReference[]</td>
+              <td>-</td>
+              <td>Array of citation references</td>
+            </tr>
+            <tr>
+              <td><code>sourcesVariant?</code></td>
+              <td>'full' | 'compact' | 'inline' | 'none'</td>
+              <td>'full'</td>
+              <td>Which Sources variant to render</td>
+            </tr>
+            <tr>
+              <td><code>sourcesTitle?</code></td>
+              <td>string</td>
+              <td>'Sources'</td>
+              <td>Title for the Sources section</td>
+            </tr>
+            <tr>
+              <td><code>class?</code></td>
+              <td>string</td>
+              <td>""</td>
+              <td>Additional CSS classes</td>
+            </tr>
+            <tr>
+              <td><code>as?</code></td>
+              <td>'section' | 'div' | 'article'</td>
+              <td>'section'</td>
+              <td>Element tag for the wrapper</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-example mt-6">
+        <h3 class="code-label">Usage</h3>
+        <pre><code>{`<CitedSection
+  citations={citationRefs}
+  sourcesVariant="compact"
+  sourcesTitle="References"
+>
+  <p>Content with citations goes here...</p>
+</CitedSection>`}</code></pre>
+      </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="mb-16">
+      <h2 class="section-title">Variant Comparison</h2>
+      <p class="section-description mb-8">
+        Side-by-side comparison of all three Sources variants with the same citation data.
+      </p>
+
+      <div class="grid gap-8">
+        <div class="comparison-card">
+          <h3 class="comparison-label">Full (default)</h3>
+          <p class="comparison-description mb-4">Best for: End of sections, detailed references</p>
+          <Sources citations={citationsArray.slice(0, 3)} />
+        </div>
+
+        <div class="comparison-card">
+          <h3 class="comparison-label">Compact</h3>
+          <p class="comparison-description mb-4">Best for: Cards, sidebars, tight layouts</p>
+          <SourcesCompact citations={citationsArray.slice(0, 3)} />
+        </div>
+
+        <div class="comparison-card">
+          <h3 class="comparison-label">Inline</h3>
+          <p class="comparison-description mb-4">Best for: Captions, footnotes, minimal attribution</p>
+          <SourcesInline citations={citationsArray.slice(0, 3)} />
+        </div>
+      </div>
+    </section>
+
+    <!-- File Locations -->
+    <section class="mb-16">
+      <h2 class="section-title">File Locations</h2>
+      <div class="file-list">
+        <div class="file-item">
+          <code>src/components/citations/InlineCitation.astro</code>
+          <span>Inline [n] marker with popover</span>
+        </div>
+        <div class="file-item">
+          <code>src/components/citations/Sources.astro</code>
+          <span>Full sources section</span>
+        </div>
+        <div class="file-item">
+          <code>src/components/citations/SourcesCompact.astro</code>
+          <span>Compact sources variant</span>
+        </div>
+        <div class="file-item">
+          <code>src/components/citations/SourcesInline.astro</code>
+          <span>Inline sources variant</span>
+        </div>
+        <div class="file-item">
+          <code>src/components/citations/CitedSection.astro</code>
+          <span>Wrapper component</span>
+        </div>
+        <div class="file-item">
+          <code>src/lib/citations/types.ts</code>
+          <span>Types and utility functions</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseThemeLayout>
+
+<style>
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-lilac);
+  }
+
+  .section-description {
+    color: var(--color-muted-foreground);
+    max-width: 48rem;
+  }
+
+  .architecture-card {
+    background: rgba(156, 133, 223, 0.05);
+    border: 1px solid rgba(156, 133, 223, 0.15);
+  }
+
+  .architecture-card code {
+    background: rgba(156, 133, 223, 0.15);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .component-section {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .demo-label,
+  .props-label,
+  .code-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
+    margin-bottom: 0.75rem;
+  }
+
+  .demo-box {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.1);
+  }
+
+  .props-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .props-table th {
+    text-align: left;
+    padding: 0.75rem;
+    background: rgba(156, 133, 223, 0.05);
+    border-bottom: 1px solid rgba(156, 133, 223, 0.15);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-lilac);
+  }
+
+  .props-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(156, 133, 223, 0.08);
+    vertical-align: top;
+  }
+
+  .props-table code {
+    background: rgba(156, 133, 223, 0.1);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .code-example pre {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(156, 133, 223, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .code-example code {
+    color: var(--color-alabaster);
+  }
+
+  .comparison-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.1);
+  }
+
+  .comparison-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-lilac);
+  }
+
+  .comparison-description {
+    font-size: 0.75rem;
+    color: var(--color-muted-foreground);
+  }
+
+  .file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgba(156, 133, 223, 0.03);
+    border: 1px solid rgba(156, 133, 223, 0.08);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .file-item code {
+    font-size: 0.8125rem;
+    color: var(--color-lilac);
+  }
+
+  .file-item span {
+    color: var(--color-muted-foreground);
+    font-size: 0.75rem;
+  }
+
+  /* Light mode overrides */
+  :global([data-mode="light"]) .architecture-card,
+  :global([data-mode="light"]) .demo-box,
+  :global([data-mode="light"]) .comparison-card,
+  :global([data-mode="light"]) .file-item {
+    background: rgba(108, 99, 255, 0.03);
+    border-color: rgba(108, 99, 255, 0.1);
+  }
+
+  :global([data-mode="light"]) .section-title,
+  :global([data-mode="light"]) .comparison-label,
+  :global([data-mode="light"]) .file-item code {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .props-table th {
+    background: rgba(108, 99, 255, 0.05);
+    border-color: rgba(108, 99, 255, 0.15);
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="light"]) .props-table td {
+    border-color: rgba(108, 99, 255, 0.08);
+  }
+
+  :global([data-mode="light"]) .props-table code,
+  :global([data-mode="light"]) .architecture-card code {
+    background: rgba(108, 99, 255, 0.1);
+  }
+
+  :global([data-mode="light"]) .code-example pre {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="light"]) .code-example code {
+    color: var(--color-foreground);
+  }
+</style>
