@@ -119,6 +119,157 @@ This allows changelog entries to be queried and rendered as pages while keeping 
 
 ---
 
+## 🗄️ NocoDB API Integration
+
+The site uses [NocoDB](https://nocodb.com) as a cloud-hosted database for dynamic content and access tracking. NocoDB provides a spreadsheet-like interface for non-technical team members while exposing a REST API for the site.
+
+### Configuration
+
+Required environment variables:
+
+```bash
+# NocoDB API token (from Account Settings)
+NOCODB_API_KEY=your_api_token_here
+
+# Optional: Override defaults
+NOCODB_BASE_URL=https://app.nocodb.com  # Default
+NOCODB_BASE_ID=your_base_id             # Default provided
+```
+
+### Tables
+
+| Table | Purpose |
+|-------|---------|
+| `organizations` | Portfolio companies with logos, descriptions, URLs |
+| `materials` | Investment memos and documents |
+| `emailAccess` | Session tracking for confidential content access |
+
+### Features
+
+**Portfolio Data**
+- Fetches company information at build time or runtime
+- Parses trademark/logo JSON for mode-aware assets (light/dark/vibrant)
+- Graceful fallback to static JSON when API not configured
+
+**Caching**
+- 5-minute TTL in-memory cache
+- Reduces API calls during development and SSR
+
+**TypeScript Types**
+- Full type definitions for all NocoDB responses
+- `PortfolioCompany` interface for rendering
+
+```typescript
+import { getPortfolioCompanies, isNocoDBConfigured } from '@lib/nocodb';
+
+// Check if configured before fetching
+if (isNocoDBConfigured()) {
+  const companies = await getPortfolioCompanies();
+}
+```
+
+---
+
+## 🔐 Authentication & Access Control
+
+The site implements a multi-tier authentication system for protecting confidential investment materials.
+
+### Access Tiers
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         PUBLIC CONTENT                               │
+│  /, /thesis, /strategy, /portfolio, /pipeline, /team                │
+│  No authentication required                                          │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    LEVEL 1: EMAIL GATE                               │
+│  /portfolio-gate → /portfolio/confidential                          │
+│                                                                      │
+│  • User submits email address                                        │
+│  • Session created in NocoDB (emailAccess table)                    │
+│  • Auth cookie set (24-hour expiry)                                 │
+│  • Heartbeat tracking for session duration                          │
+│                                                                      │
+│  Auto-approved domains: darkmatter.vc, lossless.group               │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    LEVEL 2: PASSCODE GATE                           │
+│  /portfolio/confidential/[company]/gate → /portfolio/confidential/[company] │
+│                                                                      │
+│  • Company-specific passcode required                               │
+│  • Grants access to detailed investment memos                       │
+│  • Markdown-rendered documents with financials                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Authentication Flow
+
+**Level 1: Email Verification**
+
+1. User navigates to `/portfolio-gate`
+2. Submits email address via form
+3. `POST /api/verify-temp-access`:
+   - Creates session record in NocoDB with `sessionStartTime`
+   - Generates SHA-256 session token
+   - Sets cookies: `universal_portfolio_access`, `accessor_email`, `session_record_id`
+4. Redirects to `/portfolio/confidential`
+
+**Session Heartbeat**
+
+While viewing confidential content, a heartbeat component (`SessionHeartbeat.astro`) periodically pings the server:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        HEARTBEAT PATTERN                             │
+│                                                                      │
+│  Page Load → Immediate heartbeat                                    │
+│      │                                                               │
+│      ├──► Every 3 minutes: PATCH sessionEndTime                     │
+│      │                                                               │
+│      ├──► Tab hidden: Pause heartbeats                              │
+│      │                                                               │
+│      ├──► Tab visible: Resume + immediate heartbeat                 │
+│      │                                                               │
+│      └──► Page unload: sendBeacon final heartbeat                   │
+│                                                                      │
+│  Result: sessionEndTime - sessionStartTime = viewing duration       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/verify-temp-access` | POST | Email gate → create session, set cookies |
+| `/api/verify-email` | POST | Check if email is allowed (domain/approval) |
+| `/api/verify-portfolio-passcode` | POST | Level 2 passcode verification |
+| `/api/session-heartbeat` | POST | Update sessionEndTime for duration tracking |
+
+### Cookies
+
+| Cookie | HttpOnly | Purpose |
+|--------|----------|---------|
+| `universal_portfolio_access` | Yes | Auth token for confidential access |
+| `accessor_email` | Yes | Email for server-side reference |
+| `session_record_id` | No | NocoDB record ID for heartbeat tracking |
+
+### Domain Auto-Approval
+
+Configure via `ALLOWED_EMAIL_DOMAINS` environment variable (comma-separated):
+
+```bash
+ALLOWED_EMAIL_DOMAINS=darkmatter.vc,lossless.group,trusted-partner.com
+```
+
+Emails from these domains bypass approval workflows and get instant access.
+
+---
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
