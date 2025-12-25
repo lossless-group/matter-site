@@ -1,6 +1,7 @@
 ---
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import AuthenticationStatus from '@components/ui/AuthenticationStatus.astro';
+import SessionHeartbeat from '@components/auth/SessionHeartbeat.astro';
 import portfolioData from '@content/portfolio/portfolio-companies.json';
 
 // SSR only - protected by middleware
@@ -16,6 +17,9 @@ const lpCommitments = portfolioData.filter(c => c.category === 'lp');
 ---
 
 <BaseThemeLayout title="Confidential Portfolio | Dark Matter" description="Protected portfolio information for authorized viewers">
+  <!-- Session heartbeat for tracking view duration -->
+  <SessionHeartbeat />
+
   <section class="px-6 py-16">
     <div class="max-w-6xl mx-auto">
       <!-- Header -->

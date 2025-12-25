@@ -1,0 +1,159 @@
+---
+/**
+ * Session Heartbeat Component
+ *
+ * Drop this component into any page that requires session tracking.
+ * It sends periodic heartbeats to update the session's "last seen" time.
+ *
+ * Features:
+ * - Sends heartbeat every 3 minutes while page is visible
+ * - Pauses when tab is hidden (saves bandwidth)
+ * - Resumes immediately when tab becomes visible again
+ * - Sends final heartbeat on page unload (best effort)
+ * - Uses vanilla JavaScript (no jQuery or external deps)
+ *
+ * Usage:
+ *   <SessionHeartbeat />
+ *
+ * The component reads `session_record_id` cookie set by verify-temp-access.ts
+ */
+
+interface Props {
+  /** Heartbeat interval in milliseconds (default: 3 minutes) */
+  interval?: number;
+  /** Enable debug logging to console */
+  debug?: boolean;
+}
+
+const {
+  interval = 3 * 60 * 1000, // 3 minutes
+  debug = false,
+} = Astro.props;
+---
+
+<script is:inline define:vars={{ interval, debug }}>
+(function() {
+  'use strict';
+
+  const HEARTBEAT_INTERVAL = interval;
+  const DEBUG = debug;
+
+  let heartbeatTimer = null;
+  let isPageVisible = true;
+
+  function log(...args) {
+    if (DEBUG) {
+      console.log('[heartbeat]', ...args);
+    }
+  }
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(';').shift();
+    }
+    return null;
+  }
+
+  async function sendHeartbeat() {
+    const sessionRecordId = getCookie('session_record_id');
+
+    if (!sessionRecordId) {
+      log('No session record ID found, skipping heartbeat');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/session-heartbeat', {
+        method: 'POST',
+        credentials: 'same-origin',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        log('Heartbeat sent:', data.timestamp);
+      } else {
+        log('Heartbeat failed:', response.status);
+      }
+    } catch (error) {
+      log('Heartbeat error:', error.message);
+    }
+  }
+
+  function startHeartbeat() {
+    if (heartbeatTimer) {
+      return; // Already running
+    }
+
+    log('Starting heartbeat, interval:', HEARTBEAT_INTERVAL, 'ms');
+
+    // Send initial heartbeat
+    sendHeartbeat();
+
+    // Schedule recurring heartbeats
+    heartbeatTimer = setInterval(() => {
+      if (isPageVisible) {
+        sendHeartbeat();
+      }
+    }, HEARTBEAT_INTERVAL);
+  }
+
+  function stopHeartbeat() {
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+      log('Heartbeat stopped');
+    }
+  }
+
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      isPageVisible = false;
+      log('Page hidden, pausing heartbeat');
+    } else {
+      isPageVisible = true;
+      log('Page visible, resuming heartbeat');
+      // Send immediate heartbeat when page becomes visible
+      sendHeartbeat();
+    }
+  }
+
+  function handlePageUnload() {
+    // Best effort: try to send final heartbeat
+    // Using sendBeacon for reliability on page unload
+    const sessionRecordId = getCookie('session_record_id');
+    if (sessionRecordId && navigator.sendBeacon) {
+      navigator.sendBeacon('/api/session-heartbeat');
+      log('Final heartbeat sent via sendBeacon');
+    }
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if we have a session
+    const sessionRecordId = getCookie('session_record_id');
+    if (!sessionRecordId) {
+      log('No session to track');
+      return;
+    }
+
+    log('Session found:', sessionRecordId);
+
+    // Start heartbeat
+    startHeartbeat();
+
+    // Handle visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Handle page unload
+    window.addEventListener('beforeunload', handlePageUnload);
+    window.addEventListener('pagehide', handlePageUnload);
+  });
+
+  // Cleanup on page navigation (for SPAs)
+  window.addEventListener('unload', function() {
+    stopHeartbeat();
+  });
+})();
+</script>

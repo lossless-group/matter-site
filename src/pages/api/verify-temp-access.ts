@@ -8,7 +8,7 @@ export const prerender = false;
  * Simple temporary access endpoint.
  *
  * 1. Captures email + sessionStartTime to NocoDB
- * 2. Sets auth cookie
+ * 2. Sets auth cookie + session record ID for heartbeat tracking
  * 3. Redirects to confidential content
  *
  * No domain checking, no approval workflow - just capture and grant.
@@ -35,10 +35,19 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
   const normalizedEmail = email.toLowerCase().trim();
 
-  // Log the session to NocoDB (fire and forget - don't block on failure)
-  createEmailAccessSession(normalizedEmail).catch((err) => {
-    console.error('[temp-access] Failed to log session:', err);
-  });
+  // Create session in NocoDB and get the record ID for heartbeat tracking
+  let sessionRecordId: number | null = null;
+  try {
+    const result = await createEmailAccessSession(normalizedEmail);
+    if (result.success && result.record) {
+      // NocoDB v3 returns array of created records
+      const records = Array.isArray(result.record) ? result.record : [result.record];
+      sessionRecordId = records[0]?.id || null;
+      console.log(`[temp-access] Created session record ID: ${sessionRecordId}`);
+    }
+  } catch (err) {
+    console.error('[temp-access] Failed to create session:', err);
+  }
 
   // Generate session token
   const sessionToken = createHash('sha256')
@@ -62,6 +71,17 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     maxAge: 60 * 60 * 24,
     path: '/',
   });
+
+  // Store session record ID for heartbeat tracking (client-readable)
+  if (sessionRecordId) {
+    cookies.set('session_record_id', String(sessionRecordId), {
+      httpOnly: false, // Client needs to read this for heartbeat
+      secure: import.meta.env.PROD,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24,
+      path: '/',
+    });
+  }
 
   console.log(`[temp-access] Granted access to ${normalizedEmail}`);
   return redirect(redirectTo);

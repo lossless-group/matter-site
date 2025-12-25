@@ -611,3 +611,52 @@ export async function endEmailAccessSession(
     return { success: false, error: String(error) };
   }
 }
+
+/**
+ * Update session heartbeat (rolling "last seen" timestamp)
+ *
+ * Called periodically by client while viewing confidential content.
+ * Updates sessionEndTime as a rolling timestamp so we can calculate
+ * session duration when heartbeats stop.
+ */
+export async function updateSessionHeartbeat(
+  recordId: number
+): Promise<{ success: boolean; error?: string }> {
+  const config = getConfig();
+
+  if (!config.apiKey) {
+    return { success: false, error: 'NocoDB not configured' };
+  }
+
+  const url = new URL(
+    `/api/v3/data/${config.baseId}/${NOCODB_TABLES.emailAccess}/records`,
+    config.baseUrl
+  );
+
+  try {
+    const response = await fetch(url.toString(), {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'xc-token': config.apiKey,
+      },
+      body: JSON.stringify([{
+        id: recordId,
+        sessionEndTime: new Date().toISOString(),
+      }]),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('[nocodb] Failed to update session heartbeat:', errorBody);
+      return { success: false, error: `API error: ${response.status}` };
+    }
+
+    // Don't log every heartbeat - too noisy
+    return { success: true };
+  } catch (error) {
+    console.error('[nocodb] Error updating session heartbeat:', error);
+    return { success: false, error: String(error) };
+  }
+}
