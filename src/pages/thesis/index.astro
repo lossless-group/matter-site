@@ -8,28 +8,32 @@
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 
 // Import narrative section components
-import WhyNowWhyUsV5 from '@sections/narratives/needs-modes/WhyNowWhyUs-v5.astro';
-import DarkMatterDifferentiation from '@sections/narratives/DarkMatterDifferentiation-v1.astro';
-import FundPortfolioConstructionDetails from '@sections/narratives/FundPortfolioConstructionDetails.astro';
+import AgingPopulation from '@sections/narratives/AgingPopulation.astro';
+import TheAgingCrisis from '@sections/narratives/TheAgingCrisis-v1.astro';
+import ExitPotential from '@sections/narratives/ExitPotential.astro';
 ---
 
 <BaseThemeLayout title="Messages - Design System" mode="dark">
+
+\
+  <!-- The Aging Crisis Section -->
   <div class="variant-section">
-    <div class="variant-label">Why Now Why Us</div>
-    <WhyNowWhyUsV5 />
+    <div class="variant-label">The Aging Crisis: The Problem We're Solving</div>
+    <TheAgingCrisis />
   </div>
 
-  <!-- Dark Matter Differentiation Section -->
+  <!-- Aging Population Section -->
   <div class="variant-section">
-    <div class="variant-label">Our Differentiation: Why Dark Matter</div>
-    <DarkMatterDifferentiation />
+    <div class="variant-label">Aging Population: The Longevity Opportunity</div>
+    <AgingPopulation />
   </div>
 
-  <!-- Fund Portfolio Construction Section -->
+  <!-- Exit Potential Section -->
   <div class="variant-section">
-    <div class="variant-label">Fund Strategy: Portfolio Construction</div>
-    <FundPortfolioConstructionDetails />
+    <div class="variant-label">Exit Potential: IPOs & M&A</div>
+    <ExitPotential />
   </div>
+
 </BaseThemeLayout>
 
 <style>

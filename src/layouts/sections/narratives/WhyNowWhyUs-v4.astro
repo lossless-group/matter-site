@@ -65,7 +65,7 @@ const {
     </p>
 
     <div class="mt-12 flex flex-col sm:flex-row gap-4 items-center">
-      <a href="#thesis" class="nucleus-cta group relative px-8 py-4 text-sm uppercase tracking-[0.25em] rounded-full overflow-hidden transition-all duration-500">
+      <a href="thesis" class="nucleus-cta group relative px-8 py-4 text-sm uppercase tracking-[0.25em] rounded-full overflow-hidden transition-all duration-500">
         <span class="relative z-10">Explore Our Thesis</span>
         <span class="cta-sweep absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
       </a>
@@ -75,11 +75,6 @@ const {
   <!-- Bottom fade hint -->
   <div class="bottom-fade absolute bottom-0 left-0 right-0 h-32 z-20"></div>
 
-  <!-- Scroll indicator -->
-  <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2">
-    <span class="text-xs uppercase tracking-[0.3em]">Scroll</span>
-    <div class="scroll-line w-px h-8"></div>
-  </div>
 </section>
 
 <style>
@@ -247,19 +242,4 @@ const {
     background: linear-gradient(to top, var(--color-background), transparent);
   }
 
-  /* Scroll indicator */
-  .scroll-indicator {
-    color: var(--color-accent);
-    opacity: 0.6;
-  }
-
-  .scroll-line {
-    background: linear-gradient(to bottom, currentColor, transparent);
-    animation: scroll-hint 2s ease-in-out infinite;
-  }
-
-  @keyframes scroll-hint {
-    0%, 100% { opacity: 0.6; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.3); }
-  }
 </style>

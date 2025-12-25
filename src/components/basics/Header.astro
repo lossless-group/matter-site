@@ -34,6 +34,10 @@ const {
               <span class="nav-underline"></span>
             </button>
             <div class="explore-dropdown" role="menu" aria-label="Explore navigation">
+              <a href="/thesis" role="menuitem" class="dropdown-item">
+                <div class="item-title">Thesis</div>
+                <div class="item-description">Why now, why Dark Matter</div>
+              </a>
               <a href="/strategy" role="menuitem" class="dropdown-item">
                 <div class="item-title">Strategy</div>
                 <div class="item-description">Our investment thesis and approach</div>
@@ -102,6 +106,7 @@ const {
         <div class="mobile-explore-section w-full flex flex-col items-end">
           <span class="mobile-nav-item px-3 py-2 text-base font-medium text-foreground">Explore<span class="mobile-underline"></span></span>
           <div class="mobile-nested-links">
+            <a href="/thesis" class="mobile-nested-item">Thesis<span class="mobile-underline-nested"></span></a>
             <a href="/strategy" class="mobile-nested-item">Strategy<span class="mobile-underline-nested"></span></a>
             <a href="/slides" class="mobile-nested-item">Slides<span class="mobile-underline-nested"></span></a>
           </div>
@@ -257,7 +262,7 @@ const {
     content: '';
     position: absolute;
     top: -8px;
-    left: 15%;
+    left: 33%;
     width: 14px;
     height: 14px;
     background: var(--color-background, rgb(29 35 64));
@@ -287,29 +292,33 @@ const {
     border-top-color: rgba(0, 0, 0, 0.08);
   }
 
-  /* Dark mode dropdown */
+  /* Dark mode dropdown - deep void background */
   :global([data-mode="dark"]) .explore-dropdown {
-    background: rgba(29, 35, 64, 0.98);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(15, 9, 35, 0.98), rgba(20, 12, 45, 0.98));
+    border-color: rgba(156, 133, 223, 0.25);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(156, 133, 223, 0.08);
   }
 
   :global([data-mode="dark"]) .explore-dropdown::before {
-    background: rgba(29, 35, 64, 0.98);
-    border-left-color: rgba(255, 255, 255, 0.1);
-    border-top-color: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 9, 35, 0.98);
+    border-left-color: rgba(156, 133, 223, 0.25);
+    border-top-color: rgba(156, 133, 223, 0.25);
   }
 
-  /* Vibrant mode dropdown */
+  /* Vibrant mode dropdown - intense with glows */
   :global([data-mode="vibrant"]) .explore-dropdown {
-    background: linear-gradient(135deg, rgba(15, 9, 35, 0.98), rgba(26, 10, 53, 0.98));
-    border-color: rgba(108, 99, 255, 0.2);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(102, 67, 226, 0.1);
+    background: linear-gradient(135deg, rgba(10, 5, 25, 0.98), rgba(20, 8, 45, 0.98));
+    border-color: rgba(102, 67, 226, 0.4);
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(102, 67, 226, 0.2),
+      inset 0 0 30px rgba(102, 67, 226, 0.05);
   }
 
   :global([data-mode="vibrant"]) .explore-dropdown::before {
-    background: rgba(15, 9, 35, 0.98);
-    border-left-color: rgba(108, 99, 255, 0.2);
-    border-top-color: rgba(108, 99, 255, 0.2);
+    background: rgba(10, 5, 25, 0.98);
+    border-left-color: rgba(102, 67, 226, 0.4);
+    border-top-color: rgba(102, 67, 226, 0.4);
   }
 
   .explore-dropdown .dropdown-item {
@@ -318,23 +327,64 @@ const {
     border-radius: 8px;
     text-decoration: none;
     color: var(--color-foreground, rgb(235 235 235));
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    border: 1px solid transparent;
   }
 
   .explore-dropdown .dropdown-item:hover {
-    background: rgba(105, 226, 227, 0.1);
+    background: rgba(156, 133, 223, 0.1);
+    border-color: rgba(156, 133, 223, 0.2);
   }
 
   .explore-dropdown .item-title {
     font-weight: 600;
     margin-bottom: 0.25rem;
     color: var(--color-foreground, rgb(235 235 235));
+    transition: color 0.15s ease;
+  }
+
+  .explore-dropdown .dropdown-item:hover .item-title {
+    color: var(--color-lilac, #9C85DF);
   }
 
   .explore-dropdown .item-description {
     font-size: 0.75rem;
     opacity: 0.7;
     line-height: 1.4;
+  }
+
+  /* Light mode dropdown items */
+  :global([data-mode="light"]) .explore-dropdown .dropdown-item:hover {
+    background: rgba(108, 99, 255, 0.06);
+    border-color: rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="light"]) .explore-dropdown .dropdown-item:hover .item-title {
+    color: var(--color-marjorelle-purple, #6643e2);
+  }
+
+  /* Dark mode dropdown items */
+  :global([data-mode="dark"]) .explore-dropdown .dropdown-item:hover {
+    background: rgba(156, 133, 223, 0.15);
+    border-color: rgba(156, 133, 223, 0.35);
+    box-shadow: 0 0 20px rgba(156, 133, 223, 0.1);
+  }
+
+  :global([data-mode="dark"]) .explore-dropdown .dropdown-item:hover .item-title {
+    color: var(--color-lilac, #9C85DF);
+    text-shadow: 0 0 8px rgba(156, 133, 223, 0.3);
+  }
+
+  /* Vibrant mode dropdown items */
+  :global([data-mode="vibrant"]) .explore-dropdown .dropdown-item:hover {
+    background: linear-gradient(135deg, rgba(102, 67, 226, 0.2), rgba(156, 133, 223, 0.15));
+    border-color: rgba(102, 67, 226, 0.5);
+    box-shadow: 0 0 25px rgba(102, 67, 226, 0.2), inset 0 0 15px rgba(102, 67, 226, 0.05);
+  }
+
+  :global([data-mode="vibrant"]) .explore-dropdown .dropdown-item:hover .item-title {
+    color: #CDC4ED;
+    text-shadow: 0 0 15px rgba(156, 133, 223, 0.6);
   }
 
   /* Mobile nav item styles with static underline */
@@ -384,8 +434,8 @@ const {
     bottom: 0.375rem;
     width: 2px;
     background: linear-gradient(180deg,
-      rgba(105, 226, 227, 0.5) 0%,
-      rgba(105, 226, 227, 0.3) 100%
+      rgba(156, 133, 223, 0.5) 0%,
+      rgba(156, 133, 223, 0.3) 100%
     );
     border-radius: 1px;
   }
@@ -418,8 +468,8 @@ const {
   }
 
   .mobile-nested-item:hover {
-    background: var(--color-accent, rgba(105, 226, 227, 0.15));
-    color: var(--color-foreground, rgb(235 235 235));
+    background: rgba(156, 133, 223, 0.15);
+    color: var(--color-lilac, #9C85DF);
   }
 
   .mobile-nested-item:hover .mobile-underline-nested {

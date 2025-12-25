@@ -1,0 +1,61 @@
+---
+/**
+ * ScrollIndicator
+ *
+ * A subtle scroll hint with "Scroll" text and an animated vertical line.
+ * Useful for hero sections to encourage users to scroll down.
+ *
+ * Props:
+ * - label: Text to display (default: "Scroll")
+ * - class: Additional CSS classes
+ */
+interface Props {
+  label?: string;
+  class?: string;
+}
+
+const {
+  label = 'Scroll',
+  class: className = '',
+} = Astro.props;
+---
+
+<div class:list={['scroll-indicator', className]}>
+  <span class="scroll-label">{label}</span>
+  <div class="scroll-line"></div>
+</div>
+
+<style>
+  .scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-accent);
+    opacity: 0.6;
+  }
+
+  .scroll-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 2rem;
+    background: linear-gradient(to bottom, currentColor, transparent);
+    animation: scroll-hint 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-hint {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleY(1.3);
+    }
+  }
+</style>

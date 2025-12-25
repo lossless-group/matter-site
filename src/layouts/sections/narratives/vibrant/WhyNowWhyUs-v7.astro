@@ -81,7 +81,7 @@ const whyUsPoints = [
     </h1>
 
     <!-- Subtitle -->
-    <p class="subtitle-text mt-6 text-lg sm:text-xl text-[var(--color-alabaster)]/60 text-center max-w-2xl relative z-10">
+    <p class="subtitle-text mt-6 text-lg sm:text-xl text-(--color-alabaster)/60 text-center max-w-2xl relative z-10">
       {subtitle}
     </p>
 
@@ -93,7 +93,7 @@ const whyUsPoints = [
     <!-- Scroll indicator -->
     <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--color-lilac)]/40">
       <span class="text-xs uppercase tracking-[0.25em]">Explore</span>
-      <div class="w-px h-12 bg-gradient-to-b from-current to-transparent"></div>
+      <div class="w-px h-12 bg-linear-to-b from-current to-transparent"></div>
     </div>
   </div>
 
@@ -200,19 +200,6 @@ const whyUsPoints = [
         ))}
       </div>
     </div>
-  </div>
-
-  <!-- Closing with Orb -->
-  <div class="closing-section py-32 flex flex-col items-center justify-center px-6 relative">
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_70%,rgba(156,133,223,0.1),transparent_70%)]"></div>
-
-    <div class="closing-orb reveal-item" data-reveal="scale-up">
-      <ImageAbstractOrb size="min(50vw, 250px)" color="#CDC4ED" rotationSpeed={0.2} />
-    </div>
-
-    <p class="mt-8 text-lg sm:text-xl text-[var(--color-alabaster)]/50 text-center max-w-md reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
-      Investing at the edge of what's knowable.
-    </p>
   </div>
 </section>
 
