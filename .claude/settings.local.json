@@ -4,7 +4,10 @@
       "Bash(pnpm dev:*)",
       "Bash(curl:*)",
       "WebFetch(domain:the-water-foundation.com)",
-      "WebFetch(domain:www.lossless.group)"
+      "WebFetch(domain:www.lossless.group)",
+      "WebFetch(domain:nocodb.com)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs\\(changelog\\): add NocoDB API integration changelog\n\nDocuments the implementation of the NocoDB API client library for\nfetching portfolio data from a cloud-hosted NocoDB instance.\n\nSummary:\n- Full v3 API client with typed TypeScript interfaces\n- 5-minute TTL in-memory caching layer\n- Portfolio-specific transformation functions\n- Graceful degradation when API not configured\n- Environment variable configuration pattern\n\nFiles added:\n- changelog/2025-12-24_01.md\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "deny": [],
     "ask": []
