@@ -517,10 +517,14 @@ export async function createEmailAccessSession(
         'Content-Type': 'application/json',
         'xc-token': config.apiKey,
       },
-      body: JSON.stringify({
-        emailOfAccessor: normalizedEmail,
-        sessionStartTime,
-      }),
+      body: JSON.stringify([
+        {
+          fields: {
+            emailOfAccessor: normalizedEmail,
+            sessionStartTime,
+          },
+        },
+      ]),
     });
 
     if (!response.ok) {
