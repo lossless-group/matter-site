@@ -1,0 +1,484 @@
+---
+/* Slide--ExitPotential--Highlights */
+
+import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+
+type HeroStat = {
+  stat: string;
+  label: string;
+};
+
+type PathPoint = {
+  title: string;
+  text: string;
+};
+
+type ExitPath = {
+  title: string;
+  icon: string;
+  description: string;
+  points: PathPoint[];
+};
+
+const title = 'Exit Potential';
+const subtitle = 'Two proven paths to liquidity for longevity investments';
+
+const heroStats: HeroStat[] = [
+  { stat: '$2B+', label: 'Longevity IPOs in 2023' },
+  { stat: '17.9%', label: 'Anti-aging Market CAGR' },
+  { stat: '$5B+', label: 'Startup Funding in 2023' },
+];
+
+const ipoPath: ExitPath = {
+  title: 'IPOs in Public Markets',
+  icon: '📈',
+  description:
+    'Biotech IPOs remain a core liquidity event, especially for companies with differentiated clinical data in age-related disease.',
+  points: [
+    {
+      title: 'Quality Over Quantity',
+      text: 'The post-2021 correction led to a disciplined IPO market focused on clinical-stage, de-risked assets.',
+    },
+    {
+      title: '100% Clinical-Stage',
+      text: 'By 2023, all US biotech IPOs had clinical-stage assets, with roughly one-third at Phase III.',
+    },
+    {
+      title: 'Mainstream Theme',
+      text: 'Longevity-focused biotechs raised over $2 billion via IPOs in 2023 alone, signaling aging biology as investable.',
+    },
+    {
+      title: 'Data-Driven Stories',
+      text: 'Investors reward platforms that pair bold aging biology with credible, near-term milestones.',
+    },
+  ],
+};
+
+const maPath: ExitPath = {
+  title: 'Acquisitions by Big Pharma',
+  icon: '🏢',
+  description:
+    'Large pharma companies facing patent cliffs are increasingly acquiring longevity-adjacent assets to sustain growth.',
+  points: [
+    {
+      title: 'Massive Market Growth',
+      text: 'Global anti-aging therapeutics projected to grow from $5.7B (2024) to $34.6B by 2035.',
+    },
+    {
+      title: 'M&A as Core Return Driver',
+      text: 'Institutional investors expect continued M&A as pharma uses acquisitions to access innovative platforms.',
+    },
+    {
+      title: 'Strategic Fit',
+      text: 'Longevity mechanisms intersect with existing pharma markets—cardiometabolic, oncology, ophthalmology.',
+    },
+    {
+      title: 'VC Capital Precursor',
+      text: 'Longevity VC funds raised over $3B in 2023, seeding future acquisition targets.',
+    },
+  ],
+};
+
+const marketGrowth = {
+  from: '$5.7B',
+  to: '$34.6B',
+  period: '2024–2035',
+  cagr: '17.9%',
+};
+
+const dealExample = {
+  title: 'Example Deal Structure',
+  subtitle: 'Pharma–Senolytics Acquisition Model',
+  rationale: [
+    'Large pharma seeking next-generation assets that modify fundamental aging biology',
+    'Senolytics address shared mechanisms across multiple age-related diseases',
+    'One asset with potential across several multi-billion-dollar indications',
+  ],
+  terms: [
+    { label: 'Target', value: 'Clinical-stage senolytics company' },
+    { label: 'Buyer', value: 'Top-10 global pharma' },
+    { label: 'Upfront', value: '$500M–$1B cash' },
+    { label: 'Biobucks', value: '$2B–$4B milestones' },
+  ],
+};
+
+const closing = {
+  eyebrow: 'Returns',
+  headline: 'Two proven paths. Multiple ways to win.',
+  text: 'Liquidity is built into the category: public markets and strategic M&A.',
+};
+---
+
+<!-- Exit Potential: Hero -->
+<section data-transition="fade">
+  <div class="slide-content title-content">
+    <p class="eyebrow">Returns</p>
+    <h1 class="main-title">{title}</h1>
+    <p class="subtitle">{subtitle}</p>
+    <div class="orb-hero">
+      <ImageAbstractOrb size="min(50vw, 260px)" color="#34d399" rotationSpeed={0.15} />
+    </div>
+
+    <div class="exit-stats">
+      {heroStats.map((s: HeroStat) => (
+        <div class="exit-stat">
+          <div class="exit-stat-number">{s.stat}</div>
+          <div class="exit-stat-label">{s.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Exit Potential: Header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-primary">Exit Paths</span>
+    <h2>Two Proven Routes to Liquidity</h2>
+    <p class="section-intro">IPOs and strategic M&A remain durable outcomes in biotech</p>
+  </div>
+</section>
+
+<!-- Exit Potential: IPO Path -->
+<section data-transition="slide">
+  <div class="slide-content exit-path">
+    <div class="exit-path-header">
+      <div class="exit-path-icon">{ipoPath.icon}</div>
+      <div>
+        <h2 class="exit-path-title">{ipoPath.title}</h2>
+        <p class="exit-path-description">{ipoPath.description}</p>
+      </div>
+    </div>
+
+    <div class="exit-path-grid">
+      {ipoPath.points.map((p: PathPoint) => (
+        <div class="exit-point">
+          <div class="exit-point-title">{p.title}</div>
+          <div class="exit-point-text">{p.text}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Exit Potential: M&A Path -->
+<section data-transition="slide">
+  <div class="slide-content exit-path">
+    <div class="exit-path-header">
+      <div class="exit-path-icon">{maPath.icon}</div>
+      <div>
+        <h2 class="exit-path-title">{maPath.title}</h2>
+        <p class="exit-path-description">{maPath.description}</p>
+      </div>
+    </div>
+
+    <div class="exit-path-grid">
+      {maPath.points.map((p: PathPoint) => (
+        <div class="exit-point">
+          <div class="exit-point-title">{p.title}</div>
+          <div class="exit-point-text">{p.text}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Exit Potential: Market Growth -->
+<section data-transition="fade">
+  <div class="slide-content exit-growth">
+    <span class="section-badge badge-primary">Market Opportunity</span>
+    <h2 class="point-title">Anti-Aging Therapeutics Market</h2>
+
+    <div class="growth-row">
+      <div class="growth-side">
+        <div class="growth-value">{marketGrowth.from}</div>
+        <div class="growth-sub">2024</div>
+      </div>
+
+      <div class="growth-center">
+        <div class="growth-arrow">→</div>
+        <div class="growth-cagr">{marketGrowth.cagr} CAGR</div>
+      </div>
+
+      <div class="growth-side">
+        <div class="growth-value">{marketGrowth.to}</div>
+        <div class="growth-sub">2035</div>
+      </div>
+    </div>
+
+    <p class="section-intro">{marketGrowth.period}</p>
+  </div>
+</section>
+
+<!-- Exit Potential: Example Deal Structure -->
+<section data-transition="slide">
+  <div class="slide-content exit-deal">
+    <span class="section-badge badge-secondary">Deal Model</span>
+    <h2 class="point-title">{dealExample.title}</h2>
+    <p class="section-intro">{dealExample.subtitle}</p>
+
+    <div class="deal-grid">
+      <div class="deal-card">
+        <div class="deal-card-title">Rationale</div>
+        <ul class="deal-bullets">
+          {dealExample.rationale.map((r: string) => (
+            <li class="deal-bullet">{r}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="deal-card">
+        <div class="deal-card-title">Terms</div>
+        <div class="deal-terms">
+          {dealExample.terms.map((t: { label: string; value: string }) => (
+            <div class="deal-term">
+              <div class="deal-term-label">{t.label}</div>
+              <div class="deal-term-value">{t.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Exit Potential: Closing -->
+<section data-transition="fade">
+  <div class="slide-content closing-content">
+    <div class="closing-orb">
+      <ImageAbstractOrb size="min(40vw, 200px)" color="#34d399" rotationSpeed={0.2} />
+    </div>
+    <p class="eyebrow">{closing.eyebrow}</p>
+    <p class="closing-tagline">{closing.headline}</p>
+    <p class="closing-contact">{closing.text}</p>
+  </div>
+</section>
+
+<style>
+  .exit-stats {
+    width: min(950px, 100%);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2.25rem;
+  }
+
+  .exit-stat {
+    padding: 1.25rem 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    background: rgba(15, 9, 35, 0.35);
+  }
+
+  .exit-stat-number {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: #34d399;
+  }
+
+  .exit-stat-label {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    opacity: 0.75;
+  }
+
+  @media (max-width: 850px) {
+    .exit-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .exit-path {
+    justify-content: flex-start;
+    gap: 1.75rem;
+    max-width: 1100px;
+  }
+
+  .exit-path-header {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .exit-path-icon {
+    font-size: 2.25rem;
+    line-height: 1;
+  }
+
+  .exit-path-title {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .exit-path-description {
+    margin: 0.5rem 0 0;
+    opacity: 0.75;
+    max-width: 62rem;
+  }
+
+  .exit-path-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .exit-point {
+    text-align: left;
+    padding: 1.25rem 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(156, 133, 223, 0.25);
+    background: rgba(15, 9, 35, 0.35);
+  }
+
+  .exit-point-title {
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+    color: var(--color-lilac);
+  }
+
+  .exit-point-text {
+    opacity: 0.75;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 900px) {
+    .exit-path-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .exit-growth {
+    gap: 1.5rem;
+  }
+
+  .growth-row {
+    width: min(900px, 100%);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .growth-side {
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    background: rgba(15, 9, 35, 0.35);
+  }
+
+  .growth-value {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    color: #34d399;
+    line-height: 1;
+  }
+
+  .growth-sub {
+    margin-top: 0.5rem;
+    opacity: 0.7;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .growth-center {
+    text-align: center;
+    opacity: 0.9;
+  }
+
+  .growth-arrow {
+    font-size: 3rem;
+    line-height: 1;
+    color: #34d399;
+  }
+
+  .growth-cagr {
+    margin-top: 0.4rem;
+    font-weight: 700;
+    color: #34d399;
+  }
+
+  @media (max-width: 850px) {
+    .growth-row {
+      grid-template-columns: 1fr;
+    }
+    .growth-arrow {
+      transform: rotate(90deg);
+    }
+  }
+
+  .exit-deal {
+    justify-content: flex-start;
+    gap: 1.5rem;
+    max-width: 1100px;
+  }
+
+  .deal-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .deal-card {
+    text-align: left;
+    padding: 1.5rem 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    background: rgba(15, 9, 35, 0.35);
+  }
+
+  .deal-card-title {
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .deal-bullets {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .deal-bullet {
+    margin: 0.5rem 0;
+    opacity: 0.75;
+    line-height: 1.5;
+  }
+
+  .deal-terms {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .deal-term {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+  }
+
+  .deal-term-label {
+    opacity: 0.7;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .deal-term-value {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+
+  @media (max-width: 900px) {
+    .deal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

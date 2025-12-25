@@ -1,0 +1,156 @@
+---
+/* Slide--Differentiation--Highlights */
+
+import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+
+type DifferentiationPillar = {
+  icon: string;
+  title: string;
+  subtitle: string;
+  bullets: string[];
+};
+
+const title = 'Our Differentiation';
+const subtitle = 'Scientific depth, exclusive access, and tight focus on defensible longevity technologies';
+
+const pillars: DifferentiationPillar[] = [
+  {
+    icon: '🧬',
+    title: 'Deep Scientific Expertise',
+    subtitle: 'in longevity biology',
+    bullets: [
+      'Decades of experience across biology, data science, and company-building',
+      'Embedded in leading geroscience centers working to extend healthspan',
+      'Distinguish true mechanism-based therapies from superficial wellness products',
+      'Support portfolio companies with trial design, regulatory strategy, and biomarker selection',
+    ],
+  },
+  {
+    icon: '🔬',
+    title: 'Proprietary Deal Flow',
+    subtitle: 'via Stanford & Cedars-Sinai partnerships',
+    bullets: [
+      'Early visibility into spin-outs, pilot projects, and translational teams',
+      'Access to key investigators and clinical trial infrastructure',
+      'Co-design company formation around validated science and IP',
+      'NIH-backed aging clinical trials and gerotherapeutics programs',
+    ],
+  },
+  {
+    icon: '🌐',
+    title: 'Longevity Leader Network',
+    subtitle: 'Ben Greenfield, Bryan Johnson, Peter Attia',
+    bullets: [
+      'Platforms reaching millions of longevity-focused consumers and clinicians',
+      'Real-world testing grounds with highly engaged, data-rich users',
+      'Credible distribution, education, and awareness channels',
+      'Direct feedback from athletes, biohackers, and prevention-oriented patients',
+    ],
+  },
+  {
+    icon: '🛡️',
+    title: 'IP-Protected, Scalable Solutions',
+    subtitle: 'Focus on defensible platforms',
+    bullets: [
+      'Novel therapeutics targeting fundamental aging pathways',
+      'Diagnostic, digital, and AI-driven tools for personalized interventions',
+      'Strong intellectual property moats and clear regulatory paths',
+      'Measurable impact on healthspan—clinically meaningful outcomes',
+    ],
+  },
+];
+
+const closing = {
+  eyebrow: 'Partner With Us',
+  headline: 'A Team That Speaks Both Lab and Late-Stage Capital',
+  text: 'Scientific depth meets investment discipline',
+};
+
+---
+
+<!-- Differentiation: Hero -->
+<section data-transition="fade">
+  <div class="slide-content title-content">
+    <p class="eyebrow">Why Dark Matter</p>
+    <h1 class="main-title">{title}</h1>
+    <p class="subtitle">{subtitle}</p>
+    <div class="orb-hero">
+      <ImageAbstractOrb size="min(50vw, 260px)" rotationSpeed={0.15} />
+    </div>
+  </div>
+</section>
+
+<!-- Differentiation: Header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-secondary">Competitive Advantages</span>
+    <h2>Four Pillars of Differentiation</h2>
+  </div>
+</section>
+
+<!-- Differentiation: Pillars -->
+{pillars.map((pillar: DifferentiationPillar) => (
+  <section data-transition="slide">
+    <div class="slide-content point-content">
+      <div class="pillar-icon">{pillar.icon}</div>
+      <h2 class="point-title">{pillar.title}</h2>
+      <p class="pillar-subtitle">{pillar.subtitle}</p>
+      <ul class="pillar-bullets">
+        {pillar.bullets.map((bullet: string) => (
+          <li class="pillar-bullet">{bullet}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+))}
+
+<!-- Differentiation: Team -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-primary">The Team</span>
+    <h2>Team-Enabled Advantages</h2>
+    <p class="section-intro">Our differentiation is not theoretical—it's embedded in who we are</p>
+  </div>
+</section>
+
+<!-- Differentiation: Closing -->
+<section data-transition="fade">
+  <div class="slide-content closing-content">
+    <div class="closing-orb">
+      <ImageAbstractOrb size="min(40vw, 200px)" color="#9C85DF" rotationSpeed={0.2} />
+    </div>
+    <p class="eyebrow">{closing.eyebrow}</p>
+    <p class="closing-tagline">{closing.headline}</p>
+    <p class="closing-contact">{closing.text}</p>
+  </div>
+</section>
+
+<style>
+  .pillar-icon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .pillar-subtitle {
+    font-size: clamp(0.9rem, 1.6vw, 1.1rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .pillar-bullets {
+    list-style: disc;
+    text-align: left;
+    max-width: 900px;
+    padding-left: 1.5rem;
+    margin: 0;
+  }
+
+  .pillar-bullet {
+    font-size: clamp(1rem, 1.7vw, 1.25rem);
+    line-height: 1.6;
+    opacity: 0.85;
+    margin: 0.5rem 0;
+  }
+</style>

@@ -1,0 +1,545 @@
+---
+ /* Slide--PortfolioConstruction--Highlights */
+
+ import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+
+ type HeroMetric = {
+   value: string;
+   label: string;
+ };
+
+ type EconomicsItem = {
+   label: string;
+   value: string;
+   description: string;
+ };
+
+ type GeographyItem = {
+   region: string;
+   percentage: number;
+   description: string;
+ };
+
+ type StageAllocation = {
+   stage: string;
+   percentage: number;
+   color: 'seed' | 'series' | 'followon';
+   description: string;
+   focus: string;
+ };
+
+ type CheckSize = {
+   label: string;
+   value: string;
+   description: string;
+ };
+
+ type FollowOnTier = {
+   tier: string;
+   exposure: string;
+   strategy: string;
+   ownership: string;
+   highlight: boolean;
+ };
+
+ type LPBenefit = {
+   title: string;
+   description: string;
+ };
+
+ const title = 'Portfolio Construction';
+ const subtitle = 'A systematic strategy for diversification, reserves, and concentration in winners';
+
+ const heroMetrics: HeroMetric[] = [
+   { value: '$100M', label: 'Fund Size' },
+   { value: '10 yrs', label: 'Fund Term' },
+   { value: '25', label: 'Target Investments' },
+ ];
+
+ const economics: EconomicsItem[] = [
+   { label: 'Management Fee', value: '2%', description: 'Annual on committed capital' },
+   { label: 'Carried Interest', value: '20-25%', description: 'Performance fee, back-ended' },
+   { label: 'GP Commitment', value: 'Meaningful', description: 'Personal capital alongside LPs' },
+ ];
+
+ const stages: StageAllocation[] = [
+   {
+     stage: 'Seed',
+     percentage: 50,
+     color: 'seed',
+     description: 'Lead or co-lead in technical and scientific founding teams',
+     focus: 'Core longevity biology, platform technologies, enabling tools',
+   },
+   {
+     stage: 'Series A/B',
+     percentage: 30,
+     color: 'series',
+     description: 'Scale capital into companies showing human data and traction',
+     focus: 'Clinical validation, strategic partnerships, commercial progress',
+   },
+   {
+     stage: 'Follow-ons',
+     percentage: 20,
+     color: 'followon',
+     description: 'Systematic double-down into top decile outcomes',
+     focus: 'Concentrated capital behind proven winners',
+   },
+ ];
+
+ const geography: GeographyItem[] = [
+   {
+     region: 'U.S. / Europe',
+     percentage: 70,
+     description:
+       'Best-in-class research hubs with deep biotech talent and established exit markets',
+   },
+   {
+     region: 'Rest of World',
+     percentage: 30,
+     description: 'Opportunistic positions in Israel, Asia, and emerging innovation clusters',
+   },
+ ];
+
+ const checkSizes: CheckSize[] = [
+   { label: 'Initial Check', value: '$2.75M–$3.0M', description: 'Per company at entry' },
+   { label: 'Target Ownership', value: '10–15%+', description: 'At seed entry' },
+   { label: 'Winner Reserves', value: '$5M–$10M', description: 'Per breakout company' },
+ ];
+
+ const followOnTiers: FollowOnTier[] = [
+   {
+     tier: 'Top 3-5',
+     exposure: '$5M–$10M+',
+     strategy: 'Lead or participate meaningfully in multiple subsequent rounds',
+     ownership: 'High-single to low-double digit ownership into late stages',
+     highlight: true,
+   },
+   {
+     tier: 'Next 8-10',
+     exposure: '$3M–$5M',
+     strategy: 'Support through key de-risking milestones',
+     ownership: 'First-in-human data, partnerships, reimbursement validation',
+     highlight: false,
+   },
+   {
+     tier: 'Remaining',
+     exposure: 'Pro-rata only',
+     strategy: 'Capital not trapped in low-conviction situations',
+     ownership: 'Preserve dry powder for true outliers',
+     highlight: false,
+   },
+ ];
+
+ const lpBenefits: LPBenefit[] = [
+   {
+     title: 'Balanced Diversification',
+     description:
+       '~25 core positions across the longevity stack with meaningful concentration in winners',
+   },
+   {
+     title: 'Stage Mix Advantage',
+     description: 'Seed taps early entry pricing; A/B compounds into validated companies',
+   },
+   {
+     title: 'Systematic Framework',
+     description:
+       'Written reserve rules avoid emotional decisions, focusing on highest risk-adjusted MOIC',
+   },
+ ];
+---
+
+<!-- Portfolio Construction: Hero -->
+<section data-transition="fade">
+  <div class="slide-content title-content">
+    <p class="eyebrow">Fund Strategy</p>
+    <h1 class="main-title">{title}</h1>
+    <p class="subtitle">{subtitle}</p>
+
+    <div class="orb-hero">
+      <ImageAbstractOrb size="min(50vw, 260px)" color="#60a5fa" rotationSpeed={0.15} />
+    </div>
+
+    <div class="pc-metrics">
+      {heroMetrics.map((metric: HeroMetric) => (
+        <div class="pc-metric">
+          <div class="pc-metric-value">{metric.value}</div>
+          <div class="pc-metric-label">{metric.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Economics header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-primary">Economics</span>
+    <h2>LP–GP Alignment</h2>
+    <p class="section-intro">Institutional terms, aligned incentives</p>
+  </div>
+</section>
+
+<!-- Economics cards -->
+<section data-transition="slide">
+  <div class="slide-content point-content">
+    <h2 class="point-title">Fund Economics</h2>
+    <div class="pc-grid pc-grid-3">
+      {economics.map((item: EconomicsItem) => (
+        <div class="pc-card">
+          <div class="pc-card-value">{item.value}</div>
+          <div class="pc-card-title">{item.label}</div>
+          <div class="pc-card-text">{item.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Stage allocation header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-secondary">Capital Deployment</span>
+    <h2>Stage Allocation</h2>
+    <p class="section-intro">Mix of entry pricing + validation + reserves</p>
+  </div>
+</section>
+
+<!-- Stage allocation detail -->
+<section data-transition="slide">
+  <div class="slide-content point-content">
+    <h2 class="point-title">Allocation Framework</h2>
+    <div class="pc-stage-bar" aria-label="Stage allocation">
+      {stages.map((stage: StageAllocation) => (
+        <div class={`pc-stage-slice pc-stage-slice-${stage.color}`} style={`width: ${stage.percentage}%;`}>
+          <span class="pc-stage-slice-label">{stage.percentage}%</span>
+        </div>
+      ))}
+    </div>
+    <div class="pc-grid pc-grid-3">
+      {stages.map((stage: StageAllocation) => (
+        <div class={`pc-card pc-card-${stage.color}`}>
+          <div class="pc-card-kicker">{stage.percentage}%</div>
+          <div class="pc-card-title">{stage.stage}</div>
+          <div class="pc-card-text">{stage.description}</div>
+          <div class="pc-card-subtext">{stage.focus}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Geographic focus header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-tertiary">Geography</span>
+    <h2>Geographic Focus</h2>
+    <p class="section-intro">Concentrated where exits and talent density are strongest</p>
+  </div>
+</section>
+
+<!-- Geographic focus detail -->
+<section data-transition="slide">
+  <div class="slide-content point-content">
+    <h2 class="point-title">70/30 Split</h2>
+    <div class="pc-grid pc-grid-2">
+      {geography.map((geo: GeographyItem) => (
+        <div class="pc-card">
+          <div class="pc-card-kicker">{geo.percentage}%</div>
+          <div class="pc-card-title">{geo.region}</div>
+          <div class="pc-card-text">{geo.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Check sizes header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-primary">Investment Approach</span>
+    <h2>Check Sizes & Ownership</h2>
+    <p class="section-intro">Lead ownership at entry, reserves for true outliers</p>
+  </div>
+</section>
+
+<!-- Check sizes cards -->
+<section data-transition="slide">
+  <div class="slide-content point-content">
+    <h2 class="point-title">Entry + Reserves</h2>
+    <div class="pc-grid pc-grid-3">
+      {checkSizes.map((check: CheckSize) => (
+        <div class="pc-card">
+          <div class="pc-card-value">{check.value}</div>
+          <div class="pc-card-title">{check.label}</div>
+          <div class="pc-card-text">{check.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Follow-on strategy header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-secondary">Capital Concentration</span>
+    <h2>Follow-On Strategy</h2>
+    <p class="section-intro">Reserve rules concentrate capital behind the highest conviction</p>
+  </div>
+</section>
+
+<!-- Follow-on tiers -->
+<section data-transition="slide">
+  <div class="slide-content point-content">
+    <h2 class="point-title">Tiered Reserves</h2>
+    <div class="pc-tier-stack">
+      {followOnTiers.map((tier: FollowOnTier) => (
+        <div class={`pc-tier ${tier.highlight ? 'pc-tier-highlight' : ''}`}>
+          <div class="pc-tier-head">
+            <div class="pc-tier-left">
+              <div class="pc-tier-name">{tier.tier}</div>
+              <div class="pc-tier-label">Companies</div>
+            </div>
+            <div class="pc-tier-exposure">{tier.exposure}</div>
+          </div>
+          <div class="pc-tier-text">{tier.strategy}</div>
+          <div class="pc-tier-subtext">{tier.ownership}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- LP benefits header -->
+<section data-transition="slide">
+  <div class="slide-content section-header-content">
+    <span class="section-badge badge-tertiary">LP Value</span>
+    <h2>How This Serves LPs</h2>
+    <p class="section-intro">Diversification with a written concentration framework</p>
+  </div>
+</section>
+
+<!-- LP benefits detail -->
+<section data-transition="slide">
+  <div class="slide-content point-content">
+    <h2 class="point-title">LP Benefits</h2>
+    <div class="pc-grid pc-grid-3">
+      {lpBenefits.map((benefit: LPBenefit, index: number) => (
+        <div class="pc-card">
+          <div class="pc-benefit-number">{String(index + 1).padStart(2, '0')}</div>
+          <div class="pc-card-title">{benefit.title}</div>
+          <div class="pc-card-text">{benefit.description}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Closing -->
+<section data-transition="fade">
+  <div class="slide-content title-content">
+    <p class="eyebrow">Institutional Grade</p>
+    <h2 class="main-title">Venture returns from the longevity ecosystem</h2>
+    <p class="subtitle">Category-defining companies through critical inflection points</p>
+    <div class="orb-hero">
+      <ImageAbstractOrb size="160px" color="#9C85DF" rotationSpeed={0.35} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .pc-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    width: min(820px, 90%);
+    margin: 24px auto 0;
+  }
+
+  .pc-metric {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: rgba(15, 9, 35, 0.35);
+    backdrop-filter: blur(8px);
+    text-align: center;
+  }
+
+  .pc-metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .pc-metric-label {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.75;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .pc-grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .pc-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pc-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-card {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 16px;
+    background: rgba(15, 9, 35, 0.35);
+    backdrop-filter: blur(8px);
+  }
+
+  .pc-card-value {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .pc-card-kicker {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .pc-card-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .pc-card-text {
+    font-size: 14px;
+    opacity: 0.82;
+    line-height: 1.35;
+  }
+
+  .pc-card-subtext {
+    margin-top: 8px;
+    font-size: 12px;
+    opacity: 0.65;
+  }
+
+  .pc-benefit-number {
+    font-size: 28px;
+    font-weight: 900;
+    opacity: 0.28;
+    margin-bottom: 8px;
+  }
+
+  .pc-stage-bar {
+    display: flex;
+    height: 44px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    margin-top: 16px;
+  }
+
+  .pc-stage-slice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+  }
+
+  .pc-stage-slice-seed {
+    background: rgba(139, 92, 246, 0.85);
+    color: white;
+  }
+
+  .pc-stage-slice-series {
+    background: rgba(167, 139, 250, 0.85);
+    color: white;
+  }
+
+  .pc-stage-slice-followon {
+    background: rgba(221, 214, 254, 0.9);
+    color: rgba(30, 27, 75, 0.95);
+  }
+
+  .pc-tier-stack {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .pc-tier {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    padding: 16px;
+    background: rgba(15, 9, 35, 0.35);
+    backdrop-filter: blur(8px);
+  }
+
+  .pc-tier-highlight {
+    border-color: rgba(251, 191, 36, 0.35);
+    background: rgba(251, 191, 36, 0.08);
+  }
+
+  .pc-tier-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .pc-tier-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .pc-tier-name {
+    font-weight: 800;
+    font-size: 16px;
+  }
+
+  .pc-tier-label {
+    font-size: 11px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .pc-tier-exposure {
+    font-weight: 900;
+    font-size: 18px;
+    color: rgba(251, 191, 36, 0.9);
+  }
+
+  .pc-tier-text {
+    font-size: 14px;
+    opacity: 0.82;
+    line-height: 1.35;
+  }
+
+  .pc-tier-subtext {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.65;
+  }
+
+  @media (max-width: 880px) {
+    .pc-grid-3 {
+      grid-template-columns: 1fr;
+    }
+    .pc-grid-2 {
+      grid-template-columns: 1fr;
+    }
+    .pc-metrics {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
