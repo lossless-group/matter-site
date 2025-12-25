@@ -1,0 +1,49 @@
+---
+/**
+ * PageHeader--Compact
+ *
+ * A minimal, compact header with simple title and optional count.
+ * Navigation aligns to the right on desktop, stacks on mobile.
+ * Inspired by GitHub releases page.
+ *
+ * Features:
+ * - Compact vertical spacing
+ * - Simple title (no gradient)
+ * - Optional count subtitle
+ * - Right-aligned navigation slot
+ */
+interface Props {
+  title: string;
+  count?: number;
+  countLabel?: string;
+}
+
+const {
+  title,
+  count,
+  countLabel = 'published',
+} = Astro.props;
+---
+
+<header class="page-header-compact">
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+      <div>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">{title}</h1>
+        {count !== undefined && (
+          <p class="text-foreground/60">
+            {count} {countLabel}
+          </p>
+        )}
+      </div>
+
+      <slot name="navigation" />
+    </div>
+  </div>
+</header>
+
+<style>
+  .page-header-compact {
+    border-bottom: 1px solid var(--color-border);
+  }
+</style>

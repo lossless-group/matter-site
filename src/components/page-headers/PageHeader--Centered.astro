@@ -1,0 +1,75 @@
+---
+/**
+ * PageHeader--Centered
+ *
+ * A centered hero header with gradient title text, decorative pill badge,
+ * and centered subtitle. Inspired by Linear/Stripe changelog headers.
+ *
+ * Features:
+ * - Centered layout
+ * - Gradient text title with bg-clip-text
+ * - Decorative pill badge with icon
+ * - Optional slot for actions (e.g., toggler buttons)
+ */
+interface Props {
+  title: string;
+  subtitle?: string;
+  badgeText?: string;
+  badgeIcon?: 'clock' | 'archive' | 'updates' | 'none';
+}
+
+const {
+  title,
+  subtitle,
+  badgeText,
+  badgeIcon = 'clock',
+} = Astro.props;
+
+const iconPaths: Record<string, string> = {
+  clock: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+  archive: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
+  updates: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+};
+---
+
+<header class="page-header-centered">
+  <div class="max-w-4xl mx-auto px-6 py-16 text-center">
+    {badgeText && badgeIcon !== 'none' && (
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm mb-6">
+        {iconPaths[badgeIcon] && (
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPaths[badgeIcon]} />
+          </svg>
+        )}
+        <span>{badgeText}</span>
+      </div>
+    )}
+
+    <h1 class="text-4xl sm:text-5xl font-bold mb-4 pb-1 bg-gradient-to-r from-white via-violet-200 to-violet-400 bg-clip-text text-transparent">
+      {title}
+    </h1>
+
+    {subtitle && (
+      <p class="text-lg text-foreground/60 max-w-2xl mx-auto">
+        {subtitle}
+      </p>
+    )}
+
+    <slot name="actions" />
+  </div>
+</header>
+
+<style>
+  .page-header-centered {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  :global([data-mode="light"]) .page-header-centered {
+    background: linear-gradient(180deg, rgba(108, 99, 255, 0.03) 0%, transparent 100%);
+  }
+
+  :global([data-mode="light"]) .page-header-centered h1 {
+    background-image: linear-gradient(to right, #1f2937, #6c63ff, #8b5cf6);
+  }
+</style>

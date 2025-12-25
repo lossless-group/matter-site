@@ -1,0 +1,68 @@
+---
+/**
+ * PageHeader--SplitNav
+ *
+ * A split-layout header with left-aligned content and right-aligned navigation.
+ * Features a counter badge and responsive stacking on mobile.
+ * Inspired by Notion/Tailwind UI patterns.
+ *
+ * Features:
+ * - Split layout (content left, nav right)
+ * - Counter badge with icon
+ * - Responsive (stacks on mobile)
+ * - Slots for navigation and filters
+ */
+interface Props {
+  title: string;
+  subtitle?: string;
+  count?: number;
+  countLabel?: string;
+}
+
+const {
+  title,
+  subtitle,
+  count,
+  countLabel = 'Updates',
+} = Astro.props;
+---
+
+<header class="page-header-split">
+  <div class="max-w-6xl mx-auto px-6 py-16">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+      <div>
+        {count !== undefined && (
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm mb-6">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span>{count} {countLabel}</span>
+          </div>
+        )}
+
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">{title}</h1>
+
+        {subtitle && (
+          <p class="text-lg text-foreground/60 max-w-xl">
+            {subtitle}
+          </p>
+        )}
+      </div>
+
+      <slot name="navigation" />
+    </div>
+
+    <slot name="filters" />
+  </div>
+</header>
+
+<style>
+  .page-header-split {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, transparent 100%);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  :global([data-mode="light"]) .page-header-split {
+    background: linear-gradient(180deg, rgba(108, 99, 255, 0.03) 0%, transparent 100%);
+  }
+</style>
