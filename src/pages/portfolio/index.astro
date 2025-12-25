@@ -1,9 +1,23 @@
 ---
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
-import portfolioData from '@content/portfolio/portfolio-companies.json';
+import { getPortfolioCompanies, isNocoDBConfigured } from '@lib/nocodb';
+
+// Fallback to static JSON if NocoDB is not configured
+import staticPortfolioData from '@content/portfolio/portfolio-companies.json';
 
 // Public page - can be prerendered for performance
 export const prerender = true;
+
+// Fetch portfolio data from NocoDB, with static fallback
+let portfolioData;
+if (isNocoDBConfigured()) {
+  console.log('[portfolio] Fetching from NocoDB...');
+  portfolioData = await getPortfolioCompanies();
+  console.log(`[portfolio] Loaded ${portfolioData.length} companies from NocoDB`);
+} else {
+  console.log('[portfolio] NocoDB not configured, using static data');
+  portfolioData = staticPortfolioData;
+}
 
 // Separate companies by category
 const directInvestments = portfolioData.filter(c => c.category === 'direct');
@@ -34,18 +48,24 @@ const allCompanies = portfolioData;
                 rel="noopener noreferrer"
                 class="group p-6 rounded-xl border border-border/40 bg-surface/30 hover:border-primary/50 hover:bg-surface/50 transition-all duration-200"
               >
-                <!-- Dark mode logo -->
+                <!-- Logo for dark/vibrant modes -->
                 <img
                   src={company.logoDarkMode || company.logoLightMode}
                   alt={company.conventionalName}
-                  class="h-10 w-auto object-contain hidden dark:block"
+                  class:list={[
+                    "h-10 w-auto object-contain logo-for-dark",
+                    company.logoIsTransparent && "logo-transparent"
+                  ]}
                   loading="lazy"
                 />
-                <!-- Light mode logo -->
+                <!-- Logo for light mode -->
                 <img
                   src={company.logoLightMode}
                   alt={company.conventionalName}
-                  class="h-10 w-auto object-contain dark:hidden"
+                  class:list={[
+                    "h-10 w-auto object-contain logo-for-light",
+                    company.logoIsTransparent && "logo-transparent"
+                  ]}
                   loading="lazy"
                 />
                 <p class="mt-4 text-sm font-medium text-foreground group-hover:text-primary transition-colors">
@@ -72,18 +92,24 @@ const allCompanies = portfolioData;
                 rel="noopener noreferrer"
                 class="group p-6 rounded-xl border border-border/40 bg-surface/30 hover:border-primary/50 hover:bg-surface/50 transition-all duration-200"
               >
-                <!-- Dark mode logo -->
+                <!-- Logo for dark/vibrant modes -->
                 <img
                   src={company.logoDarkMode || company.logoLightMode}
                   alt={company.conventionalName}
-                  class="h-10 w-auto object-contain hidden dark:block"
+                  class:list={[
+                    "h-10 w-auto object-contain logo-for-dark",
+                    company.logoIsTransparent && "logo-transparent"
+                  ]}
                   loading="lazy"
                 />
-                <!-- Light mode logo -->
+                <!-- Logo for light mode -->
                 <img
                   src={company.logoLightMode}
                   alt={company.conventionalName}
-                  class="h-10 w-auto object-contain dark:hidden"
+                  class:list={[
+                    "h-10 w-auto object-contain logo-for-light",
+                    company.logoIsTransparent && "logo-transparent"
+                  ]}
                   loading="lazy"
                 />
                 <p class="mt-4 text-sm font-medium text-foreground group-hover:text-primary transition-colors">
@@ -117,3 +143,50 @@ const allCompanies = portfolioData;
     </div>
   </section>
 </BaseThemeLayout>
+
+<style>
+  /* Logo visibility based on theme mode */
+  /* Light mode: show light-mode logos, hide dark-mode logos */
+  :global([data-mode="light"]) .logo-for-dark {
+    display: none !important;
+  }
+  :global([data-mode="light"]) .logo-for-light {
+    display: block !important;
+  }
+
+  /* Dark mode: show dark-mode logos, hide light-mode logos */
+  :global([data-mode="dark"]) .logo-for-light {
+    display: none !important;
+  }
+  :global([data-mode="dark"]) .logo-for-dark {
+    display: block !important;
+  }
+
+  /* Vibrant mode: show dark-mode logos (same as dark mode) */
+  :global([data-mode="vibrant"]) .logo-for-light {
+    display: none !important;
+  }
+  :global([data-mode="vibrant"]) .logo-for-dark {
+    display: block !important;
+  }
+
+  /* Transparent logo color treatment */
+  .logo-transparent {
+    transition: filter 0.2s ease;
+  }
+
+  /* Light mode: dark logo (black) */
+  :global([data-mode="light"]) .logo-transparent {
+    filter: brightness(0);
+  }
+
+  /* Dark mode: light logo (white) */
+  :global([data-mode="dark"]) .logo-transparent {
+    filter: brightness(0) invert(1);
+  }
+
+  /* Vibrant mode: light logo (white) */
+  :global([data-mode="vibrant"]) .logo-transparent {
+    filter: brightness(0) invert(1);
+  }
+</style>
