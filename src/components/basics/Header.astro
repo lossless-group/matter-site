@@ -17,7 +17,7 @@ const {
 <header class={`sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/20 w-full ${className}`}>
   <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
     <div class="h-16 md:h-20 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-3" aria-label={siteTitle}>
         <div class="h-10 w-auto flex items-center">
           <SiteBrandMarkModeWrapper className="h-10 w-auto" />
         </div>
@@ -30,8 +30,148 @@ const {
           <a href="/pipeline" class="hover:text-foreground transition-colors">Pipeline</a>
           <a href="/team" class="hover:text-foreground transition-colors">Team</a>
         </nav>
+
         <ModeToggle />
+
+        <div class="flex items-center md:hidden">
+          <button
+            id="mobile-menu-button"
+            type="button"
+            class="inline-flex items-center justify-center rounded-md p-2 text-foreground/70 hover:bg-accent hover:text-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Open main menu</span>
+            <svg
+              id="menu-open-icon"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+            <svg
+              id="menu-close-icon"
+              class="h-6 w-6 hidden"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="md:hidden hidden">
+    <div class="space-y-1 bg-background pb-3 pt-2">
+      <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 flex flex-col items-end">
+        <a href="#about" class="inline-flex w-fit justify-end px-3 py-2 text-base font-medium hover:bg-accent hover:text-accent-foreground">About</a>
+        <a href="/portfolio" class="inline-flex w-fit justify-end px-3 py-2 text-base font-medium hover:bg-accent hover:text-accent-foreground">Portfolio</a>
+        <a href="/pipeline" class="inline-flex w-fit justify-end px-3 py-2 text-base font-medium hover:bg-accent hover:text-accent-foreground">Pipeline</a>
+        <a href="/team" class="inline-flex w-fit justify-end px-3 py-2 text-base font-medium hover:bg-accent hover:text-accent-foreground">Team</a>
       </div>
     </div>
   </div>
 </header>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuOpenIcon = document.getElementById('menu-open-icon');
+    const menuCloseIcon = document.getElementById('menu-close-icon');
+
+    if (menuButton && mobileMenu && menuOpenIcon && menuCloseIcon) {
+      menuButton.addEventListener('click', () => {
+        const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+        menuButton.setAttribute('aria-expanded', String(!isExpanded));
+
+        if (isExpanded) {
+          mobileMenu.style.display = 'block';
+          mobileMenu.classList.remove('mobile-menu-enter-active');
+          mobileMenu.classList.add('mobile-menu-leave');
+
+          setTimeout(() => {
+            mobileMenu.classList.remove('mobile-menu-leave');
+            mobileMenu.classList.remove('mobile-menu-leave-active');
+            mobileMenu.style.display = 'none';
+          }, 75);
+        } else {
+          mobileMenu.style.display = 'block';
+          mobileMenu.classList.add('mobile-menu-enter');
+          setTimeout(() => {
+            mobileMenu.classList.remove('mobile-menu-enter');
+            mobileMenu.classList.add('mobile-menu-enter-active');
+          }, 10);
+        }
+
+        menuOpenIcon.classList.toggle('hidden');
+        menuCloseIcon.classList.toggle('hidden');
+        document.body.classList.toggle('menu-open');
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.style.display = 'none';
+          menuButton.setAttribute('aria-expanded', 'false');
+          menuOpenIcon.classList.remove('hidden');
+          menuCloseIcon.classList.add('hidden');
+          document.body.classList.remove('menu-open');
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileMenu.style.display === 'block') {
+          mobileMenu.style.display = 'none';
+          menuButton.setAttribute('aria-expanded', 'false');
+          menuOpenIcon.classList.remove('hidden');
+          menuCloseIcon.classList.add('hidden');
+          document.body.classList.remove('menu-open');
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .mobile-menu-enter {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  .mobile-menu-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 100ms ease-out, transform 100ms ease-out;
+  }
+  .mobile-menu-leave {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .mobile-menu-leave-active {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 75ms ease-in, transform 75ms ease-in;
+  }
+
+  @media (max-width: 767px) {
+    body.menu-open {
+      overflow: hidden;
+    }
+  }
+</style>
