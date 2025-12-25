@@ -1,0 +1,307 @@
+---
+/**
+ * Design System - Page Headers
+ *
+ * Showcases the three page header variants with hardcoded demo data.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import PageHeaderCentered from '@components/page-headers/PageHeader--Centered.astro';
+import PageHeaderSplitNav from '@components/page-headers/PageHeader--SplitNav.astro';
+import PageHeaderCompact from '@components/page-headers/PageHeader--Compact.astro';
+import ButtonDefault from '@components/basics/buttons/Button--Default.astro';
+---
+
+<BaseThemeLayout title="Page Headers | Design System | Dark Matter">
+  <main class="design-system-page">
+    <!-- Page Intro -->
+    <div class="intro-section max-w-4xl mx-auto px-6 py-12">
+      <h1 class="text-3xl font-bold mb-4">Page Headers</h1>
+      <p class="text-foreground/60 mb-8">
+        Three header variants for different page contexts. Each supports slots for navigation and actions.
+      </p>
+
+      <nav class="flex flex-wrap gap-2 mb-8">
+        <a href="#centered" class="text-sm text-violet-400 hover:text-violet-300">Centered</a>
+        <span class="text-foreground/20">•</span>
+        <a href="#split-nav" class="text-sm text-violet-400 hover:text-violet-300">Split Nav</a>
+        <span class="text-foreground/20">•</span>
+        <a href="#compact" class="text-sm text-violet-400 hover:text-violet-300">Compact</a>
+      </nav>
+    </div>
+
+    <!-- Centered Header -->
+    <section id="centered" class="component-section">
+      <div class="section-label">
+        <span>PageHeader--Centered</span>
+        <code>@components/page-headers/PageHeader--Centered.astro</code>
+      </div>
+      <div class="component-demo">
+        <PageHeaderCentered
+          title="Changelog"
+          subtitle="Track the evolution of Dark Matter's design system, components, and features. Every commit, every breakthrough, documented."
+          badgeText="Development Timeline"
+          badgeIcon="clock"
+        >
+          <div slot="actions" class="flex justify-center mt-8 gap-2">
+            <ButtonDefault active={true}>
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              Timeline
+            </ButtonDefault>
+            <ButtonDefault>
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              Cards
+            </ButtonDefault>
+            <ButtonDefault>
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              Releases
+            </ButtonDefault>
+          </div>
+        </PageHeaderCentered>
+      </div>
+      <div class="component-notes">
+        <h4>Use cases:</h4>
+        <ul>
+          <li>Landing pages with dramatic headers</li>
+          <li>Changelog/updates pages</li>
+          <li>Feature announcement pages</li>
+        </ul>
+        <h4>Props:</h4>
+        <ul>
+          <li><code>title</code> - Main heading (gradient text)</li>
+          <li><code>subtitle</code> - Description text</li>
+          <li><code>badgeText</code> - Pill badge content</li>
+          <li><code>badgeIcon</code> - clock | archive | updates | none</li>
+        </ul>
+        <h4>Slots:</h4>
+        <ul>
+          <li><code>actions</code> - Buttons/togglers below subtitle</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Split Nav Header -->
+    <section id="split-nav" class="component-section">
+      <div class="section-label">
+        <span>PageHeader--SplitNav</span>
+        <code>@components/page-headers/PageHeader--SplitNav.astro</code>
+      </div>
+      <div class="component-demo">
+        <PageHeaderSplitNav
+          title="Changelog"
+          subtitle="New features, improvements, and fixes. Browse our development journey."
+          count={24}
+          countLabel="Updates"
+        >
+          <div slot="navigation" class="flex gap-2">
+            <ButtonDefault href="/changelog">
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              Timeline
+            </ButtonDefault>
+            <ButtonDefault href="/changelog/variant-1" active={true}>
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              Cards
+            </ButtonDefault>
+            <ButtonDefault href="/changelog/variant-3">
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              Releases
+            </ButtonDefault>
+          </div>
+          <div slot="filters" class="mt-8 flex flex-wrap gap-2">
+            <button class="filter-pill active">All</button>
+            <button class="filter-pill">Feature</button>
+            <button class="filter-pill">Component</button>
+            <button class="filter-pill">Fix</button>
+          </div>
+        </PageHeaderSplitNav>
+      </div>
+      <div class="component-notes">
+        <h4>Use cases:</h4>
+        <ul>
+          <li>List pages with filtering</li>
+          <li>Dashboard headers</li>
+          <li>Archive/collection pages</li>
+        </ul>
+        <h4>Props:</h4>
+        <ul>
+          <li><code>title</code> - Main heading</li>
+          <li><code>subtitle</code> - Description text</li>
+          <li><code>count</code> - Number for badge</li>
+          <li><code>countLabel</code> - Text after count</li>
+        </ul>
+        <h4>Slots:</h4>
+        <ul>
+          <li><code>navigation</code> - Right-aligned nav buttons</li>
+          <li><code>filters</code> - Filter pills below header</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Compact Header -->
+    <section id="compact" class="component-section">
+      <div class="section-label">
+        <span>PageHeader--Compact</span>
+        <code>@components/page-headers/PageHeader--Compact.astro</code>
+      </div>
+      <div class="component-demo">
+        <PageHeaderCompact
+          title="Releases"
+          count={3}
+          countLabel="releases published"
+        >
+          <div slot="navigation" class="flex gap-2">
+            <ButtonDefault href="/changelog">
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              Timeline
+            </ButtonDefault>
+            <ButtonDefault href="/changelog/variant-1">
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+              </svg>
+              Cards
+            </ButtonDefault>
+            <ButtonDefault href="/changelog/variant-3" active={true}>
+              <svg slot="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              Releases
+            </ButtonDefault>
+          </div>
+        </PageHeaderCompact>
+      </div>
+      <div class="component-notes">
+        <h4>Use cases:</h4>
+        <ul>
+          <li>GitHub-style releases pages</li>
+          <li>Simple content listings</li>
+          <li>Secondary pages that don't need drama</li>
+        </ul>
+        <h4>Props:</h4>
+        <ul>
+          <li><code>title</code> - Main heading</li>
+          <li><code>count</code> - Optional count number</li>
+          <li><code>countLabel</code> - Text after count</li>
+        </ul>
+        <h4>Slots:</h4>
+        <ul>
+          <li><code>navigation</code> - Right-aligned nav buttons</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</BaseThemeLayout>
+
+<style>
+  .design-system-page {
+    background: var(--color-background);
+    min-height: 100vh;
+  }
+
+  .component-section {
+    margin-bottom: 4rem;
+  }
+
+  .section-label {
+    max-width: 4xl;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .section-label span {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+
+  .section-label code {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 0.25rem;
+    color: #a78bfa;
+  }
+
+  .component-demo {
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin: 0 1.5rem;
+  }
+
+  .component-notes {
+    max-width: 64rem;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  .component-notes h4 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    opacity: 1;
+  }
+
+  .component-notes ul {
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+
+  .component-notes li {
+    margin-bottom: 0.25rem;
+  }
+
+  .component-notes code {
+    font-size: 0.8125rem;
+    padding: 0.125rem 0.375rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.25rem;
+  }
+
+  /* Demo filter pills */
+  .filter-pill {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-pill:hover {
+    opacity: 0.9;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .filter-pill.active {
+    opacity: 1;
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #a78bfa;
+  }
+</style>

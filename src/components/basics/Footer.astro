@@ -18,6 +18,14 @@ const currentYear = new Date().getFullYear();
 ]}>
   <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col items-center gap-3 py-4 md:py-6">
+      <div class="explore-links">
+        <span class="explore-label">Explore</span>
+        <div class="explore-nav">
+          <a href="/changelog" class="explore-link">Changelog<span class="explore-underline"></span></a>
+          <span class="explore-bullet">·</span>
+          <a href="/design-system" class="explore-link">Design System<span class="explore-underline"></span></a>
+        </div>
+      </div>
       <a href="/" aria-label="Dark Matter" class="inline-flex items-center">
         <div class="h-8 w-auto flex items-center">
           <SiteBrandMarkModeWrapper className="h-8 w-auto" />
@@ -29,3 +37,68 @@ const currentYear = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<style>
+  .explore-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .explore-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  .explore-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .explore-link {
+    position: relative;
+    display: inline-flex;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    overflow: hidden;
+    padding-bottom: 2px;
+  }
+
+  .explore-link:hover {
+    opacity: 1;
+    color: var(--color-foreground);
+  }
+
+  .explore-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      #3b9ea0 0%,
+      #69e2e3 50%,
+      #3b9ea0 100%
+    );
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 1px;
+  }
+
+  .explore-link:hover .explore-underline {
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .explore-bullet {
+    color: var(--color-foreground);
+    opacity: 0.3;
+  }
+</style>
