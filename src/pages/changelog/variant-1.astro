@@ -9,10 +9,16 @@ import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import { getCollection } from 'astro:content';
 
 // Get all changelog entries sorted by date (newest first)
+// Within the same date, sort by suffix descending (_04 before _01)
 const allEntries = await getCollection('changelog');
 const sortedEntries = allEntries
   .filter(entry => entry.data.title && entry.data.date)
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .sort((a, b) => {
+    const dateCompare = new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+    if (dateCompare !== 0) return dateCompare;
+    // Same date - sort by ID descending (higher suffix first)
+    return b.id.localeCompare(a.id);
+  });
 
 // Get unique categories for filter
 const categories = [...new Set(sortedEntries.map(e => e.data.category).filter(Boolean))];
