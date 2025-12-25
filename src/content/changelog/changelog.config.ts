@@ -27,6 +27,7 @@ export const changelogSchema = z.object({
     'Documentation',
     'Infrastructure',
     'Design-System',
+    'Milestone',
   ]).optional(),
   tags: z.array(z.string()).optional(),
 
