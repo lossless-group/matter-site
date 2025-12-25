@@ -80,6 +80,10 @@ export interface OrganizationFields {
   trademarksSlugs?: TrademarksSlugs | string | null;
   Materials?: { id: number; fields: { Title: string } } | null;
   relatedMaterials?: number;
+  /** Multi-select field for which pages/sections to include this org in */
+  includeIn?: string[] | null;
+  /** Optional minimum width for logo display (e.g., "120px") - useful for small/detailed logos */
+  logoMinWidth?: string | null;
   CreatedAt: string;
   UpdatedAt: string | null;
 }
@@ -95,6 +99,8 @@ export interface PortfolioCompany {
   logoVibrantMode?: string;
   /** True if logos are transparent SVGs that need CSS color treatment */
   logoIsTransparent?: boolean;
+  /** Minimum width for logo (e.g., "120px") - overrides default sizing for small/detailed logos */
+  logoMinWidth?: string;
   urlToPortfolioSite?: string;
   blurbShortTxt?: string;
   category?: 'direct' | 'lp';
@@ -342,6 +348,8 @@ export function transformToPortfolioCompanies(
       logoDarkMode: trademarks.darkMode || '/portfolio/logos/placeholder-dark.svg',
       logoVibrantMode: trademarks.vibrantMode || trademarks.darkMode || '/portfolio/logos/placeholder-dark.svg',
       logoIsTransparent,
+      // Optional minimum width for logos that need more space
+      logoMinWidth: fields.logoMinWidth || undefined,
       // Mapped from NocoDB fields
       urlToPortfolioSite: normalizeUrl(fields.url),
       blurbShortTxt: fields.elevatorPitch || undefined,
@@ -350,11 +358,21 @@ export function transformToPortfolioCompanies(
 }
 
 /**
- * Fetch and transform portfolio companies ready for rendering
+ * Fetch and transform portfolio companies ready for rendering.
+ * Only includes organizations where includeIn contains "Portfolio Page".
  */
 export async function getPortfolioCompanies(): Promise<PortfolioCompany[]> {
   const records = await fetchOrganizations();
-  return transformToPortfolioCompanies(records);
+
+  // Filter to only organizations that should appear on the Portfolio Page
+  const portfolioRecords = records.filter((record) => {
+    const includeIn = record.fields.includeIn;
+    return Array.isArray(includeIn) && includeIn.includes('Portfolio Page');
+  });
+
+  console.log(`[nocodb] Filtered to ${portfolioRecords.length} portfolio companies (from ${records.length} total orgs)`);
+
+  return transformToPortfolioCompanies(portfolioRecords);
 }
 
 // ============================================================================

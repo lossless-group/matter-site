@@ -1,8 +1,8 @@
 [
   {
     "conventionalName": "Black Light Surgical",
-    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
-    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "logoLightMode": "/trademarks/trademark__BlackLight-Surgical--Brand.png",
+    "logoDarkMode": "/trademarks/trademark__BlackLight-Surgical--Brand--Dark-Mode.webp",
     "urlToCompanySite": null,
     "blurbShortTxt": "Medical device company focused on surgical visualization and imaging technology.",
     "stage": "initial-review",
@@ -23,8 +23,8 @@
   },
   {
     "conventionalName": "ExoLux Tech",
-    "logoLightMode": "/portfolio/logos/placeholder-light.svg",
-    "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
+    "logoLightMode": "/trademarks/trademark__ExoLux--Light-Mode.svg",
+    "logoDarkMode": "/trademarks/trademark__ExoLux--Dark-Mode.svg",
     "urlToCompanySite": "https://exoluxtech.com/",
     "blurbShortTxt": "Designs and manufactures medical robotics systems and high-precision components for healthcare facilities. Core products include surgical robotics for minimally invasive procedures, rehabilitation robots with adaptive AI, and diagnostic robotics for early detection.",
     "stage": "due-diligence",
@@ -38,7 +38,7 @@
     "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
     "urlToCompanySite": null,
     "blurbShortTxt": "Neuroscience therapeutics company founded by Dr. Keith Black, pioneering neurosurgeon at Cedars-Sinai. Focus on innovative treatments for brain tumors and neurological conditions, leveraging expertise in blood-brain barrier penetration and brain tumor vaccines.",
-    "stage": "due-diligence",
+    "stage": "initial-review",
     "sector": "neuroscience",
     "listOfPeopleData": [
       {
@@ -109,7 +109,7 @@
     "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Stratosphere--Dark-Mode.webp",
     "urlToCompanySite": null,
     "blurbShortTxt": "Hypobaric hypoxia chambers simulating high-altitude environments (up to 29,000 ft) at sea level. True altitude technology for enhanced athletic performance, recovery, and longevity. Partnered with UFC Performance Institute.",
-    "stage": "initial-review",
+    "stage": "due-diligence",
     "sector": "sports performance",
     "listOfPeopleData": [
       {

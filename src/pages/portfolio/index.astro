@@ -56,6 +56,7 @@ const allCompanies = portfolioData;
                     "h-10 w-auto object-contain logo-for-dark",
                     company.logoIsTransparent && "logo-transparent"
                   ]}
+                  style={company.logoMinWidth ? `min-width: ${company.logoMinWidth}` : undefined}
                   loading="lazy"
                 />
                 <!-- Logo for light mode -->
@@ -66,6 +67,7 @@ const allCompanies = portfolioData;
                     "h-10 w-auto object-contain logo-for-light",
                     company.logoIsTransparent && "logo-transparent"
                   ]}
+                  style={company.logoMinWidth ? `min-width: ${company.logoMinWidth}` : undefined}
                   loading="lazy"
                 />
                 <p class="mt-4 text-sm font-medium text-foreground group-hover:text-primary transition-colors">
@@ -100,6 +102,7 @@ const allCompanies = portfolioData;
                     "h-10 w-auto object-contain logo-for-dark",
                     company.logoIsTransparent && "logo-transparent"
                   ]}
+                  style={company.logoMinWidth ? `min-width: ${company.logoMinWidth}` : undefined}
                   loading="lazy"
                 />
                 <!-- Logo for light mode -->
@@ -110,6 +113,7 @@ const allCompanies = portfolioData;
                     "h-10 w-auto object-contain logo-for-light",
                     company.logoIsTransparent && "logo-transparent"
                   ]}
+                  style={company.logoMinWidth ? `min-width: ${company.logoMinWidth}` : undefined}
                   loading="lazy"
                 />
                 <p class="mt-4 text-sm font-medium text-foreground group-hover:text-primary transition-colors">
