@@ -20,7 +20,7 @@ interface Props {
 }
 
 const {
-  title = 'Why Now, Why Dark Matter?',
+  title = 'A Tsunami of Demand meets Enabling Science, Technology, and Invention.',
   subtitle = 'A venture-built thesis at the edge of bioscience, data, and longevity.',
 } = Astro.props as Props;
 
@@ -71,12 +71,12 @@ const whyUsPoints = [
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_30%,rgba(102,67,226,0.12),transparent_70%)]"></div>
 
     <!-- Eyebrow -->
-    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase text-[var(--color-lilac)]/70 mb-6 relative z-10">
+    <p class="eyebrow-text text-xs sm:text-sm font-medium tracking-[0.35em] uppercase text-(--color-lilac)/70 mb-6 relative z-10">
       Dark Matter Bio
     </p>
 
     <!-- Main headline -->
-    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center text-[var(--color-alabaster)] leading-[1.1] tracking-tight max-w-4xl relative z-10">
+    <h1 class="headline-text text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-center text-(--color-alabaster) leading-[1.1] tracking-tight max-w-4xl relative z-10">
       {title}
     </h1>
 
@@ -91,7 +91,7 @@ const whyUsPoints = [
     </div>
 
     <!-- Scroll indicator -->
-    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--color-lilac)]/40">
+    <div class="scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-(--color-lilac)/40">
       <span class="text-xs uppercase tracking-[0.25em]">Explore</span>
       <div class="w-px h-12 bg-linear-to-b from-current to-transparent"></div>
     </div>
@@ -102,10 +102,10 @@ const whyUsPoints = [
     <div class="max-w-5xl mx-auto">
       <!-- Section header -->
       <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
-        <span class="inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-marjorelle-purple)] border border-[var(--color-marjorelle-purple)]/30 rounded-full mb-4">
+        <span class="inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-(--color-marjorelle-purple) border border-(--color-marjorelle-purple)/30 rounded-full mb-4">
           Why Now
         </span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-alabaster)]">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-(--color-alabaster)">
           The Timing Window
         </h2>
       </div>
@@ -118,9 +118,9 @@ const whyUsPoints = [
             data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
             style={`--delay: ${index * 100}ms;`}
           >
-            <div class="card-inner group relative p-6 sm:p-8 rounded-2xl border border-[var(--color-marjorelle-purple)]/20 bg-(--color-void)/80 backdrop-blur-sm transition-all duration-500 hover:border-[var(--color-marjorelle-purple)]/50 hover:bg-[rgba(102,67,226,0.08)]">
+            <div class="card-inner group relative p-6 sm:p-8 rounded-2xl border border-(--color-marjorelle-purple)/20 bg-(--color-void)/80 backdrop-blur-sm transition-all duration-500 hover:border-[var(--color-marjorelle-purple)]/50 hover:bg-[rgba(102,67,226,0.08)]">
               <!-- Number accent -->
-              <span class="absolute -top-3 -left-3 w-8 h-8 flex items-center justify-center text-xs font-bold text-[var(--color-marjorelle-purple)] bg-(--color-void) border border-[var(--color-marjorelle-purple)]/40 rounded-full">
+              <span class="absolute -top-3 -left-3 w-8 h-8 flex items-center justify-center text-xs font-bold text-(--color-marjorelle-purple) bg-(--color-void) border border-[var(--color-marjorelle-purple)]/40 rounded-full">
                 {String(index + 1).padStart(2, '0')}
               </span>
 
@@ -142,7 +142,7 @@ const whyUsPoints = [
 
   <!-- Divider with mini orb -->
   <div class="section-divider py-16 flex items-center justify-center relative">
-    <div class="absolute left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-[var(--color-marjorelle-purple)]/30 to-transparent"></div>
+    <div class="absolute left-1/2 -translate-x-1/2 w-px h-full bg-linear-to-b from-transparent via-(--color-marjorelle-purple)/30 to-transparent"></div>
     <div class="divider-orb relative z-10 bg-(--color-void) p-4">
       <ImageAbstractOrb size="80px" color="#9C85DF" rotationSpeed={0.4} />
     </div>
@@ -153,10 +153,10 @@ const whyUsPoints = [
     <div class="max-w-5xl mx-auto">
       <!-- Section header -->
       <div class="section-header text-center mb-16 reveal-item" data-reveal="fade-up">
-        <span class="inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-[var(--color-lilac)] border border-[var(--color-lilac)]/30 rounded-full mb-4">
+        <span class="inline-block px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-(--color-lilac) border border-(--color-lilac)/30 rounded-full mb-4">
           Why Dark Matter
         </span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-alabaster)]">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-(--color-alabaster)">
           Our Unfair Advantage
         </h2>
       </div>
@@ -169,27 +169,27 @@ const whyUsPoints = [
             data-reveal={index % 2 === 0 ? 'slide-right' : 'slide-left'}
             style={`--delay: ${index * 100}ms;`}
           >
-            <div class="card-inner group relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl border border-[var(--color-lilac)]/20 bg-(--color-void)/80 backdrop-blur-sm transition-all duration-500 hover:border-[var(--color-lilac)]/50 hover:bg-[rgba(156,133,223,0.06)]">
+            <div class="card-inner group relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl border border-(--color-lilac)/20 bg-(--color-void)/80 backdrop-blur-sm transition-all duration-500 hover:border-[var(--color-lilac)]/50 hover:bg-[rgba(156,133,223,0.06)]">
               <!-- Icon/number area -->
-              <div class="flex-shrink-0 flex items-start">
-                <span class="w-12 h-12 flex items-center justify-center text-lg font-bold text-[var(--color-lilac)] border border-[var(--color-lilac)]/30 rounded-xl group-hover:bg-(--color-lilac)/10 transition-colors">
+              <div class="shrink-0 flex items-start">
+                <span class="w-12 h-12 flex items-center justify-center text-lg font-bold text-(--color-lilac) border border-(--color-lilac)/30 rounded-xl group-hover:bg-(--color-lilac)/10 transition-colors">
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </div>
 
               <!-- Content -->
               <div class="flex-1">
-                <h3 class="text-lg sm:text-xl font-semibold text-[var(--color-alabaster)] mb-2 group-hover:text-[var(--color-lilac)] transition-colors">
+                <h3 class="text-lg sm:text-xl font-semibold text-(--color-alabaster) mb-2 group-hover:text-(--color-lilac) transition-colors">
                   {point.title}
                 </h3>
-                <p class="text-sm sm:text-base text-[var(--color-alabaster)]/60 leading-relaxed">
+                <p class="text-sm sm:text-base text-(--color-alabaster)/60 leading-relaxed">
                   {point.description}
                 </p>
               </div>
 
               <!-- Arrow hint on hover -->
               <div class="hidden sm:flex items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span class="text-[var(--color-lilac)]">
+                <span class="text-(--color-lilac)">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>

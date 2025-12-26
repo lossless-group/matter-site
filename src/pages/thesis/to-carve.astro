@@ -1,0 +1,1526 @@
+---
+/**
+ * Thesis: To-Carve Edition
+ *
+ * Slide-sized sections that still bleed and flow into each other.
+ * Each section is designed to be approximately one viewport tall,
+ * while maintaining visual continuity through overlapping gradients
+ * and shared color language.
+ *
+ * Sections:
+ * 1. The Aging Crisis - Hero ($1T+ cost)
+ * 2. Trillion-Dollar Diseases
+ * 3. Healthspan vs Lifespan Gap
+ * 4. US Demographics - Silver Tsunami
+ * 5. Cost Reality - Medical Inflation
+ * 6. The Opportunity - Biotech Solution
+ * 7. Global Aging Wave - Hero (2B people)
+ * 8. Demographic Statistics
+ * 9. Science at Inflection Point
+ * 10. The Longevity Economy
+ * 11. Exit Potential - Hero
+ * 12. IPO Path
+ * 13. M&A Path
+ * 14. Market Growth Projection
+ * 15. Deal Structure Example
+ * 16. Closing - The Opportunity
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+---
+
+<BaseThemeLayout title="Thesis - Slide View" mode="dark">
+  <div class="slide-deck">
+    <!-- =========================================================================
+         SECTION 1: The Aging Crisis - Hero
+         ========================================================================= -->
+    <section class="slide slide-crisis-hero" id="aging-crisis">
+      <div class="slide-gradient slide-gradient-red"></div>
+      <div class="slide-content slide-content-center">
+        <div class="problem-badge">
+          <span class="badge-dot"></span>
+          <span>The Problem</span>
+        </div>
+        <h1 class="headline">The Aging Crisis</h1>
+        <p class="statement">
+          Age-related diseases cost $1T+ annually in global healthcare
+        </p>
+        <div class="big-cost">
+          <span class="big-cost-currency">$</span>
+          <span class="big-cost-number">1T+</span>
+          <p class="big-cost-label">annual global healthcare costs</p>
+          <p class="big-cost-diseases">Alzheimer's • Cancer • CVD • Diabetes • Renal Failure</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 2: Trillion-Dollar Diseases
+         ========================================================================= -->
+    <section class="slide slide-diseases" id="diseases">
+      <div class="slide-gradient"></div>
+      <div class="slide-content">
+        <span class="badge badge-red">Trillion-Dollar Diseases</span>
+        <h2 class="section-title-centered">A Handful of Conditions Drive Trillions in Cost</h2>
+        <div class="disease-grid">
+          <div class="disease-card">
+            <span class="disease-icon">❤️</span>
+            <div class="disease-info">
+              <h3>Cardiovascular Disease</h3>
+              <span class="disease-cost">$1.8T</span>
+              <span class="disease-timeframe">by 2050 (US)</span>
+              <p>Leading cause of death globally, costs projected to triple from current levels.</p>
+            </div>
+          </div>
+          <div class="disease-card">
+            <span class="disease-icon">🩸</span>
+            <div class="disease-info">
+              <h3>Diabetes</h3>
+              <span class="disease-cost">$966B</span>
+              <span class="disease-timeframe">per year (global)</span>
+              <p>Approaching $1T annually worldwide in direct health expenditure.</p>
+            </div>
+          </div>
+          <div class="disease-card">
+            <span class="disease-icon">🔬</span>
+            <div class="disease-info">
+              <h3>Cancer</h3>
+              <span class="disease-cost">#1</span>
+              <span class="disease-timeframe">cost driver</span>
+              <p>Now the leading condition driving insurer medical costs globally.</p>
+            </div>
+          </div>
+          <div class="disease-card">
+            <span class="disease-icon">💊</span>
+            <div class="disease-info">
+              <h3>Chronic Conditions</h3>
+              <span class="disease-cost">90%</span>
+              <span class="disease-timeframe">of US spend</span>
+              <p>Nearly all US healthcare spending goes to chronic and mental health conditions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 3: Healthspan vs Lifespan Gap
+         ========================================================================= -->
+    <section class="slide slide-gap" id="healthspan-gap">
+      <div class="slide-gradient slide-gradient-amber"></div>
+      <div class="slide-content">
+        <span class="badge badge-amber">The Gap</span>
+        <h2 class="section-title-centered">We Extended Life, Not Healthy Life</h2>
+        <div class="gap-visual">
+          <div class="gap-bars">
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>Healthspan</span>
+                <span class="bar-value">65 years</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-healthy" style="width: 81.25%;"></div>
+              </div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>Lifespan</span>
+                <span class="bar-value">80+ years</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fill-life" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="gap-callout">
+            <span class="gap-number">15</span>
+            <span class="gap-unit">years</span>
+            <p class="gap-description">Years living with chronic disease, disability, or frailty</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 4: US Demographics - Silver Tsunami
+         ========================================================================= -->
+    <section class="slide slide-demographics" id="demographics">
+      <div class="slide-gradient"></div>
+      <div class="slide-content">
+        <span class="badge badge-purple">US Demographics</span>
+        <h2 class="section-title-centered">A Silver Tsunami is Coming</h2>
+        <p class="section-subtitle">Fewer workers per retiree, escalating fiscal pressure on healthcare systems</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-number">55M+</span>
+            <span class="stat-label">Americans 65+</span>
+            <p>Already over 55 million Americans aged 65 or older today.</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">80M</span>
+            <span class="stat-label">By 2040</span>
+            <p>Projected 65+ population will reach almost 80 million.</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">20%</span>
+            <span class="stat-label">of Population</span>
+            <p>1 in 5 Americans will be 65+ by 2030.</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">5×</span>
+            <span class="stat-label">Cost Multiplier</span>
+            <p>Per-person spending for 65+ is 5× higher than for children.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 5: Cost Reality - Medical Inflation
+         ========================================================================= -->
+    <section class="slide slide-cost-reality" id="cost-reality">
+      <div class="slide-gradient slide-gradient-red"></div>
+      <div class="slide-content">
+        <span class="badge badge-red">Cost Reality</span>
+        <h2 class="section-title-centered">Structural, Compounding Medical Inflation</h2>
+        <p class="section-subtitle">Without interventions that alter the trajectory of age-related disease, cost curves remain exponential</p>
+        <div class="cost-grid">
+          <div class="cost-card">
+            <span class="cost-number">$172,500</span>
+            <span class="cost-label">Per Retiree</span>
+            <p>Average healthcare cost during retirement, more than doubled since 2002.</p>
+          </div>
+          <div class="cost-card">
+            <span class="cost-number">7-8%</span>
+            <span class="cost-label">Annual Increase</span>
+            <p>Expected healthcare cost growth for US employers in 2025.</p>
+          </div>
+          <div class="cost-card">
+            <span class="cost-number">2.5×</span>
+            <span class="cost-label">vs Working Age</span>
+            <p>Per-capita spending for 65+ compared to working-age adults.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 6: The Opportunity - Biotech Solution
+         ========================================================================= -->
+    <section class="slide slide-opportunity" id="opportunity">
+      <div class="slide-gradient slide-gradient-green"></div>
+      <div class="slide-content slide-content-center">
+        <span class="badge badge-green">The Opportunity</span>
+        <h2 class="headline">Biotech Can Bend the Cost Curve</h2>
+        <p class="statement">
+          Solutions that extend healthspan, reduce costs, and improve lives
+        </p>
+        <p class="closing-subtext">
+          If 90% of spend is tied to chronic conditions linked to aging, even single-digit
+          percentage reductions cascade into hundreds of billions in savings.
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 7: Global Aging Wave - Hero
+         ========================================================================= -->
+    <section class="slide slide-aging-hero" id="global-aging">
+      <div class="slide-gradient slide-gradient-purple"></div>
+      <div class="slide-content slide-content-center">
+        <p class="eyebrow">Why Now</p>
+        <h1 class="headline">The Global Aging Wave</h1>
+        <p class="statement">
+          A demographic shift creating a multi-trillion dollar opportunity
+        </p>
+        <div class="big-stat">
+          <span class="big-stat-number">2B</span>
+          <p class="big-stat-label">people over 60 by 2050</p>
+          <p class="big-stat-source">United Nations</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 8: Demographic Statistics
+         ========================================================================= -->
+    <section class="slide slide-demo-stats" id="demo-stats">
+      <div class="slide-gradient"></div>
+      <div class="slide-content">
+        <span class="badge badge-purple">Demographics</span>
+        <h2 class="section-title-centered">A Defining Global Trend</h2>
+        <p class="section-subtitle">The UN describes global aging as "a defining trend of our time" and a "major success story"</p>
+        <div class="stats-grid stats-grid-4">
+          <div class="stat-card">
+            <span class="stat-number">2.1B</span>
+            <span class="stat-label">People 60+ by 2050</span>
+            <p>The UN projects the global population aged 60+ will roughly double by 2050.</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">1.6B</span>
+            <span class="stat-label">People 65+ by 2050</span>
+            <p>Population aged 65+ expected to reach around 1.6 billion.</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">3×</span>
+            <span class="stat-label">Growth in 80+</span>
+            <p>The "oldest old" (80+) will more than triple to 447M by 2050.</p>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number">1 in 4</span>
+            <span class="stat-label">Asians over 60</span>
+            <p>In Asia, one in four people will be over 60 by 2050.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 9: Science at Inflection Point
+         ========================================================================= -->
+    <section class="slide slide-science" id="science">
+      <div class="slide-gradient slide-gradient-shift"></div>
+      <div class="slide-content">
+        <span class="badge badge-lilac">Breakthroughs</span>
+        <h2 class="section-title-centered">Science at an Inflection Point</h2>
+        <p class="section-subtitle">Validated genomic tools, mechanism-based geroscience, and AI-native R&D have transformed longevity into an investable category</p>
+        <div class="breakthrough-cards">
+          <div class="breakthrough-card">
+            <span class="breakthrough-icon">🧬</span>
+            <div>
+              <h3>CRISPR & Genetic Interventions</h3>
+              <p>Evolved from basic gene editing to base editing, prime editing, and epigenome editing—enabling precise interventions in age-related pathways.</p>
+            </div>
+          </div>
+          <div class="breakthrough-card">
+            <span class="breakthrough-icon">🔬</span>
+            <div>
+              <h3>Senolytics</h3>
+              <p>Drugs that selectively clear senescent "zombie" cells, implicated in chronic inflammation and age-related diseases.</p>
+            </div>
+          </div>
+          <div class="breakthrough-card">
+            <span class="breakthrough-icon">🧠</span>
+            <div>
+              <h3>AI-Driven Drug Discovery</h3>
+              <p>Applied to multi-omics datasets and biomarker streams to identify aging signatures and enable biological-age-driven interventions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 10: The Longevity Economy
+         ========================================================================= -->
+    <section class="slide slide-economy" id="economy">
+      <div class="slide-gradient"></div>
+      <div class="slide-content">
+        <span class="badge badge-green">Opportunity</span>
+        <h2 class="section-title-centered">The Longevity Economy</h2>
+        <p class="section-subtitle">A multi-trillion dollar market underpinned by demographic certainty</p>
+        <div class="economy-grid">
+          <div class="economy-card">
+            <span class="economy-number">25%</span>
+            <span class="economy-label">of Global Consumption</span>
+            <p>Seniors will account for one-quarter of global consumption by 2050.</p>
+          </div>
+          <div class="economy-card">
+            <span class="economy-number">$7T+</span>
+            <span class="economy-label">Longevity Economy</span>
+            <p>Healthcare, financial products, housing, caregiving, and consumer markets.</p>
+          </div>
+          <div class="economy-card">
+            <span class="economy-number">77 years</span>
+            <span class="economy-label">Life Expectancy by 2050</span>
+            <p>Global life expectancy projected to reach 77 years by 2050.</p>
+          </div>
+        </div>
+        <div class="economy-cta">
+          <p class="cta-headline">Capture the $7T+ Longevity Economy</p>
+          <p class="cta-text">Demographic inevitability meets scientific readiness</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 11: Exit Potential - Hero
+         ========================================================================= -->
+    <section class="slide slide-exit-hero" id="exit-potential">
+      <div class="slide-gradient slide-gradient-green"></div>
+      <div class="slide-content slide-content-center">
+        <p class="eyebrow">Returns</p>
+        <h1 class="headline">Exit Potential</h1>
+        <p class="statement">
+          Two proven paths to liquidity for longevity investments
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-number">$2B+</span>
+            <span class="hero-stat-label">Longevity IPOs in 2023</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">17.9%</span>
+            <span class="hero-stat-label">Anti-aging Market CAGR</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">$5B+</span>
+            <span class="hero-stat-label">Startup Funding in 2023</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 12: IPO Path
+         ========================================================================= -->
+    <section class="slide slide-ipo" id="ipo-path">
+      <div class="slide-gradient"></div>
+      <div class="slide-content">
+        <span class="badge badge-purple">Exit Paths</span>
+        <h2 class="section-title">📈 IPOs in Public Markets</h2>
+        <p class="section-body">
+          Biotech IPOs remain a core liquidity event, especially for companies with
+          differentiated clinical data in age-related disease.
+        </p>
+        <div class="path-points">
+          <div class="path-point">
+            <h4>Quality Over Quantity</h4>
+            <p>The post-2021 correction led to a disciplined IPO market focused on clinical-stage, de-risked assets.</p>
+          </div>
+          <div class="path-point">
+            <h4>100% Clinical-Stage</h4>
+            <p>By 2023, all US biotech IPOs had clinical-stage assets, with roughly one-third at Phase III.</p>
+          </div>
+          <div class="path-point">
+            <h4>Mainstream Theme</h4>
+            <p>Longevity-focused biotechs raised over $2 billion via IPOs in 2023 alone.</p>
+          </div>
+          <div class="path-point">
+            <h4>Data-Driven Stories</h4>
+            <p>Investors reward platforms that pair bold aging biology with credible, near-term milestones.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 13: M&A Path
+         ========================================================================= -->
+    <section class="slide slide-ma" id="ma-path">
+      <div class="slide-gradient slide-gradient-shift"></div>
+      <div class="slide-content">
+        <h2 class="section-title">🏢 Acquisitions by Big Pharma</h2>
+        <p class="section-body">
+          Large pharma companies facing patent cliffs are increasingly acquiring
+          longevity-adjacent assets to sustain growth.
+        </p>
+        <div class="path-points">
+          <div class="path-point">
+            <h4>Massive Market Growth</h4>
+            <p>Global anti-aging therapeutics projected to grow from $5.7B (2024) to $34.6B by 2035.</p>
+          </div>
+          <div class="path-point">
+            <h4>M&A as Core Return Driver</h4>
+            <p>Institutional investors expect continued M&A as pharma uses acquisitions to access innovative platforms.</p>
+          </div>
+          <div class="path-point">
+            <h4>Strategic Fit</h4>
+            <p>Longevity mechanisms intersect with existing pharma markets—cardiometabolic, oncology, ophthalmology.</p>
+          </div>
+          <div class="path-point">
+            <h4>VC Capital Precursor</h4>
+            <p>Longevity VC funds raised over $3B in 2023, seeding future acquisition targets.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 14: Market Growth Projection
+         ========================================================================= -->
+    <section class="slide slide-growth" id="market-growth">
+      <div class="slide-gradient slide-gradient-green"></div>
+      <div class="slide-content slide-content-center">
+        <span class="badge badge-green">Market Opportunity</span>
+        <h2 class="section-title-centered">Anti-Aging Therapeutics Market</h2>
+        <div class="growth-visual">
+          <div class="growth-from">
+            <span class="growth-value">$5.7B</span>
+            <span class="growth-year">2024</span>
+          </div>
+          <div class="growth-arrow">
+            <svg class="arrow-icon" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 20 H56 M44 8 L56 20 L44 32" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="growth-cagr">17.9% CAGR</span>
+          </div>
+          <div class="growth-to">
+            <span class="growth-value">$34.6B</span>
+            <span class="growth-year">2035</span>
+          </div>
+        </div>
+        <p class="growth-citation">Global anti-aging therapeutics market projection</p>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 15: Deal Structure Example
+         ========================================================================= -->
+    <section class="slide slide-deal" id="deal-structure">
+      <div class="slide-gradient"></div>
+      <div class="slide-content">
+        <span class="badge badge-amber">Deal Structure</span>
+        <h2 class="section-title-centered">Example Deal Structure</h2>
+        <p class="section-subtitle">Pharma–Senolytics Acquisition Model</p>
+        <div class="deal-grid">
+          <div class="deal-rationale">
+            <h3>Strategic Rationale</h3>
+            <ul>
+              <li>Large pharma seeking next-generation assets that modify fundamental aging biology</li>
+              <li>Senolytics address shared mechanisms across multiple age-related diseases</li>
+              <li>One asset with potential across several multi-billion-dollar indications</li>
+            </ul>
+          </div>
+          <div class="deal-terms">
+            <h3>Illustrative Terms</h3>
+            <dl>
+              <div class="term-row">
+                <dt>Target</dt>
+                <dd>Clinical-stage senolytics company</dd>
+              </div>
+              <div class="term-row">
+                <dt>Buyer</dt>
+                <dd>Top-10 global pharma</dd>
+              </div>
+              <div class="term-row">
+                <dt>Upfront</dt>
+                <dd>$500M–$1B cash</dd>
+              </div>
+              <div class="term-row">
+                <dt>Biobucks</dt>
+                <dd>$2B–$4B milestones</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 16: Closing - The Opportunity
+         ========================================================================= -->
+    <section class="slide slide-closing" id="closing">
+      <div class="slide-gradient slide-gradient-green"></div>
+      <div class="slide-content slide-content-center">
+        <p class="eyebrow">The Opportunity</p>
+        <h2 class="headline">Exits Don't Require Full Lifespan Extension</h2>
+        <p class="statement">
+          Credible age-related disease indications are sufficient for pharma-scale exits
+        </p>
+        <div class="closing-points">
+          <div class="closing-point">
+            <span class="closing-icon">🎯</span>
+            <p>Target validated aging pathways with clear clinical endpoints</p>
+          </div>
+          <div class="closing-point">
+            <span class="closing-icon">📊</span>
+            <p>Biomarker-driven approaches enable faster proof-of-concept</p>
+          </div>
+          <div class="closing-point">
+            <span class="closing-icon">💰</span>
+            <p>Pharma acquirers value platform technologies across multiple indications</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseThemeLayout>
+
+<style>
+  /* ==========================================================================
+     SLIDE DECK BASE STRUCTURE
+     ========================================================================== */
+  .slide-deck {
+    scroll-snap-type: y proximity;
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  .slide {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+
+  .slide-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .slide-content {
+    position: relative;
+    z-index: 10;
+    max-width: 72rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .slide-content-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ==========================================================================
+     TYPOGRAPHY
+     ========================================================================== */
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .headline {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    max-width: 48rem;
+  }
+
+  .statement {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 32rem;
+    margin-top: 2rem;
+  }
+
+  .section-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .section-title-centered {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .section-body {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    max-width: 36rem;
+  }
+
+  /* ==========================================================================
+     BADGES
+     ========================================================================== */
+  .badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+  }
+
+  .problem-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    margin-bottom: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .badge-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ==========================================================================
+     BIG COST / BIG STAT
+     ========================================================================== */
+  .big-cost,
+  .big-stat {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .big-cost-currency {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+  }
+
+  .big-cost-number,
+  .big-stat-number {
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .big-cost-label,
+  .big-stat-label {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+  }
+
+  .big-cost-diseases,
+  .big-stat-source {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 0.5rem;
+  }
+
+  /* ==========================================================================
+     DISEASE GRID
+     ========================================================================== */
+  .disease-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .disease-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .disease-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .disease-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .disease-info h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .disease-cost {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+  }
+
+  .disease-timeframe {
+    font-size: 0.75rem;
+  }
+
+  .disease-info p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+  }
+
+  /* ==========================================================================
+     GAP VISUAL
+     ========================================================================== */
+  .gap-visual {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 1.5rem;
+  }
+
+  .gap-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .bar-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .bar-track {
+    height: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 0.5rem;
+  }
+
+  .gap-callout {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid;
+  }
+
+  .gap-number {
+    font-size: 4rem;
+    font-weight: 700;
+  }
+
+  .gap-unit {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+  }
+
+  .gap-description {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    max-width: 24rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ==========================================================================
+     STATS GRID
+     ========================================================================== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stats-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 1024px) {
+    .stats-grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid,
+    .stats-grid-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .stat-card p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* ==========================================================================
+     COST GRID
+     ========================================================================== */
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .cost-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cost-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .cost-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .cost-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cost-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ==========================================================================
+     ECONOMY GRID
+     ========================================================================== */
+  .economy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .economy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .economy-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .economy-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .economy-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .economy-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .economy-cta {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+
+  .cta-headline {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-text {
+    font-size: 1.125rem;
+  }
+
+  /* ==========================================================================
+     BREAKTHROUGH CARDS
+     ========================================================================== */
+  .breakthrough-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .breakthrough-card {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .breakthrough-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  .breakthrough-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .breakthrough-card p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* ==========================================================================
+     HERO STATS
+     ========================================================================== */
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-number {
+    display: block;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+  }
+
+  .hero-stat-label {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ==========================================================================
+     PATH POINTS
+     ========================================================================== */
+  .path-points {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .path-points {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .path-point {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .path-point h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .path-point p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ==========================================================================
+     GROWTH VISUAL
+     ========================================================================== */
+  .growth-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .growth-visual {
+      flex-direction: column;
+    }
+  }
+
+  .growth-from,
+  .growth-to {
+    text-align: center;
+  }
+
+  .growth-value {
+    display: block;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+  }
+
+  .growth-year {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .growth-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .arrow-icon {
+    width: 4rem;
+    height: 2.5rem;
+  }
+
+  .growth-cagr {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  .growth-citation {
+    font-size: 0.875rem;
+  }
+
+  /* ==========================================================================
+     DEAL GRID
+     ========================================================================== */
+  .deal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .deal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .deal-rationale,
+  .deal-terms {
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+
+  .deal-rationale h3,
+  .deal-terms h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .deal-rationale ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .deal-rationale li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .deal-rationale li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+  }
+
+  .deal-terms dl {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .term-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid;
+  }
+
+  .term-row dt {
+    font-size: 0.875rem;
+  }
+
+  .term-row dd {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* ==========================================================================
+     CLOSING POINTS
+     ========================================================================== */
+  .closing-points {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .closing-point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 16rem;
+  }
+
+  .closing-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .closing-point p {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .closing-subtext {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 32rem;
+    margin-top: 1.5rem;
+  }
+
+  /* ==========================================================================
+     DARK MODE (DEFAULT)
+     ========================================================================== */
+  :global([data-mode="dark"]) .slide {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) .slide-gradient {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .slide-gradient-shift {
+    background: radial-gradient(ellipse 80% 50% at 70% 50%, rgba(102, 67, 226, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .slide-gradient-red {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(239, 68, 68, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .slide-gradient-amber {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(251, 191, 36, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .slide-gradient-purple {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(102, 67, 226, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .slide-gradient-green {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(52, 211, 153, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) .eyebrow {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .headline,
+  :global([data-mode="dark"]) .section-title,
+  :global([data-mode="dark"]) .section-title-centered {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .statement,
+  :global([data-mode="dark"]) .section-body,
+  :global([data-mode="dark"]) .section-subtitle {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .badge {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) .badge-red {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.3);
+  }
+
+  :global([data-mode="dark"]) .badge-amber {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="dark"]) .badge-purple {
+    color: var(--color-lilac);
+    border-color: rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) .badge-lilac {
+    color: var(--color-lilac);
+    border-color: rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) .badge-green {
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="dark"]) .problem-badge {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .badge-dot {
+    background: #f87171;
+  }
+
+  :global([data-mode="dark"]) .big-cost-currency,
+  :global([data-mode="dark"]) .big-cost-number {
+    background: linear-gradient(135deg, #f87171, #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="dark"]) .big-cost-label {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .big-cost-diseases {
+    color: rgba(249, 250, 251, 0.5);
+  }
+
+  :global([data-mode="dark"]) .big-stat-number {
+    background: linear-gradient(135deg, var(--color-lilac), var(--color-marjorelle-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="dark"]) .big-stat-label {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .big-stat-source {
+    color: var(--color-lilac);
+    opacity: 0.5;
+  }
+
+  :global([data-mode="dark"]) .disease-card,
+  :global([data-mode="dark"]) .stat-card,
+  :global([data-mode="dark"]) .cost-card,
+  :global([data-mode="dark"]) .economy-card,
+  :global([data-mode="dark"]) .breakthrough-card,
+  :global([data-mode="dark"]) .path-point {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .disease-info h3,
+  :global([data-mode="dark"]) .breakthrough-card h3,
+  :global([data-mode="dark"]) .path-point h4 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .disease-cost,
+  :global([data-mode="dark"]) .stat-number,
+  :global([data-mode="dark"]) .cost-number {
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .disease-timeframe {
+    color: rgba(249, 250, 251, 0.5);
+  }
+
+  :global([data-mode="dark"]) .disease-info p,
+  :global([data-mode="dark"]) .stat-card p,
+  :global([data-mode="dark"]) .cost-card p,
+  :global([data-mode="dark"]) .economy-card p,
+  :global([data-mode="dark"]) .breakthrough-card p,
+  :global([data-mode="dark"]) .path-point p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .stat-label,
+  :global([data-mode="dark"]) .cost-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .economy-number {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .economy-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .economy-cta {
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="dark"]) .cta-headline {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .cta-text {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .gap-visual {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .bar-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .bar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .bar-fill-healthy {
+    background: linear-gradient(90deg, #10b981, #34d399);
+  }
+
+  :global([data-mode="dark"]) .bar-fill-life {
+    background: linear-gradient(90deg, #10b981 81.25%, #fbbf24 81.25%, #f87171);
+  }
+
+  :global([data-mode="dark"]) .gap-callout {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .gap-number {
+    color: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .gap-unit {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .gap-description {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .hero-stat-number {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .hero-stat-label {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .growth-value {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-year {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .growth-arrow {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-cagr {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-citation {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .deal-rationale,
+  :global([data-mode="dark"]) .deal-terms {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .deal-rationale h3,
+  :global([data-mode="dark"]) .deal-terms h3 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .deal-rationale li {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .deal-rationale li::before {
+    background: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .term-row {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .term-row dt {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .term-row dd {
+    color: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .closing-point p {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .closing-subtext {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>
