@@ -1,0 +1,41 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import AviciiTriangles from '@components/flare/ImageAbstract--AviciiTriangles.astro';
+---
+
+<FlarePageLayout
+  title="Avicii Triangles"
+  description="Two triangles forming a stylized 'A' with animated traveling light pulses along the edges."
+  currentSlug="avicii-triangles"
+>
+  <div class="w-[min(80vw,520px)] h-[min(80vw,520px)]">
+    <AviciiTriangles size="100%" />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <AviciiTriangles size="100%" color="#4488ff" accentColor="#ffffff" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Blue glow</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <AviciiTriangles size="100%" color="#f472b6" accentColor="#fef08a" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Pink/Yellow</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <AviciiTriangles size="100%" color="#34d399" accentColor="#ffffff" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Green glow</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <AviciiTriangles size="100%" color="#fbbf24" accentColor="#ffffff" speed={1.5} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Gold (faster)</p>
+    </div>
+  </div>
+</FlarePageLayout>

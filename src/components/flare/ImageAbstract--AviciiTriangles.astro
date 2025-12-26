@@ -1,0 +1,485 @@
+---
+/**
+ * ImageAbstract--AviciiTriangles
+ *
+ * A Three.js visualization inspired by the Avicii logo:
+ * - Two triangles forming a stylized "A" shape
+ * - Animated light pulses traveling along the triangle edges
+ * - Neon glow effect with atmospheric haze
+ *
+ * The left triangle points left, the right triangle points right,
+ * and they share a vertical center edge.
+ */
+
+interface Props {
+  /** Container size in CSS units */
+  size?: string;
+  /** Primary glow color */
+  color?: string;
+  /** Secondary/accent color for the traveling light */
+  accentColor?: string;
+  /** Speed of the traveling light (0-2, default 1) */
+  speed?: number;
+  /** Enable animation */
+  animate?: boolean;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  color = '#a78bfa',
+  accentColor = '#ffffff',
+  speed = 1,
+  animate = true,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['avicii-triangles-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-color={color}
+  data-accent-color={accentColor}
+  data-speed={speed}
+  data-animate={animate}
+>
+  <canvas class="avicii-triangles-canvas"></canvas>
+</div>
+
+<style>
+  .avicii-triangles-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .avicii-triangles-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface Config {
+    color: string;
+    accentColor: string;
+    speed: number;
+    animate: boolean;
+  }
+
+  function initAviciiTriangles(container: HTMLElement) {
+    const canvas = container.querySelector('.avicii-triangles-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const config: Config = {
+      color: container.dataset.color || '#a78bfa',
+      accentColor: container.dataset.accentColor || '#ffffff',
+      speed: parseFloat(container.dataset.speed || '1'),
+      animate: container.dataset.animate !== 'false',
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 400;
+
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Triangle dimensions
+    const triHeight = 1.6;
+    const triWidth = 1.2;
+    const gap = 0.08; // Small gap between triangles at center
+
+    // Define the two triangles
+    // Left triangle: pointing left (like < but filled)
+    const leftTri = [
+      new THREE.Vector3(-gap / 2, triHeight / 2, 0),      // Top center
+      new THREE.Vector3(-gap / 2, -triHeight / 2, 0),     // Bottom center
+      new THREE.Vector3(-triWidth - gap / 2, 0, 0),       // Left point
+    ];
+
+    // Right triangle: pointing right (like > but filled)
+    const rightTri = [
+      new THREE.Vector3(gap / 2, triHeight / 2, 0),       // Top center
+      new THREE.Vector3(gap / 2, -triHeight / 2, 0),      // Bottom center
+      new THREE.Vector3(triWidth + gap / 2, 0, 0),        // Right point
+    ];
+
+    // Create edge paths for each triangle (closed loop)
+    const leftEdges = [
+      { start: leftTri[0], end: leftTri[2] },   // Top to left point
+      { start: leftTri[2], end: leftTri[1] },   // Left point to bottom
+      { start: leftTri[1], end: leftTri[0] },   // Bottom to top (center line)
+    ];
+
+    const rightEdges = [
+      { start: rightTri[0], end: rightTri[2] },  // Top to right point
+      { start: rightTri[2], end: rightTri[1] },  // Right point to bottom
+      { start: rightTri[1], end: rightTri[0] },  // Bottom to top (center line)
+    ];
+
+    // Particle arrays
+    const positions: number[] = [];
+    const sizes: number[] = [];
+    const opacities: number[] = [];
+    const edgeProgress: number[] = [];  // 0-1 progress along total path
+    const triangleId: number[] = [];     // 0 = left, 1 = right
+
+    /**
+     * Calculate total path length for a triangle
+     */
+    function getPathLength(edges: { start: THREE.Vector3; end: THREE.Vector3 }[]): number {
+      return edges.reduce((sum, edge) => sum + edge.start.distanceTo(edge.end), 0);
+    }
+
+    /**
+     * Get position along the triangle path given progress 0-1
+     */
+    function getPositionOnPath(
+      edges: { start: THREE.Vector3; end: THREE.Vector3 }[],
+      progress: number
+    ): THREE.Vector3 {
+      const totalLength = getPathLength(edges);
+      const targetDist = progress * totalLength;
+
+      let accumulated = 0;
+      for (const edge of edges) {
+        const edgeLength = edge.start.distanceTo(edge.end);
+        if (accumulated + edgeLength >= targetDist) {
+          const edgeProgress = (targetDist - accumulated) / edgeLength;
+          return new THREE.Vector3().lerpVectors(edge.start, edge.end, edgeProgress);
+        }
+        accumulated += edgeLength;
+      }
+
+      // Return last point if we've gone past
+      return edges[edges.length - 1].end.clone();
+    }
+
+    /**
+     * Generate particles along triangle edges
+     */
+    function generateTriangleParticles(
+      edges: { start: THREE.Vector3; end: THREE.Vector3 }[],
+      triId: number
+    ) {
+      const particlesPerTriangle = 800;
+
+      for (let i = 0; i < particlesPerTriangle; i++) {
+        const progress = i / particlesPerTriangle;
+        const pos = getPositionOnPath(edges, progress);
+
+        // Add slight perpendicular offset for glow width
+        const nextPos = getPositionOnPath(edges, (progress + 0.01) % 1);
+        const direction = new THREE.Vector3().subVectors(nextPos, pos).normalize();
+        const perpendicular = new THREE.Vector3(-direction.y, direction.x, 0);
+
+        // Multiple particles per point for glow effect
+        for (let j = 0; j < 3; j++) {
+          const offset = (j - 1) * 0.025 * (Math.random() * 0.5 + 0.5);
+          const finalPos = pos.clone().add(perpendicular.clone().multiplyScalar(offset));
+
+          // Add some z-depth variation
+          finalPos.z = (Math.random() - 0.5) * 0.05;
+
+          positions.push(finalPos.x, finalPos.y, finalPos.z);
+          sizes.push(0.015 + Math.random() * 0.01);
+
+          // Center particles are brighter
+          const centerFactor = 1 - Math.abs(j - 1) * 0.3;
+          opacities.push(0.6 * centerFactor + Math.random() * 0.2);
+
+          edgeProgress.push(progress);
+          triangleId.push(triId);
+        }
+      }
+    }
+
+    /**
+     * Generate glow haze particles around the triangles
+     */
+    function generateGlowHaze(
+      edges: { start: THREE.Vector3; end: THREE.Vector3 }[],
+      triId: number
+    ) {
+      const hazeParticles = 400;
+
+      for (let i = 0; i < hazeParticles; i++) {
+        const progress = Math.random();
+        const pos = getPositionOnPath(edges, progress);
+
+        // Larger offset for haze
+        const offsetAngle = Math.random() * Math.PI * 2;
+        const offsetDist = Math.random() * 0.15 + 0.03;
+
+        const finalPos = new THREE.Vector3(
+          pos.x + Math.cos(offsetAngle) * offsetDist,
+          pos.y + Math.sin(offsetAngle) * offsetDist,
+          (Math.random() - 0.5) * 0.1
+        );
+
+        positions.push(finalPos.x, finalPos.y, finalPos.z);
+        sizes.push(0.03 + Math.random() * 0.02);
+        opacities.push(0.15 + Math.random() * 0.1);
+        edgeProgress.push(progress);
+        triangleId.push(triId);
+      }
+    }
+
+    // Generate particles for both triangles
+    generateTriangleParticles(leftEdges, 0);
+    generateTriangleParticles(rightEdges, 1);
+    generateGlowHaze(leftEdges, 0);
+    generateGlowHaze(rightEdges, 1);
+
+    // Create geometry
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    geometry.setAttribute('opacity', new THREE.Float32BufferAttribute(opacities, 1));
+    geometry.setAttribute('edgeProgress', new THREE.Float32BufferAttribute(edgeProgress, 1));
+    geometry.setAttribute('triangleId', new THREE.Float32BufferAttribute(triangleId, 1));
+
+    const baseColor = new THREE.Color(config.color);
+    const accentCol = new THREE.Color(config.accentColor);
+
+    // Custom shader with traveling light effect
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        baseColor: { value: baseColor },
+        accentColor: { value: accentCol },
+        time: { value: 0 },
+        pulseWidth: { value: 0.15 },
+      },
+      vertexShader: `
+        attribute float size;
+        attribute float opacity;
+        attribute float edgeProgress;
+        attribute float triangleId;
+
+        varying float vOpacity;
+        varying float vEdgeProgress;
+        varying float vTriangleId;
+
+        void main() {
+          vOpacity = opacity;
+          vEdgeProgress = edgeProgress;
+          vTriangleId = triangleId;
+
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          gl_PointSize = size * 400.0 * (1.0 / -mvPosition.z);
+          gl_PointSize = max(gl_PointSize, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 baseColor;
+        uniform vec3 accentColor;
+        uniform float time;
+        uniform float pulseWidth;
+
+        varying float vOpacity;
+        varying float vEdgeProgress;
+        varying float vTriangleId;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          // Soft circular falloff
+          float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+          alpha *= vOpacity;
+
+          // Traveling light pulse
+          // Left triangle (id=0) goes clockwise, right triangle (id=1) goes counter-clockwise
+          float pulsePos = mod(time * 0.4, 1.0);
+
+          // Offset the second triangle's pulse
+          float triOffset = vTriangleId * 0.5;
+          float adjustedPulse = mod(pulsePos + triOffset, 1.0);
+
+          // Calculate distance from pulse center (wrapping around)
+          float distFromPulse = min(
+            abs(vEdgeProgress - adjustedPulse),
+            min(
+              abs(vEdgeProgress - adjustedPulse + 1.0),
+              abs(vEdgeProgress - adjustedPulse - 1.0)
+            )
+          );
+
+          // Pulse intensity
+          float pulseIntensity = 1.0 - smoothstep(0.0, pulseWidth, distFromPulse);
+          pulseIntensity = pow(pulseIntensity, 2.0);
+
+          // Mix colors based on pulse
+          vec3 finalColor = mix(baseColor, accentColor, pulseIntensity * 0.8);
+
+          // Boost brightness at pulse
+          float brightness = 1.0 + pulseIntensity * 1.5;
+          finalColor *= brightness;
+
+          // Additional pulse alpha boost
+          alpha *= 1.0 + pulseIntensity * 0.5;
+
+          if (alpha < 0.01) discard;
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    group.add(particles);
+
+    // Add subtle background glow
+    const glowGeo = new THREE.PlaneGeometry(4, 3);
+    const glowMat = new THREE.ShaderMaterial({
+      uniforms: {
+        glowColor: { value: baseColor },
+        time: { value: 0 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColor;
+        uniform float time;
+        varying vec2 vUv;
+
+        void main() {
+          vec2 center = vUv - vec2(0.5);
+          float dist = length(center);
+
+          // Soft radial gradient
+          float glow = 1.0 - smoothstep(0.0, 0.5, dist);
+          glow = pow(glow, 3.0) * 0.15;
+
+          // Subtle pulse
+          glow *= 0.9 + 0.1 * sin(time * 0.5);
+
+          gl_FragColor = vec4(glowColor, glow);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const glowPlane = new THREE.Mesh(glowGeo, glowMat);
+    glowPlane.position.z = -0.5;
+    group.add(glowPlane);
+
+    // Animation
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016 * config.speed;
+
+        material.uniforms.time.value = time;
+        glowMat.uniforms.time.value = time;
+
+        // Very subtle floating
+        group.position.y = Math.sin(time * 0.3) * 0.01;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            geometry.dispose();
+            material.dispose();
+            glowGeo.dispose();
+            glowMat.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Lazy loading
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initAviciiTriangles(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.avicii-triangles-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>
