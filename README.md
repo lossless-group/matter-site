@@ -170,6 +170,89 @@ if (isNocoDBConfigured()) {
 
 ---
 
+## 📚 Citation System
+
+The site implements a citation system for referencing research sources in narrative content. Citations use **hex codes** as stable identifiers that get converted to sequential integers at render time.
+
+### Why Hex Codes?
+
+Traditional `[1]`, `[2]`, `[3]` numbering breaks when:
+- Content is modular (same research appears on multiple pages)
+- Citations are reused across documents
+- Content is updated (adding/removing shifts all numbers)
+
+Hex codes like `[^hi3ous]` provide stability and portability.
+
+### Components
+
+**`InlineCitation.astro`** — Renders a citation marker with hover popover:
+
+```astro
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
+const citation = {
+  index: 1,
+  hexCode: 'hi3ous',
+  title: 'Stanford Medicine Center for Longevity and Healthy Aging',
+  url: 'https://aging.stanford.edu',
+  source: 'Stanford Medicine',
+  publishedDate: '2025-12-12'  // ISO format
+};
+
+<p>Deep relationships with Stanford<InlineCitation {...citation} /></p>
+```
+
+The popover displays the title, source, formatted date, and a "View Source" link.
+
+### Date Formatting Utility
+
+Dates are stored in ISO format (`YYYY-MM-DD`) and displayed using the `@lib/dates` utility:
+
+```typescript
+import { formatDate, formatCitationDate } from '@lib/dates';
+
+// Citation format (default): "2025, Dec 26"
+formatCitationDate('2025-12-26')
+
+// Other formats
+formatDate('2025-12-26', 'full')       // "December 26, 2025"
+formatDate('2025-12-26', 'short')      // "Dec 26, 2025"
+formatDate('2025-12-26', 'monthYear')  // "December 2025"
+formatDate('2025-12-26', 'relative')   // "2 days ago"
+
+// Custom patterns
+formatDate('2025-12-26', { pattern: 'MMM YYYY' })  // "Dec 2025"
+```
+
+**Available Presets:** `iso`, `citation`, `full`, `short`, `monthYear`, `monthYearShort`, `yearOnly`, `us`, `eu`, `relative`
+
+**Pattern Tokens:** `YYYY`, `YY`, `MMMM`, `MMM`, `MM`, `M`, `DD`, `D`
+
+### File Structure
+
+```
+src/
+├── components/citations/
+│   ├── InlineCitation.astro    # Hover popover citation marker
+│   ├── Sources.astro           # Full sources list
+│   ├── SourcesCompact.astro    # Compact sources display
+│   └── CitedSection.astro      # Wrapper for sections with citations
+├── lib/
+│   ├── citations/
+│   │   └── types.ts            # CitationReference interface
+│   └── dates/
+│       ├── convertRawDatesToPreferredFormats.ts
+│       └── index.ts            # Barrel export
+└── content/narratives/
+    └── section--*.md           # Markdown with citation data in frontmatter
+```
+
+### Architecture Reference
+
+See `context-v/Citation-System-Architecture.md` for the complete specification including the global popover pattern that solves `overflow: hidden` clipping issues.
+
+---
+
 ## 🔐 Authentication & Access Control
 
 The site implements a multi-tier authentication system for protecting confidential investment materials.
