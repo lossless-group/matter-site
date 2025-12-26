@@ -4,6 +4,7 @@ import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
 import ImageAbstractHumanBody from '@components/flare/ImageAbstract--HumanBody--Particles.astro';
 import ImageAbstractHumanSVG from '@components/flare/ImageAbstract--HumanBody--SVG.astro';
 import ImageAbstractDNAFigure8 from '@components/flare/ImageAbstract--DNA-Figure8.astro';
+import ImageAbstractDNADoubleHelix from '@components/flare/ImageAbstract--DNA-DoubleHelix.astro';
 import ImageAbstractGraphNetwork from '@components/flare/ImageAbstract--Graph-Network.astro';
 ---
 
@@ -112,6 +113,65 @@ import ImageAbstractGraphNetwork from '@components/flare/ImageAbstract--Graph-Ne
       <div class="text-center">
         <div class="inline-block mb-4 w-[200px] h-[220px]">
           <ImageAbstractDNAFigure8 size="100%" intensity={0.8} animate={false} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static snapshot</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--DNA-DoubleHelix
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Classic Watson-Crick double helix with glowing base pairs and spinning animation.
+    </p>
+
+    <div class="w-[min(80vw,520px)] h-[min(100vw,520px)]">
+      <ImageAbstractDNADoubleHelix size="100%" basePairs={24} rotationSpeed={0.3} />
+    </div>
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[220px]">
+          <ImageAbstractDNADoubleHelix size="100%" basePairs={20} tiltAngle={45} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">45° tilt</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[220px]">
+          <ImageAbstractDNADoubleHelix size="100%" basePairs={20} tiltAngle={90} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">90° horizontal</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[220px]">
+          <ImageAbstractDNADoubleHelix size="100%" basePairs={20} tiltAngle={23} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">23° subtle tilt</p>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[220px]">
+          <ImageAbstractDNADoubleHelix size="100%" basePairs={16} rotationSpeed={0.2} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Compact (16 pairs)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[220px]">
+          <ImageAbstractDNADoubleHelix size="100%" basePairs={30} rotationSpeed={0.5} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Extended (30 pairs)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[220px]">
+          <ImageAbstractDNADoubleHelix size="100%" basePairs={24} animate={false} />
         </div>
         <p class="text-sm text-(--color-alabaster)/60">Static snapshot</p>
       </div>
