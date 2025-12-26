@@ -1,0 +1,187 @@
+---
+/**
+ * FlarePageLayout
+ * Layout for individual flare component demo pages with swipe/arrow navigation
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  currentSlug: string;
+}
+
+const { title, description, currentSlug } = Astro.props;
+
+const flareComponents = [
+  { slug: 'orb', name: 'Orb' },
+  { slug: 'graph-network', name: 'Graph Network' },
+  { slug: 'graph-background', name: 'Graph Background' },
+  { slug: 'graph-galaxy', name: 'Graph Galaxy' },
+  { slug: 'dna-figure8', name: 'DNA Figure-8' },
+  { slug: 'dna-helix', name: 'DNA Double Helix' },
+  { slug: 'mitochondria', name: 'Mitochondria' },
+  { slug: 'chromosome', name: 'Chromosome' },
+  { slug: 'red-cell', name: 'Red Blood Cell' },
+  { slug: 'white-cell', name: 'White Blood Cell' },
+  { slug: 'human-body', name: 'Human Body' },
+  { slug: 'human-back', name: 'Human Back View' },
+  { slug: 'human-svg', name: 'Human SVG' },
+  { slug: 'bell-galaxy', name: 'Bell-Shaped Galaxy' },
+];
+
+const currentIndex = flareComponents.findIndex(c => c.slug === currentSlug);
+const prevComponent = currentIndex > 0 ? flareComponents[currentIndex - 1] : null;
+const nextComponent = currentIndex < flareComponents.length - 1 ? flareComponents[currentIndex + 1] : null;
+---
+
+<BaseThemeLayout
+  title={`${title} | Flare Gallery`}
+  description={description}
+  mode="dark"
+>
+  <section
+    class="min-h-screen flex flex-col items-center justify-center px-6 py-12 bg-(--color-void) relative"
+    data-prev-url={prevComponent ? `/design-system/flare/${prevComponent.slug}` : ''}
+    data-next-url={nextComponent ? `/design-system/flare/${nextComponent.slug}` : ''}
+    id="flare-page"
+  >
+    <!-- Header -->
+    <div class="absolute top-6 left-6 right-6 flex items-center justify-between">
+      <a
+        href="/design-system/flare"
+        class="text-sm text-(--color-lilac)/60 hover:text-(--color-lilac) transition-colors flex items-center gap-2"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        Gallery
+      </a>
+      <span class="text-xs text-(--color-lilac)/40 font-mono">
+        {String(currentIndex + 1).padStart(2, '0')} / {String(flareComponents.length).padStart(2, '0')}
+      </span>
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-2 mt-8">
+      {title}
+    </h1>
+    <p class="text-(--color-lilac)/70 mb-8 text-center max-w-md">
+      {description}
+    </p>
+
+    <!-- Component slot -->
+    <div class="flex-1 flex items-center justify-center w-full max-w-2xl">
+      <slot />
+    </div>
+
+    <!-- Variants slot -->
+    <div class="w-full max-w-4xl mt-8">
+      <slot name="variants" />
+    </div>
+
+    <!-- Navigation arrows -->
+    {prevComponent && (
+      <a
+        href={`/design-system/flare/${prevComponent.slug}`}
+        class="nav-arrow fixed left-4 top-1/2 -translate-y-1/2 p-4 text-(--color-lilac)/40 hover:text-(--color-lilac) transition-colors"
+        aria-label={`Previous: ${prevComponent.name}`}
+      >
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="sr-only">{prevComponent.name}</span>
+      </a>
+    )}
+
+    {nextComponent && (
+      <a
+        href={`/design-system/flare/${nextComponent.slug}`}
+        class="nav-arrow fixed right-4 top-1/2 -translate-y-1/2 p-4 text-(--color-lilac)/40 hover:text-(--color-lilac) transition-colors"
+        aria-label={`Next: ${nextComponent.name}`}
+      >
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="sr-only">{nextComponent.name}</span>
+      </a>
+    )}
+
+    <!-- Bottom nav dots -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+      {flareComponents.map((component, index) => (
+        <a
+          href={`/design-system/flare/${component.slug}`}
+          class:list={[
+            'w-2 h-2 rounded-full transition-all',
+            index === currentIndex
+              ? 'bg-(--color-lilac) w-6'
+              : 'bg-(--color-lilac)/30 hover:bg-(--color-lilac)/60'
+          ]}
+          aria-label={component.name}
+        />
+      ))}
+    </div>
+  </section>
+</BaseThemeLayout>
+
+<style>
+  .nav-arrow {
+    opacity: 0.6;
+  }
+  .nav-arrow:hover {
+    opacity: 1;
+  }
+  @media (max-width: 768px) {
+    .nav-arrow {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Keyboard navigation
+  function setupNavigation() {
+    const page = document.getElementById('flare-page');
+    if (!page) return;
+
+    const prevUrl = page.dataset.prevUrl;
+    const nextUrl = page.dataset.nextUrl;
+
+    // Keyboard arrows
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && prevUrl) {
+        window.location.href = prevUrl;
+      } else if (e.key === 'ArrowRight' && nextUrl) {
+        window.location.href = nextUrl;
+      }
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50;
+
+    page.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    page.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const distance = touchEndX - touchStartX;
+
+      if (Math.abs(distance) > minSwipeDistance) {
+        if (distance > 0 && prevUrl) {
+          // Swipe right -> go to previous
+          window.location.href = prevUrl;
+        } else if (distance < 0 && nextUrl) {
+          // Swipe left -> go to next
+          window.location.href = nextUrl;
+        }
+      }
+    }, { passive: true });
+  }
+
+  document.addEventListener('DOMContentLoaded', setupNavigation);
+  document.addEventListener('astro:page-load', setupNavigation);
+</script>

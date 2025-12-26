@@ -3,9 +3,12 @@ import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
 import ImageAbstractHumanBody from '@components/flare/ImageAbstract--HumanBody--Particles.astro';
 import ImageAbstractHumanSVG from '@components/flare/ImageAbstract--HumanBody--SVG.astro';
+import ImageAbstractHumanBack from '@components/flare/ImageAbstract--HumanBody--BackView.astro';
 import ImageAbstractDNAFigure8 from '@components/flare/ImageAbstract--DNA-Figure8.astro';
 import ImageAbstractDNADoubleHelix from '@components/flare/ImageAbstract--DNA-DoubleHelix.astro';
 import ImageAbstractGraphNetwork from '@components/flare/ImageAbstract--Graph-Network.astro';
+import ImageAbstractMitochondria from '@components/flare/ImageAbstract--Mitochondria.astro';
+import ImageAbstractChromosome from '@components/flare/ImageAbstract--Chromosome.astro';
 ---
 
 <BaseThemeLayout
@@ -174,6 +177,160 @@ import ImageAbstractGraphNetwork from '@components/flare/ImageAbstract--Graph-Ne
           <ImageAbstractDNADoubleHelix size="100%" basePairs={24} animate={false} />
         </div>
         <p class="text-sm text-(--color-alabaster)/60">Static snapshot</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--Mitochondria
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      The "powerhouse of the cell" - a floating mitochondria with outer membrane and inner cristae folds.
+    </p>
+
+    <div class="w-[min(80vw,520px)] h-[min(100vw,520px)]">
+      <ImageAbstractMitochondria size="100%" animationSpeed={0.5} />
+    </div>
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractMitochondria size="100%" tiltAngle={0} animationSpeed={0.3} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Level view</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractMitochondria size="100%" tiltAngle={45} animationSpeed={0.6} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">45° tilt, faster</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractMitochondria size="100%" outerColor="#ff6b9d" innerColor="#c74b7a" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Pink variant</p>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractMitochondria size="100%" outerColor="#4dd0e1" innerColor="#00acc1" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractMitochondria size="100%" outerColor="#a7ff83" innerColor="#6fdb4f" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Green variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractMitochondria size="100%" animate={false} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--Chromosome
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      X-shaped chromosome with bright telomere caps at each end - the protective caps that shorten with age.
+    </p>
+
+    <div class="w-[min(80vw,520px)] h-[min(100vw,520px)]">
+      <ImageAbstractChromosome size="100%" animationSpeed={0.4} />
+    </div>
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractChromosome size="100%" tiltAngle={0} animationSpeed={0.3} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Front view</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractChromosome size="100%" bodyColor="#6643e2" telomereColor="#a7ff83" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Purple/Green variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractChromosome size="100%" bodyColor="#9C85DF" telomereColor="#ffb347" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Lilac/Orange variant</p>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractChromosome size="100%" tiltAngle={45} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">45° tilt</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractChromosome size="100%" animationSpeed={0.8} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Fast animation</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[200px]">
+          <ImageAbstractChromosome size="100%" animate={false} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--HumanBody--BackView
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Back view silhouette with dense glowing head particles that fade down the body. Matches reference image.
+    </p>
+
+    <div class="w-[min(80vw,480px)] h-[min(100vw,640px)]">
+      <ImageAbstractHumanBack size="100%" />
+    </div>
+
+    <div class="mt-16 grid gap-8 sm:grid-cols-3 max-w-4xl">
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[300px]">
+          <ImageAbstractHumanBack size="100%" rotationSpeed={0.15} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Rotating</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[300px]">
+          <ImageAbstractHumanBack size="100%" color="#9C85DF" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Lilac tint</p>
+      </div>
+
+      <div class="text-center">
+        <div class="inline-block mb-4 w-[200px] h-[300px]">
+          <ImageAbstractHumanBack size="100%" animate={false} />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static</p>
       </div>
     </div>
   </section>

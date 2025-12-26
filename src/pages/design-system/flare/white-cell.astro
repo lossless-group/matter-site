@@ -1,0 +1,45 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractWhiteCell from '@components/flare/ImageAbstract--WhiteCell.astro';
+---
+
+<FlarePageLayout
+  title="White Blood Cell"
+  description="Neutrophil-like leukocyte with multi-lobed nucleus, pseudopods, and cytoplasmic granules."
+  currentSlug="white-cell"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractWhiteCell size="100%" animationSpeed={0.25} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractWhiteCell size="100%" animationSpeed={0.15} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Slow drift</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractWhiteCell
+          size="100%"
+          membraneColor="#fef3c7"
+          nucleusColor="#d97706"
+          granuleColor="#fbbf24"
+        />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Amber variant</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractWhiteCell
+          size="100%"
+          membraneColor="#dcfce7"
+          nucleusColor="#16a34a"
+          granuleColor="#86efac"
+        />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Green variant</p>
+    </div>
+  </div>
+</FlarePageLayout>

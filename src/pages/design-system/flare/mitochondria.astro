@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractMitochondria from '@components/flare/ImageAbstract--Mitochondria.astro';
+---
+
+<FlarePageLayout
+  title="Mitochondria"
+  description="The powerhouse of the cell - floating mitochondria with outer membrane and inner cristae folds."
+  currentSlug="mitochondria"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractMitochondria size="100%" animationSpeed={0.5} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractMitochondria size="100%" tiltAngle={0} animationSpeed={0.3} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Level view</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractMitochondria size="100%" outerColor="#ff6b9d" innerColor="#c74b7a" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Pink variant</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractMitochondria size="100%" animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

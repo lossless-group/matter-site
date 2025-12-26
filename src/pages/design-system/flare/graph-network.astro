@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractGraphNetwork from '@components/flare/ImageAbstract--Graph-Network.astro';
+---
+
+<FlarePageLayout
+  title="Graph Network"
+  description="Dynamic graph network with softly drifting nodes and flickering connections."
+  currentSlug="graph-network"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractGraphNetwork size="100%" rotationSpeed={0.25} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractGraphNetwork size="100%" rotationSpeed={0.2} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Slow, calm</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractGraphNetwork size="100%" rotationSpeed={0.4} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">High-activity</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractGraphNetwork size="100%" animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

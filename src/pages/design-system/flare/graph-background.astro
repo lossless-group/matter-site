@@ -1,0 +1,40 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractGraphBackground from '@components/flare/ImageAbstract--Graph-Network--Background.astro';
+---
+
+<FlarePageLayout
+  title="Graph Background"
+  description="Muted ambient graph network - subtle movement for layering behind content."
+  currentSlug="graph-background"
+>
+  <div class="w-[min(90vw,600px)] h-[min(70vw,400px)] relative">
+    <ImageAbstractGraphBackground size="100%" opacity={0.5} speed={0.02} />
+    <div class="absolute inset-0 flex items-center justify-center">
+      <p class="text-(--color-alabaster)/80 text-lg font-medium px-8 text-center">
+        Content can be layered on top of this subtle background
+      </p>
+    </div>
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[180px] h-[120px]">
+        <ImageAbstractGraphBackground size="100%" opacity={0.3} speed={0.01} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Very subtle</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[180px] h-[120px]">
+        <ImageAbstractGraphBackground size="100%" opacity={0.6} speed={0.03} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">More visible</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[180px] h-[120px]">
+        <ImageAbstractGraphBackground size="100%" opacity={0.4} animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

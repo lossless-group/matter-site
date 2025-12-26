@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractDNADoubleHelix from '@components/flare/ImageAbstract--DNA-DoubleHelix.astro';
+---
+
+<FlarePageLayout
+  title="DNA Double Helix"
+  description="Classic Watson-Crick double helix with glowing base pairs and spinning animation."
+  currentSlug="dna-helix"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractDNADoubleHelix size="100%" basePairs={24} rotationSpeed={0.3} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[150px] h-[170px]">
+        <ImageAbstractDNADoubleHelix size="100%" basePairs={20} tiltAngle={45} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">45° tilt</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[150px] h-[170px]">
+        <ImageAbstractDNADoubleHelix size="100%" basePairs={16} rotationSpeed={0.2} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Compact (16)</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[150px] h-[170px]">
+        <ImageAbstractDNADoubleHelix size="100%" basePairs={24} animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

@@ -1,0 +1,33 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractOrb from '@components/flare/ImageAbstract--Orb--Half.astro';
+---
+
+<FlarePageLayout
+  title="Orb"
+  description="Three.js particle sphere with central void. Hover to see subtle movement."
+  currentSlug="orb"
+>
+  <ImageAbstractOrb size="min(80vw, 480px)" />
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3">
+        <ImageAbstractOrb size="140px" color="#9C85DF" rotationSpeed={0.5} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Lilac variant</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3">
+        <ImageAbstractOrb size="140px" color="#6643e2" rotationSpeed={0.2} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Purple variant</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3">
+        <ImageAbstractOrb size="140px" animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractHumanBody from '@components/flare/ImageAbstract--HumanBody--Particles.astro';
+---
+
+<FlarePageLayout
+  title="Human Body"
+  description="Particle-based human silhouette with glowing head and fading torso."
+  currentSlug="human-body"
+>
+  <div class="w-[min(70vw,400px)] h-[min(90vw,520px)]">
+    <ImageAbstractHumanBody size="100%" />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[120px] h-[200px]">
+        <ImageAbstractHumanBody size="100%" color="#f9fafb" rotationSpeed={0.3} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Alabaster</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[120px] h-[200px]">
+        <ImageAbstractHumanBody size="100%" color="#9C85DF" rotationSpeed={0.4} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Lilac</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[120px] h-[200px]">
+        <ImageAbstractHumanBody size="100%" color="#6643e2" animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

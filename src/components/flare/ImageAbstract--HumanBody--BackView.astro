@@ -1,0 +1,486 @@
+---
+/**
+ * ImageAbstract--HumanBody--BackView
+ *
+ * A Three.js particle visualization of a human figure from behind.
+ * Matches the reference image with:
+ * - Extremely dense, bright particles at the head (almost solid)
+ * - Gradual density falloff toward the body
+ * - Blue glow/halo effect around the head
+ * - Subtle particle shimmer animation
+ * - Optional slow rotation
+ */
+
+interface Props {
+  /** Container size in CSS units */
+  size?: string;
+  /** Base particle color */
+  color?: string;
+  /** Enable animation */
+  animate?: boolean;
+  /** Rotation speed (0 = no rotation) */
+  rotationSpeed?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  color = '#e8f0ff',
+  animate = true,
+  rotationSpeed = 0.05,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `human-back-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['human-back-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-color={color}
+  data-animate={animate}
+  data-rotation-speed={rotationSpeed}
+>
+  <canvas class="human-back-canvas"></canvas>
+</div>
+
+<style>
+  .human-back-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .human-back-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface Config {
+    color: string;
+    animate: boolean;
+    rotationSpeed: number;
+  }
+
+  function initHumanBack(container: HTMLElement) {
+    const canvas = container.querySelector('.human-back-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const config: Config = {
+      color: container.dataset.color || '#e8f0ff',
+      animate: container.dataset.animate !== 'false',
+      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.05'),
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 400;
+
+    // Use orthographic-like perspective for flatter look
+    const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
+    camera.position.z = 4;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    // Very high particle count for ultra-dense head effect
+    const particleCount = 60000;
+    const positions = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+    const opacities = new Float32Array(particleCount);
+    const phases = new Float32Array(particleCount);
+
+    let idx = 0;
+
+    /**
+     * Back view silhouette - TRUE SPHERE head, natural body
+     * The head should be an almost perfect CIRCLE when rendered
+     * Using a true circular function for head, control points for body
+     */
+
+    // Head is a perfect circle - occupies t = 0 to 0.18
+    // Head center at t = 0.09, radius covers 0.09 in t-space
+    const HEAD_CENTER = 0.09;
+    const HEAD_RADIUS_T = 0.09;  // in t-space
+    const HEAD_RADIUS_W = 0.22;  // in width-space (half-width)
+
+    // Body control points (start after head)
+    const bodyControlPoints = [
+      // NECK - starts right after head
+      { t: 0.20, w: 0.10 },  // Upper neck
+      { t: 0.26, w: 0.09 },  // Mid neck (thinnest)
+      { t: 0.32, w: 0.11 },  // Lower neck
+      // TRAPEZIUS - gradual outward slope
+      { t: 0.40, w: 0.20 },  // Trap begins
+      { t: 0.50, w: 0.32 },  // Trap mid
+      { t: 0.60, w: 0.42 },  // Shoulders
+      // BODY - fades out
+      { t: 0.72, w: 0.40 },  // Upper back
+      { t: 0.85, w: 0.36 },  // Mid back
+      { t: 1.00, w: 0.30 },  // Lower visible area
+    ];
+
+    function getHalfWidth(t: number): number {
+      // HEAD: Use perfect circle equation
+      if (t <= HEAD_CENTER + HEAD_RADIUS_T) {
+        const distFromCenter = Math.abs(t - HEAD_CENTER);
+        if (distFromCenter <= HEAD_RADIUS_T) {
+          // Circle equation: x² + y² = r²  =>  x = sqrt(r² - y²)
+          const normalizedDist = distFromCenter / HEAD_RADIUS_T;
+          const circleWidth = Math.sqrt(1 - normalizedDist * normalizedDist);
+          return HEAD_RADIUS_W * circleWidth;
+        }
+      }
+
+      // BODY: Use control point interpolation
+      for (let i = 0; i < bodyControlPoints.length - 1; i++) {
+        const p1 = bodyControlPoints[i];
+        const p2 = bodyControlPoints[i + 1];
+        if (t >= p1.t && t <= p2.t) {
+          const localT = (t - p1.t) / (p2.t - p1.t);
+          // Smooth interpolation
+          const smooth = localT * localT * (3 - 2 * localT);
+          return p1.w + (p2.w - p1.w) * smooth;
+        }
+      }
+
+      // Transition zone between head and body (t: 0.18 - 0.20)
+      if (t > HEAD_CENTER + HEAD_RADIUS_T && t < bodyControlPoints[0].t) {
+        const headBottom = HEAD_RADIUS_W * 0.3; // Head width at bottom edge
+        const neckTop = bodyControlPoints[0].w;
+        const transitionT = (t - (HEAD_CENTER + HEAD_RADIUS_T)) / (bodyControlPoints[0].t - (HEAD_CENTER + HEAD_RADIUS_T));
+        return headBottom + (neckTop - headBottom) * transitionT;
+      }
+
+      return bodyControlPoints[bodyControlPoints.length - 1].w;
+    }
+
+    /**
+     * Particle density - EXTREMELY dense spherical head, dramatic falloff
+     * Head should appear almost SOLID white
+     */
+    function getDensity(t: number): number {
+      const headEnd = HEAD_CENTER + HEAD_RADIUS_T; // 0.18
+
+      if (t <= headEnd) {
+        // Head - ULTRA dense (almost solid sphere)
+        // Peak density at center of head
+        const distFromCenter = Math.abs(t - HEAD_CENTER) / HEAD_RADIUS_T;
+        return 35.0 * (1 - distFromCenter * 0.25); // Peak at center
+      }
+      if (t < 0.32) {
+        // Neck - rapid dropoff but still visible
+        return 6.0;
+      }
+      if (t < 0.50) {
+        // Trapezius - medium-low
+        return 3.0;
+      }
+      if (t < 0.65) {
+        // Shoulders - sparse
+        return 1.5;
+      }
+      // Body - very sparse, dramatic falloff
+      const falloff = (t - 0.65) / 0.35;
+      return Math.max(0.08, 0.8 * (1 - falloff * falloff));
+    }
+
+    // Generate particles
+    const maxAttempts = particleCount * 15;
+    let attempts = 0;
+
+    while (idx < particleCount && attempts < maxAttempts) {
+      attempts++;
+
+      // Random t value - bias toward head (lower t values)
+      const tRaw = Math.random();
+      const t = Math.pow(tRaw, 0.4); // Bias toward 0 (head)
+
+      const density = getDensity(t);
+
+      // Rejection sampling based on density
+      if (Math.random() > density / 10.0) continue;
+
+      const halfWidth = getHalfWidth(t);
+
+      // Random x position within silhouette width
+      const xNorm = (Math.random() * 2 - 1); // -1 to 1
+      const x = xNorm * halfWidth;
+
+      // Small z variation for slight 3D depth
+      const zVariation = 0.03 * (1 - Math.abs(xNorm)) * (Math.random() * 2 - 1);
+
+      // Map t to scene Y coordinates
+      // t=0 (head) -> y=1.0, t=1 (bottom) -> y=-1.0
+      const y = 1.0 - t * 2.0;
+
+      // Add organic noise
+      const noise = t < 0.25 ? 0.02 : 0.015;
+      const px = x + (Math.random() - 0.5) * noise;
+      const py = y + (Math.random() - 0.5) * noise;
+      const pz = zVariation + (Math.random() - 0.5) * 0.01;
+
+      positions[idx * 3] = px;
+      positions[idx * 3 + 1] = py;
+      positions[idx * 3 + 2] = pz;
+
+      // Particle size - larger and more varied at head (t <= 0.18)
+      const headEnd = HEAD_CENTER + HEAD_RADIUS_T;
+      const isHead = t <= headEnd;
+      const isNeck = t > headEnd && t < 0.32;
+      let baseSize, sizeVar;
+      if (isHead) {
+        // Head particles - bigger, brighter
+        baseSize = 0.014;
+        sizeVar = 0.016;
+      } else if (isNeck) {
+        baseSize = 0.010;
+        sizeVar = 0.008;
+      } else {
+        baseSize = 0.008;
+        sizeVar = 0.006;
+      }
+      sizes[idx] = baseSize + Math.random() * sizeVar;
+
+      // Opacity - ULTRA bright at head (almost solid), fading dramatically
+      let opacity;
+      if (t <= headEnd) {
+        // Head - MAXIMUM brightness, nearly solid white
+        const centerFactor = 1 - Math.abs(xNorm) * 0.15;
+        opacity = 0.94 + Math.random() * 0.06 * centerFactor;
+      } else if (t < 0.32) {
+        // Neck - still fairly bright
+        opacity = 0.55 + Math.random() * 0.2;
+      } else if (t < 0.55) {
+        // Trapezius/shoulders - medium
+        opacity = 0.30 + Math.random() * 0.15;
+      } else {
+        // Body - very dim, sparse
+        opacity = Math.max(0.08, 0.25 - (t - 0.55) * 0.35) * (0.5 + Math.random() * 0.5);
+      }
+      opacities[idx] = opacity;
+
+      // Phase for shimmer
+      phases[idx] = Math.random() * Math.PI * 2;
+
+      idx++;
+    }
+
+    // Trim arrays to actual count
+    const actualCount = idx;
+    const finalPositions = positions.slice(0, actualCount * 3);
+    const finalSizes = sizes.slice(0, actualCount);
+    const finalOpacities = opacities.slice(0, actualCount);
+    const finalPhases = phases.slice(0, actualCount);
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(finalPositions, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(finalSizes, 1));
+    geometry.setAttribute('opacity', new THREE.BufferAttribute(finalOpacities, 1));
+    geometry.setAttribute('phase', new THREE.BufferAttribute(finalPhases, 1));
+
+    // Custom shader for soft glowing particles
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        color: { value: new THREE.Color(config.color) },
+        time: { value: 0 },
+      },
+      vertexShader: `
+        attribute float size;
+        attribute float opacity;
+        attribute float phase;
+
+        varying float vOpacity;
+        varying float vPhase;
+
+        uniform float time;
+
+        void main() {
+          vOpacity = opacity;
+          vPhase = phase;
+
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          // Size attenuation
+          gl_PointSize = size * 350.0 * (1.0 / -mvPosition.z);
+
+          // Minimum size
+          gl_PointSize = max(gl_PointSize, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 color;
+        uniform float time;
+
+        varying float vOpacity;
+        varying float vPhase;
+
+        void main() {
+          // Soft circular particle
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          // Soft glow falloff
+          float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+
+          // Shimmer effect
+          float shimmer = 0.85 + 0.15 * sin(time * 2.0 + vPhase * 10.0);
+
+          alpha *= vOpacity * shimmer;
+
+          if (alpha < 0.01) discard;
+
+          // Slight blue tint in the glow
+          vec3 glowColor = mix(color, vec3(0.7, 0.85, 1.0), 0.2);
+
+          gl_FragColor = vec4(glowColor, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Subtle blue glow sphere BEHIND the head
+    const glowGeometry = new THREE.SphereGeometry(0.35, 32, 32);
+    const glowMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        glowColor: { value: new THREE.Color(0x4488ff) },
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColor;
+        varying vec3 vNormal;
+        void main() {
+          float intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1.0)), 2.0);
+          gl_FragColor = vec4(glowColor, intensity * 0.4);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+    });
+    const glowSphere = new THREE.Mesh(glowGeometry, glowMaterial);
+    // Position glow at head center (t=HEAD_CENTER=0.09 maps to y = 1.0 - 0.09*2 = 0.82)
+    glowSphere.position.set(0, 0.82, -0.15);
+    scene.add(glowSphere);
+
+    // Animation
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016;
+
+        // Update shader time for shimmer
+        material.uniforms.time.value = time;
+
+        // Subtle rotation
+        if (config.rotationSpeed > 0) {
+          particles.rotation.y = Math.sin(time * config.rotationSpeed) * 0.3;
+        }
+
+        // Subtle breathing motion
+        const breathe = 1 + Math.sin(time * 0.5) * 0.01;
+        particles.scale.x = breathe;
+        particles.scale.z = breathe;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            geometry.dispose();
+            material.dispose();
+            glowGeometry.dispose();
+            glowMaterial.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Lazy loading with IntersectionObserver
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initHumanBack(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.human-back-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>

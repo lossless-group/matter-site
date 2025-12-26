@@ -1,0 +1,451 @@
+---
+/**
+ * ImageAbstract--Graph-Network--Galaxy
+ *
+ * A dense, self-contained galaxy-like graph visualization:
+ * - Concentrated in the center, fading at edges
+ * - Dense core with sparse outer halo
+ * - Looks complete, not cut off by borders
+ * - Works as a standalone visual element or separator
+ * - Multiple clusters creating galaxy spiral effect
+ */
+
+interface Props {
+  size?: string;
+  animate?: boolean;
+  /** Rotation speed */
+  rotationSpeed?: number;
+  /** Core color */
+  coreColor?: string;
+  /** Outer halo color */
+  haloColor?: string;
+  class?: string;
+}
+
+const {
+  size = '520px',
+  animate = true,
+  rotationSpeed = 0.15,
+  coreColor = '#D8B4FE',
+  haloColor = '#6643e2',
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `graph-galaxy-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['graph-galaxy-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-animate={animate}
+  data-rotation-speed={rotationSpeed}
+  data-core-color={coreColor}
+  data-halo-color={haloColor}
+>
+  <canvas class="graph-galaxy-canvas"></canvas>
+</div>
+
+<style>
+  .graph-galaxy-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .graph-galaxy-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface NodeData {
+    x: number;
+    y: number;
+    z: number;
+    angle: number;
+    radius: number;
+    speed: number;
+    layer: number; // 0 = core, 1 = mid, 2 = halo
+  }
+
+  function initGraphGalaxy(container: HTMLElement) {
+    const canvas = container.querySelector('.graph-galaxy-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const animate = container.dataset.animate !== 'false';
+    const rotationSpeed = parseFloat(container.dataset.rotationSpeed || '0.15');
+    const coreColorHex = container.dataset.coreColor || '#D8B4FE';
+    const haloColorHex = container.dataset.haloColor || '#6643e2';
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 520;
+    const height = container.clientHeight || 520;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.z = 3;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const coreColor = new THREE.Color(coreColorHex);
+    const haloColor = new THREE.Color(haloColorHex);
+
+    // Galaxy parameters
+    const coreNodeCount = 180;    // Dense core
+    const midNodeCount = 120;     // Middle ring
+    const haloNodeCount = 80;     // Sparse outer halo
+    const totalNodes = coreNodeCount + midNodeCount + haloNodeCount;
+
+    const nodes: NodeData[] = [];
+    const positions = new Float32Array(totalNodes * 3);
+    const sizes = new Float32Array(totalNodes);
+    const colors = new Float32Array(totalNodes * 3);
+    const alphas = new Float32Array(totalNodes);
+
+    // Spiral arm parameters
+    const spiralArms = 3;
+    const spiralTightness = 0.8;
+
+    let nodeIndex = 0;
+
+    // Generate core nodes (dense center)
+    for (let i = 0; i < coreNodeCount; i++) {
+      const armOffset = (i % spiralArms) * (Math.PI * 2 / spiralArms);
+      const baseAngle = (i / coreNodeCount) * Math.PI * 4 + armOffset;
+      const radius = 0.1 + (i / coreNodeCount) * 0.4;
+
+      // Spiral with some randomness
+      const angle = baseAngle + spiralTightness * Math.log(radius + 0.1);
+      const jitter = (Math.random() - 0.5) * 0.15;
+      const finalRadius = radius + jitter;
+
+      const x = Math.cos(angle) * finalRadius;
+      const y = Math.sin(angle) * finalRadius;
+      const z = (Math.random() - 0.5) * 0.1;
+
+      const speed = 0.3 + Math.random() * 0.2;
+
+      nodes.push({ x, y, z, angle, radius: finalRadius, speed, layer: 0 });
+
+      positions[nodeIndex * 3] = x;
+      positions[nodeIndex * 3 + 1] = y;
+      positions[nodeIndex * 3 + 2] = z;
+
+      // Core is brighter, larger
+      sizes[nodeIndex] = 0.02 + Math.random() * 0.015;
+
+      // Interpolate color based on radius
+      const colorMix = finalRadius / 0.5;
+      const nodeColor = coreColor.clone().lerp(haloColor, colorMix * 0.5);
+      colors[nodeIndex * 3] = nodeColor.r;
+      colors[nodeIndex * 3 + 1] = nodeColor.g;
+      colors[nodeIndex * 3 + 2] = nodeColor.b;
+
+      alphas[nodeIndex] = 0.9 + Math.random() * 0.1;
+      nodeIndex++;
+    }
+
+    // Generate mid-ring nodes
+    for (let i = 0; i < midNodeCount; i++) {
+      const armOffset = (i % spiralArms) * (Math.PI * 2 / spiralArms);
+      const baseAngle = (i / midNodeCount) * Math.PI * 3 + armOffset;
+      const radius = 0.4 + (i / midNodeCount) * 0.35;
+
+      const angle = baseAngle + spiralTightness * Math.log(radius + 0.1);
+      const jitter = (Math.random() - 0.5) * 0.2;
+      const finalRadius = radius + jitter;
+
+      const x = Math.cos(angle) * finalRadius;
+      const y = Math.sin(angle) * finalRadius;
+      const z = (Math.random() - 0.5) * 0.15;
+
+      const speed = 0.2 + Math.random() * 0.15;
+
+      nodes.push({ x, y, z, angle, radius: finalRadius, speed, layer: 1 });
+
+      positions[nodeIndex * 3] = x;
+      positions[nodeIndex * 3 + 1] = y;
+      positions[nodeIndex * 3 + 2] = z;
+
+      sizes[nodeIndex] = 0.015 + Math.random() * 0.012;
+
+      const colorMix = (finalRadius - 0.4) / 0.35;
+      const nodeColor = coreColor.clone().lerp(haloColor, 0.3 + colorMix * 0.4);
+      colors[nodeIndex * 3] = nodeColor.r;
+      colors[nodeIndex * 3 + 1] = nodeColor.g;
+      colors[nodeIndex * 3 + 2] = nodeColor.b;
+
+      alphas[nodeIndex] = 0.7 + Math.random() * 0.2;
+      nodeIndex++;
+    }
+
+    // Generate halo nodes (sparse outer ring)
+    for (let i = 0; i < haloNodeCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 0.7 + Math.random() * 0.35;
+
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      const z = (Math.random() - 0.5) * 0.2;
+
+      const speed = 0.1 + Math.random() * 0.1;
+
+      nodes.push({ x, y, z, angle, radius, speed, layer: 2 });
+
+      positions[nodeIndex * 3] = x;
+      positions[nodeIndex * 3 + 1] = y;
+      positions[nodeIndex * 3 + 2] = z;
+
+      // Halo is dimmer, smaller
+      sizes[nodeIndex] = 0.01 + Math.random() * 0.01;
+
+      colors[nodeIndex * 3] = haloColor.r;
+      colors[nodeIndex * 3 + 1] = haloColor.g;
+      colors[nodeIndex * 3 + 2] = haloColor.b;
+
+      // Fade out at edges
+      const edgeFade = 1 - ((radius - 0.7) / 0.35) * 0.5;
+      alphas[nodeIndex] = (0.4 + Math.random() * 0.3) * edgeFade;
+      nodeIndex++;
+    }
+
+    const nodeGeometry = new THREE.BufferGeometry();
+    nodeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    nodeGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    nodeGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    nodeGeometry.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+
+    const nodeMaterial = new THREE.ShaderMaterial({
+      vertexShader: `
+        attribute float size;
+        attribute float alpha;
+        attribute vec3 color;
+        varying float vAlpha;
+        varying vec3 vColor;
+
+        void main() {
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          gl_PointSize = size * 450.0 * (1.0 / -mvPosition.z);
+          vAlpha = alpha;
+          vColor = color;
+        }
+      `,
+      fragmentShader: `
+        varying float vAlpha;
+        varying vec3 vColor;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          float coreFalloff = 1.0 - smoothstep(0.0, 0.25, dist);
+          float glowFalloff = 1.0 - smoothstep(0.1, 0.5, dist);
+
+          float alpha = mix(glowFalloff * 0.6, coreFalloff, 0.7);
+          alpha *= vAlpha;
+
+          if (alpha < 0.01) discard;
+
+          vec3 finalColor = vColor * (1.0 + coreFalloff * 0.3);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const nodePoints = new THREE.Points(nodeGeometry, nodeMaterial);
+    group.add(nodePoints);
+
+    // Edges - connect nearby nodes with fading connections
+    const maxEdges = totalNodes * 3;
+    const edgePositions = new Float32Array(maxEdges * 2 * 3);
+    const edgeAlphas = new Float32Array(maxEdges * 2);
+    let edgeCount = 0;
+
+    function rebuildEdges() {
+      edgeCount = 0;
+
+      for (let i = 0; i < totalNodes; i++) {
+        const a = nodes[i];
+        let connections = 0;
+        const maxConnections = a.layer === 0 ? 4 : a.layer === 1 ? 2 : 1;
+
+        for (let j = i + 1; j < totalNodes && connections < maxConnections; j++) {
+          const b = nodes[j];
+
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dz = a.z - b.z;
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+          // Shorter threshold for tighter connections
+          const threshold = a.layer === 0 ? 0.25 : a.layer === 1 ? 0.3 : 0.4;
+
+          if (dist < threshold) {
+            if (edgeCount >= maxEdges) break;
+
+            const idx = edgeCount * 6;
+            edgePositions[idx] = a.x;
+            edgePositions[idx + 1] = a.y;
+            edgePositions[idx + 2] = a.z;
+            edgePositions[idx + 3] = b.x;
+            edgePositions[idx + 4] = b.y;
+            edgePositions[idx + 5] = b.z;
+
+            edgeCount++;
+            connections++;
+          }
+        }
+      }
+
+      edgeGeometry.setDrawRange(0, edgeCount * 2);
+      const edgePosAttr = edgeGeometry.getAttribute('position');
+      (edgePosAttr as any).needsUpdate = true;
+    }
+
+    const edgeGeometry = new THREE.BufferGeometry();
+    edgeGeometry.setAttribute('position', new THREE.BufferAttribute(edgePositions, 3));
+    edgeGeometry.setDrawRange(0, 0);
+
+    const edgeMaterial = new THREE.LineBasicMaterial({
+      color: haloColor,
+      transparent: true,
+      opacity: 0.25,
+      linewidth: 1,
+    });
+
+    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+    group.add(edges);
+
+    rebuildEdges();
+
+    let animationId: number;
+    let time = 0;
+
+    function animateScene() {
+      animationId = requestAnimationFrame(animateScene);
+
+      if (animate) {
+        time += 0.016;
+
+        const px = nodeGeometry.getAttribute('position');
+        const posArray = (px as any).array as Float32Array;
+
+        // Rotate nodes around center (galaxy spin)
+        for (let i = 0; i < totalNodes; i++) {
+          const node = nodes[i];
+
+          // Differential rotation - inner rotates faster
+          const rotSpeed = rotationSpeed * node.speed * 0.02;
+          node.angle += rotSpeed;
+
+          // Update position
+          node.x = Math.cos(node.angle) * node.radius;
+          node.y = Math.sin(node.angle) * node.radius;
+
+          // Gentle wobble in z
+          node.z = Math.sin(time * 0.5 + node.angle * 2) * 0.05 * (node.layer === 2 ? 2 : 1);
+
+          posArray[i * 3] = node.x;
+          posArray[i * 3 + 1] = node.y;
+          posArray[i * 3 + 2] = node.z;
+        }
+
+        (px as any).needsUpdate = true;
+
+        // Update edges occasionally
+        if (Math.floor(time * 3) % 15 === 0) {
+          rebuildEdges();
+        }
+
+        // Gentle overall tilt
+        group.rotation.x = Math.sin(time * 0.1) * 0.15;
+        group.rotation.y = time * rotationSpeed * 0.3;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animateScene();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            nodeGeometry.dispose();
+            edgeGeometry.dispose();
+            nodeMaterial.dispose();
+            edgeMaterial.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initGraphGalaxy(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.graph-galaxy-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>

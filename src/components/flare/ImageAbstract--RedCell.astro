@@ -1,0 +1,445 @@
+---
+/**
+ * ImageAbstract--RedCell
+ *
+ * A Three.js particle visualization of a red blood cell (erythrocyte):
+ * - Classic biconcave disc shape (thicker rim, concave center)
+ * - Particles aggregate along the internal membrane structure
+ * - Denser at the edges, sparser in the dimpled center
+ * - Gentle tumbling/floating animation like cells in plasma
+ *
+ * The oxygen-carrying workhorses of the bloodstream.
+ */
+
+interface Props {
+  /** Container size in CSS units */
+  size?: string;
+  /** Primary cell color */
+  cellColor?: string;
+  /** Highlight/rim color */
+  rimColor?: string;
+  /** Enable floating animation */
+  animate?: boolean;
+  /** Animation speed multiplier */
+  animationSpeed?: number;
+  /** Initial tilt angle in degrees */
+  tiltAngle?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  cellColor = '#dc2626',
+  rimColor = '#fca5a5',
+  animate = true,
+  animationSpeed = 0.3,
+  tiltAngle = 25,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `redcell-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['redcell-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-cell-color={cellColor}
+  data-rim-color={rimColor}
+  data-animate={animate}
+  data-animation-speed={animationSpeed}
+  data-tilt-angle={tiltAngle}
+>
+  <canvas class="redcell-canvas"></canvas>
+</div>
+
+<style>
+  .redcell-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .redcell-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface RedCellConfig {
+    cellColor: string;
+    rimColor: string;
+    animate: boolean;
+    animationSpeed: number;
+    tiltAngle: number;
+  }
+
+  function initRedCell(container: HTMLElement) {
+    const canvas = container.querySelector('.redcell-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const tiltDegrees = parseFloat(container.dataset.tiltAngle || '25');
+    const tiltRadians = (tiltDegrees * Math.PI) / 180;
+
+    const config: RedCellConfig = {
+      cellColor: container.dataset.cellColor || '#dc2626',
+      rimColor: container.dataset.rimColor || '#fca5a5',
+      animate: container.dataset.animate !== 'false',
+      animationSpeed: parseFloat(container.dataset.animationSpeed || '0.3'),
+      tiltAngle: tiltRadians,
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 520;
+    const height = container.clientHeight || 520;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.z = 4;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Red blood cell parameters
+    const cellRadius = 1.2;        // Overall radius of the disc
+    const rimThickness = 0.35;     // Thickness at the rim (edge)
+    const centerThickness = 0.12; // Thickness at the center (concave)
+    const concaveDepth = 0.18;     // How deep the dimple goes
+
+    // Particle arrays
+    const positions: number[] = [];
+    const sizes: number[] = [];
+    const colors: number[] = [];
+    const alphas: number[] = [];
+
+    const cellColor = new THREE.Color(config.cellColor);
+    const rimColor = new THREE.Color(config.rimColor);
+
+    /**
+     * Biconcave disc height function
+     * Returns the half-thickness at a given radius from center
+     */
+    function getCellHeight(r: number): number {
+      const normalizedR = r / cellRadius;
+
+      if (normalizedR > 1) return 0;
+
+      // Biconcave profile: thick at edges, thin concave center
+      // Using a modified formula for the classic RBC shape
+      const rimFactor = Math.sqrt(1 - normalizedR * normalizedR); // Basic disc
+      const concaveFactor = 1 - Math.pow(normalizedR, 2); // Concave in center
+
+      // Blend between rim thickness and center thickness
+      const baseHeight = rimThickness * rimFactor;
+      const concave = concaveDepth * concaveFactor * (1 - normalizedR * 0.5);
+
+      return Math.max(centerThickness * 0.5, baseHeight - concave);
+    }
+
+    /**
+     * Generate membrane particles - denser at rim and along surfaces
+     */
+    function generateMembraneParticles() {
+      const particleCount = 15000;
+      let generated = 0;
+      let attempts = 0;
+      const maxAttempts = particleCount * 15;
+
+      while (generated < particleCount && attempts < maxAttempts) {
+        attempts++;
+
+        // Sample in cylindrical coordinates
+        const angle = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * cellRadius * 1.02; // sqrt for uniform disc distribution
+
+        const maxHeight = getCellHeight(r);
+        if (maxHeight <= 0) continue;
+
+        // Decide if particle is on top surface, bottom surface, or rim
+        const surfaceChoice = Math.random();
+        let x: number, y: number, z: number;
+        let isRim = false;
+        let isSurface = false;
+
+        if (r > cellRadius * 0.85 && surfaceChoice < 0.4) {
+          // Rim particles (edge of the disc) - denser here
+          isRim = true;
+          const rimR = cellRadius * (0.92 + Math.random() * 0.08);
+          x = Math.cos(angle) * rimR;
+          z = Math.sin(angle) * rimR;
+          y = (Math.random() - 0.5) * 2 * maxHeight;
+        } else if (surfaceChoice < 0.75) {
+          // Surface particles (top or bottom membrane)
+          isSurface = true;
+          x = Math.cos(angle) * r;
+          z = Math.sin(angle) * r;
+
+          // Place on surface with slight inward scatter
+          const surfaceY = maxHeight * (Math.random() < 0.5 ? 1 : -1);
+          const scatter = Math.random() * 0.03;
+          y = surfaceY * (1 - scatter);
+        } else {
+          // Internal particles (inside the cell, aggregated near membrane)
+          x = Math.cos(angle) * r;
+          z = Math.sin(angle) * r;
+
+          // Bias toward the membrane surfaces
+          const internalBias = Math.pow(Math.random(), 0.6); // Cluster near surfaces
+          y = (Math.random() - 0.5) * 2 * maxHeight * internalBias;
+        }
+
+        positions.push(x, y, z);
+
+        // Size varies - larger at rim, smaller in center
+        const normalizedR = r / cellRadius;
+        let baseSize = 0.018 + Math.random() * 0.014;
+        if (isRim) {
+          baseSize *= 1.2; // Larger rim particles
+        } else if (normalizedR < 0.4) {
+          baseSize *= 0.8; // Smaller center particles
+        }
+        sizes.push(baseSize);
+
+        // Color interpolation - brighter at rim
+        const colorMix = isRim ? 0.7 : normalizedR * 0.5;
+        const particleColor = cellColor.clone().lerp(rimColor, colorMix);
+        colors.push(particleColor.r, particleColor.g, particleColor.b);
+
+        // Alpha - slightly transparent for depth
+        let alpha = 0.8 + Math.random() * 0.2;
+        if (!isSurface && !isRim) {
+          alpha *= 0.7; // Internal particles more transparent
+        }
+        alphas.push(alpha);
+
+        generated++;
+      }
+    }
+
+    /**
+     * Generate internal aggregate particles - clustered formations inside
+     */
+    function generateInternalAggregates() {
+      // Create several small clusters inside the cell
+      const clusterCount = 8;
+      const particlesPerCluster = 200;
+
+      for (let c = 0; c < clusterCount; c++) {
+        // Random cluster center inside the cell
+        const clusterAngle = Math.random() * Math.PI * 2;
+        const clusterR = Math.random() * cellRadius * 0.7;
+        const clusterX = Math.cos(clusterAngle) * clusterR;
+        const clusterZ = Math.sin(clusterAngle) * clusterR;
+        const maxH = getCellHeight(clusterR);
+        const clusterY = (Math.random() - 0.5) * maxH * 1.2;
+
+        const clusterSize = 0.08 + Math.random() * 0.12;
+
+        for (let i = 0; i < particlesPerCluster; i++) {
+          // Gaussian-ish distribution around cluster center
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          const pr = Math.pow(Math.random(), 0.5) * clusterSize;
+
+          const x = clusterX + pr * Math.sin(phi) * Math.cos(theta);
+          const y = clusterY + pr * Math.cos(phi) * 0.6; // Flatten in Y
+          const z = clusterZ + pr * Math.sin(phi) * Math.sin(theta);
+
+          // Only add if inside the cell
+          const particleR = Math.sqrt(x * x + z * z);
+          const maxHeight = getCellHeight(particleR);
+          if (particleR > cellRadius || Math.abs(y) > maxHeight) continue;
+
+          positions.push(x, y, z);
+
+          // Smaller, dimmer particles for aggregates
+          const baseSize = 0.012 + Math.random() * 0.01;
+          sizes.push(baseSize);
+
+          // Slightly darker color for internal aggregates
+          const darkenedColor = cellColor.clone().multiplyScalar(0.7);
+          colors.push(darkenedColor.r, darkenedColor.g, darkenedColor.b);
+
+          alphas.push(0.5 + Math.random() * 0.3);
+        }
+      }
+    }
+
+    // Generate all particles
+    generateMembraneParticles();
+    generateInternalAggregates();
+
+    // Create geometry
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 },
+      },
+      vertexShader: `
+        attribute float size;
+        attribute float alpha;
+        attribute vec3 color;
+        varying float vAlpha;
+        varying vec3 vColor;
+        uniform float time;
+
+        void main() {
+          vec3 pos = position;
+
+          // Subtle membrane ripple
+          float ripple = sin(time * 0.8 + pos.x * 3.0 + pos.z * 3.0) * 0.008;
+          pos.y += ripple;
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          gl_PointSize = size * 420.0 * (1.0 / -mvPosition.z);
+
+          float depthFade = smoothstep(6.0, 2.5, -mvPosition.z);
+          vAlpha = alpha * depthFade;
+          vColor = color;
+        }
+      `,
+      fragmentShader: `
+        varying float vAlpha;
+        varying vec3 vColor;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          float coreFalloff = 1.0 - smoothstep(0.0, 0.25, dist);
+          float glowFalloff = 1.0 - smoothstep(0.1, 0.5, dist);
+
+          float alpha = mix(glowFalloff * 0.6, coreFalloff, 0.7);
+          alpha *= vAlpha;
+
+          if (alpha < 0.01) discard;
+
+          // Warm glow for blood cell
+          vec3 finalColor = vColor * (1.2 + coreFalloff * 0.4);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    group.add(particles);
+
+    // Initial orientation
+    group.rotation.x = config.tiltAngle;
+
+    // Animation
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016 * config.animationSpeed;
+
+        // Update shader time
+        (material.uniforms.time as any).value = time;
+
+        // Gentle tumbling like a cell in plasma
+        group.rotation.x = config.tiltAngle + Math.sin(time * 0.3) * 0.2;
+        group.rotation.y = time * 0.15;
+        group.rotation.z = Math.sin(time * 0.25) * 0.15;
+
+        // Subtle floating
+        group.position.y = Math.sin(time * 0.4) * 0.05;
+        group.position.x = Math.cos(time * 0.35) * 0.03;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            geometry.dispose();
+            material.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Lazy loading
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initRedCell(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.redcell-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>

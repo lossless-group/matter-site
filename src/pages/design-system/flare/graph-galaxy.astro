@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractGraphGalaxy from '@components/flare/ImageAbstract--Graph-Network--Galaxy.astro';
+---
+
+<FlarePageLayout
+  title="Graph Galaxy"
+  description="Dense, self-contained galaxy visualization - a standalone visual element that doesn't get cut off."
+  currentSlug="graph-galaxy"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractGraphGalaxy size="100%" rotationSpeed={0.15} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractGraphGalaxy size="100%" rotationSpeed={0.08} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Slow rotation</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractGraphGalaxy size="100%" coreColor="#a7ff83" haloColor="#4dd0e1" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Green/Cyan</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractGraphGalaxy size="100%" coreColor="#ff6b9d" haloColor="#9C85DF" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Pink/Lilac</p>
+    </div>
+  </div>
+</FlarePageLayout>

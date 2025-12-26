@@ -1,0 +1,485 @@
+---
+/**
+ * ImageAbstract--Mitochondria
+ *
+ * A Three.js particle visualization of a floating mitochondria with:
+ * - Elongated bean-shaped outer membrane
+ * - Inner cristae (folded membrane structures)
+ * - Gentle floating and pulsing animation
+ * - Glowing particle aesthetic matching the design system
+ *
+ * The "powerhouse of the cell" rendered as a luminous particle cloud.
+ */
+
+interface Props {
+  /** Container size in CSS units */
+  size?: string;
+  /** Primary color for outer membrane */
+  outerColor?: string;
+  /** Secondary color for inner cristae */
+  innerColor?: string;
+  /** Enable floating animation */
+  animate?: boolean;
+  /** Animation speed multiplier */
+  animationSpeed?: number;
+  /** Tilt angle in degrees */
+  tiltAngle?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  outerColor = '#9C85DF',
+  innerColor = '#6643e2',
+  animate = true,
+  animationSpeed = 0.5,
+  tiltAngle = 15,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `mitochondria-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['mitochondria-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-outer-color={outerColor}
+  data-inner-color={innerColor}
+  data-animate={animate}
+  data-animation-speed={animationSpeed}
+  data-tilt-angle={tiltAngle}
+>
+  <canvas class="mitochondria-canvas"></canvas>
+</div>
+
+<style>
+  .mitochondria-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .mitochondria-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface MitochondriaConfig {
+    outerColor: string;
+    innerColor: string;
+    animate: boolean;
+    animationSpeed: number;
+    tiltAngle: number;
+  }
+
+  function initMitochondria(container: HTMLElement) {
+    const canvas = container.querySelector('.mitochondria-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const tiltDegrees = parseFloat(container.dataset.tiltAngle || '15');
+    const tiltRadians = (tiltDegrees * Math.PI) / 180;
+
+    const config: MitochondriaConfig = {
+      outerColor: container.dataset.outerColor || '#9C85DF',
+      innerColor: container.dataset.innerColor || '#6643e2',
+      animate: container.dataset.animate !== 'false',
+      animationSpeed: parseFloat(container.dataset.animationSpeed || '0.5'),
+      tiltAngle: tiltRadians,
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 400;
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.z = 4;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Mitochondria parameters - caterpillar/capsule shape (rounder ends)
+    const outerLength = 2.4;      // Length of the shape
+    const outerRadius = 0.5;      // Width/height radius
+    const beanCurve = 0.05;       // Very subtle bean curve
+    const cristaeFolds = 14;      // Number of cristae folds
+    const cristaeDepth = 0.6;     // How deep the cristae extend inward
+    const endRoundness = 0.7;     // Higher = rounder ends (0.5 = pointed, 1.0 = very round)
+
+    // Particle arrays
+    const outerPositions: number[] = [];
+    const outerSizes: number[] = [];
+    const outerAlphas: number[] = [];
+
+    const innerPositions: number[] = [];
+    const innerSizes: number[] = [];
+    const innerAlphas: number[] = [];
+
+    /**
+     * Bean/kidney shape function
+     * Returns the radius at a given angle, creating the characteristic indentation
+     */
+    function getBeanRadius(angle: number, baseRadius: number): number {
+      // Create indentation on one side (around PI)
+      const indentation = beanCurve * Math.cos(angle) * Math.sin(angle);
+      return baseRadius * (1 - Math.abs(indentation));
+    }
+
+    /**
+     * Check if point is inside the outer membrane
+     * Uses capsule/stadium shape - cylinder with hemispherical caps
+     */
+    function isInsideOuter(x: number, y: number, z: number): boolean {
+      const halfLength = outerLength * 0.5;
+      const capRadius = outerRadius;
+
+      // Cylindrical middle section length (between the caps)
+      const cylinderHalfLength = halfLength - capRadius * endRoundness;
+
+      let localRadius: number;
+
+      if (Math.abs(x) <= cylinderHalfLength) {
+        // In the cylindrical middle section - constant radius
+        localRadius = capRadius;
+      } else {
+        // In the hemispherical cap regions
+        const capX = Math.abs(x) - cylinderHalfLength;
+        const capFactor = capX / (capRadius * endRoundness);
+        if (capFactor > 1) return false;
+
+        // Hemispherical cap falloff (rounder than ellipse)
+        const sphereFactor = Math.sqrt(Math.max(0, 1 - capFactor * capFactor));
+        localRadius = capRadius * sphereFactor;
+      }
+
+      // Apply subtle bean curve
+      const angle = Math.atan2(z, y);
+      const effectiveRadius = getBeanRadius(angle, localRadius);
+
+      const distFromCenter = Math.sqrt(y * y + z * z);
+      return distFromCenter < effectiveRadius;
+    }
+
+    /**
+     * Generate outer membrane particles (shell-like distribution)
+     */
+    function generateOuterMembrane() {
+      const particleCount = 8000;
+      let generated = 0;
+      let attempts = 0;
+      const maxAttempts = particleCount * 10;
+
+      while (generated < particleCount && attempts < maxAttempts) {
+        attempts++;
+
+        // Sample within bounding box
+        const x = (Math.random() - 0.5) * outerLength * 1.1;
+        const y = (Math.random() - 0.5) * outerRadius * 2.2;
+        const z = (Math.random() - 0.5) * outerRadius * 2.2;
+
+        // Check if on or near the membrane surface
+        const inside = isInsideOuter(x, y, z);
+        const insideInner = isInsideOuter(x * 1.15, y * 1.15, z * 1.15);
+
+        // We want particles on the membrane (inside outer but outside inner scaled)
+        if (inside && !insideInner) {
+          // Membrane shell region
+          outerPositions.push(x, y, z);
+
+          // Size variation
+          const baseSize = 0.025 + Math.random() * 0.02;
+          outerSizes.push(baseSize);
+
+          // Alpha - slightly transparent for glow effect
+          const alpha = 0.7 + Math.random() * 0.3;
+          outerAlphas.push(alpha);
+
+          generated++;
+        } else if (inside && Math.random() < 0.15) {
+          // Some scattered interior particles (matrix)
+          outerPositions.push(x, y, z);
+          outerSizes.push(0.015 + Math.random() * 0.01);
+          outerAlphas.push(0.3 + Math.random() * 0.2);
+          generated++;
+        }
+      }
+    }
+
+    /**
+     * Generate cristae (inner membrane folds) as bold wavy lines
+     * Thin curved lines extending from membrane inward - but with denser, bolder particles
+     */
+    function generateCristae() {
+      // Bolder cristae with more particles
+      const particlesPerLine = 80;
+      const lineThickness = 5; // More particles across for bolder lines
+
+      for (let c = 0; c < cristaeFolds; c++) {
+        // Distribute cristae along the length of the mitochondria
+        const t = (c + 1) / (cristaeFolds + 1);
+        const cristaeX = (t - 0.5) * outerLength * 0.8;
+
+        // Get the local radius at this x position using capsule shape
+        const halfLength = outerLength * 0.5;
+        const cylinderHalfLength = halfLength - outerRadius * endRoundness;
+        let localRadius: number;
+
+        if (Math.abs(cristaeX) <= cylinderHalfLength) {
+          localRadius = outerRadius * 0.88;
+        } else {
+          const capX = Math.abs(cristaeX) - cylinderHalfLength;
+          const capFactor = capX / (outerRadius * endRoundness);
+          const sphereFactor = Math.sqrt(Math.max(0.1, 1 - capFactor * capFactor));
+          localRadius = outerRadius * sphereFactor * 0.88;
+        }
+
+        // Alternate sides - cristae extend from top and bottom
+        const side = c % 2 === 0 ? 1 : -1;
+
+        // Each crista is a wavy line extending from the membrane inward
+        for (let i = 0; i < particlesPerLine; i++) {
+          const lineT = i / (particlesPerLine - 1); // 0 to 1 along the line
+
+          // Depth into the cell - starts at membrane, extends toward center
+          const depth = lineT * cristaeDepth * localRadius;
+
+          // Wavy pattern along the line
+          const waveFreq = 1.5 + (c % 3) * 0.3;
+          const waveAmp = 0.06 + Math.sin(c * 1.3) * 0.03;
+          const wave = Math.sin(lineT * Math.PI * waveFreq + c * 0.5) * waveAmp;
+
+          // Y position: start at edge (localRadius), move toward center
+          const baseY = side * (localRadius - depth);
+
+          // Add thickness to the line (multiple particles across)
+          for (let thick = 0; thick < lineThickness; thick++) {
+            const thickOffset = (thick - (lineThickness - 1) / 2) * 0.018;
+
+            // X position with wave and slight variation
+            const x = cristaeX + wave + (Math.random() - 0.5) * 0.025;
+            const y = baseY + thickOffset;
+            const z = (Math.random() - 0.5) * 0.04;
+
+            // Only add if inside the outer membrane
+            if (isInsideOuter(x * 0.9, y * 0.9, z)) {
+              innerPositions.push(x, y, z);
+
+              // Larger, bolder particles
+              const baseSize = 0.022 + Math.random() * 0.012;
+              innerSizes.push(baseSize);
+
+              // High alpha for bold visibility
+              const alpha = 0.9 + Math.random() * 0.1;
+              innerAlphas.push(alpha);
+            }
+          }
+        }
+      }
+    }
+
+    // Generate the particles
+    generateOuterMembrane();
+    generateCristae();
+
+    // Create geometries and materials
+    function createParticleSystem(
+      positions: number[],
+      sizes: number[],
+      alphas: number[],
+      color: string
+    ): THREE.Points {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+      geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          color: { value: new THREE.Color(color) },
+          time: { value: 0 },
+        },
+        vertexShader: `
+          attribute float size;
+          attribute float alpha;
+          varying float vAlpha;
+          uniform float time;
+
+          void main() {
+            vec3 pos = position;
+
+            // Subtle breathing/pulsing effect
+            float pulse = 1.0 + sin(time * 2.0 + position.x * 3.0) * 0.03;
+            pos *= pulse;
+
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+
+            // Size attenuation
+            gl_PointSize = size * 450.0 * (1.0 / -mvPosition.z);
+
+            // Pass alpha with depth adjustment
+            float depthFade = smoothstep(6.0, 2.5, -mvPosition.z);
+            vAlpha = alpha * depthFade;
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 color;
+          varying float vAlpha;
+
+          void main() {
+            vec2 center = gl_PointCoord - vec2(0.5);
+            float dist = length(center);
+
+            // Soft glowing particle
+            float coreFalloff = 1.0 - smoothstep(0.0, 0.25, dist);
+            float glowFalloff = 1.0 - smoothstep(0.1, 0.5, dist);
+
+            float alpha = mix(glowFalloff * 0.6, coreFalloff, 0.7);
+            alpha *= vAlpha;
+
+            if (alpha < 0.01) discard;
+
+            // Brighter core
+            vec3 finalColor = color * (1.0 + coreFalloff * 0.5);
+
+            gl_FragColor = vec4(finalColor, alpha);
+          }
+        `,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+
+      return new THREE.Points(geometry, material);
+    }
+
+    const outerMembrane = createParticleSystem(
+      outerPositions,
+      outerSizes,
+      outerAlphas,
+      config.outerColor
+    );
+    group.add(outerMembrane);
+
+    const cristae = createParticleSystem(
+      innerPositions,
+      innerSizes,
+      innerAlphas,
+      config.innerColor
+    );
+    group.add(cristae);
+
+    // Apply initial tilt
+    group.rotation.x = config.tiltAngle;
+    group.rotation.z = config.tiltAngle * 0.5;
+
+    // Animation
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016 * config.animationSpeed;
+
+        // Update shader time uniforms
+        (outerMembrane.material as THREE.ShaderMaterial).uniforms.time.value = time;
+        (cristae.material as THREE.ShaderMaterial).uniforms.time.value = time;
+
+        // Gentle floating rotation
+        group.rotation.y = Math.sin(time * 0.3) * 0.4;
+        group.rotation.x = config.tiltAngle + Math.sin(time * 0.2) * 0.15;
+        group.rotation.z = config.tiltAngle * 0.5 + Math.cos(time * 0.25) * 0.1;
+
+        // Gentle floating up/down
+        group.position.y = Math.sin(time * 0.4) * 0.1;
+        group.position.x = Math.cos(time * 0.35) * 0.05;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup on removal
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            outerMembrane.geometry.dispose();
+            (outerMembrane.material as THREE.ShaderMaterial).dispose();
+            cristae.geometry.dispose();
+            (cristae.material as THREE.ShaderMaterial).dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Lazy loading with IntersectionObserver to manage WebGL contexts
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initMitochondria(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.mitochondria-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>

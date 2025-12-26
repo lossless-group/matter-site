@@ -193,7 +193,7 @@ const containerId = `human-svg-${Math.random().toString(36).slice(2, 9)}`;
     const height = container.clientHeight || 400;
 
     const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 1000);
-    camera.position.z = 3.2;
+    camera.position.z = 4.2; // Moved back to ensure head is visible
 
     const renderer = new THREE.WebGLRenderer({
       canvas,

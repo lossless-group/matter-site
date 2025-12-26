@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractRedCell from '@components/flare/ImageAbstract--RedCell.astro';
+---
+
+<FlarePageLayout
+  title="Red Blood Cell"
+  description="Biconcave disc erythrocyte with particles aggregating along the membrane structure."
+  currentSlug="red-cell"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractRedCell size="100%" animationSpeed={0.3} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractRedCell size="100%" tiltAngle={60} animationSpeed={0.2} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Side view</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractRedCell size="100%" tiltAngle={0} animationSpeed={0.25} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Top view</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractRedCell size="100%" cellColor="#9C85DF" rimColor="#D8B4FE" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Purple variant</p>
+    </div>
+  </div>
+</FlarePageLayout>

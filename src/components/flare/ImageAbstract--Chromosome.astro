@@ -1,0 +1,562 @@
+---
+/**
+ * ImageAbstract--Chromosome
+ *
+ * A Three.js particle visualization of a chromosome with telomeres:
+ * - X-shaped structure (two sister chromatids joined at centromere)
+ * - Granular blue particle body
+ * - Bright pink/magenta telomere caps at all four ends
+ * - Gentle floating and rotation animation
+ *
+ * Based on classic FISH microscopy visualization of chromosomes.
+ */
+
+interface Props {
+  /** Container size in CSS units */
+  size?: string;
+  /** Main chromosome body color */
+  bodyColor?: string;
+  /** Telomere cap color */
+  telomereColor?: string;
+  /** Enable floating animation */
+  animate?: boolean;
+  /** Animation speed multiplier */
+  animationSpeed?: number;
+  /** Tilt angle in degrees */
+  tiltAngle?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  bodyColor = '#4a90d9',
+  telomereColor = '#e84a8a',
+  animate = true,
+  animationSpeed = 0.4,
+  tiltAngle = 15,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `chromosome-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['chromosome-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-body-color={bodyColor}
+  data-telomere-color={telomereColor}
+  data-animate={animate}
+  data-animation-speed={animationSpeed}
+  data-tilt-angle={tiltAngle}
+>
+  <canvas class="chromosome-canvas"></canvas>
+</div>
+
+<style>
+  .chromosome-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .chromosome-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface ChromosomeConfig {
+    bodyColor: string;
+    telomereColor: string;
+    animate: boolean;
+    animationSpeed: number;
+    tiltAngle: number;
+  }
+
+  function initChromosome(container: HTMLElement) {
+    const canvas = container.querySelector('.chromosome-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const tiltDegrees = parseFloat(container.dataset.tiltAngle || '15');
+    const tiltRadians = (tiltDegrees * Math.PI) / 180;
+
+    const config: ChromosomeConfig = {
+      bodyColor: container.dataset.bodyColor || '#4a90d9',
+      telomereColor: container.dataset.telomereColor || '#e84a8a',
+      animate: container.dataset.animate !== 'false',
+      animationSpeed: parseFloat(container.dataset.animationSpeed || '0.4'),
+      tiltAngle: tiltRadians,
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 400;
+
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Chromosome parameters
+    const armLength = 1.4;        // Length of each arm from centromere
+    const armRadius = 0.32;       // Thickness of the arms (constant, no tapering)
+    const centromereRadius = 0.36; // Slightly thicker at center
+    const telomereLength = 0.5;   // Length of telomere caps (longer)
+    const telomereStart = 0.88;   // Telomeres only at last 12% of arm length
+    const crossAngle = 0.4;       // Angle of the X spread (radians)
+
+    // Particle arrays
+    const bodyPositions: number[] = [];
+    const bodySizes: number[] = [];
+    const bodyAlphas: number[] = [];
+
+    const telomerePositions: number[] = [];
+    const telomereSizes: number[] = [];
+    const telomereAlphas: number[] = [];
+
+    /**
+     * Check if point is inside a capsule (cylinder with hemispherical caps)
+     */
+    function isInsideCapsule(
+      px: number, py: number, pz: number,
+      x1: number, y1: number, z1: number,
+      x2: number, y2: number, z2: number,
+      radius: number
+    ): boolean {
+      // Vector from p1 to p2
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const dz = z2 - z1;
+      const lengthSq = dx * dx + dy * dy + dz * dz;
+
+      // Vector from p1 to point
+      const tx = px - x1;
+      const ty = py - y1;
+      const tz = pz - z1;
+
+      // Project point onto line, clamped to segment
+      let t = (tx * dx + ty * dy + tz * dz) / lengthSq;
+      t = Math.max(0, Math.min(1, t));
+
+      // Closest point on segment
+      const closestX = x1 + t * dx;
+      const closestY = y1 + t * dy;
+      const closestZ = z1 + t * dz;
+
+      // Distance from point to closest point on segment
+      const distSq = (px - closestX) ** 2 + (py - closestY) ** 2 + (pz - closestZ) ** 2;
+
+      return distSq < radius * radius;
+    }
+
+    /**
+     * Distance from point to line segment (for shell generation)
+     */
+    function distanceToSegment(
+      px: number, py: number, pz: number,
+      x1: number, y1: number, z1: number,
+      x2: number, y2: number, z2: number
+    ): { dist: number; t: number } {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const dz = z2 - z1;
+      const lengthSq = dx * dx + dy * dy + dz * dz;
+
+      const tx = px - x1;
+      const ty = py - y1;
+      const tz = pz - z1;
+
+      let t = (tx * dx + ty * dy + tz * dz) / lengthSq;
+      t = Math.max(0, Math.min(1, t));
+
+      const closestX = x1 + t * dx;
+      const closestY = y1 + t * dy;
+      const closestZ = z1 + t * dz;
+
+      const dist = Math.sqrt((px - closestX) ** 2 + (py - closestY) ** 2 + (pz - closestZ) ** 2);
+
+      return { dist, t };
+    }
+
+    // Define the four arms of the X chromosome
+    // Arms spread from center (0,0,0) outward
+    const arms = [
+      { // Top-left arm
+        start: { x: 0, y: 0, z: 0 },
+        end: { x: -Math.sin(crossAngle) * armLength, y: Math.cos(crossAngle) * armLength, z: 0 },
+      },
+      { // Top-right arm
+        start: { x: 0, y: 0, z: 0 },
+        end: { x: Math.sin(crossAngle) * armLength, y: Math.cos(crossAngle) * armLength, z: 0 },
+      },
+      { // Bottom-left arm
+        start: { x: 0, y: 0, z: 0 },
+        end: { x: -Math.sin(crossAngle) * armLength, y: -Math.cos(crossAngle) * armLength, z: 0 },
+      },
+      { // Bottom-right arm
+        start: { x: 0, y: 0, z: 0 },
+        end: { x: Math.sin(crossAngle) * armLength, y: -Math.cos(crossAngle) * armLength, z: 0 },
+      },
+    ];
+
+    /**
+     * Generate chromosome body particles
+     */
+    function generateBody() {
+      const particleCount = 12000;
+      let generated = 0;
+      let attempts = 0;
+      const maxAttempts = particleCount * 12;
+
+      while (generated < particleCount && attempts < maxAttempts) {
+        attempts++;
+
+        // Sample in bounding box
+        const x = (Math.random() - 0.5) * 3.5;
+        const y = (Math.random() - 0.5) * 3.5;
+        const z = (Math.random() - 0.5) * 0.8;
+
+        // Check if inside any arm (but not in telomere region)
+        let insideBody = false;
+        let inTelomere = false;
+        let minDist = Infinity;
+
+        for (const arm of arms) {
+          const { dist, t } = distanceToSegment(
+            x, y, z,
+            arm.start.x, arm.start.y, arm.start.z,
+            arm.end.x, arm.end.y, arm.end.z
+          );
+
+          // Radius: thicker at centromere, constant along arms (no tapering at ends)
+          const radiusAtT = t < 0.2
+            ? centromereRadius - (centromereRadius - armRadius) * (t / 0.2)
+            : armRadius;
+
+          if (dist < radiusAtT) {
+            insideBody = true;
+            minDist = Math.min(minDist, dist);
+
+            // Check if in telomere region (starts at telomereStart)
+            if (t > telomereStart) {
+              inTelomere = true;
+            }
+          }
+        }
+
+        if (insideBody && !inTelomere) {
+          bodyPositions.push(x, y, z);
+
+          // Size variation for granular look - slightly larger for visibility
+          const baseSize = 0.025 + Math.random() * 0.018;
+          bodySizes.push(baseSize);
+
+          // Higher alpha for better contrast against background
+          const alpha = 0.85 + Math.random() * 0.15;
+          bodyAlphas.push(alpha);
+
+          generated++;
+        }
+      }
+    }
+
+    /**
+     * Generate telomere cap particles (bright ends) - bolder, rounder caps
+     */
+    function generateTelomeres() {
+      const particlesPerTelomere = 2500; // More particles for denser caps
+
+      for (const arm of arms) {
+        // Telomere is at the end of each arm
+        const dirX = arm.end.x - arm.start.x;
+        const dirY = arm.end.y - arm.start.y;
+        const dirZ = arm.end.z - arm.start.z;
+        const length = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
+
+        // Normalize direction
+        const nx = dirX / length;
+        const ny = dirY / length;
+        const nz = dirZ / length;
+
+        // Cap radius - slightly larger than arm for bold rounded tips
+        const capRadius = armRadius * 1.15;
+
+        let generated = 0;
+        let attempts = 0;
+        const maxAttempts = particlesPerTelomere * 10;
+
+        while (generated < particlesPerTelomere && attempts < maxAttempts) {
+          attempts++;
+
+          // Position along the telomere (uses outer telomereStart = 0.5)
+          const tRange = 1 - telomereStart + telomereLength / length;
+          const t = telomereStart + Math.random() * tRange;
+
+          // Base position along arm
+          const baseX = arm.start.x + dirX * t;
+          const baseY = arm.start.y + dirY * t;
+          const baseZ = arm.start.z + dirZ * t;
+
+          // Radius - constant along arm, hemispherical cap at end
+          let radius = capRadius;
+          if (t > 1) {
+            // In the hemispherical cap beyond arm end - rounder falloff
+            const capT = (t - 1) * length / telomereLength;
+            // Use smoother curve for rounder cap
+            const capFactor = Math.max(0, 1 - capT * capT);
+            radius = capRadius * Math.sqrt(capFactor);
+          }
+
+          // Spherical distribution around the centerline
+          const phi = Math.random() * Math.PI * 2;
+          const theta = Math.acos(2 * Math.random() - 1); // Uniform sphere distribution
+          const pr = Math.pow(Math.random(), 0.7) * radius; // Bias toward surface for fuller look
+
+          // Create proper perpendicular basis vectors
+          let upX = 0, upY = 1, upZ = 0;
+          if (Math.abs(ny) > 0.9) {
+            upX = 1; upY = 0; upZ = 0;
+          }
+          // Cross product for perpendicular
+          const perpX = ny * upZ - nz * upY;
+          const perpY = nz * upX - nx * upZ;
+          const perpZ = nx * upY - ny * upX;
+          const perpLen = Math.sqrt(perpX * perpX + perpY * perpY + perpZ * perpZ);
+          const p1x = perpX / perpLen;
+          const p1y = perpY / perpLen;
+          const p1z = perpZ / perpLen;
+          // Second perpendicular
+          const p2x = ny * p1z - nz * p1y;
+          const p2y = nz * p1x - nx * p1z;
+          const p2z = nx * p1y - ny * p1x;
+
+          // Offset in local coordinates
+          const localX = pr * Math.sin(theta) * Math.cos(phi);
+          const localY = pr * Math.sin(theta) * Math.sin(phi);
+          const localZ = pr * Math.cos(theta) * 0.7; // Slightly flatten
+
+          // Transform to world coordinates
+          const finalX = baseX + p1x * localX + p2x * localY + nx * localZ;
+          const finalY = baseY + p1y * localX + p2y * localY + ny * localZ;
+          const finalZ = baseZ + p1z * localX + p2z * localY + nz * localZ;
+
+          telomerePositions.push(finalX, finalY, finalZ);
+
+          // Larger, bolder particles - extra large at the tips
+          const tipBonus = t > 0.9 ? 0.01 : 0;
+          const baseSize = 0.03 + Math.random() * 0.02 + tipBonus;
+          telomereSizes.push(baseSize);
+
+          // High alpha - telomeres are bright
+          const alpha = 0.9 + Math.random() * 0.1;
+          telomereAlphas.push(alpha);
+
+          generated++;
+        }
+      }
+    }
+
+    // Generate particles
+    generateBody();
+    generateTelomeres();
+
+    // Create particle systems
+    function createParticleSystem(
+      positions: number[],
+      sizes: number[],
+      alphas: number[],
+      color: string
+    ): THREE.Points {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+      geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: {
+          color: { value: new THREE.Color(color) },
+          time: { value: 0 },
+        },
+        vertexShader: `
+          attribute float size;
+          attribute float alpha;
+          varying float vAlpha;
+          uniform float time;
+
+          void main() {
+            vec3 pos = position;
+
+            // Subtle breathing effect
+            float pulse = 1.0 + sin(time * 1.5 + position.y * 2.0) * 0.02;
+            pos *= pulse;
+
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+
+            gl_PointSize = size * 420.0 * (1.0 / -mvPosition.z);
+
+            float depthFade = smoothstep(7.0, 3.0, -mvPosition.z);
+            vAlpha = alpha * depthFade;
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 color;
+          varying float vAlpha;
+
+          void main() {
+            vec2 center = gl_PointCoord - vec2(0.5);
+            float dist = length(center);
+
+            float coreFalloff = 1.0 - smoothstep(0.0, 0.25, dist);
+            float glowFalloff = 1.0 - smoothstep(0.1, 0.5, dist);
+
+            float alpha = mix(glowFalloff * 0.7, coreFalloff, 0.7);
+            alpha *= vAlpha;
+
+            if (alpha < 0.01) discard;
+
+            // Brighter color for better contrast
+            vec3 finalColor = color * (1.3 + coreFalloff * 0.5);
+
+            gl_FragColor = vec4(finalColor, alpha);
+          }
+        `,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      });
+
+      return new THREE.Points(geometry, material);
+    }
+
+    const bodySystem = createParticleSystem(
+      bodyPositions,
+      bodySizes,
+      bodyAlphas,
+      config.bodyColor
+    );
+    group.add(bodySystem);
+
+    const telomereSystem = createParticleSystem(
+      telomerePositions,
+      telomereSizes,
+      telomereAlphas,
+      config.telomereColor
+    );
+    group.add(telomereSystem);
+
+    // Apply initial tilt (like the reference image)
+    group.rotation.z = 0.3; // Slight diagonal tilt
+    group.rotation.x = config.tiltAngle;
+
+    // Animation
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016 * config.animationSpeed;
+
+        // Update shader uniforms
+        (bodySystem.material as THREE.ShaderMaterial).uniforms.time.value = time;
+        (telomereSystem.material as THREE.ShaderMaterial).uniforms.time.value = time;
+
+        // Gentle floating rotation
+        group.rotation.y = Math.sin(time * 0.25) * 0.3;
+        group.rotation.x = config.tiltAngle + Math.sin(time * 0.2) * 0.1;
+        group.rotation.z = 0.3 + Math.cos(time * 0.18) * 0.08;
+
+        // Floating motion
+        group.position.y = Math.sin(time * 0.35) * 0.08;
+        group.position.x = Math.cos(time * 0.3) * 0.04;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            bodySystem.geometry.dispose();
+            (bodySystem.material as THREE.ShaderMaterial).dispose();
+            telomereSystem.geometry.dispose();
+            (telomereSystem.material as THREE.ShaderMaterial).dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Lazy loading
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initChromosome(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.chromosome-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>

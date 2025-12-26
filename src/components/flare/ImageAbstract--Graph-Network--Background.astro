@@ -1,0 +1,377 @@
+---
+/**
+ * ImageAbstract--Graph-Network--Background
+ *
+ * A muted, ambient background variant of the graph network:
+ * - Very slow, subtle movement
+ * - Lower opacity and smaller particles
+ * - Spread across the entire container
+ * - Meant to be layered behind content
+ * - Provides visual texture without competing for attention
+ */
+
+interface Props {
+  size?: string;
+  animate?: boolean;
+  /** Overall opacity multiplier (0-1) */
+  opacity?: number;
+  /** Animation speed - extremely slow by default */
+  speed?: number;
+  class?: string;
+}
+
+const {
+  size = '100%',
+  animate = true,
+  opacity = 0.4,
+  speed = 0.02,  // Much slower default
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `graph-bg-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['graph-bg-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-animate={animate}
+  data-opacity={opacity}
+  data-speed={speed}
+>
+  <canvas class="graph-bg-canvas"></canvas>
+</div>
+
+<style>
+  .graph-bg-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .graph-bg-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface NodeData {
+    x: number;
+    y: number;
+    z: number;
+    vx: number;
+    vy: number;
+    baseAlpha: number;
+    phase: number;
+  }
+
+  function initGraphBackground(container: HTMLElement) {
+    const canvas = container.querySelector('.graph-bg-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const animate = container.dataset.animate !== 'false';
+    const opacity = parseFloat(container.dataset.opacity || '0.4');
+    const speed = parseFloat(container.dataset.speed || '0.1');
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 800;
+    const height = container.clientHeight || 600;
+    const aspect = width / height;
+    const viewHeight = 3.0;
+    const viewWidth = viewHeight * aspect;
+
+    const camera = new THREE.OrthographicCamera(
+      -viewWidth / 2,
+      viewWidth / 2,
+      viewHeight / 2,
+      -viewHeight / 2,
+      -10,
+      10
+    );
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    // Muted colors
+    const nodeColor = new THREE.Color('#9C85DF');
+    const edgeColor = new THREE.Color('#6643e2');
+
+    // More nodes, spread across entire area
+    const nodeCount = 200;
+    const nodes: NodeData[] = [];
+
+    const positions = new Float32Array(nodeCount * 3);
+    const sizes = new Float32Array(nodeCount);
+    const alphas = new Float32Array(nodeCount);
+
+    // Distribute nodes across entire viewport with some clustering tendency
+    for (let i = 0; i < nodeCount; i++) {
+      // Random position across viewport
+      const x = (Math.random() - 0.5) * viewWidth * 1.2;
+      const y = (Math.random() - 0.5) * viewHeight * 1.2;
+      const z = (Math.random() - 0.5) * 0.2;
+
+      // Extremely slow velocities
+      const vx = (Math.random() - 0.5) * 0.001;
+      const vy = (Math.random() - 0.5) * 0.001;
+
+      // Varied base alpha for depth
+      const baseAlpha = 0.3 + Math.random() * 0.7;
+      const phase = Math.random() * Math.PI * 2;
+
+      nodes.push({ x, y, z, vx, vy, baseAlpha, phase });
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      // Small particles
+      sizes[i] = 0.008 + Math.random() * 0.012;
+      alphas[i] = baseAlpha * opacity;
+    }
+
+    const nodeGeometry = new THREE.BufferGeometry();
+    nodeGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    nodeGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    nodeGeometry.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+
+    const nodeMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        color: { value: nodeColor },
+        globalOpacity: { value: opacity },
+      },
+      vertexShader: `
+        attribute float size;
+        attribute float alpha;
+        varying float vAlpha;
+
+        void main() {
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          gl_PointSize = size * 800.0;
+          vAlpha = alpha;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 color;
+        uniform float globalOpacity;
+        varying float vAlpha;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          float alpha = 1.0 - smoothstep(0.15, 0.5, dist);
+          alpha *= vAlpha;
+
+          if (alpha < 0.01) discard;
+
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const nodePoints = new THREE.Points(nodeGeometry, nodeMaterial);
+    scene.add(nodePoints);
+
+    // Edges - sparse connections
+    const maxEdges = nodeCount * 2;
+    const edgePositions = new Float32Array(maxEdges * 2 * 3);
+    let edgeCount = 0;
+
+    const edgeThreshold = 0.6;
+
+    function rebuildEdges() {
+      edgeCount = 0;
+
+      for (let i = 0; i < nodeCount; i++) {
+        const a = nodes[i];
+        // Only check nearby nodes (limit connections per node)
+        let connections = 0;
+        for (let j = i + 1; j < nodeCount && connections < 3; j++) {
+          const b = nodes[j];
+
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < edgeThreshold && Math.random() < 0.3) {
+            if (edgeCount >= maxEdges) break;
+
+            const idx = edgeCount * 6;
+            edgePositions[idx] = a.x;
+            edgePositions[idx + 1] = a.y;
+            edgePositions[idx + 2] = 0;
+            edgePositions[idx + 3] = b.x;
+            edgePositions[idx + 4] = b.y;
+            edgePositions[idx + 5] = 0;
+
+            edgeCount++;
+            connections++;
+          }
+        }
+      }
+
+      edgeGeometry.setDrawRange(0, edgeCount * 2);
+      const edgePosAttr = edgeGeometry.getAttribute('position');
+      (edgePosAttr as any).needsUpdate = true;
+    }
+
+    const edgeGeometry = new THREE.BufferGeometry();
+    edgeGeometry.setAttribute('position', new THREE.BufferAttribute(edgePositions, 3));
+    edgeGeometry.setDrawRange(0, 0);
+
+    const edgeMaterial = new THREE.LineBasicMaterial({
+      color: edgeColor,
+      transparent: true,
+      opacity: opacity * 0.3,
+      linewidth: 1,
+    });
+
+    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+    scene.add(edges);
+
+    rebuildEdges();
+
+    let animationId: number;
+    let time = 0;
+
+    function animateScene() {
+      animationId = requestAnimationFrame(animateScene);
+
+      if (animate) {
+        time += 0.016 * speed;
+
+        const px = nodeGeometry.getAttribute('position');
+        const posArray = (px as any).array as Float32Array;
+        const alphaAttr = nodeGeometry.getAttribute('alpha');
+        const alphaArray = (alphaAttr as any).array as Float32Array;
+
+        for (let i = 0; i < nodeCount; i++) {
+          const node = nodes[i];
+
+          // Extremely gentle drift - barely perceptible
+          const phase = time * 0.05 + node.phase;
+          node.vx += Math.cos(phase) * 0.000015;
+          node.vy += Math.sin(phase) * 0.000015;
+
+          // Strong damping for smooth, slow movement
+          node.vx *= 0.998;
+          node.vy *= 0.998;
+
+          node.x += node.vx;
+          node.y += node.vy;
+
+          // Wrap around edges
+          if (node.x < -viewWidth * 0.7) node.x = viewWidth * 0.7;
+          if (node.x > viewWidth * 0.7) node.x = -viewWidth * 0.7;
+          if (node.y < -viewHeight * 0.7) node.y = viewHeight * 0.7;
+          if (node.y > viewHeight * 0.7) node.y = -viewHeight * 0.7;
+
+          posArray[i * 3] = node.x;
+          posArray[i * 3 + 1] = node.y;
+
+          // Very slow alpha pulsing - subtle breathing
+          const pulse = 0.9 + Math.sin(time * 0.3 + node.phase) * 0.1;
+          alphaArray[i] = node.baseAlpha * opacity * pulse;
+        }
+
+        (px as any).needsUpdate = true;
+        (alphaAttr as any).needsUpdate = true;
+
+        // Rebuild edges occasionally
+        if (Math.floor(time * 2) % 10 === 0) {
+          rebuildEdges();
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animateScene();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          const aspect = width / height;
+          const viewHeight = 3.0;
+          const viewWidth = viewHeight * aspect;
+
+          camera.left = -viewWidth / 2;
+          camera.right = viewWidth / 2;
+          camera.top = viewHeight / 2;
+          camera.bottom = -viewHeight / 2;
+          camera.updateProjectionMatrix();
+
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            nodeGeometry.dispose();
+            edgeGeometry.dispose();
+            nodeMaterial.dispose();
+            edgeMaterial.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initGraphBackground(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.graph-bg-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>

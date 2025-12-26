@@ -1,0 +1,35 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractDNAFigure8 from '@components/flare/ImageAbstract--DNA-Figure8.astro';
+---
+
+<FlarePageLayout
+  title="DNA Figure-8"
+  description="Dual-ring DNA figure-eight made of colorful acoustic spikes."
+  currentSlug="dna-figure8"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractDNAFigure8 size="100%" intensity={1.2} rotationSpeed={0.3} />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[150px] h-[170px]">
+        <ImageAbstractDNAFigure8 size="100%" intensity={0.9} rotationSpeed={0.25} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Core blend</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[150px] h-[170px]">
+        <ImageAbstractDNAFigure8 size="100%" intensity={1.4} rotationSpeed={0.4} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">High-energy</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[150px] h-[170px]">
+        <ImageAbstractDNAFigure8 size="100%" intensity={0.8} animate={false} />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+    </div>
+  </div>
+</FlarePageLayout>

@@ -1,0 +1,62 @@
+---
+/**
+ * Flare Gallery Index
+ * Landing page with links to individual flare component demos
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+
+const flareComponents = [
+  { slug: 'orb', name: 'Orb', description: 'Particle sphere with central void' },
+  { slug: 'graph-network', name: 'Graph Network', description: 'Drifting nodes with flickering connections' },
+  { slug: 'graph-background', name: 'Graph Background', description: 'Muted ambient layer for behind content' },
+  { slug: 'graph-galaxy', name: 'Graph Galaxy', description: 'Dense galaxy visualization, self-contained' },
+  { slug: 'dna-figure8', name: 'DNA Figure-8', description: 'Dual-ring DNA with acoustic spikes' },
+  { slug: 'dna-helix', name: 'DNA Double Helix', description: 'Classic Watson-Crick spinning helix' },
+  { slug: 'mitochondria', name: 'Mitochondria', description: 'Powerhouse of the cell with cristae folds' },
+  { slug: 'chromosome', name: 'Chromosome', description: 'X-shaped with telomere caps' },
+  { slug: 'red-cell', name: 'Red Blood Cell', description: 'Biconcave erythrocyte with internal aggregates' },
+  { slug: 'white-cell', name: 'White Blood Cell', description: 'Neutrophil with lobed nucleus and granules' },
+  { slug: 'human-body', name: 'Human Body', description: 'Particle silhouette figure' },
+  { slug: 'human-back', name: 'Human Back View', description: 'Back view with glowing head' },
+  { slug: 'human-svg', name: 'Human SVG', description: 'Full-body SVG path silhouette' },
+  { slug: 'bell-galaxy', name: 'Bell-Shaped Galaxy', description: 'Tubular cosmic structure with radial filaments' },
+];
+---
+
+<BaseThemeLayout
+  title="Flare Components Gallery | Dark Matter"
+  description="Three.js particle visualization components"
+  mode="dark"
+>
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h1 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+      Flare Gallery
+    </h1>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Three.js particle visualizations. Click to view each component individually.
+    </p>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl w-full">
+      {flareComponents.map((component, index) => (
+        <a
+          href={`/design-system/flare/${component.slug}`}
+          class="group block p-6 rounded-xl bg-(--color-void) border border-(--color-lilac)/20 hover:border-(--color-lilac)/50 transition-all duration-300"
+        >
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xs text-(--color-lilac)/50 font-mono">{String(index + 1).padStart(2, '0')}</span>
+            <h2 class="text-lg font-semibold text-(--color-alabaster) group-hover:text-(--color-lilac) transition-colors">
+              {component.name}
+            </h2>
+          </div>
+          <p class="text-sm text-(--color-alabaster)/60 ml-8">
+            {component.description}
+          </p>
+        </a>
+      ))}
+    </div>
+
+    <p class="mt-12 text-sm text-(--color-alabaster)/40">
+      Use arrow keys or swipe to navigate between demos
+    </p>
+  </section>
+</BaseThemeLayout>

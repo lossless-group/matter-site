@@ -1,0 +1,549 @@
+---
+/**
+ * ImageAbstract--WhiteCell
+ *
+ * A Three.js particle visualization of a white blood cell (leukocyte):
+ * - Solid spherical core with bumpy, textured surface
+ * - Many small spiky protrusions all over (not long pseudopods)
+ * - Dense, coherent structure like a spiky ball or raspberry
+ * - Subtle internal nucleus visible through the membrane
+ *
+ * The immune system's defenders rendered in particles.
+ */
+
+interface Props {
+  /** Container size in CSS units */
+  size?: string;
+  /** Main cell color */
+  cellColor?: string;
+  /** Highlight color for protrusions */
+  highlightColor?: string;
+  /** Enable floating animation */
+  animate?: boolean;
+  /** Animation speed multiplier */
+  animationSpeed?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '520px',
+  cellColor = '#94a3b8',
+  highlightColor = '#e2e8f0',
+  animate = true,
+  animationSpeed = 0.25,
+  class: className = '',
+} = Astro.props as Props;
+
+const containerId = `whitecell-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  id={containerId}
+  class:list={['whitecell-container', className]}
+  style={`width: ${size}; height: ${size};`}
+  data-cell-color={cellColor}
+  data-highlight-color={highlightColor}
+  data-animate={animate}
+  data-animation-speed={animationSpeed}
+>
+  <canvas class="whitecell-canvas"></canvas>
+</div>
+
+<style>
+  .whitecell-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+  }
+
+  .whitecell-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+
+  interface WhiteCellConfig {
+    cellColor: string;
+    highlightColor: string;
+    animate: boolean;
+    animationSpeed: number;
+  }
+
+  function initWhiteCell(container: HTMLElement) {
+    const canvas = container.querySelector('.whitecell-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const config: WhiteCellConfig = {
+      cellColor: container.dataset.cellColor || '#94a3b8',
+      highlightColor: container.dataset.highlightColor || '#e2e8f0',
+      animate: container.dataset.animate !== 'false',
+      animationSpeed: parseFloat(container.dataset.animationSpeed || '0.25'),
+    };
+
+    const scene = new THREE.Scene();
+
+    const width = container.clientWidth || 520;
+    const height = container.clientHeight || 520;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.z = 4;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    // Cell parameters
+    const coreRadius = 0.9;
+    const spikeCount = 45;  // Many small spikes
+    const bumpCount = 80;   // Surface bumps for texture
+
+    // Particle arrays
+    const positions: number[] = [];
+    const sizes: number[] = [];
+    const colors: number[] = [];
+    const alphas: number[] = [];
+
+    const cellColor = new THREE.Color(config.cellColor);
+    const highlightColor = new THREE.Color(config.highlightColor);
+
+    // Generate spike data - short protrusions all over the surface
+    interface Spike {
+      dir: THREE.Vector3;
+      length: number;
+      baseWidth: number;
+      tipWidth: number;
+    }
+
+    const spikes: Spike[] = [];
+
+    // Distribute spikes evenly using fibonacci sphere
+    for (let i = 0; i < spikeCount; i++) {
+      const phi = Math.acos(1 - 2 * (i + 0.5) / spikeCount);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+
+      const dir = new THREE.Vector3(
+        Math.sin(phi) * Math.cos(theta),
+        Math.sin(phi) * Math.sin(theta),
+        Math.cos(phi)
+      );
+
+      // Add some randomness to direction
+      dir.x += (Math.random() - 0.5) * 0.3;
+      dir.y += (Math.random() - 0.5) * 0.3;
+      dir.z += (Math.random() - 0.5) * 0.3;
+      dir.normalize();
+
+      spikes.push({
+        dir,
+        length: 0.15 + Math.random() * 0.2,  // Short spikes
+        baseWidth: 0.12 + Math.random() * 0.08,
+        tipWidth: 0.04 + Math.random() * 0.03,
+      });
+    }
+
+    // Generate surface bumps for texture
+    interface Bump {
+      pos: THREE.Vector3;
+      radius: number;
+      height: number;
+    }
+
+    const bumps: Bump[] = [];
+
+    for (let i = 0; i < bumpCount; i++) {
+      const phi = Math.acos(1 - 2 * Math.random());
+      const theta = Math.random() * Math.PI * 2;
+
+      const pos = new THREE.Vector3(
+        Math.sin(phi) * Math.cos(theta),
+        Math.sin(phi) * Math.sin(theta),
+        Math.cos(phi)
+      ).multiplyScalar(coreRadius);
+
+      bumps.push({
+        pos,
+        radius: 0.08 + Math.random() * 0.1,
+        height: 0.03 + Math.random() * 0.05,
+      });
+    }
+
+    /**
+     * Get the surface height at a point (for bumpy texture)
+     */
+    function getSurfaceOffset(point: THREE.Vector3): number {
+      let offset = 0;
+      const normalizedPoint = point.clone().normalize();
+
+      // Add bump contributions
+      for (const bump of bumps) {
+        const bumpDir = bump.pos.clone().normalize();
+        const dot = normalizedPoint.dot(bumpDir);
+        if (dot > 0.8) {
+          const factor = (dot - 0.8) / 0.2;
+          offset += bump.height * factor * factor;
+        }
+      }
+
+      return offset;
+    }
+
+    /**
+     * Check if point is inside a spike
+     */
+    function isInSpike(point: THREE.Vector3): { inside: boolean; t: number; spikeIdx: number } {
+      const pointDir = point.clone().normalize();
+      const pointDist = point.length();
+
+      for (let i = 0; i < spikes.length; i++) {
+        const spike = spikes[i];
+        const dot = pointDir.dot(spike.dir);
+
+        if (dot > 0.92) {  // Close to spike direction
+          const spikeStart = coreRadius * 0.95;
+          const spikeEnd = coreRadius + spike.length;
+
+          if (pointDist >= spikeStart && pointDist <= spikeEnd) {
+            // Calculate t (0 at base, 1 at tip)
+            const t = (pointDist - spikeStart) / (spikeEnd - spikeStart);
+
+            // Radius tapers from base to tip
+            const spikeRadius = spike.baseWidth * (1 - t) + spike.tipWidth * t;
+
+            // Distance from spike center line
+            const projectedDist = pointDist * Math.sqrt(1 - dot * dot);
+
+            if (projectedDist < spikeRadius) {
+              return { inside: true, t, spikeIdx: i };
+            }
+          }
+        }
+      }
+
+      return { inside: false, t: 0, spikeIdx: -1 };
+    }
+
+    /**
+     * Generate the dense core sphere
+     */
+    function generateCore() {
+      const coreParticles = 12000;
+      let generated = 0;
+      let attempts = 0;
+      const maxAttempts = coreParticles * 8;
+
+      while (generated < coreParticles && attempts < maxAttempts) {
+        attempts++;
+
+        // Random point in sphere
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const r = Math.pow(Math.random(), 0.4) * coreRadius; // Bias toward surface
+
+        const x = r * Math.sin(phi) * Math.cos(theta);
+        const y = r * Math.sin(phi) * Math.sin(theta);
+        const z = r * Math.cos(phi);
+
+        const point = new THREE.Vector3(x, y, z);
+        const dist = point.length();
+
+        // Get surface offset for bumpy texture
+        const surfaceOffset = getSurfaceOffset(point);
+        const effectiveRadius = coreRadius + surfaceOffset;
+
+        // Check if inside core (with bumpy surface)
+        if (dist <= effectiveRadius) {
+          positions.push(x, y, z);
+
+          // Size - larger near surface for texture
+          const surfaceFactor = dist / coreRadius;
+          const baseSize = 0.018 + Math.random() * 0.014;
+          const sizeBoost = surfaceFactor > 0.85 ? 1.2 : 1.0;
+          sizes.push(baseSize * sizeBoost);
+
+          // Color - slightly lighter near surface
+          const colorMix = surfaceFactor * 0.3;
+          const particleColor = cellColor.clone().lerp(highlightColor, colorMix);
+          colors.push(particleColor.r, particleColor.g, particleColor.b);
+
+          // Alpha - more opaque at surface
+          const alpha = 0.6 + surfaceFactor * 0.4;
+          alphas.push(alpha);
+
+          generated++;
+        }
+      }
+    }
+
+    /**
+     * Generate spikes (protrusions)
+     */
+    function generateSpikes() {
+      const particlesPerSpike = 350;
+
+      for (let s = 0; s < spikes.length; s++) {
+        const spike = spikes[s];
+
+        for (let i = 0; i < particlesPerSpike; i++) {
+          // Position along spike (0 = base at core surface, 1 = tip)
+          const t = Math.pow(Math.random(), 0.7); // Bias toward base for fuller look
+
+          const spikeStart = coreRadius * 0.92;
+          const spikeEnd = coreRadius + spike.length;
+          const dist = spikeStart + t * (spikeEnd - spikeStart);
+
+          // Radius at this point (tapers toward tip)
+          const spikeRadius = spike.baseWidth * (1 - t * 0.7) + spike.tipWidth * t * 0.7;
+
+          // Random position within spike cross-section
+          const angle = Math.random() * Math.PI * 2;
+          const r = Math.sqrt(Math.random()) * spikeRadius;
+
+          // Create perpendicular vectors to spike direction
+          const up = Math.abs(spike.dir.y) < 0.9
+            ? new THREE.Vector3(0, 1, 0)
+            : new THREE.Vector3(1, 0, 0);
+          const perp1 = new THREE.Vector3().crossVectors(spike.dir, up).normalize();
+          const perp2 = new THREE.Vector3().crossVectors(spike.dir, perp1).normalize();
+
+          // Position in world space
+          const x = spike.dir.x * dist + perp1.x * Math.cos(angle) * r + perp2.x * Math.sin(angle) * r;
+          const y = spike.dir.y * dist + perp1.y * Math.cos(angle) * r + perp2.y * Math.sin(angle) * r;
+          const z = spike.dir.z * dist + perp1.z * Math.cos(angle) * r + perp2.z * Math.sin(angle) * r;
+
+          positions.push(x, y, z);
+
+          // Larger particles, especially at tips
+          const tipBonus = t > 0.7 ? 1.3 : 1.0;
+          const baseSize = (0.02 + Math.random() * 0.015) * tipBonus;
+          sizes.push(baseSize);
+
+          // Lighter color toward tips
+          const colorMix = 0.3 + t * 0.5;
+          const particleColor = cellColor.clone().lerp(highlightColor, colorMix);
+          colors.push(particleColor.r, particleColor.g, particleColor.b);
+
+          // High alpha for visibility
+          const alpha = 0.8 + Math.random() * 0.2;
+          alphas.push(alpha);
+        }
+      }
+    }
+
+    /**
+     * Generate surface texture bumps
+     */
+    function generateSurfaceBumps() {
+      const bumpParticles = 3000;
+
+      for (let i = 0; i < bumpParticles; i++) {
+        // Random position on surface
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+
+        const baseX = Math.sin(phi) * Math.cos(theta);
+        const baseY = Math.sin(phi) * Math.sin(theta);
+        const baseZ = Math.cos(phi);
+
+        const point = new THREE.Vector3(baseX, baseY, baseZ);
+        const surfaceOffset = getSurfaceOffset(point.clone().multiplyScalar(coreRadius));
+
+        // Position at surface with bump
+        const r = coreRadius + surfaceOffset + (Math.random() - 0.5) * 0.04;
+
+        const x = baseX * r;
+        const y = baseY * r;
+        const z = baseZ * r;
+
+        // Don't place where spikes are
+        const spikeCheck = isInSpike(new THREE.Vector3(x, y, z));
+        if (spikeCheck.inside) continue;
+
+        positions.push(x, y, z);
+
+        // Slightly larger surface particles
+        const baseSize = 0.022 + Math.random() * 0.016;
+        sizes.push(baseSize);
+
+        // Surface is lighter
+        const colorMix = 0.4 + Math.random() * 0.3;
+        const particleColor = cellColor.clone().lerp(highlightColor, colorMix);
+        colors.push(particleColor.r, particleColor.g, particleColor.b);
+
+        alphas.push(0.85 + Math.random() * 0.15);
+      }
+    }
+
+    // Generate all particles
+    generateCore();
+    generateSpikes();
+    generateSurfaceBumps();
+
+    // Create geometry
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('alpha', new THREE.Float32BufferAttribute(alphas, 1));
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 },
+      },
+      vertexShader: `
+        attribute float size;
+        attribute float alpha;
+        attribute vec3 color;
+        varying float vAlpha;
+        varying vec3 vColor;
+        uniform float time;
+
+        void main() {
+          vec3 pos = position;
+
+          // Subtle surface ripple
+          float ripple = sin(time * 0.4 + pos.x * 4.0 + pos.y * 4.0 + pos.z * 4.0) * 0.01;
+          pos += normalize(pos) * ripple;
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          gl_PointSize = size * 400.0 * (1.0 / -mvPosition.z);
+
+          float depthFade = smoothstep(6.0, 2.5, -mvPosition.z);
+          vAlpha = alpha * depthFade;
+          vColor = color;
+        }
+      `,
+      fragmentShader: `
+        varying float vAlpha;
+        varying vec3 vColor;
+
+        void main() {
+          vec2 center = gl_PointCoord - vec2(0.5);
+          float dist = length(center);
+
+          float coreFalloff = 1.0 - smoothstep(0.0, 0.25, dist);
+          float glowFalloff = 1.0 - smoothstep(0.1, 0.5, dist);
+
+          float alpha = mix(glowFalloff * 0.6, coreFalloff, 0.7);
+          alpha *= vAlpha;
+
+          if (alpha < 0.01) discard;
+
+          vec3 finalColor = vColor * (1.15 + coreFalloff * 0.35);
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    group.add(particles);
+
+    // Animation
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+
+      if (config.animate) {
+        time += 0.016 * config.animationSpeed;
+
+        // Update shader time
+        (material.uniforms.time as any).value = time;
+
+        // Slow tumbling
+        group.rotation.x = Math.sin(time * 0.15) * 0.25;
+        group.rotation.y = time * 0.08;
+        group.rotation.z = Math.cos(time * 0.12) * 0.15;
+
+        // Gentle floating
+        group.position.y = Math.sin(time * 0.25) * 0.04;
+        group.position.x = Math.cos(time * 0.2) * 0.03;
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handling
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    // Cleanup
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((node) => {
+          if (node === container || (node as Element).contains?.(container)) {
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+            mutationObserver.disconnect();
+            geometry.dispose();
+            material.dispose();
+            renderer.dispose();
+          }
+        });
+      });
+    });
+
+    if (container.parentElement) {
+      mutationObserver.observe(container.parentElement, { childList: true });
+    }
+  }
+
+  // Lazy loading
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initWhiteCell(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.whitecell-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
+</script>
