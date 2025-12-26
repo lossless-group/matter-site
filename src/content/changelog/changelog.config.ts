@@ -45,7 +45,7 @@ export const changelogSchema = z.object({
 export const changelog = defineCollection({
   // Use glob loader to point to external directory
   loader: glob({
-    pattern: '**/*.md',
+    pattern: '**/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_*.md',
     base: './changelog', // Relative from src/content/ -> project root changelog/
   }),
   schema: changelogSchema,
