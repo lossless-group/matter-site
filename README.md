@@ -2,8 +2,16 @@
 
 ![Dark Matter Trademark](https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Dark-Matter--Dark-Mode.svg)
 
-## Version 0.1.0 as of December 13, 2025
-Includes confidential access, Level 1, as well as portfolio and pipeline pages with Markdown rendering of investment memos.
+## Version 0.2.0 as of December 26, 2025
+
+**New in 0.2.0:**
+- Modular slide deck architecture with 33 extracted section components
+- PageAsDeckWrapper layout with double-click and keyboard navigation
+- Citation system with hex-code identifiers and hover popovers
+- Date formatting utility (`@lib/dates`) for ISO → display conversion
+- Strategy and thesis narrative pages rebuilt as composable slides
+
+**v0.1.0 (Dec 13):** Confidential access, portfolio/pipeline pages, investment memo rendering.
 
 <p align="center">
   <span style="font-size: 18px; font-weight: 500; color: #374151;">A modern web application built with</span>
@@ -92,6 +100,59 @@ Three.js opens the door to:
 - 3D product showcases
 - Particle-based transitions between pages
 - Scroll-driven 3D animations
+
+---
+
+## 🎴 Slide Deck Architecture
+
+The strategy and thesis narrative pages use a modular slide deck architecture. Each section is extracted into its own reusable component, enabling presentation-style viewing and custom deck compositions.
+
+### PageAsDeckWrapper
+
+A wrapper layout enabling presentation-style navigation while preserving smooth scrolling:
+
+```astro
+import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
+
+<PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true}>
+  <SlideComponent1 />
+  <SlideComponent2 />
+  <SlideComponent3 />
+</PageAsDeckWrapper>
+```
+
+**Navigation:**
+- **Double-click** upper half → previous section
+- **Double-click** lower half → next section
+- **Keyboard:** Arrow keys, Page Up/Down, Home/End
+- **Section indicator** shows current/total in bottom-right
+
+### Slide Components
+
+**33 total components** extracted from monolithic narrative pages:
+
+| Path | Count | Content |
+|------|-------|---------|
+| `src/layouts/sections/narratives/slides/strategy/` | 17 | S01-WhyNowHero through S17-LPBenefits |
+| `src/layouts/sections/narratives/slides/thesis/` | 16 | T01-AgingCrisisHero through T16-Closing |
+
+### Test Pages
+
+- `/strategy/reassembled` — All 17 strategy slides composed
+- `/thesis/reassembled` — All 16 thesis slides composed
+
+### Reveal Animation System
+
+Components use IntersectionObserver-triggered animations:
+
+```css
+.reveal-item[data-reveal="fade-up"]    /* Translate up 40px */
+.reveal-item[data-reveal="slide-right"] /* Translate from -60px */
+.reveal-item[data-reveal="slide-left"]  /* Translate from +60px */
+.reveal-item[data-reveal="scale-up"]    /* Scale from 0.85 */
+```
+
+Stagger delays via CSS custom property: `style="--delay: 200ms;"`
 
 ---
 
