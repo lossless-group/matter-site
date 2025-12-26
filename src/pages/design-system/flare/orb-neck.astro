@@ -1,0 +1,41 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import ImageAbstractOrbNeck from '@components/flare/ImageAbstract--GlowingOrb--WithNeck.astro';
+---
+
+<FlarePageLayout
+  title="Orb with Neck"
+  description="Dense particle sphere with elegant neck extensions. Supports top, bottom, both necks, and horizontal orientation."
+  currentSlug="orb-neck"
+>
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractOrbNeck size="100%" necks="both" />
+  </div>
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-8">
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractOrbNeck size="100%" necks="bottom" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Bottom only</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractOrbNeck size="100%" necks="top" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Top only</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractOrbNeck size="100%" necks="both" orientation="horizontal" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Horizontal</p>
+    </div>
+    <div class="text-center">
+      <div class="inline-block mb-3 w-[160px] h-[160px]">
+        <ImageAbstractOrbNeck size="100%" necks="both" glowColor="#a78bfa" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Purple glow</p>
+    </div>
+  </div>
+</FlarePageLayout>

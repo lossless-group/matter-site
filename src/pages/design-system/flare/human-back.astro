@@ -1,35 +1,35 @@
 ---
 import FlarePageLayout from '@layouts/FlarePageLayout.astro';
-import ImageAbstractHumanBack from '@components/flare/ImageAbstract--HumanBody--BackView.astro';
+import ImageAbstractGlowingOrb from '@components/flare/ImageAbstract--HumanBody--BackView.astro';
 ---
 
 <FlarePageLayout
-  title="Human Back View"
-  description="Back view silhouette with dense glowing head particles that fade down the body."
+  title="Glowing Orb"
+  description="Dense particle sphere with ethereal blue glow halo."
   currentSlug="human-back"
 >
-  <div class="w-[min(70vw,380px)] h-[min(90vw,500px)]">
-    <ImageAbstractHumanBack size="100%" />
+  <div class="w-[min(80vw,480px)] h-[min(80vw,480px)]">
+    <ImageAbstractGlowingOrb size="100%" />
   </div>
 
   <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
     <div class="text-center">
-      <div class="inline-block mb-3 w-[120px] h-[180px]">
-        <ImageAbstractHumanBack size="100%" rotationSpeed={0.15} />
+      <div class="inline-block mb-3 w-[180px] h-[180px]">
+        <ImageAbstractGlowingOrb size="100%" glowColor="#a78bfa" />
       </div>
-      <p class="text-sm text-(--color-alabaster)/60">Rotating</p>
+      <p class="text-sm text-(--color-alabaster)/60">Purple glow</p>
     </div>
     <div class="text-center">
-      <div class="inline-block mb-3 w-[120px] h-[180px]">
-        <ImageAbstractHumanBack size="100%" color="#9C85DF" />
+      <div class="inline-block mb-3 w-[180px] h-[180px]">
+        <ImageAbstractGlowingOrb size="100%" glowColor="#34d399" />
       </div>
-      <p class="text-sm text-(--color-alabaster)/60">Lilac tint</p>
+      <p class="text-sm text-(--color-alabaster)/60">Green glow</p>
     </div>
     <div class="text-center">
-      <div class="inline-block mb-3 w-[120px] h-[180px]">
-        <ImageAbstractHumanBack size="100%" animate={false} />
+      <div class="inline-block mb-3 w-[180px] h-[180px]">
+        <ImageAbstractGlowingOrb size="100%" glowColor="#f472b6" />
       </div>
-      <p class="text-sm text-(--color-alabaster)/60">Static</p>
+      <p class="text-sm text-(--color-alabaster)/60">Pink glow</p>
     </div>
   </div>
 </FlarePageLayout>
