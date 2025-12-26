@@ -3,11 +3,32 @@
  * Strategy Section 7: Deep Scientific Expertise
  * Pillar detail section
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'expertise' } = Astro.props;
+
+// Citation data for geroscience centers
+const citations = {
+  cedarsResearch: {
+    index: 1,
+    hexCode: '1d3uza',
+    title: 'Cedars-Sinai Heads Up $6.5M Multicenter Aging Research Grant',
+    url: 'https://www.cedars-sinai.org/newsroom/cedars-sinai-ucla-and-usc-join-forces-to-extend-human-healthspan/',
+    source: 'Cedars-Sinai',
+    publishedDate: '2025-10-16'
+  },
+  cedarsAging: {
+    index: 2,
+    hexCode: 'afb7dp',
+    title: 'Healthy Aging Research - Cedars-Sinai Health Sciences University',
+    url: 'https://www.cedars-sinai.edu/health-sciences-university/research/departments-institutes/smidt-heart-institute/healthy-aging.html',
+    source: 'Cedars-Sinai'
+  }
+};
 ---
 
 <section class="slide slide-pillar slide-pillar-expertise" id={id}>
@@ -22,7 +43,7 @@ const { id = 'expertise' } = Astro.props;
     </div>
     <ul class="pillar-bullets">
       <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Decades of experience across biology, data science, and company-building</li>
-      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Embedded in leading geroscience centers working to extend healthspan</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Embedded in leading geroscience centers working to extend healthspan<InlineCitation {...citations.cedarsResearch} /><InlineCitation {...citations.cedarsAging} /></li>
       <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Distinguish true mechanism-based therapies from superficial wellness products</li>
       <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Support portfolio companies with trial design, regulatory strategy, and biomarker selection</li>
     </ul>

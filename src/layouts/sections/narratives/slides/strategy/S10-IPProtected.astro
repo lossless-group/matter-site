@@ -3,11 +3,33 @@
  * Strategy Section 10: IP-Protected, Scalable Solutions
  * Defensible platforms focus
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'ip' } = Astro.props;
+
+// Citation data for aging research context
+const citations = {
+  stanfordPilot: {
+    index: 1,
+    hexCode: '4v5z4c',
+    title: "Stanford Medicine's Longevity and Healthy Aging Pilot Grants 2025",
+    url: 'https://seedfunding.stanford.edu/opportunities/stanford-medicines-longevity-and-healthy-aging-pilot-grants-2025-2026',
+    source: 'Stanford Seed Funding',
+    publishedDate: '2025-07-01'
+  },
+  cedarsGrant: {
+    index: 2,
+    hexCode: '1d3uza',
+    title: 'Cedars-Sinai Heads Up $6.5M Multicenter Aging Research Grant',
+    url: 'https://www.cedars-sinai.org/newsroom/cedars-sinai-ucla-and-usc-join-forces-to-extend-human-healthspan/',
+    source: 'Cedars-Sinai',
+    publishedDate: '2025-10-16'
+  }
+};
 ---
 
 <section class="slide slide-pillar slide-pillar-ip" id={id}>
@@ -21,10 +43,10 @@ const { id = 'ip' } = Astro.props;
       </div>
     </div>
     <ul class="pillar-bullets">
-      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Novel therapeutics targeting fundamental aging pathways</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Novel therapeutics targeting fundamental aging pathways<InlineCitation {...citations.stanfordPilot} /></li>
       <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Diagnostic, digital, and AI-driven tools for personalized interventions</li>
       <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Strong intellectual property moats and clear regulatory paths</li>
-      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Measurable impact on healthspan—clinically meaningful outcomes</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Measurable impact on healthspan—clinically meaningful outcomes<InlineCitation {...citations.cedarsGrant} /></li>
     </ul>
   </div>
 </section>

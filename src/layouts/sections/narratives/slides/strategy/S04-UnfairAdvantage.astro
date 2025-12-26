@@ -3,12 +3,34 @@
  * Strategy Section 4: Our Unfair Advantage
  * Trusted networks section
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
   showScrollCta?: boolean;
 }
 
 const { id = 'advantage', showScrollCta = true } = Astro.props;
+
+// Citation data for Stanford and Cedars-Sinai relationships
+const citations = {
+  stanford: {
+    index: 1,
+    hexCode: 'hi3ous',
+    title: 'Stanford Medicine Center for Longevity and Healthy Aging',
+    url: 'https://aging.stanford.edu',
+    source: 'Stanford Medicine',
+    publishedDate: '2025-12-12'
+  },
+  cedars: {
+    index: 2,
+    hexCode: '1d3uza',
+    title: 'Cedars-Sinai Heads Up $6.5M Multicenter Aging Research Grant',
+    url: 'https://www.cedars-sinai.org/newsroom/cedars-sinai-ucla-and-usc-join-forces-to-extend-human-healthspan/',
+    source: 'Cedars-Sinai',
+    publishedDate: '2025-10-16'
+  }
+};
 ---
 
 <section class="slide slide-advantage" id={id}>
@@ -22,7 +44,7 @@ const { id = 'advantage', showScrollCta = true } = Astro.props;
         partners who route breakthroughs to market.
       </p>
       <ul class="bullet-list reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
-        <li>Deep relationships with Stanford & Cedars-Sinai</li>
+        <li>Deep relationships with Stanford<InlineCitation {...citations.stanford} /> & Cedars-Sinai<InlineCitation {...citations.cedars} /></li>
         <li>Longevity influencer network with millions of followers</li>
         <li>Cross-pollinating venture and operating experience</li>
       </ul>

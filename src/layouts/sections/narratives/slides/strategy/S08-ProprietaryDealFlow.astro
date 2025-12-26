@@ -3,11 +3,64 @@
  * Strategy Section 8: Proprietary Deal Flow
  * Stanford & Cedars-Sinai partnerships
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'dealflow' } = Astro.props;
+
+// Citation data for Stanford and Cedars-Sinai partnerships
+const citations = {
+  stanfordPilot: {
+    index: 1,
+    hexCode: '4v5z4c',
+    title: "Stanford Medicine's Longevity and Healthy Aging Pilot Grants 2025",
+    url: 'https://seedfunding.stanford.edu/opportunities/stanford-medicines-longevity-and-healthy-aging-pilot-grants-2025-2026',
+    source: 'Stanford Seed Funding',
+    publishedDate: '2025-07-01'
+  },
+  stanfordCenter: {
+    index: 2,
+    hexCode: 'hi3ous',
+    title: 'Stanford Medicine Center for Longevity and Healthy Aging',
+    url: 'https://aging.stanford.edu',
+    source: 'Stanford Medicine',
+    publishedDate: '2025-12-12'
+  },
+  stanfordLongevity: {
+    index: 3,
+    hexCode: 'pa7m9m',
+    title: 'Stanford Center on Longevity: Home',
+    url: 'https://longevity.stanford.edu',
+    source: 'Stanford',
+    publishedDate: '2025-11-12'
+  },
+  stanfordAffiliates: {
+    index: 4,
+    hexCode: 'a8ony5',
+    title: 'SCL Corporate Affiliates Program',
+    url: 'https://longevity.stanford.edu/scl-corporate-affiliates-program/',
+    source: 'Stanford Center on Longevity',
+    publishedDate: '2025-07-31'
+  },
+  cedarsGrant: {
+    index: 5,
+    hexCode: '1d3uza',
+    title: 'Cedars-Sinai Heads Up $6.5M Multicenter Aging Research Grant',
+    url: 'https://www.cedars-sinai.org/newsroom/cedars-sinai-ucla-and-usc-join-forces-to-extend-human-healthspan/',
+    source: 'Cedars-Sinai',
+    publishedDate: '2025-10-16'
+  },
+  cedarsAging: {
+    index: 6,
+    hexCode: 'afb7dp',
+    title: 'Healthy Aging Research - Cedars-Sinai Health Sciences University',
+    url: 'https://www.cedars-sinai.edu/health-sciences-university/research/departments-institutes/smidt-heart-institute/healthy-aging.html',
+    source: 'Cedars-Sinai'
+  }
+};
 ---
 
 <section class="slide slide-pillar slide-pillar-dealflow" id={id}>
@@ -17,13 +70,13 @@ const { id = 'dealflow' } = Astro.props;
       <span class="pillar-icon-large">🔬</span>
       <div>
         <h2 class="pillar-title">Proprietary Deal Flow</h2>
-        <p class="pillar-subtitle">via Stanford & Cedars-Sinai partnerships</p>
+        <p class="pillar-subtitle">via Stanford<InlineCitation {...citations.stanfordCenter} /> & Cedars-Sinai<InlineCitation {...citations.cedarsGrant} /> partnerships</p>
       </div>
     </div>
     <ul class="pillar-bullets">
-      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Early visibility into spin-outs, pilot projects, and translational teams</li>
-      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Access to key investigators and clinical trial infrastructure</li>
-      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Co-design company formation around validated science and IP</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Early visibility into spin-outs, pilot projects, and translational teams<InlineCitation {...citations.stanfordPilot} /></li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Access to key investigators and clinical trial infrastructure<InlineCitation {...citations.stanfordLongevity} /><InlineCitation {...citations.cedarsAging} /></li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Co-design company formation around validated science and IP<InlineCitation {...citations.stanfordAffiliates} /></li>
       <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">NIH-backed aging clinical trials and gerotherapeutics programs</li>
     </ul>
   </div>

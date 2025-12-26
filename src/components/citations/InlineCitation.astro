@@ -8,6 +8,7 @@
  *
  * Supports light/dark/vibrant modes via CSS custom properties.
  */
+import { formatCitationDate } from '@lib/dates';
 
 interface Props {
   /** Sequential index for display (e.g., 1, 2, 3) */
@@ -20,7 +21,7 @@ interface Props {
   url: string;
   /** Publication name or domain */
   source?: string;
-  /** Published date for display */
+  /** Published date for display (ISO format: YYYY-MM-DD) */
   publishedDate?: string;
 }
 
@@ -28,6 +29,9 @@ const { index, hexCode, title, url, source, publishedDate } = Astro.props;
 
 // Extract domain from URL if no source provided
 const displaySource = source || new URL(url).hostname.replace('www.', '');
+
+// Format date from ISO to citation display format (e.g., "2025, Dec 26")
+const displayDate = formatCitationDate(publishedDate);
 ---
 
 <sup
@@ -37,7 +41,7 @@ const displaySource = source || new URL(url).hostname.replace('www.', '');
   data-citation-title={title}
   data-citation-source={displaySource}
   data-citation-url={url}
-  data-citation-date={publishedDate || ''}
+  data-citation-date={displayDate}
 >
   [{index}]
 </sup>
