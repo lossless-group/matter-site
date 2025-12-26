@@ -355,15 +355,30 @@ const containerId = `dna-helix-${Math.random().toString(36).slice(2, 9)}`;
     }
   }
 
-  function initAllHelixes() {
-    document.querySelectorAll('.dna-helix-container').forEach((container) => {
-      const el = container as HTMLElement;
-      if (el.dataset.initialized === 'true') return;
-      el.dataset.initialized = 'true';
-      initDNAHelix(el);
-    });
+  // Lazy loading with IntersectionObserver to manage WebGL contexts
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initDNAHelix(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.dna-helix-container').forEach((c) => observer.observe(c));
+    return observer;
   }
 
-  document.addEventListener('DOMContentLoaded', initAllHelixes);
-  document.addEventListener('astro:page-load', initAllHelixes);
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
 </script>

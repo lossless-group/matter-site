@@ -278,15 +278,180 @@ const containerId = `dna-figure8-${Math.random().toString(36).slice(2, 9)}`;
     }
   }
 
-  function initAllDNA() {
-    document.querySelectorAll('.dna-figure8-container').forEach((container) => {
-      const el = container as HTMLElement;
-      if (el.dataset.initialized === 'true') return;
-      el.dataset.initialized = 'true';
-      initDNAFigure8(el);
+  // Lazy loading with IntersectionObserver to manage WebGL contexts
+  const cleanupMap = new WeakMap<HTMLElement, () => void>();
+
+  function initWithCleanup(container: HTMLElement) {
+    if (cleanupMap.has(container)) return;
+
+    const canvas = container.querySelector('.dna-figure8-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const config: DNAConfig = {
+      intensity: parseFloat(container.dataset.intensity || '1'),
+      animate: container.dataset.animate !== 'false',
+      rotationSpeed: parseFloat(container.dataset.rotationSpeed || '0.25'),
+    };
+
+    const scene = new THREE.Scene();
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 400;
+
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.z = 3.2;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const spikeHeight = 0.35;
+    const spikeRadius = 0.035;
+    const spikeGeom = new THREE.ConeGeometry(spikeRadius, spikeHeight, 6, 1, true);
+    spikeGeom.translate(0, spikeHeight / 2, 0);
+
+    const palette = [0xff5e58, 0xffb347, 0xfff176, 0xa7ff83, 0x4dd0e1, 0x42a5f5, 0xba68c8, 0xf06292, 0xffffff];
+
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xffffff, transparent: true, opacity: 0.95,
+      side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending,
     });
+
+    const segmentsPerRing = 140;
+    const ringCount = 2;
+    const instanceCount = segmentsPerRing * ringCount;
+    const instanced = new THREE.InstancedMesh(spikeGeom, material, instanceCount);
+    instanced.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
+    const colors = new Float32Array(instanceCount * 3);
+    const baseRadius = 0.9;
+    const ringVerticalOffset = 0.9;
+    const dummy = new THREE.Object3D();
+
+    for (let ring = 0; ring < ringCount; ring++) {
+      const ringCenterY = ring === 0 ? ringVerticalOffset / 2 : -ringVerticalOffset / 2;
+      for (let i = 0; i < segmentsPerRing; i++) {
+        const idx = ring * segmentsPerRing + i;
+        const t = i / segmentsPerRing;
+        const angle = t * Math.PI * 2;
+        const cx = Math.cos(angle) * baseRadius;
+        const cy = ringCenterY;
+        const cz = Math.sin(angle) * baseRadius;
+        const center = new THREE.Vector3(0, ringCenterY, 0);
+        const pos = new THREE.Vector3(cx, cy, cz);
+        const normal = pos.clone().sub(center).normalize();
+        const waveBase = 0.6 + 0.4 * Math.sin(angle * 3 + ring * Math.PI * 0.5);
+        const scaleY = waveBase * 1.2 * config.intensity;
+        const scaleXZ = 0.8 + Math.random() * 0.6;
+        dummy.position.copy(pos);
+        const up = new THREE.Vector3(0, 1, 0);
+        dummy.quaternion.copy(new THREE.Quaternion().setFromUnitVectors(up, normal));
+        dummy.scale.set(scaleXZ, scaleY, scaleXZ);
+        dummy.updateMatrix();
+        instanced.setMatrixAt(idx, dummy.matrix);
+        const paletteIndex = Math.floor(Math.random() * palette.length);
+        const colorObj = new THREE.Color(palette[paletteIndex]);
+        colorObj.multiplyScalar((0.7 + Math.random() * 0.6) * config.intensity);
+        colors[idx * 3] = colorObj.r;
+        colors[idx * 3 + 1] = colorObj.g;
+        colors[idx * 3 + 2] = colorObj.b;
+      }
+    }
+    instanced.instanceColor = new THREE.InstancedBufferAttribute(colors, 3);
+    group.add(instanced);
+
+    let animationId: number;
+    let time = 0;
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+      if (config.animate) {
+        time += 0.016;
+        group.rotation.y = Math.sin(time * 0.25) * 0.4;
+        group.rotation.x = Math.cos(time * 0.18) * 0.25;
+        const up = new THREE.Vector3(0, 1, 0);
+        const centerTop = new THREE.Vector3(0, ringVerticalOffset / 2, 0);
+        const centerBottom = new THREE.Vector3(0, -ringVerticalOffset / 2, 0);
+        let idx = 0;
+        for (let ring = 0; ring < ringCount; ring++) {
+          const center = ring === 0 ? centerTop : centerBottom;
+          for (let i = 0; i < segmentsPerRing; i++, idx++) {
+            const t = i / segmentsPerRing;
+            const angle = t * Math.PI * 2;
+            const pos = new THREE.Vector3(Math.cos(angle) * baseRadius, center.y, Math.sin(angle) * baseRadius);
+            const normal = pos.clone().sub(center).normalize();
+            const wavePhase = angle * 4 + time * 1.8 * (ring === 0 ? 1 : -1);
+            const wave = 0.7 + 0.45 * Math.sin(wavePhase);
+            dummy.position.copy(pos);
+            dummy.quaternion.copy(new THREE.Quaternion().setFromUnitVectors(up, normal));
+            dummy.scale.set(0.7 + 0.5 * Math.sin(wavePhase * 0.7 + 1.2), wave * 1.3 * config.intensity, 0.7 + 0.5 * Math.sin(wavePhase * 0.7 + 1.2));
+            dummy.updateMatrix();
+            instanced.setMatrixAt(idx, dummy.matrix);
+          }
+        }
+        instanced.instanceMatrix.needsUpdate = true;
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          camera.aspect = width / height;
+          camera.updateProjectionMatrix();
+          renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+
+    const cleanup = () => {
+      cancelAnimationFrame(animationId);
+      resizeObserver.disconnect();
+      spikeGeom.dispose();
+      material.dispose();
+      renderer.dispose();
+      renderer.forceContextLoss();
+      cleanupMap.delete(container);
+      container.dataset.initialized = '';
+    };
+
+    cleanupMap.set(container, cleanup);
+    container.dataset.initialized = 'true';
   }
 
-  document.addEventListener('DOMContentLoaded', initAllDNA);
-  document.addEventListener('astro:page-load', initAllDNA);
+  function destroy(container: HTMLElement) {
+    const cleanup = cleanupMap.get(container);
+    if (cleanup) cleanup();
+  }
+
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            initWithCleanup(container);
+          } else {
+            destroy(container);
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.dna-figure8-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
 </script>

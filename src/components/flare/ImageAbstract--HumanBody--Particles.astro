@@ -461,16 +461,30 @@ const containerId = `human-body-${Math.random().toString(36).slice(2, 9)}`;
     }
   }
 
-  // Initialize all human-body flares on the page
-  function initAll() {
-    document.querySelectorAll('.human-body-container').forEach((container) => {
-      const el = container as HTMLElement;
-      if (el.dataset.initialized === 'true') return;
-      el.dataset.initialized = 'true';
-      initHumanBody(el);
-    });
+  // Lazy loading with IntersectionObserver to manage WebGL contexts
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initHumanBody(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.human-body-container').forEach((c) => observer.observe(c));
+    return observer;
   }
 
-  document.addEventListener('DOMContentLoaded', initAll);
-  document.addEventListener('astro:page-load', initAll);
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
 </script>

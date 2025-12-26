@@ -87,7 +87,13 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
     return colorProp;
   }
 
-  function initOrb(container: HTMLElement) {
+  // Store cleanup functions for each container
+  const cleanupMap = new WeakMap<HTMLElement, () => void>();
+
+  function initOrbWithCleanup(container: HTMLElement) {
+    // If already has a cleanup function, it's already initialized
+    if (cleanupMap.has(container)) return;
+
     const canvas = container.querySelector('.orb-canvas') as HTMLCanvasElement;
     if (!canvas) return;
 
@@ -100,7 +106,6 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
 
     // Scene setup
     const scene = new THREE.Scene();
-
     const width = container.clientWidth;
     const height = container.clientHeight;
 
@@ -124,47 +129,27 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
     const radius = 1;
     let particleIndex = 0;
 
-    // Generate particles on sphere surface with:
-    // 1. Higher density at poles
-    // 2. Central void (eye/lens shape cutout)
     for (let i = 0; i < particleCount * 3; i++) {
-      // Use golden spiral distribution for even coverage
       const goldenRatio = (1 + Math.sqrt(5)) / 2;
       const idx = i / 3;
-
-      // Latitude (phi) - from 0 to PI
       const phi = Math.acos(1 - (2 * (idx + 0.5)) / particleCount);
-
-      // Longitude (theta) - golden angle distribution
       const theta = (2 * Math.PI * idx) / goldenRatio;
 
-      // Convert to Cartesian coordinates
       let x = radius * Math.sin(phi) * Math.cos(theta);
       let y = radius * Math.sin(phi) * Math.sin(theta);
       let z = radius * Math.cos(phi);
 
-      // Create the central void (almond/eye shape)
-      // The void is roughly at the equator, cutting through X axis
       const distFromCenter = Math.sqrt(y * y + z * z);
-      const eyeWidth = 0.35; // How wide the eye opening is
-      const eyeHeight = 0.5; // How tall the eye opening is
-
-      // Check if point is inside the "eye" void
+      const eyeWidth = 0.35;
+      const eyeHeight = 0.5;
       const eyeTest = (Math.abs(x) / eyeWidth) + (distFromCenter / eyeHeight);
       const isInEye = eyeTest < 0.8 && Math.abs(x) < eyeWidth * 0.7;
 
-      if (isInEye) {
-        // Skip this particle (it's in the void)
-        continue;
-      }
+      if (isInEye) continue;
 
-      // Add some density variation - more particles near poles
       const polarDensityBoost = Math.pow(Math.abs(Math.cos(phi)), 0.3);
-      if (Math.random() > 0.3 + polarDensityBoost * 0.5) {
-        continue;
-      }
+      if (Math.random() > 0.3 + polarDensityBoost * 0.5) continue;
 
-      // Add slight noise to positions for organic feel
       const noise = 0.015;
       x += (Math.random() - 0.5) * noise;
       y += (Math.random() - 0.5) * noise;
@@ -174,14 +159,11 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
         positions[particleIndex * 3] = x;
         positions[particleIndex * 3 + 1] = y;
         positions[particleIndex * 3 + 2] = z;
-
-        // Vary particle sizes slightly
         sizes[particleIndex] = 0.015 + Math.random() * 0.01;
         particleIndex++;
       }
     }
 
-    // Trim arrays to actual particle count
     const actualPositions = positions.slice(0, particleIndex * 3);
     const actualSizes = sizes.slice(0, particleIndex);
 
@@ -189,7 +171,6 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
     geometry.setAttribute('position', new THREE.BufferAttribute(actualPositions, 3));
     geometry.setAttribute('size', new THREE.BufferAttribute(actualSizes, 1));
 
-    // Custom shader material for soft circular particles
     const material = new THREE.ShaderMaterial({
       uniforms: {
         color: { value: new THREE.Color(config.color) },
@@ -198,33 +179,22 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
       vertexShader: `
         attribute float size;
         varying float vAlpha;
-
         void main() {
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           gl_Position = projectionMatrix * mvPosition;
-
-          // Size attenuation based on distance
           gl_PointSize = size * 300.0 * (1.0 / -mvPosition.z);
-
-          // Fade particles based on depth for 3D effect
           vAlpha = smoothstep(3.5, 1.5, -mvPosition.z);
         }
       `,
       fragmentShader: `
         uniform vec3 color;
         varying float vAlpha;
-
         void main() {
-          // Create soft circular particle
           vec2 center = gl_PointCoord - vec2(0.5);
           float dist = length(center);
-
-          // Soft edge falloff
           float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
           alpha *= vAlpha;
-
           if (alpha < 0.01) discard;
-
           gl_FragColor = vec4(color, alpha);
         }
       `,
@@ -236,47 +206,21 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
 
-    // Animation loop
     let animationId: number;
     let time = 0;
 
     function animate() {
       animationId = requestAnimationFrame(animate);
-
       if (config.animate) {
         time += 0.016;
         particles.rotation.y = time * config.rotationSpeed * 0.5;
         particles.rotation.x = Math.sin(time * 0.2) * 0.1;
       }
-
       renderer.render(scene, camera);
     }
 
     animate();
 
-    // Watch for mode changes on <html> element to update orb color
-    const colorProp = container.dataset.color || 'auto';
-    if (colorProp === 'auto') {
-      const modeObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'data-mode') {
-            // Mode changed, update the color uniform
-            const newColor = getOrbColor(container);
-            (material.uniforms.color.value as THREE.Color).set(newColor);
-          }
-        });
-      });
-
-      modeObserver.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['data-mode'],
-      });
-
-      // Store for cleanup
-      (container as any)._modeObserver = modeObserver;
-    }
-
-    // Handle resize
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
@@ -289,45 +233,82 @@ const containerId = `orb-${Math.random().toString(36).slice(2, 9)}`;
     });
     resizeObserver.observe(container);
 
-    // Cleanup on removal
-    const mutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.removedNodes.forEach((node) => {
-          if (node === container || (node as Element).contains?.(container)) {
-            cancelAnimationFrame(animationId);
-            resizeObserver.disconnect();
-            mutationObserver.disconnect();
-            // Also cleanup mode observer if it exists
-            if ((container as any)._modeObserver) {
-              (container as any)._modeObserver.disconnect();
-            }
-            geometry.dispose();
-            material.dispose();
-            renderer.dispose();
+    // Mode observer for auto color
+    let modeObserver: MutationObserver | null = null;
+    const colorProp = container.dataset.color || 'auto';
+    if (colorProp === 'auto') {
+      modeObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'data-mode') {
+            const newColor = getOrbColor(container);
+            (material.uniforms.color.value as THREE.Color).set(newColor);
           }
         });
       });
-    });
-
-    if (container.parentElement) {
-      mutationObserver.observe(container.parentElement, { childList: true });
+      modeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-mode'],
+      });
     }
+
+    // Store cleanup function
+    const cleanup = () => {
+      cancelAnimationFrame(animationId);
+      resizeObserver.disconnect();
+      if (modeObserver) modeObserver.disconnect();
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      renderer.forceContextLoss();
+      cleanupMap.delete(container);
+      container.dataset.initialized = '';
+    };
+
+    cleanupMap.set(container, cleanup);
+    container.dataset.initialized = 'true';
   }
 
-  // Initialize all orbs on the page
-  document.addEventListener('DOMContentLoaded', () => {
+  function destroyOrb(container: HTMLElement) {
+    const cleanup = cleanupMap.get(container);
+    if (cleanup) cleanup();
+  }
+
+  // Lazy loading with IntersectionObserver
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            // Initialize when visible
+            initOrbWithCleanup(container);
+          } else {
+            // Destroy when not visible to free WebGL context
+            destroyOrb(container);
+          }
+        });
+      },
+      {
+        rootMargin: '100px', // Start loading slightly before visible
+        threshold: 0,
+      }
+    );
+
     document.querySelectorAll('.orb-container').forEach((container) => {
-      initOrb(container as HTMLElement);
+      observer.observe(container);
     });
+
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    lazyObserver = setupLazyLoading();
   });
 
-  // Handle Astro view transitions
   document.addEventListener('astro:page-load', () => {
-    document.querySelectorAll('.orb-container').forEach((container) => {
-      if (!(container as HTMLElement).dataset.initialized) {
-        (container as HTMLElement).dataset.initialized = 'true';
-        initOrb(container as HTMLElement);
-      }
-    });
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
   });
 </script>

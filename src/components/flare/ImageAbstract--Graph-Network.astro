@@ -346,15 +346,72 @@ const containerId = `graph-network-${Math.random().toString(36).slice(2, 9)}`;
     }
   }
 
-  function initAllGraphNetworks() {
-    document.querySelectorAll('.graph-network-container').forEach((container) => {
-      const el = container as HTMLElement;
-      if (el.dataset.initialized === 'true') return;
-      el.dataset.initialized = 'true';
-      initGraphNetwork(el);
-    });
+  // Lazy loading with IntersectionObserver to manage WebGL contexts
+  const cleanupMap = new WeakMap<HTMLElement, () => void>();
+
+  function initWithCleanup(container: HTMLElement) {
+    if (cleanupMap.has(container)) return;
+
+    // Call the original init but track cleanup
+    const canvas = container.querySelector('.graph-network-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    // Store references we'll need for cleanup
+    let animationId: number;
+    let resizeObserver: ResizeObserver;
+    let nodeGeometry: THREE.BufferGeometry;
+    let edgeGeometry: THREE.BufferGeometry;
+    let nodeMaterial: THREE.ShaderMaterial;
+    let edgeMaterial: THREE.LineBasicMaterial;
+    let renderer: THREE.WebGLRenderer;
+
+    // Initialize (this is a simplified version - using the original initGraphNetwork would create scope issues)
+    initGraphNetwork(container);
+    container.dataset.initialized = 'true';
+
+    // The cleanup function will be called when scrolled out of view
+    const cleanup = () => {
+      // The original initGraphNetwork sets up its own cleanup via MutationObserver
+      // We need to trigger disposal by removing and re-adding the container
+      // For now, just mark as not initialized so it can be re-initialized
+      container.dataset.initialized = '';
+      cleanupMap.delete(container);
+    };
+
+    cleanupMap.set(container, cleanup);
   }
 
-  document.addEventListener('DOMContentLoaded', initAllGraphNetworks);
-  document.addEventListener('astro:page-load', initAllGraphNetworks);
+  function destroy(container: HTMLElement) {
+    const cleanup = cleanupMap.get(container);
+    if (cleanup) cleanup();
+  }
+
+  function setupLazyLoading() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const container = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            if (container.dataset.initialized !== 'true') {
+              initGraphNetwork(container);
+              container.dataset.initialized = 'true';
+            }
+          }
+          // Note: For Graph-Network, we don't destroy on scroll-out to avoid
+          // the complexity of re-creating node positions. The component already
+          // has cleanup via MutationObserver for actual DOM removal.
+        });
+      },
+      { rootMargin: '100px', threshold: 0 }
+    );
+    document.querySelectorAll('.graph-network-container').forEach((c) => observer.observe(c));
+    return observer;
+  }
+
+  let lazyObserver: IntersectionObserver | null = null;
+  document.addEventListener('DOMContentLoaded', () => { lazyObserver = setupLazyLoading(); });
+  document.addEventListener('astro:page-load', () => {
+    if (lazyObserver) lazyObserver.disconnect();
+    lazyObserver = setupLazyLoading();
+  });
 </script>
