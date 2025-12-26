@@ -27,6 +27,7 @@
  * 17. LP Benefits & Closing
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
 
 // Import all section components
 import S01WhyNowHero from '@layouts/sections/narratives/slides/strategy/S01-WhyNowHero.astro';
@@ -49,7 +50,7 @@ import S17LPBenefits from '@layouts/sections/narratives/slides/strategy/S17-LPBe
 ---
 
 <BaseThemeLayout title="Strategy - Reassembled" mode="dark">
-  <div class="slide-deck">
+  <PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true} hintDuration={3000}>
     <S01WhyNowHero />
     <S02TimingWindow />
     <S03DataAsSenseOrgan />
@@ -67,7 +68,7 @@ import S17LPBenefits from '@layouts/sections/narratives/slides/strategy/S17-LPBe
     <S15GeographicFocus />
     <S16CheckSizes />
     <S17LPBenefits />
-  </div>
+  </PageAsDeckWrapper>
 </BaseThemeLayout>
 
 <style>
@@ -102,14 +103,8 @@ import S17LPBenefits from '@layouts/sections/narratives/slides/strategy/S17-LPBe
   }
 
   /* ==========================================================================
-     SLIDE DECK BASE STRUCTURE
+     SLIDE BASE STRUCTURE
      ========================================================================== */
-  .slide-deck {
-    scroll-snap-type: y proximity;
-    overflow-y: auto;
-    height: 100vh;
-  }
-
   :global(.slide) {
     min-height: 100vh;
     position: relative;
@@ -419,28 +414,29 @@ import S17LPBenefits from '@layouts/sections/narratives/slides/strategy/S17-LPBe
 <script>
   // Intersection Observer for scroll reveals
   function initScrollReveal() {
-    const revealItems = document.querySelectorAll('.slide-deck .reveal-item');
+    var revealItems = document.querySelectorAll('.deck-wrapper .reveal-item');
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+    var observer = new IntersectionObserver(
+      function(entries) {
+        entries.forEach(function(entry) {
           if (entry.isIntersecting) {
-            const delay = parseInt(
-              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
-            );
-            setTimeout(() => {
-              entry.target.classList.add('revealed');
+            var target = entry.target;
+            var delay = parseInt(target.style.getPropertyValue('--delay') || '0', 10);
+            setTimeout(function() {
+              target.classList.add('revealed');
             }, delay);
           }
         });
       },
       {
         threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px',
+        rootMargin: '0px 0px -50px 0px'
       }
     );
 
-    revealItems.forEach((item) => observer.observe(item));
+    revealItems.forEach(function(item) {
+      observer.observe(item);
+    });
   }
 
   // Initialize on load

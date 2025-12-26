@@ -26,6 +26,7 @@
  * 16. Closing - The Opportunity
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
 
 // Import all section components
 import T01AgingCrisisHero from '@layouts/sections/narratives/slides/thesis/T01-AgingCrisisHero.astro';
@@ -47,7 +48,7 @@ import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.a
 ---
 
 <BaseThemeLayout title="Thesis - Reassembled" mode="dark">
-  <div class="slide-deck">
+  <PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true} hintDuration={3000}>
     <T01AgingCrisisHero />
     <T02TrillionDollarDiseases />
     <T03HealthspanGap />
@@ -64,7 +65,7 @@ import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.a
     <T14MarketGrowth />
     <T15DealStructure />
     <T16Closing />
-  </div>
+  </PageAsDeckWrapper>
 </BaseThemeLayout>
 
 <style>
@@ -99,14 +100,8 @@ import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.a
   }
 
   /* ==========================================================================
-     SLIDE DECK BASE STRUCTURE
+     SLIDE BASE STRUCTURE
      ========================================================================== */
-  .slide-deck {
-    scroll-snap-type: y proximity;
-    overflow-y: auto;
-    height: 100vh;
-  }
-
   :global(.slide) {
     min-height: 100vh;
     position: relative;
@@ -279,28 +274,29 @@ import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.a
 <script>
   // Intersection Observer for scroll reveals
   function initScrollReveal() {
-    const revealItems = document.querySelectorAll('.slide-deck .reveal-item');
+    var revealItems = document.querySelectorAll('.deck-wrapper .reveal-item');
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+    var observer = new IntersectionObserver(
+      function(entries) {
+        entries.forEach(function(entry) {
           if (entry.isIntersecting) {
-            const delay = parseInt(
-              (entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
-            );
-            setTimeout(() => {
-              entry.target.classList.add('revealed');
+            var target = entry.target;
+            var delay = parseInt(target.style.getPropertyValue('--delay') || '0', 10);
+            setTimeout(function() {
+              target.classList.add('revealed');
             }, delay);
           }
         });
       },
       {
         threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px',
+        rootMargin: '0px 0px -50px 0px'
       }
     );
 
-    revealItems.forEach((item) => observer.observe(item));
+    revealItems.forEach(function(item) {
+      observer.observe(item);
+    });
   }
 
   // Initialize on load

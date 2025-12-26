@@ -1,0 +1,375 @@
+---
+/**
+ * PageAsDeckWrapper.astro
+ *
+ * A wrapper layout that enables slide-deck navigation behavior:
+ * - Double-click in bottom half of viewport → navigate to next section
+ * - Double-click in upper half of viewport → navigate to previous section
+ *
+ * Usage:
+ * <PageAsDeckWrapper>
+ *   <SlideComponent1 />
+ *   <SlideComponent2 />
+ *   <SlideComponent3 />
+ * </PageAsDeckWrapper>
+ *
+ * Each child component should contain a <section> element.
+ */
+
+interface Props {
+  enableScrollSnap?: boolean;
+  showNavigationHints?: boolean;
+  hintDuration?: number;
+}
+
+const {
+  enableScrollSnap = true,
+  showNavigationHints = true,
+  hintDuration = 3000
+} = Astro.props;
+---
+
+<div
+  class="deck-wrapper"
+  data-scroll-snap={String(enableScrollSnap)}
+  data-show-hints={String(showNavigationHints)}
+  data-hint-duration={String(hintDuration)}
+>
+  <div class="deck-content">
+    <slot />
+  </div>
+
+  <div class="nav-hints" style={showNavigationHints ? '' : 'display: none;'}>
+    <div class="nav-hint nav-hint-up">
+      <span class="hint-icon">↑</span>
+      <span class="hint-text">Double-click to go back</span>
+    </div>
+    <div class="nav-hint nav-hint-down">
+      <span class="hint-icon">↓</span>
+      <span class="hint-text">Double-click to continue</span>
+    </div>
+  </div>
+
+  <div class="section-indicator">
+    <span class="current-section">1</span>
+    <span class="separator">/</span>
+    <span class="total-sections">1</span>
+  </div>
+</div>
+
+<style>
+  .deck-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .deck-wrapper[data-scroll-snap="true"] {
+    scroll-snap-type: y mandatory;
+  }
+
+  .deck-wrapper[data-scroll-snap="true"] :global(section) {
+    scroll-snap-align: start;
+  }
+
+  .deck-content {
+    min-height: 100%;
+  }
+
+  /* Navigation Hints */
+  .nav-hints {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .deck-wrapper.show-hints .nav-hints {
+    opacity: 1;
+  }
+
+  .nav-hint {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .nav-hint-up {
+    top: 2rem;
+    opacity: 0;
+  }
+
+  .nav-hint-down {
+    bottom: 2rem;
+  }
+
+  .deck-wrapper.at-first .nav-hint-up {
+    opacity: 0.3;
+  }
+
+  .deck-wrapper.at-last .nav-hint-down {
+    opacity: 0.3;
+  }
+
+  .deck-wrapper:not(.at-first) .nav-hint-up {
+    opacity: 1;
+  }
+
+  .hint-icon {
+    font-size: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .nav-hint-up .hint-icon {
+    animation-name: bounce-up;
+  }
+
+  .nav-hint-down .hint-icon {
+    animation-name: bounce-down;
+  }
+
+  @keyframes bounce-up {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes bounce-down {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  .hint-text {
+    white-space: nowrap;
+  }
+
+  /* Section Indicator */
+  .section-indicator {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    color: rgba(255, 255, 255, 0.9);
+    font-family: monospace;
+    font-size: 0.875rem;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+  }
+
+  .current-section {
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .separator {
+    opacity: 0.5;
+  }
+
+  .total-sections {
+    opacity: 0.7;
+  }
+
+  @media (max-width: 768px) {
+    .nav-hint {
+      padding: 0.75rem 1rem;
+      font-size: 0.625rem;
+    }
+
+    .hint-icon {
+      font-size: 1.25rem;
+    }
+
+    .section-indicator {
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    .current-section {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  function initDeckNavigator() {
+    var wrappers = document.querySelectorAll('.deck-wrapper');
+
+    wrappers.forEach(function(wrapper) {
+      if (wrapper.hasAttribute('data-initialized')) return;
+      wrapper.setAttribute('data-initialized', 'true');
+
+      var sections = wrapper.querySelectorAll('section');
+      var currentIndex = 0;
+      var isNavigating = false;
+      var hintTimeout = null;
+
+      var showHints = wrapper.getAttribute('data-show-hints') === 'true';
+      var hintDuration = parseInt(wrapper.getAttribute('data-hint-duration') || '3000', 10);
+
+      // Update indicator
+      function updateIndicator() {
+        var currentEl = wrapper.querySelector('.current-section');
+        var totalEl = wrapper.querySelector('.total-sections');
+        if (currentEl) currentEl.textContent = String(currentIndex + 1);
+        if (totalEl) totalEl.textContent = String(sections.length);
+      }
+
+      // Update boundary classes
+      function updateBoundaryClasses() {
+        if (currentIndex === 0) {
+          wrapper.classList.add('at-first');
+        } else {
+          wrapper.classList.remove('at-first');
+        }
+
+        if (currentIndex === sections.length - 1) {
+          wrapper.classList.add('at-last');
+        } else {
+          wrapper.classList.remove('at-last');
+        }
+      }
+
+      // Navigate to section
+      function navigateToSection(index) {
+        if (index < 0 || index >= sections.length) return;
+        if (isNavigating) return;
+
+        isNavigating = true;
+        currentIndex = index;
+
+        var targetSection = sections[index];
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        updateIndicator();
+        updateBoundaryClasses();
+
+        setTimeout(function() {
+          isNavigating = false;
+        }, 500);
+      }
+
+      // Navigate to next
+      function navigateToNext() {
+        if (currentIndex < sections.length - 1) {
+          navigateToSection(currentIndex + 1);
+        }
+      }
+
+      // Navigate to previous
+      function navigateToPrevious() {
+        if (currentIndex > 0) {
+          navigateToSection(currentIndex - 1);
+        }
+      }
+
+      // Handle double-click
+      wrapper.addEventListener('dblclick', function(event) {
+        if (isNavigating) return;
+
+        var viewportHeight = window.innerHeight;
+        var clickY = event.clientY;
+        var isUpperHalf = clickY < viewportHeight / 2;
+
+        if (isUpperHalf) {
+          navigateToPrevious();
+        } else {
+          navigateToNext();
+        }
+      });
+
+      // Handle scroll to track current section
+      var scrollTimeout = null;
+      wrapper.addEventListener('scroll', function() {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+
+        scrollTimeout = setTimeout(function() {
+          var viewportHeight = window.innerHeight;
+          var newIndex = 0;
+          var maxVisibility = 0;
+
+          sections.forEach(function(section, index) {
+            var rect = section.getBoundingClientRect();
+            var visibleTop = Math.max(0, rect.top);
+            var visibleBottom = Math.min(viewportHeight, rect.bottom);
+            var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+            var visibility = visibleHeight / viewportHeight;
+
+            if (visibility > maxVisibility) {
+              maxVisibility = visibility;
+              newIndex = index;
+            }
+          });
+
+          if (newIndex !== currentIndex) {
+            currentIndex = newIndex;
+            updateIndicator();
+            updateBoundaryClasses();
+          }
+        }, 100);
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', function(event) {
+        var rect = wrapper.getBoundingClientRect();
+        if (rect.top > window.innerHeight || rect.bottom < 0) return;
+
+        if (event.key === 'ArrowDown' || event.key === 'PageDown') {
+          event.preventDefault();
+          navigateToNext();
+        } else if (event.key === 'ArrowUp' || event.key === 'PageUp') {
+          event.preventDefault();
+          navigateToPrevious();
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          navigateToSection(0);
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          navigateToSection(sections.length - 1);
+        }
+      });
+
+      // Show hints
+      if (showHints) {
+        wrapper.classList.add('show-hints');
+
+        if (hintDuration > 0) {
+          hintTimeout = setTimeout(function() {
+            wrapper.classList.remove('show-hints');
+          }, hintDuration);
+        }
+      }
+
+      // Initialize
+      updateIndicator();
+      updateBoundaryClasses();
+    });
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initDeckNavigator);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initDeckNavigator);
+</script>
