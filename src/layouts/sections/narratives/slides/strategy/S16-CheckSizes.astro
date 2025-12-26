@@ -1,0 +1,139 @@
+---
+/**
+ * Strategy Section 16: Check Sizes & Follow-on
+ * Investment approach details
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'checks' } = Astro.props;
+---
+
+<section class="slide slide-checks" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content">
+    <span class="badge badge-green reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Investment Approach</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Check Sizes & Follow-on Strategy</h2>
+    <div class="checks-grid">
+      <div class="check-card reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        <span class="check-value">$2.75M–$3.0M</span>
+        <span class="check-label">Initial Check</span>
+      </div>
+      <div class="check-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="check-value">10–15%+</span>
+        <span class="check-label">Target Ownership</span>
+      </div>
+      <div class="check-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="check-value">$5M–$10M</span>
+        <span class="check-label">Winner Reserves</span>
+      </div>
+    </div>
+    <div class="followon-tiers">
+      <div class="tier tier-highlight reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="tier-name">Top 3-5</span>
+        <span class="tier-exposure">$5M–$10M+</span>
+      </div>
+      <div class="tier reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
+        <span class="tier-name">Next 8-10</span>
+        <span class="tier-exposure">$3M–$5M</span>
+      </div>
+      <div class="tier reveal-item" data-reveal="fade-up" style="--delay: 700ms;">
+        <span class="tier-name">Remaining</span>
+        <span class="tier-exposure">Pro-rata only</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .checks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .checks-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .check-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .check-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .check-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .followon-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 32rem;
+    margin: 0 auto;
+  }
+
+  .tier {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+  }
+
+  .tier-name {
+    font-weight: 600;
+  }
+
+  .tier-exposure {
+    font-weight: 700;
+  }
+
+  :global([data-mode="dark"]) .check-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .check-value {
+    color: #60a5fa;
+  }
+
+  :global([data-mode="dark"]) .check-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .tier {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .tier-highlight {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.4);
+  }
+
+  :global([data-mode="dark"]) .tier-name {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .tier-exposure {
+    color: #fbbf24;
+  }
+</style>

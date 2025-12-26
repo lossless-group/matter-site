@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 2: The Timing Window
+ * Bioscience convergence slide
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'timing' } = Astro.props;
+---
+
+<section class="slide slide-timing" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content slide-content-split">
+    <div class="split-number reveal-item" data-reveal="slide-right" style="--delay: 0ms;">01</div>
+    <div class="split-content">
+      <h2 class="section-title reveal-item" data-reveal="fade-up" style="--delay: 100ms;">The Timing Window</h2>
+      <p class="section-body reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        Bioscience, compute, and capital have converged. The half-life between
+        discovery and application is collapsing.
+      </p>
+      <ul class="bullet-list reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <li>CRISPR evolved from editing to base editing to prime editing</li>
+        <li>AI-native drug discovery compresses timelines</li>
+        <li>First FDA approvals for true aging interventions</li>
+      </ul>
+    </div>
+  </div>
+</section>

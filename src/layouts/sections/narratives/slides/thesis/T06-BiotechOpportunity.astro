@@ -1,0 +1,39 @@
+---
+/**
+ * Thesis Section 6: The Opportunity - Biotech Solution
+ * Transition from problem to opportunity
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'opportunity' } = Astro.props;
+---
+
+<section class="slide slide-opportunity" id={id}>
+  <div class="slide-gradient slide-gradient-green"></div>
+  <div class="slide-content slide-content-center">
+    <span class="badge badge-green reveal-item" data-reveal="fade-up" style="--delay: 0ms;">The Opportunity</span>
+    <h2 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Biotech Can Bend the Cost Curve</h2>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Solutions that extend healthspan, reduce costs, and improve lives
+    </p>
+    <p class="closing-subtext reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+      If 90% of spend is tied to chronic conditions linked to aging, even single-digit
+      percentage reductions cascade into hundreds of billions in savings.
+    </p>
+  </div>
+</section>
+
+<style>
+  .closing-subtext {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 32rem;
+    margin-top: 1.5rem;
+  }
+
+  :global([data-mode="dark"]) .closing-subtext {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

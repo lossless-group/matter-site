@@ -1,0 +1,72 @@
+---
+/**
+ * Strategy Section 12: Fund Strategy - Hero
+ * Portfolio construction overview
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'fund-strategy' } = Astro.props;
+---
+
+<section class="slide slide-fund-hero" id={id}>
+  <div class="slide-gradient slide-gradient-blue"></div>
+  <div class="slide-content slide-content-center">
+    <p class="eyebrow reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Portfolio Construction</p>
+    <h1 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Fund Strategy</h1>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Portfolio construction designed for category-defining longevity outcomes
+    </p>
+    <div class="hero-metrics">
+      <div class="metric reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
+        <span class="metric-value">$100M</span>
+        <span class="metric-label">Fund Size</span>
+      </div>
+      <div class="metric reveal-item" data-reveal="scale-up" style="--delay: 500ms;">
+        <span class="metric-value">10</span>
+        <span class="metric-label">Year Term</span>
+      </div>
+      <div class="metric reveal-item" data-reveal="scale-up" style="--delay: 600ms;">
+        <span class="metric-value">25</span>
+        <span class="metric-label">Target Investments</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .metric {
+    text-align: center;
+  }
+
+  .metric-value {
+    display: block;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+  }
+
+  .metric-label {
+    display: block;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 0.5rem;
+  }
+
+  :global([data-mode="dark"]) .metric-value {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="dark"]) .metric-label {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

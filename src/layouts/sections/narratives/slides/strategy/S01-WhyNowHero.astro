@@ -1,0 +1,71 @@
+---
+/**
+ * Strategy Section 1: Why Now, Why Us - Opening Hook
+ * Slide-sized hero section for the strategy narrative
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'why-now' } = Astro.props;
+---
+
+<section class="slide slide-why-now-hero" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <p class="eyebrow reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Dark Matter Bio</p>
+    <h1 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">
+      <span class="headline-main">Why Now.</span>
+      <span class="headline-sub">Why Us.</span>
+    </h1>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      The invisible forces shaping the future of human health
+    </p>
+    <div class="stat-accent reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
+      <span class="stat-number">10×</span>
+      <span class="stat-label">compression<br/>in discovery cycles</span>
+    </div>
+  </div>
+  <div class="bg-text" aria-hidden="true">DARK</div>
+</section>
+
+<style>
+  .slide-why-now-hero .headline-main {
+    display: block;
+  }
+
+  .slide-why-now-hero .headline-sub {
+    display: block;
+    font-size: 0.5em;
+    font-weight: 300;
+    margin-top: 0.5rem;
+  }
+
+  .bg-text {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%) translateX(-10%);
+    font-size: 20vw;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+  }
+
+  @media (max-width: 1024px) {
+    .bg-text {
+      display: none;
+    }
+  }
+
+  :global([data-mode="dark"]) .slide-why-now-hero .headline-sub {
+    color: rgba(156, 133, 223, 0.6);
+  }
+
+  :global([data-mode="dark"]) .bg-text {
+    color: rgba(102, 67, 226, 0.04);
+  }
+</style>

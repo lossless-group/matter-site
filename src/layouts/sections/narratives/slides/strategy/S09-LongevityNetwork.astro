@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 9: Longevity Leader Network
+ * Ben Greenfield, Bryan Johnson, Peter Attia
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'network' } = Astro.props;
+---
+
+<section class="slide slide-pillar slide-pillar-network" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content slide-content-pillar">
+    <div class="pillar-header reveal-item" data-reveal="fade-up" style="--delay: 0ms;">
+      <span class="pillar-icon-large">🌐</span>
+      <div>
+        <h2 class="pillar-title">Longevity Leader Network</h2>
+        <p class="pillar-subtitle">Ben Greenfield, Bryan Johnson, Peter Attia</p>
+      </div>
+    </div>
+    <ul class="pillar-bullets">
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Platforms reaching millions of longevity-focused consumers and clinicians</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Real-world testing grounds with highly engaged, data-rich users</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Credible distribution, education, and awareness channels</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Direct feedback from athletes, biohackers, and prevention-oriented patients</li>
+    </ul>
+  </div>
+</section>

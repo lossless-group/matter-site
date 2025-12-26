@@ -1,0 +1,101 @@
+---
+/**
+ * Thesis Section 9: Science at Inflection Point
+ * Breakthrough technologies
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'science' } = Astro.props;
+---
+
+<section class="slide slide-science" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content">
+    <span class="badge badge-lilac reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Breakthroughs</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Science at an Inflection Point</h2>
+    <p class="section-subtitle reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Validated genomic tools, mechanism-based geroscience, and AI-native R&D have transformed longevity into an investable category</p>
+    <div class="breakthrough-cards">
+      <div class="breakthrough-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="breakthrough-icon">🧬</span>
+        <div>
+          <h3>CRISPR & Genetic Interventions</h3>
+          <p>Evolved from basic gene editing to base editing, prime editing, and epigenome editing—enabling precise interventions in age-related pathways.</p>
+        </div>
+      </div>
+      <div class="breakthrough-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="breakthrough-icon">🔬</span>
+        <div>
+          <h3>Senolytics</h3>
+          <p>Drugs that selectively clear senescent "zombie" cells, implicated in chronic inflammation and age-related diseases.</p>
+        </div>
+      </div>
+      <div class="breakthrough-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="breakthrough-icon">🧠</span>
+        <div>
+          <h3>AI-Driven Drug Discovery</h3>
+          <p>Applied to multi-omics datasets and biomarker streams to identify aging signatures and enable biological-age-driven interventions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-subtitle {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .breakthrough-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .breakthrough-card {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .breakthrough-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+  }
+
+  .breakthrough-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .breakthrough-card p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .breakthrough-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .breakthrough-card h3 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .breakthrough-card p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

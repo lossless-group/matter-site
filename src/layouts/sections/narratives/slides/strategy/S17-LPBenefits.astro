@@ -1,0 +1,139 @@
+---
+/**
+ * Strategy Section 17: LP Benefits & Closing
+ * How this serves LPs
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'closing' } = Astro.props;
+---
+
+<section class="slide slide-closing" id={id}>
+  <div class="slide-gradient slide-gradient-blue"></div>
+  <div class="slide-content slide-content-center">
+    <span class="badge badge-purple reveal-item" data-reveal="fade-up" style="--delay: 0ms;">LP Value</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">How This Serves LPs</h2>
+    <div class="benefits-list">
+      <div class="benefit reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        <span class="benefit-number">1</span>
+        <div>
+          <h3>Balanced Diversification</h3>
+          <p>~25 core positions across the longevity stack with meaningful concentration in winners</p>
+        </div>
+      </div>
+      <div class="benefit reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="benefit-number">2</span>
+        <div>
+          <h3>Stage Mix Advantage</h3>
+          <p>Seed taps early entry pricing; A/B compounds into validated companies</p>
+        </div>
+      </div>
+      <div class="benefit reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="benefit-number">3</span>
+        <div>
+          <h3>Systematic Framework</h3>
+          <p>Written reserve rules avoid emotional decisions, focusing on highest risk-adjusted MOIC</p>
+        </div>
+      </div>
+    </div>
+    <div class="closing-statement reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
+      <p class="closing-eyebrow">Institutional Grade</p>
+      <h3 class="closing-headline">Venture Returns from the Longevity Ecosystem</h3>
+      <p class="closing-text">Category-defining companies through critical inflection points</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 36rem;
+    margin-bottom: 3rem;
+    text-align: left;
+  }
+
+  .benefit {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .benefit-number {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+  }
+
+  .benefit h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .benefit p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .closing-statement {
+    padding-top: 3rem;
+    border-top: 1px solid;
+  }
+
+  .closing-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .closing-headline {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .closing-text {
+    font-size: 1.125rem;
+  }
+
+  :global([data-mode="dark"]) .benefit-number {
+    background: rgba(156, 133, 223, 0.2);
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .benefit h3 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .benefit p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .closing-statement {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .closing-eyebrow {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .closing-headline {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .closing-text {
+    color: rgba(249, 250, 251, 0.7);
+  }
+</style>

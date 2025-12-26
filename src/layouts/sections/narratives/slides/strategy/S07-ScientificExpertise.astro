@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 7: Deep Scientific Expertise
+ * Pillar detail section
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'expertise' } = Astro.props;
+---
+
+<section class="slide slide-pillar slide-pillar-expertise" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content slide-content-pillar">
+    <div class="pillar-header reveal-item" data-reveal="fade-up" style="--delay: 0ms;">
+      <span class="pillar-icon-large">🧬</span>
+      <div>
+        <h2 class="pillar-title">Deep Scientific Expertise</h2>
+        <p class="pillar-subtitle">in longevity biology</p>
+      </div>
+    </div>
+    <ul class="pillar-bullets">
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Decades of experience across biology, data science, and company-building</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Embedded in leading geroscience centers working to extend healthspan</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Distinguish true mechanism-based therapies from superficial wellness products</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Support portfolio companies with trial design, regulatory strategy, and biomarker selection</li>
+    </ul>
+  </div>
+</section>

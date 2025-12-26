@@ -1,0 +1,85 @@
+---
+/**
+ * Strategy Section 4: Our Unfair Advantage
+ * Trusted networks section
+ */
+interface Props {
+  id?: string;
+  showScrollCta?: boolean;
+}
+
+const { id = 'advantage', showScrollCta = true } = Astro.props;
+---
+
+<section class="slide slide-advantage" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content slide-content-split">
+    <div class="split-number reveal-item" data-reveal="slide-right" style="--delay: 0ms;">03</div>
+    <div class="split-content">
+      <h2 class="section-title reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Our Unfair Advantage</h2>
+      <p class="section-body reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        Trusted networks at the intersection of research, builders, and distribution
+        partners who route breakthroughs to market.
+      </p>
+      <ul class="bullet-list reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <li>Deep relationships with Stanford & Cedars-Sinai</li>
+        <li>Longevity influencer network with millions of followers</li>
+        <li>Cross-pollinating venture and operating experience</li>
+      </ul>
+    </div>
+  </div>
+  {showScrollCta && (
+    <a href="#differentiation" class="scroll-cta reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+      <span>Our Differentiation</span>
+      <span class="cta-arrow"></span>
+    </a>
+  )}
+</section>
+
+<style>
+  .scroll-cta {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .scroll-cta:hover {
+    opacity: 0.8;
+  }
+
+  .cta-arrow {
+    display: block;
+    width: 3rem;
+    height: 1px;
+    position: relative;
+  }
+
+  .cta-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  :global([data-mode="dark"]) .scroll-cta {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .cta-arrow {
+    background: currentColor;
+  }
+</style>

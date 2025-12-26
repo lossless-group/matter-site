@@ -1,0 +1,84 @@
+---
+/**
+ * Thesis Section 12: IPO Path
+ * Public market exit path
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'ipo-path' } = Astro.props;
+---
+
+<section class="slide slide-ipo" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge badge-purple reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Exit Paths</span>
+    <h2 class="section-title reveal-item" data-reveal="fade-up" style="--delay: 100ms;">📈 IPOs in Public Markets</h2>
+    <p class="section-body reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Biotech IPOs remain a core liquidity event, especially for companies with
+      differentiated clinical data in age-related disease.
+    </p>
+    <div class="path-points">
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <h4>Quality Over Quantity</h4>
+        <p>The post-2021 correction led to a disciplined IPO market focused on clinical-stage, de-risked assets.</p>
+      </div>
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <h4>100% Clinical-Stage</h4>
+        <p>By 2023, all US biotech IPOs had clinical-stage assets, with roughly one-third at Phase III.</p>
+      </div>
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <h4>Mainstream Theme</h4>
+        <p>Longevity-focused biotechs raised over $2 billion via IPOs in 2023 alone.</p>
+      </div>
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
+        <h4>Data-Driven Stories</h4>
+        <p>Investors reward platforms that pair bold aging biology with credible, near-term milestones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-points {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .path-points {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .path-point {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .path-point h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .path-point p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  :global([data-mode="dark"]) .path-point {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .path-point h4 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .path-point p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

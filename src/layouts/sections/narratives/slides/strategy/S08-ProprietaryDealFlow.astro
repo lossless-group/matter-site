@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 8: Proprietary Deal Flow
+ * Stanford & Cedars-Sinai partnerships
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'dealflow' } = Astro.props;
+---
+
+<section class="slide slide-pillar slide-pillar-dealflow" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content slide-content-pillar">
+    <div class="pillar-header reveal-item" data-reveal="fade-up" style="--delay: 0ms;">
+      <span class="pillar-icon-large">🔬</span>
+      <div>
+        <h2 class="pillar-title">Proprietary Deal Flow</h2>
+        <p class="pillar-subtitle">via Stanford & Cedars-Sinai partnerships</p>
+      </div>
+    </div>
+    <ul class="pillar-bullets">
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Early visibility into spin-outs, pilot projects, and translational teams</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Access to key investigators and clinical trial infrastructure</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Co-design company formation around validated science and IP</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">NIH-backed aging clinical trials and gerotherapeutics programs</li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,110 @@
+---
+/**
+ * Thesis Section 14: Market Growth Projection
+ * $5.7B to $34.6B growth visual
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'market-growth' } = Astro.props;
+---
+
+<section class="slide slide-growth" id={id}>
+  <div class="slide-gradient slide-gradient-green"></div>
+  <div class="slide-content slide-content-center">
+    <span class="badge badge-green reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Market Opportunity</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Anti-Aging Therapeutics Market</h2>
+    <div class="growth-visual reveal-item" data-reveal="scale-up" style="--delay: 300ms;">
+      <div class="growth-from">
+        <span class="growth-value">$5.7B</span>
+        <span class="growth-year">2024</span>
+      </div>
+      <div class="growth-arrow">
+        <svg class="arrow-icon" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 20 H56 M44 8 L56 20 L44 32" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="growth-cagr">17.9% CAGR</span>
+      </div>
+      <div class="growth-to">
+        <span class="growth-value">$34.6B</span>
+        <span class="growth-year">2035</span>
+      </div>
+    </div>
+    <p class="growth-citation reveal-item" data-reveal="fade-up" style="--delay: 500ms;">Global anti-aging therapeutics market projection</p>
+  </div>
+</section>
+
+<style>
+  .growth-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .growth-visual {
+      flex-direction: column;
+    }
+  }
+
+  .growth-from,
+  .growth-to {
+    text-align: center;
+  }
+
+  .growth-value {
+    display: block;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+  }
+
+  .growth-year {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .growth-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .arrow-icon {
+    width: 4rem;
+    height: 2.5rem;
+  }
+
+  .growth-cagr {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  .growth-citation {
+    font-size: 0.875rem;
+  }
+
+  :global([data-mode="dark"]) .growth-value {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-year {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .growth-arrow {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-cagr {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .growth-citation {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+/**
+ * Strategy Section 15: Geographic Focus
+ * Regional investment allocation
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'geography' } = Astro.props;
+---
+
+<section class="slide slide-geography" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge badge-cyan reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Geography</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Geographic Focus</h2>
+    <div class="geography-visual reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      <div class="geo-split">
+        <div class="geo-primary reveal-item" data-reveal="slide-right" style="--delay: 300ms;">
+          <span class="geo-percentage">70%</span>
+          <span class="geo-region">U.S. / Europe</span>
+          <p class="geo-desc">Best-in-class research hubs with deep biotech talent and established exit markets</p>
+        </div>
+        <div class="geo-secondary reveal-item" data-reveal="slide-left" style="--delay: 400ms;">
+          <span class="geo-percentage">30%</span>
+          <span class="geo-region">Rest of World</span>
+          <p class="geo-desc">Opportunistic positions in Israel, Asia, and emerging innovation clusters</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .geography-visual {
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .geo-split {
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .geo-split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .geo-primary,
+  .geo-secondary {
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .geo-percentage {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .geo-region {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .geo-desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  :global([data-mode="dark"]) .geo-primary {
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+  }
+
+  :global([data-mode="dark"]) .geo-secondary {
+    background: rgba(103, 232, 249, 0.05);
+    border: 1px solid rgba(103, 232, 249, 0.2);
+  }
+
+  :global([data-mode="dark"]) .geo-percentage {
+    color: #22d3ee;
+  }
+
+  :global([data-mode="dark"]) .geo-region {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .geo-desc {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

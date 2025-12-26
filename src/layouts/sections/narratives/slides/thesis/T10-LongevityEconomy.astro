@@ -1,0 +1,141 @@
+---
+/**
+ * Thesis Section 10: The Longevity Economy
+ * $7T+ market opportunity
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'economy' } = Astro.props;
+---
+
+<section class="slide slide-economy" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge badge-green reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Opportunity</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">The Longevity Economy</h2>
+    <p class="section-subtitle reveal-item" data-reveal="fade-up" style="--delay: 200ms;">A multi-trillion dollar market underpinned by demographic certainty</p>
+    <div class="economy-grid">
+      <div class="economy-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="economy-number">25%</span>
+        <span class="economy-label">of Global Consumption</span>
+        <p>Seniors will account for one-quarter of global consumption by 2050.</p>
+      </div>
+      <div class="economy-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="economy-number">$7T+</span>
+        <span class="economy-label">Longevity Economy</span>
+        <p>Healthcare, financial products, housing, caregiving, and consumer markets.</p>
+      </div>
+      <div class="economy-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="economy-number">77 years</span>
+        <span class="economy-label">Life Expectancy by 2050</span>
+        <p>Global life expectancy projected to reach 77 years by 2050.</p>
+      </div>
+    </div>
+    <div class="economy-cta reveal-item" data-reveal="scale-up" style="--delay: 600ms;">
+      <p class="cta-headline">Capture the $7T+ Longevity Economy</p>
+      <p class="cta-text">Demographic inevitability meets scientific readiness</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-subtitle {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .economy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .economy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .economy-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .economy-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .economy-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .economy-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .economy-cta {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+
+  .cta-headline {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-text {
+    font-size: 1.125rem;
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .economy-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .economy-number {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) .economy-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .economy-card p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) .economy-cta {
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="dark"]) .cta-headline {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .cta-text {
+    color: rgba(249, 250, 251, 0.7);
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+/**
+ * Strategy Section 11: The Team
+ * Team-enabled advantages
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'team' } = Astro.props;
+---
+
+<section class="slide slide-team" id={id}>
+  <div class="slide-gradient slide-gradient-purple"></div>
+  <div class="slide-content slide-content-center">
+    <span class="badge badge-green reveal-item" data-reveal="fade-up" style="--delay: 0ms;">The Team</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Team-Enabled Advantages</h2>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Our differentiation is not theoretical—it's embedded in who we are</p>
+    <div class="team-summary reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
+      <p class="closing-line">A Team That Speaks Both Lab and Late-Stage Capital</p>
+      <p class="closing-sub">Scientific depth meets investment discipline</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .team-summary {
+    margin-top: 3rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .closing-line {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .closing-sub {
+    font-size: 1.125rem;
+  }
+
+  :global([data-mode="dark"]) .team-summary {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+  }
+
+  :global([data-mode="dark"]) .closing-line {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .closing-sub {
+    color: rgba(249, 250, 251, 0.7);
+  }
+</style>

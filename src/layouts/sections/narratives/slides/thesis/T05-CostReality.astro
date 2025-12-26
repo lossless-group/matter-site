@@ -1,0 +1,107 @@
+---
+/**
+ * Thesis Section 5: Cost Reality - Medical Inflation
+ * Structural healthcare cost drivers
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'cost-reality' } = Astro.props;
+---
+
+<section class="slide slide-cost-reality" id={id}>
+  <div class="slide-gradient slide-gradient-red"></div>
+  <div class="slide-content">
+    <span class="badge badge-red reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Cost Reality</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Structural, Compounding Medical Inflation</h2>
+    <p class="section-subtitle reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Without interventions that alter the trajectory of age-related disease, cost curves remain exponential</p>
+    <div class="cost-grid">
+      <div class="cost-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="cost-number">$172,500</span>
+        <span class="cost-label">Per Retiree</span>
+        <p>Average healthcare cost during retirement, more than doubled since 2002.</p>
+      </div>
+      <div class="cost-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="cost-number">7-8%</span>
+        <span class="cost-label">Annual Increase</span>
+        <p>Expected healthcare cost growth for US employers in 2025.</p>
+      </div>
+      <div class="cost-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="cost-number">2.5×</span>
+        <span class="cost-label">vs Working Age</span>
+        <p>Per-capita spending for 65+ compared to working-age adults.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-subtitle {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .cost-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cost-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .cost-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .cost-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .cost-card p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .cost-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .cost-number {
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .cost-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .cost-card p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

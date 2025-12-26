@@ -1,0 +1,126 @@
+---
+/**
+ * Thesis Section 2: Trillion-Dollar Diseases
+ * Disease cost breakdown grid
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'diseases' } = Astro.props;
+---
+
+<section class="slide slide-diseases" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge badge-red reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Trillion-Dollar Diseases</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">A Handful of Conditions Drive Trillions in Cost</h2>
+    <div class="disease-grid">
+      <div class="disease-card reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        <span class="disease-icon">❤️</span>
+        <div class="disease-info">
+          <h3>Cardiovascular Disease</h3>
+          <span class="disease-cost">$1.8T</span>
+          <span class="disease-timeframe">by 2050 (US)</span>
+          <p>Leading cause of death globally, costs projected to triple from current levels.</p>
+        </div>
+      </div>
+      <div class="disease-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="disease-icon">🩸</span>
+        <div class="disease-info">
+          <h3>Diabetes</h3>
+          <span class="disease-cost">$966B</span>
+          <span class="disease-timeframe">per year (global)</span>
+          <p>Approaching $1T annually worldwide in direct health expenditure.</p>
+        </div>
+      </div>
+      <div class="disease-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="disease-icon">🔬</span>
+        <div class="disease-info">
+          <h3>Cancer</h3>
+          <span class="disease-cost">#1</span>
+          <span class="disease-timeframe">cost driver</span>
+          <p>Now the leading condition driving insurer medical costs globally.</p>
+        </div>
+      </div>
+      <div class="disease-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="disease-icon">💊</span>
+        <div class="disease-info">
+          <h3>Chronic Conditions</h3>
+          <span class="disease-cost">90%</span>
+          <span class="disease-timeframe">of US spend</span>
+          <p>Nearly all US healthcare spending goes to chronic and mental health conditions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .disease-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .disease-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .disease-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .disease-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .disease-info h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .disease-cost {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+  }
+
+  .disease-timeframe {
+    font-size: 0.75rem;
+  }
+
+  .disease-info p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+  }
+
+  :global([data-mode="dark"]) .disease-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .disease-info h3 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .disease-cost {
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .disease-timeframe {
+    color: rgba(249, 250, 251, 0.5);
+  }
+
+  :global([data-mode="dark"]) .disease-info p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

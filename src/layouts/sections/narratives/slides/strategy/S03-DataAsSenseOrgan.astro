@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 3: Data as a Sense Organ
+ * Health as live data problem
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'data' } = Astro.props;
+---
+
+<section class="slide slide-data" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content slide-content-split">
+    <div class="split-number reveal-item" data-reveal="slide-right" style="--delay: 0ms;">02</div>
+    <div class="split-content">
+      <h2 class="section-title reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Data as a Sense Organ</h2>
+      <p class="section-body reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        Health becomes a live data problem. Continuous biomarkers replace
+        episodic snapshots.
+      </p>
+      <ul class="bullet-list reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <li>Wearables generating continuous physiological streams</li>
+        <li>Multi-omics panels becoming routine</li>
+        <li>Biological age vs chronological age measurable</li>
+      </ul>
+    </div>
+  </div>
+</section>

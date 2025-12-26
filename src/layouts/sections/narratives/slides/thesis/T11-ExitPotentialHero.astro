@@ -1,0 +1,70 @@
+---
+/**
+ * Thesis Section 11: Exit Potential - Hero
+ * Two paths to liquidity
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'exit-potential' } = Astro.props;
+---
+
+<section class="slide slide-exit-hero" id={id}>
+  <div class="slide-gradient slide-gradient-green"></div>
+  <div class="slide-content slide-content-center">
+    <p class="eyebrow reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Returns</p>
+    <h1 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Exit Potential</h1>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Two proven paths to liquidity for longevity investments
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
+        <span class="hero-stat-number">$2B+</span>
+        <span class="hero-stat-label">Longevity IPOs in 2023</span>
+      </div>
+      <div class="hero-stat reveal-item" data-reveal="scale-up" style="--delay: 500ms;">
+        <span class="hero-stat-number">17.9%</span>
+        <span class="hero-stat-label">Anti-aging Market CAGR</span>
+      </div>
+      <div class="hero-stat reveal-item" data-reveal="scale-up" style="--delay: 600ms;">
+        <span class="hero-stat-number">$5B+</span>
+        <span class="hero-stat-label">Startup Funding in 2023</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-number {
+    display: block;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+  }
+
+  .hero-stat-label {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  :global([data-mode="dark"]) .hero-stat-number {
+    color: #34d399;
+  }
+
+  :global([data-mode="dark"]) .hero-stat-label {
+    color: rgba(249, 250, 251, 0.7);
+  }
+</style>

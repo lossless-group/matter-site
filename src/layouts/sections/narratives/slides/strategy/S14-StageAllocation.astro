@@ -1,0 +1,118 @@
+---
+/**
+ * Strategy Section 14: Stage Allocation
+ * Capital deployment breakdown
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'stages' } = Astro.props;
+---
+
+<section class="slide slide-stages" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content">
+    <span class="badge badge-purple reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Capital Deployment</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Stage Allocation</h2>
+    <div class="stage-bar-container reveal-item" data-reveal="scale-up" style="--delay: 200ms;">
+      <div class="stage-bar stage-seed" style="width: 50%;">
+        <span class="stage-bar-label">50%</span>
+      </div>
+      <div class="stage-bar stage-series" style="width: 30%;">
+        <span class="stage-bar-label">30%</span>
+      </div>
+      <div class="stage-bar stage-followon" style="width: 20%;">
+        <span class="stage-bar-label">20%</span>
+      </div>
+    </div>
+    <div class="stage-legend reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+      <span class="stage-legend-item stage-legend-seed">Seed</span>
+      <span class="stage-legend-item stage-legend-series">Series A/B</span>
+      <span class="stage-legend-item stage-legend-followon">Follow-ons</span>
+    </div>
+    <div class="stage-details reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+      <p><strong>Seed (50%):</strong> Lead or co-lead in technical and scientific founding teams</p>
+      <p><strong>Series A/B (30%):</strong> Scale capital into companies showing human data and traction</p>
+      <p><strong>Follow-ons (20%):</strong> Systematic double-down into top decile outcomes</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stage-bar-container {
+    display: flex;
+    height: 4rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .stage-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: filter 0.3s ease;
+  }
+
+  .stage-bar:hover {
+    filter: brightness(1.1);
+  }
+
+  .stage-legend {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .stage-legend-item {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .stage-details {
+    text-align: left;
+    max-width: 36rem;
+    margin: 0 auto;
+  }
+
+  .stage-details p {
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  :global([data-mode="dark"]) .stage-seed {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  :global([data-mode="dark"]) .stage-series {
+    background: #a78bfa;
+    color: white;
+  }
+
+  :global([data-mode="dark"]) .stage-followon {
+    background: #c4b5fd;
+    color: #1e1b4b;
+  }
+
+  :global([data-mode="dark"]) .stage-legend-seed {
+    color: #a78bfa;
+  }
+
+  :global([data-mode="dark"]) .stage-legend-series {
+    color: #c4b5fd;
+  }
+
+  :global([data-mode="dark"]) .stage-legend-followon {
+    color: #ddd6fe;
+  }
+
+  :global([data-mode="dark"]) .stage-details {
+    color: rgba(249, 250, 251, 0.7);
+  }
+</style>

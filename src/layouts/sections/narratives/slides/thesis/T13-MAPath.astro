@@ -1,0 +1,83 @@
+---
+/**
+ * Thesis Section 13: M&A Path
+ * Big pharma acquisition path
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'ma-path' } = Astro.props;
+---
+
+<section class="slide slide-ma" id={id}>
+  <div class="slide-gradient slide-gradient-shift"></div>
+  <div class="slide-content">
+    <h2 class="section-title reveal-item" data-reveal="fade-up" style="--delay: 0ms;">🏢 Acquisitions by Big Pharma</h2>
+    <p class="section-body reveal-item" data-reveal="fade-up" style="--delay: 100ms;">
+      Large pharma companies facing patent cliffs are increasingly acquiring
+      longevity-adjacent assets to sustain growth.
+    </p>
+    <div class="path-points">
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        <h4>Massive Market Growth</h4>
+        <p>Global anti-aging therapeutics projected to grow from $5.7B (2024) to $34.6B by 2035.</p>
+      </div>
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <h4>M&A as Core Return Driver</h4>
+        <p>Institutional investors expect continued M&A as pharma uses acquisitions to access innovative platforms.</p>
+      </div>
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <h4>Strategic Fit</h4>
+        <p>Longevity mechanisms intersect with existing pharma markets—cardiometabolic, oncology, ophthalmology.</p>
+      </div>
+      <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <h4>VC Capital Precursor</h4>
+        <p>Longevity VC funds raised over $3B in 2023, seeding future acquisition targets.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .path-points {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .path-points {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .path-point {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+
+  .path-point h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .path-point p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  :global([data-mode="dark"]) .path-point {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .path-point h4 {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .path-point p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

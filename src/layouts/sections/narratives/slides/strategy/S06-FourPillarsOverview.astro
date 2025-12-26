@@ -1,0 +1,82 @@
+---
+/**
+ * Strategy Section 6: Four Pillars Overview
+ * Competitive advantages grid
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'pillars' } = Astro.props;
+---
+
+<section class="slide slide-pillars-overview" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Competitive Advantages</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Four Pillars of Differentiation</h2>
+    <div class="pillars-grid">
+      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        <span class="pillar-icon">🧬</span>
+        <span class="pillar-name">Scientific Expertise</span>
+      </div>
+      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="pillar-icon">🔬</span>
+        <span class="pillar-name">Deal Flow</span>
+      </div>
+      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="pillar-icon">🌐</span>
+        <span class="pillar-name">Network</span>
+      </div>
+      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="pillar-icon">🛡️</span>
+        <span class="pillar-name">IP Protection</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .pillars-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .pillar-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .pillar-icon {
+    font-size: 2.5rem;
+  }
+
+  .pillar-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  :global([data-mode="dark"]) .pillar-preview {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .pillar-name {
+    color: var(--color-alabaster);
+  }
+</style>

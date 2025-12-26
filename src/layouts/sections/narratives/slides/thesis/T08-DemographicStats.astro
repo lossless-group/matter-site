@@ -1,0 +1,123 @@
+---
+/**
+ * Thesis Section 8: Demographic Statistics
+ * Global aging trend statistics
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'demo-stats' } = Astro.props;
+---
+
+<section class="slide slide-demo-stats" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge badge-purple reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Demographics</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">A Defining Global Trend</h2>
+    <p class="section-subtitle reveal-item" data-reveal="fade-up" style="--delay: 200ms;">The UN describes global aging as "a defining trend of our time" and a "major success story"</p>
+    <div class="stats-grid stats-grid-4">
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="stat-number">2.1B</span>
+        <span class="stat-label">People 60+ by 2050</span>
+        <p>The UN projects the global population aged 60+ will roughly double by 2050.</p>
+      </div>
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="stat-number">1.6B</span>
+        <span class="stat-label">People 65+ by 2050</span>
+        <p>Population aged 65+ expected to reach around 1.6 billion.</p>
+      </div>
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="stat-number">3×</span>
+        <span class="stat-label">Growth in 80+</span>
+        <p>The "oldest old" (80+) will more than triple to 447M by 2050.</p>
+      </div>
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
+        <span class="stat-number">1 in 4</span>
+        <span class="stat-label">Asians over 60</span>
+        <p>In Asia, one in four people will be over 60 by 2050.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-subtitle {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stats-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 1024px) {
+    .stats-grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid,
+    .stats-grid-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .stat-card p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .stat-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .stat-number {
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .stat-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .stat-card p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

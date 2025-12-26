@@ -1,0 +1,68 @@
+---
+/**
+ * Thesis Section 7: Global Aging Wave - Hero
+ * 2B people over 60 by 2050
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'global-aging' } = Astro.props;
+---
+
+<section class="slide slide-aging-hero" id={id}>
+  <div class="slide-gradient slide-gradient-purple"></div>
+  <div class="slide-content slide-content-center">
+    <p class="eyebrow reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Why Now</p>
+    <h1 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">The Global Aging Wave</h1>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      A demographic shift creating a multi-trillion dollar opportunity
+    </p>
+    <div class="big-stat reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
+      <span class="big-stat-number">2B</span>
+      <p class="big-stat-label">people over 60 by 2050</p>
+      <p class="big-stat-source">United Nations</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .big-stat {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .big-stat-number {
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .big-stat-label {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+  }
+
+  .big-stat-source {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 0.5rem;
+  }
+
+  :global([data-mode="dark"]) .big-stat-number {
+    background: linear-gradient(135deg, var(--color-lilac), var(--color-marjorelle-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="dark"]) .big-stat-label {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .big-stat-source {
+    color: var(--color-lilac);
+    opacity: 0.5;
+  }
+</style>

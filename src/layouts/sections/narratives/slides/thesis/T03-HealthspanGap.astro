@@ -1,0 +1,154 @@
+---
+/**
+ * Thesis Section 3: Healthspan vs Lifespan Gap
+ * Visual bar comparison showing 15-year gap
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'healthspan-gap' } = Astro.props;
+---
+
+<section class="slide slide-gap" id={id}>
+  <div class="slide-gradient slide-gradient-amber"></div>
+  <div class="slide-content">
+    <span class="badge badge-amber reveal-item" data-reveal="fade-up" style="--delay: 0ms;">The Gap</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">We Extended Life, Not Healthy Life</h2>
+    <div class="gap-visual reveal-item" data-reveal="scale-up" style="--delay: 200ms;">
+      <div class="gap-bars">
+        <div class="bar-row">
+          <div class="bar-label">
+            <span>Healthspan</span>
+            <span class="bar-value">65 years</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-fill-healthy" style="width: 81.25%;"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">
+            <span>Lifespan</span>
+            <span class="bar-value">80+ years</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-fill-life" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="gap-callout reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="gap-number">15</span>
+        <span class="gap-unit">years</span>
+        <p class="gap-description">Years living with chronic disease, disability, or frailty</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .gap-visual {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 1.5rem;
+  }
+
+  .gap-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .bar-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .bar-track {
+    height: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 0.5rem;
+  }
+
+  .gap-callout {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid;
+  }
+
+  .gap-number {
+    font-size: 4rem;
+    font-weight: 700;
+  }
+
+  .gap-unit {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+  }
+
+  .gap-description {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    max-width: 24rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :global([data-mode="dark"]) .gap-visual {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  :global([data-mode="dark"]) .bar-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .bar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .bar-fill-healthy {
+    background: linear-gradient(90deg, #10b981, #34d399);
+  }
+
+  :global([data-mode="dark"]) .bar-fill-life {
+    background: linear-gradient(90deg, #10b981 81.25%, #fbbf24 81.25%, #f87171);
+  }
+
+  :global([data-mode="dark"]) .gap-callout {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-mode="dark"]) .gap-number {
+    color: #fbbf24;
+  }
+
+  :global([data-mode="dark"]) .gap-unit {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .gap-description {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

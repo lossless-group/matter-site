@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 10: IP-Protected, Scalable Solutions
+ * Defensible platforms focus
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'ip' } = Astro.props;
+---
+
+<section class="slide slide-pillar slide-pillar-ip" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content slide-content-pillar">
+    <div class="pillar-header reveal-item" data-reveal="fade-up" style="--delay: 0ms;">
+      <span class="pillar-icon-large">🛡️</span>
+      <div>
+        <h2 class="pillar-title">IP-Protected, Scalable Solutions</h2>
+        <p class="pillar-subtitle">Focus on defensible platforms</p>
+      </div>
+    </div>
+    <ul class="pillar-bullets">
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Novel therapeutics targeting fundamental aging pathways</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Diagnostic, digital, and AI-driven tools for personalized interventions</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Strong intellectual property moats and clear regulatory paths</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Measurable impact on healthspan—clinically meaningful outcomes</li>
+    </ul>
+  </div>
+</section>

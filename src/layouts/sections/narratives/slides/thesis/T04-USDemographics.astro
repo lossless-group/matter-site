@@ -1,0 +1,112 @@
+---
+/**
+ * Thesis Section 4: US Demographics - Silver Tsunami
+ * Demographic statistics grid
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'demographics' } = Astro.props;
+---
+
+<section class="slide slide-demographics" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge badge-purple reveal-item" data-reveal="fade-up" style="--delay: 0ms;">US Demographics</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">A Silver Tsunami is Coming</h2>
+    <p class="section-subtitle reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Fewer workers per retiree, escalating fiscal pressure on healthcare systems</p>
+    <div class="stats-grid">
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="stat-number">55M+</span>
+        <span class="stat-label">Americans 65+</span>
+        <p>Already over 55 million Americans aged 65 or older today.</p>
+      </div>
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="stat-number">80M</span>
+        <span class="stat-label">By 2040</span>
+        <p>Projected 65+ population will reach almost 80 million.</p>
+      </div>
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="stat-number">20%</span>
+        <span class="stat-label">of Population</span>
+        <p>1 in 5 Americans will be 65+ by 2030.</p>
+      </div>
+      <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
+        <span class="stat-number">5×</span>
+        <span class="stat-label">Cost Multiplier</span>
+        <p>Per-person spending for 65+ is 5× higher than for children.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-subtitle {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .stat-card p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  :global([data-mode="dark"]) .section-subtitle {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .stat-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.15);
+  }
+
+  :global([data-mode="dark"]) .stat-number {
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .stat-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .stat-card p {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>

@@ -1,0 +1,112 @@
+---
+/**
+ * Thesis Section 1: The Aging Crisis - Hero
+ * Opening hero slide about $1T+ healthcare costs
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'aging-crisis' } = Astro.props;
+---
+
+<section class="slide slide-crisis-hero" id={id}>
+  <div class="slide-gradient slide-gradient-red"></div>
+  <div class="slide-content slide-content-center">
+    <div class="problem-badge reveal-item" data-reveal="fade-up" style="--delay: 0ms;">
+      <span class="badge-dot"></span>
+      <span>The Problem</span>
+    </div>
+    <h1 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">The Aging Crisis</h1>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Age-related diseases cost $1T+ annually in global healthcare
+    </p>
+    <div class="big-cost reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
+      <span class="big-cost-currency">$</span>
+      <span class="big-cost-number">1T+</span>
+      <p class="big-cost-label">annual global healthcare costs</p>
+      <p class="big-cost-diseases">Alzheimer's • Cancer • CVD • Diabetes • Renal Failure</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .problem-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    margin-bottom: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .badge-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .big-cost {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .big-cost-currency {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+  }
+
+  .big-cost-number {
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .big-cost-label {
+    font-size: 1.125rem;
+    margin-top: 1rem;
+  }
+
+  .big-cost-diseases {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 0.5rem;
+  }
+
+  :global([data-mode="dark"]) .problem-badge {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+
+  :global([data-mode="dark"]) .badge-dot {
+    background: #f87171;
+  }
+
+  :global([data-mode="dark"]) .big-cost-currency,
+  :global([data-mode="dark"]) .big-cost-number {
+    background: linear-gradient(135deg, #f87171, #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :global([data-mode="dark"]) .big-cost-label {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) .big-cost-diseases {
+    color: rgba(249, 250, 251, 0.5);
+  }
+</style>

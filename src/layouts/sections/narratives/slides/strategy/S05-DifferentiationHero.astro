@@ -1,0 +1,22 @@
+---
+/**
+ * Strategy Section 5: Our Differentiation - Hero
+ * Why Dark Matter introduction
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'differentiation' } = Astro.props;
+---
+
+<section class="slide slide-diff-hero" id={id}>
+  <div class="slide-gradient slide-gradient-purple"></div>
+  <div class="slide-content slide-content-center">
+    <p class="eyebrow reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Why Dark Matter</p>
+    <h1 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Our Differentiation</h1>
+    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+      Scientific depth, exclusive access, and tight focus on defensible longevity technologies
+    </p>
+  </div>
+</section>

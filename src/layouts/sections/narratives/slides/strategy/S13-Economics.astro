@@ -1,0 +1,94 @@
+---
+/**
+ * Strategy Section 13: Economics & Alignment
+ * LP-GP alignment
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'economics' } = Astro.props;
+---
+
+<section class="slide slide-economics" id={id}>
+  <div class="slide-gradient"></div>
+  <div class="slide-content">
+    <span class="badge reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Economics</span>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">LP-GP Alignment</h2>
+    <div class="economics-grid">
+      <div class="economics-card reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+        <span class="economics-value">2%</span>
+        <span class="economics-label">Management Fee</span>
+        <span class="economics-desc">Annual on committed capital</span>
+      </div>
+      <div class="economics-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
+        <span class="economics-value">20-25%</span>
+        <span class="economics-label">Carried Interest</span>
+        <span class="economics-desc">Performance fee, back-ended</span>
+      </div>
+      <div class="economics-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="economics-value">Meaningful</span>
+        <span class="economics-label">GP Commitment</span>
+        <span class="economics-desc">Personal capital alongside LPs</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .economics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .economics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .economics-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+
+  .economics-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .economics-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .economics-desc {
+    font-size: 0.8125rem;
+  }
+
+  :global([data-mode="dark"]) .economics-card {
+    background: rgba(15, 9, 35, 0.8);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+  }
+
+  :global([data-mode="dark"]) .economics-value {
+    color: #60a5fa;
+  }
+
+  :global([data-mode="dark"]) .economics-label {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) .economics-desc {
+    color: rgba(249, 250, 251, 0.6);
+  }
+</style>
