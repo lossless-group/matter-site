@@ -1,14 +1,13 @@
 ---
 /**
- * ImageAbstract--AviciiTriangles
+ * ImageAbstract--AviciiTriangles--Brand
  *
- * A Three.js visualization inspired by the Avicii logo:
- * - Two triangles forming a stylized "A" shape
+ * The classic Avicii logo shape with 45° tilted triangles:
+ * - Left triangle rotated 45° CCW, shortest side on right
+ * - Right triangle rotated 45° CW, shortest side on left
+ * - Forms the iconic Avicii "A" chevron shape
  * - Animated light pulses traveling along the triangle edges
  * - Neon glow effect with atmospheric haze
- *
- * The left triangle points left, the right triangle points right,
- * and they share a vertical center edge.
  */
 
 interface Props {
@@ -35,23 +34,23 @@ const {
   class: className = '',
 } = Astro.props as Props;
 
-const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`;
+const containerId = `avicii-brand-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <div
   id={containerId}
-  class:list={['avicii-triangles-container', className]}
+  class:list={['avicii-brand-container', className]}
   style={`width: ${size}; height: ${size};`}
   data-color={color}
   data-accent-color={accentColor}
   data-speed={speed}
   data-animate={animate}
 >
-  <canvas class="avicii-triangles-canvas"></canvas>
+  <canvas class="avicii-brand-canvas"></canvas>
 </div>
 
 <style>
-  .avicii-triangles-container {
+  .avicii-brand-container {
     position: relative;
     display: flex;
     align-items: center;
@@ -59,7 +58,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
     background: transparent;
   }
 
-  .avicii-triangles-canvas {
+  .avicii-brand-canvas {
     width: 100%;
     height: 100%;
     display: block;
@@ -76,8 +75,8 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
     animate: boolean;
   }
 
-  function initAviciiTriangles(container: HTMLElement) {
-    const canvas = container.querySelector('.avicii-triangles-canvas') as HTMLCanvasElement | null;
+  function initAvicciBrand(container: HTMLElement) {
+    const canvas = container.querySelector('.avicii-brand-canvas') as HTMLCanvasElement | null;
     if (!canvas) return;
 
     const config: Config = {
@@ -108,44 +107,51 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
     scene.add(group);
 
     // Triangle dimensions
-    const triHeight = 1.6;
-    const triWidth = 1.2;
-    const gap = 0.08; // Small gap between triangles at center
+    // Short leg (vertical inner edge) = 1.0
+    // Long leg (horizontal bottom edge) = 1.6
+    const shortLeg = 1.0;
+    const longLeg = 1.44; // 10% shorter than 1.6
+    const gap = 0.12; // 50% wider than 0.08
 
-    // Define the two triangles
-    // Left triangle: pointing left (like < but filled)
+    // LEFT triangle:
+    // - Vertical right edge (short, 1.0) facing center
+    // - Horizontal bottom edge (long, 1.6)
+    // - Right angle at bottom-right
     const leftTri = [
-      new THREE.Vector3(-gap / 2, triHeight / 2, 0),      // Top center
-      new THREE.Vector3(-gap / 2, -triHeight / 2, 0),     // Bottom center
-      new THREE.Vector3(-triWidth - gap / 2, 0, 0),       // Left point
+      new THREE.Vector3(-gap / 2, shortLeg / 2, 0),                // Top
+      new THREE.Vector3(-gap / 2, -shortLeg / 2, 0),               // Bottom-right (right angle)
+      new THREE.Vector3(-gap / 2 - longLeg, -shortLeg / 2, 0),     // Bottom-left
     ];
 
-    // Right triangle: pointing right (like > but filled)
+    // RIGHT triangle (inverted vertically):
+    // - Vertical left edge (short, 1.0) facing center
+    // - Horizontal TOP edge (long, 1.6)
+    // - Right angle at top-left, rightmost tip at top
     const rightTri = [
-      new THREE.Vector3(gap / 2, triHeight / 2, 0),       // Top center
-      new THREE.Vector3(gap / 2, -triHeight / 2, 0),      // Bottom center
-      new THREE.Vector3(triWidth + gap / 2, 0, 0),        // Right point
+      new THREE.Vector3(gap / 2, -shortLeg / 2, 0),                // Bottom
+      new THREE.Vector3(gap / 2, shortLeg / 2, 0),                 // Top-left (right angle)
+      new THREE.Vector3(gap / 2 + longLeg, shortLeg / 2, 0),       // Top-right
     ];
 
     // Create edge paths for each triangle (closed loop)
     const leftEdges = [
-      { start: leftTri[0], end: leftTri[2] },   // Top to left point
-      { start: leftTri[2], end: leftTri[1] },   // Left point to bottom
-      { start: leftTri[1], end: leftTri[0] },   // Bottom to top (center line)
+      { start: leftTri[0], end: leftTri[1] },
+      { start: leftTri[1], end: leftTri[2] },
+      { start: leftTri[2], end: leftTri[0] },
     ];
 
     const rightEdges = [
-      { start: rightTri[0], end: rightTri[2] },  // Top to right point
-      { start: rightTri[2], end: rightTri[1] },  // Right point to bottom
-      { start: rightTri[1], end: rightTri[0] },  // Bottom to top (center line)
+      { start: rightTri[0], end: rightTri[1] },
+      { start: rightTri[1], end: rightTri[2] },
+      { start: rightTri[2], end: rightTri[0] },
     ];
 
     // Particle arrays
     const positions: number[] = [];
     const sizes: number[] = [];
     const opacities: number[] = [];
-    const edgeProgress: number[] = [];  // 0-1 progress along total path
-    const triangleId: number[] = [];     // 0 = left, 1 = right
+    const edgeProgress: number[] = [];
+    const triangleId: number[] = [];
 
     /**
      * Calculate total path length for a triangle
@@ -174,8 +180,30 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
         accumulated += edgeLength;
       }
 
-      // Return last point if we've gone past
       return edges[edges.length - 1].end.clone();
+    }
+
+    /**
+     * Get direction at a point on the path
+     */
+    function getDirectionOnPath(
+      edges: { start: THREE.Vector3; end: THREE.Vector3 }[],
+      progress: number
+    ): THREE.Vector3 {
+      const totalLength = getPathLength(edges);
+      const targetDist = progress * totalLength;
+
+      let accumulated = 0;
+      for (const edge of edges) {
+        const edgeLength = edge.start.distanceTo(edge.end);
+        if (accumulated + edgeLength >= targetDist) {
+          return new THREE.Vector3().subVectors(edge.end, edge.start).normalize();
+        }
+        accumulated += edgeLength;
+      }
+
+      const lastEdge = edges[edges.length - 1];
+      return new THREE.Vector3().subVectors(lastEdge.end, lastEdge.start).normalize();
     }
 
     /**
@@ -185,31 +213,25 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
       edges: { start: THREE.Vector3; end: THREE.Vector3 }[],
       triId: number
     ) {
-      const particlesPerTriangle = 800;
+      const particlesPerTriangle = 900;
 
       for (let i = 0; i < particlesPerTriangle; i++) {
         const progress = i / particlesPerTriangle;
         const pos = getPositionOnPath(edges, progress);
-
-        // Add slight perpendicular offset for glow width
-        const nextPos = getPositionOnPath(edges, (progress + 0.01) % 1);
-        const direction = new THREE.Vector3().subVectors(nextPos, pos).normalize();
+        const direction = getDirectionOnPath(edges, progress);
         const perpendicular = new THREE.Vector3(-direction.y, direction.x, 0);
 
-        // Multiple particles per point for glow effect
+        // Multiple particles per point for glow width
         for (let j = 0; j < 3; j++) {
-          const offset = (j - 1) * 0.025 * (Math.random() * 0.5 + 0.5);
+          const offset = (j - 1) * 0.022 * (Math.random() * 0.5 + 0.5);
           const finalPos = pos.clone().add(perpendicular.clone().multiplyScalar(offset));
-
-          // Add some z-depth variation
-          finalPos.z = (Math.random() - 0.5) * 0.05;
+          finalPos.z = (Math.random() - 0.5) * 0.04;
 
           positions.push(finalPos.x, finalPos.y, finalPos.z);
-          sizes.push(0.015 + Math.random() * 0.01);
+          sizes.push(0.014 + Math.random() * 0.008);
 
-          // Center particles are brighter
           const centerFactor = 1 - Math.abs(j - 1) * 0.3;
-          opacities.push(0.6 * centerFactor + Math.random() * 0.2);
+          opacities.push(0.65 * centerFactor + Math.random() * 0.15);
 
           edgeProgress.push(progress);
           triangleId.push(triId);
@@ -224,25 +246,24 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
       edges: { start: THREE.Vector3; end: THREE.Vector3 }[],
       triId: number
     ) {
-      const hazeParticles = 400;
+      const hazeParticles = 500;
 
       for (let i = 0; i < hazeParticles; i++) {
         const progress = Math.random();
         const pos = getPositionOnPath(edges, progress);
 
-        // Larger offset for haze
         const offsetAngle = Math.random() * Math.PI * 2;
-        const offsetDist = Math.random() * 0.15 + 0.03;
+        const offsetDist = Math.random() * 0.12 + 0.025;
 
         const finalPos = new THREE.Vector3(
           pos.x + Math.cos(offsetAngle) * offsetDist,
           pos.y + Math.sin(offsetAngle) * offsetDist,
-          (Math.random() - 0.5) * 0.1
+          (Math.random() - 0.5) * 0.08
         );
 
         positions.push(finalPos.x, finalPos.y, finalPos.z);
-        sizes.push(0.03 + Math.random() * 0.02);
-        opacities.push(0.15 + Math.random() * 0.1);
+        sizes.push(0.025 + Math.random() * 0.018);
+        opacities.push(0.12 + Math.random() * 0.08);
         edgeProgress.push(progress);
         triangleId.push(triId);
       }
@@ -271,7 +292,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
         baseColor: { value: baseColor },
         accentColor: { value: accentCol },
         time: { value: 0 },
-        pulseWidth: { value: 0.15 },
+        pulseWidth: { value: 0.12 },
       },
       vertexShader: `
         attribute float size;
@@ -291,7 +312,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
           vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
           gl_Position = projectionMatrix * mvPosition;
 
-          gl_PointSize = size * 400.0 * (1.0 / -mvPosition.z);
+          gl_PointSize = size * 420.0 * (1.0 / -mvPosition.z);
           gl_PointSize = max(gl_PointSize, 1.0);
         }
       `,
@@ -313,11 +334,10 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
           float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
           alpha *= vOpacity;
 
-          // Traveling light pulse
-          // Left triangle (id=0) goes clockwise, right triangle (id=1) goes counter-clockwise
-          float pulsePos = mod(time * 0.4, 1.0);
+          // Traveling light pulse - both triangles travel in same direction
+          float pulsePos = mod(time * 0.35, 1.0);
 
-          // Offset the second triangle's pulse
+          // Offset the second triangle's pulse slightly
           float triOffset = vTriangleId * 0.5;
           float adjustedPulse = mod(pulsePos + triOffset, 1.0);
 
@@ -330,19 +350,19 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
             )
           );
 
-          // Pulse intensity
+          // Pulse intensity with sharper falloff
           float pulseIntensity = 1.0 - smoothstep(0.0, pulseWidth, distFromPulse);
-          pulseIntensity = pow(pulseIntensity, 2.0);
+          pulseIntensity = pow(pulseIntensity, 1.8);
 
           // Mix colors based on pulse
-          vec3 finalColor = mix(baseColor, accentColor, pulseIntensity * 0.8);
+          vec3 finalColor = mix(baseColor, accentColor, pulseIntensity * 0.85);
 
           // Boost brightness at pulse
-          float brightness = 1.0 + pulseIntensity * 1.5;
+          float brightness = 1.0 + pulseIntensity * 1.8;
           finalColor *= brightness;
 
           // Additional pulse alpha boost
-          alpha *= 1.0 + pulseIntensity * 0.5;
+          alpha *= 1.0 + pulseIntensity * 0.6;
 
           if (alpha < 0.01) discard;
 
@@ -382,7 +402,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
 
           // Soft radial gradient
           float glow = 1.0 - smoothstep(0.0, 0.5, dist);
-          glow = pow(glow, 3.0) * 0.15;
+          glow = pow(glow, 3.0) * 0.12;
 
           // Subtle pulse
           glow *= 0.9 + 0.1 * sin(time * 0.5);
@@ -412,7 +432,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
         glowMat.uniforms.time.value = time;
 
         // Very subtle floating
-        group.position.y = Math.sin(time * 0.3) * 0.01;
+        group.position.y = Math.sin(time * 0.3) * 0.008;
       }
 
       renderer.render(scene, camera);
@@ -464,7 +484,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
           const container = entry.target as HTMLElement;
           if (entry.isIntersecting) {
             if (container.dataset.initialized !== 'true') {
-              initAviciiTriangles(container);
+              initAvicciBrand(container);
               container.dataset.initialized = 'true';
             }
           }
@@ -472,7 +492,7 @@ const containerId = `avicii-triangles-${Math.random().toString(36).slice(2, 9)}`
       },
       { rootMargin: '100px', threshold: 0 }
     );
-    document.querySelectorAll('.avicii-triangles-container').forEach((c) => observer.observe(c));
+    document.querySelectorAll('.avicii-brand-container').forEach((c) => observer.observe(c));
     return observer;
   }
 
