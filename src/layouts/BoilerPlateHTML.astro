@@ -1,7 +1,7 @@
 ---
 /**
  * BoilerPlateHTML.astro
- * Base HTML boilerplate with mode switching logic.
+ * Base HTML boilerplate with mode switching logic and full OG/SEO support.
  * NO header/footer - used as foundation for slide decks and other full-page layouts.
  *
  * Slots:
@@ -9,11 +9,21 @@
  * - head: Additional content for <head> (stylesheets, scripts, meta tags)
  */
 
+import { buildOgMeta, buildCanonical } from '../utils/og';
+import { serializeSchema } from '../utils/structured-data';
+import type { ShareMetaInput } from '../config/seo';
+
 export interface Props {
   title: string;
   description?: string;
   bodyClass?: string;
   mode?: 'light' | 'dark' | 'vibrant';
+  /** OG/Twitter meta overrides */
+  meta?: ShareMetaInput;
+  /** JSON-LD structured data (single object or array) */
+  jsonLd?: object | object[];
+  /** Set true to add noindex,nofollow */
+  noIndex?: boolean;
 }
 
 const {
@@ -21,10 +31,33 @@ const {
   description = 'Dark Matter presentation',
   bodyClass = '',
   mode = 'dark',
+  meta = {},
+  jsonLd,
+  noIndex = false,
 } = Astro.props;
 
 import '../styles/global.css';
 import '../styles/themes/matter-theme.css';
+
+// Build OG meta tags
+const siteUrl = Astro.site?.toString();
+const ogMeta = buildOgMeta(
+  {
+    title,
+    description,
+    ...meta,
+    url: meta.url ?? Astro.url.pathname,
+  },
+  siteUrl
+);
+
+// Build canonical URL
+const canonical = buildCanonical(Astro.url.pathname, siteUrl);
+
+// Prepare JSON-LD (support array for multiple schemas)
+const schemas = jsonLd
+  ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
+  : [];
 
 // Favicon based on mode
 const faviconHref =
@@ -40,7 +73,26 @@ const faviconHref =
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <meta name="description" content={description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Robots -->
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- OG and Twitter Meta -->
+    {ogMeta.map((m) => (
+      m.property
+        ? <meta property={m.property} content={m.content} />
+        : <meta name={m.name} content={m.content} />
+    ))}
+
+    <!-- JSON-LD Structured Data -->
+    {schemas.map((schema) => (
+      <script type="application/ld+json" set:html={serializeSchema(schema)} />
+    ))}
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href={faviconHref} />
 
     <!-- Named slot for additional head content (stylesheets, scripts, etc.) -->

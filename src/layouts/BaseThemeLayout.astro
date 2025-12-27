@@ -1,20 +1,60 @@
 ---
+/**
+ * BaseThemeLayout.astro
+ * Standard page layout with Header/Footer and full OG/SEO support.
+ */
+
+import { buildOgMeta, buildCanonical } from '../utils/og';
+import { serializeSchema } from '../utils/structured-data';
+import type { ShareMetaInput } from '../config/seo';
+
 export interface Props {
   title?: string;
   description?: string;
   mode?: 'light' | 'dark' | 'vibrant';
+  /** OG/Twitter meta overrides */
+  meta?: ShareMetaInput;
+  /** JSON-LD structured data (single object or array) */
+  jsonLd?: object | object[];
+  /** Set true to add noindex,nofollow */
+  noIndex?: boolean;
 }
 
 const {
   title = 'Dark Matter',
   description = 'A minimal themed shell using the Matter design system.',
   mode = 'dark',
+  meta = {},
+  jsonLd,
+  noIndex = false,
 } = Astro.props;
 
 import '../styles/global.css';
 import '../styles/themes/matter-theme.css';
 import Header from '../components/basics/Header.astro';
 import Footer from '../components/basics/Footer.astro';
+
+// Build OG meta tags
+const siteUrl = Astro.site?.toString();
+const ogMeta = buildOgMeta(
+  {
+    title,
+    description,
+    ...meta,
+    url: meta.url ?? Astro.url.pathname,
+  },
+  siteUrl
+);
+
+// Build canonical URL
+const canonical = buildCanonical(Astro.url.pathname, siteUrl);
+
+// Prepare JSON-LD (support array for multiple schemas)
+const schemas = jsonLd
+  ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd])
+  : [];
+
+// Favicon based on mode
 const faviconHref =
   mode === 'light'
     ? '/trademarks/appIcon__Dark-Matter--Light-Mode.svg'
@@ -28,7 +68,26 @@ const faviconHref =
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <meta name="description" content={description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Robots -->
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- OG and Twitter Meta -->
+    {ogMeta.map((m) => (
+      m.property
+        ? <meta property={m.property} content={m.content} />
+        : <meta name={m.name} content={m.content} />
+    ))}
+
+    <!-- JSON-LD Structured Data -->
+    {schemas.map((schema) => (
+      <script type="application/ld+json" set:html={serializeSchema(schema)} />
+    ))}
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href={faviconHref} />
   </head>
   <body class="min-h-screen flex flex-col" style={`background-color: var(--color-background); color: var(--color-foreground);`}>
