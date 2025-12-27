@@ -1,13 +1,22 @@
 ---
 /**
  * Thesis Section 12: IPO Path
- * Public market exit path
+ * Public market exit path with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'ipo-path' } = Astro.props;
+
+// Citation data for IPO path statistics
+const citations = {
+  wellington: { index: 1, hexCode: 'ct5ss8', title: 'Biotech IPOs in 2025', url: 'https://www.wellington.com/en/insights/biotech-ipos-in-2025', source: 'Wellington Management', publishedDate: '2024-08-22' },
+  patentpc: { index: 2, hexCode: 'kh56wu', title: 'Longevity Biotech Market Growth: How Fast Is Anti-Aging Science Advancing', url: 'https://patentpc.com/blog/longevity-biotech-market-growth-how-fast-is-anti-aging-science-advancing-new-stats', source: 'PatentPC', publishedDate: '2025-11-14' },
+  crunchbase: { index: 3, hexCode: '2y30de', title: 'Longevity Startup Funding Sees Fewer Moonshots, But Plenty Of...', url: 'https://news.crunchbase.com/venture/longevity-startup-funding-2025-newlimit-data/', source: 'Crunchbase News', publishedDate: '2025-11-17' },
+};
 ---
 
 <section class="slide slide-ipo" id={id}>
@@ -22,19 +31,19 @@ const { id = 'ipo-path' } = Astro.props;
     <div class="path-points">
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
         <h4>Quality Over Quantity</h4>
-        <p>The post-2021 correction led to a disciplined IPO market focused on clinical-stage, de-risked assets.</p>
+        <p>The post-2021 correction led to a disciplined IPO market focused on clinical-stage, de-risked assets.<InlineCitation {...citations.wellington} /></p>
       </div>
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
         <h4>100% Clinical-Stage</h4>
-        <p>By 2023, all US biotech IPOs had clinical-stage assets, with roughly one-third at Phase III.</p>
+        <p>By 2023, all US biotech IPOs had clinical-stage assets, with roughly one-third at Phase III.<InlineCitation {...citations.wellington} /></p>
       </div>
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
         <h4>Mainstream Theme</h4>
-        <p>Longevity-focused biotechs raised over $2 billion via IPOs in 2023 alone.</p>
+        <p>Longevity-focused biotechs raised over $2 billion via IPOs in 2023 alone.<InlineCitation {...citations.patentpc} /></p>
       </div>
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
         <h4>Data-Driven Stories</h4>
-        <p>Investors reward platforms that pair bold aging biology with credible, near-term milestones.</p>
+        <p>Investors reward platforms that pair bold aging biology with credible, near-term milestones.<InlineCitation {...citations.crunchbase} /></p>
       </div>
     </div>
   </div>

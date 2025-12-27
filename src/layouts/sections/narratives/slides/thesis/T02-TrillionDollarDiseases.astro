@@ -1,13 +1,22 @@
 ---
 /**
  * Thesis Section 2: Trillion-Dollar Diseases
- * Disease cost breakdown grid
+ * Disease cost breakdown grid with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'diseases' } = Astro.props;
+
+// Citation data for disease statistics
+const citations = {
+  cvd: { index: 1, hexCode: 'alyqs4', title: 'Key Drivers of 2025 Health Care Cost Increases', url: 'https://parrottbenefitgroup.com/key-drivers-of-2025-health-care-cost-increases/', source: 'Parrott Benefit Group', publishedDate: '2024-11-22' },
+  cancer: { index: 2, hexCode: 'm761t3', title: 'Global Healthcare Costs Projected to Rise More Than 10% in 2026', url: 'https://worldatwork.org/publications/workspan-daily/global-healthcare-costs-projected-to-rise-more-than-10-in-2026', source: 'WorldatWork', publishedDate: '2025-11-13' },
+  chronic: { index: 3, hexCode: 'vw99oj', title: 'Why Health Care Costs Are Rising in 2025', url: 'https://watkinsinsurancegroup.com/blog/why-health-care-costs-are-rising-in-2025/', source: 'Watkins Insurance Group', publishedDate: '2025-01-30' },
+};
 ---
 
 <section class="slide slide-diseases" id={id}>
@@ -22,7 +31,7 @@ const { id = 'diseases' } = Astro.props;
           <h3>Cardiovascular Disease</h3>
           <span class="disease-cost">$1.8T</span>
           <span class="disease-timeframe">by 2050 (US)</span>
-          <p>Leading cause of death globally, costs projected to triple from current levels.</p>
+          <p>Leading cause of death globally, costs projected to triple from current levels.<InlineCitation {...citations.cvd} /></p>
         </div>
       </div>
       <div class="disease-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
@@ -40,7 +49,7 @@ const { id = 'diseases' } = Astro.props;
           <h3>Cancer</h3>
           <span class="disease-cost">#1</span>
           <span class="disease-timeframe">cost driver</span>
-          <p>Now the leading condition driving insurer medical costs globally.</p>
+          <p>Now the leading condition driving insurer medical costs globally.<InlineCitation {...citations.cancer} /></p>
         </div>
       </div>
       <div class="disease-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
@@ -49,7 +58,7 @@ const { id = 'diseases' } = Astro.props;
           <h3>Chronic Conditions</h3>
           <span class="disease-cost">90%</span>
           <span class="disease-timeframe">of US spend</span>
-          <p>Nearly all US healthcare spending goes to chronic and mental health conditions.</p>
+          <p>Nearly all US healthcare spending goes to chronic and mental health conditions.<InlineCitation {...citations.chronic} /></p>
         </div>
       </div>
     </div>

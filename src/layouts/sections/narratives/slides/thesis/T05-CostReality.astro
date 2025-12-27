@@ -1,13 +1,22 @@
 ---
 /**
  * Thesis Section 5: Cost Reality - Medical Inflation
- * Structural healthcare cost drivers
+ * Structural healthcare cost drivers with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'cost-reality' } = Astro.props;
+
+// Citation data for cost statistics
+const citations = {
+  retiree: { index: 1, hexCode: '67utob', title: 'Fidelity Investments® Releases 2025 Retiree Health Care Cost Estimate', url: 'https://newsroom.fidelity.com/pressreleases/fidelity-investments--releases-2025-retiree-health-care-cost-estimate--a-timely-reminder-for-all-gen/s/3c62e988-12e2-4dc8-afb4-f44b06c6d52e', source: 'Fidelity Investments', publishedDate: '2025-07-30' },
+  annual: { index: 2, hexCode: 'qg3qsq', title: '2025 Healthcare Cost Outlook | Drivers & Trend Insights', url: 'https://www.bbrown.com/us/insight/2025-healthcare-cost-outlook-drivers-trend-insights/', source: 'Brown & Brown', publishedDate: '2024-10-28' },
+  multiplier: { index: 3, hexCode: 'alyqs4', title: 'Key Drivers of 2025 Health Care Cost Increases', url: 'https://parrottbenefitgroup.com/key-drivers-of-2025-health-care-cost-increases/', source: 'Parrott Benefit Group', publishedDate: '2024-11-22' },
+};
 ---
 
 <section class="slide slide-cost-reality" id={id}>
@@ -20,17 +29,17 @@ const { id = 'cost-reality' } = Astro.props;
       <div class="cost-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
         <span class="cost-number">$172,500</span>
         <span class="cost-label">Per Retiree</span>
-        <p>Average healthcare cost during retirement, more than doubled since 2002.</p>
+        <p>Average healthcare cost during retirement, more than doubled since 2002.<InlineCitation {...citations.retiree} /></p>
       </div>
       <div class="cost-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
         <span class="cost-number">7-8%</span>
         <span class="cost-label">Annual Increase</span>
-        <p>Expected healthcare cost growth for US employers in 2025.</p>
+        <p>Expected healthcare cost growth for US employers in 2025.<InlineCitation {...citations.annual} /></p>
       </div>
       <div class="cost-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
         <span class="cost-number">2.5×</span>
         <span class="cost-label">vs Working Age</span>
-        <p>Per-capita spending for 65+ compared to working-age adults.</p>
+        <p>Per-capita spending for 65+ compared to working-age adults.<InlineCitation {...citations.multiplier} /></p>
       </div>
     </div>
   </div>

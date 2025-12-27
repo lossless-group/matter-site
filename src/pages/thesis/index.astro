@@ -1,60 +1,307 @@
 ---
 /**
- * Design System: Messages Showcase
+ * Thesis: Reassembled Edition
  *
- * A page for iterating on different slide messages and data visualizations.
- * Displays section components that present key fund messaging.
+ * This page imports all the extracted section components to verify
+ * they work together correctly. Each section is a discrete slide
+ * that can be used independently in presentations or reassembled
+ * in different configurations.
+ *
+ * Sections (16 total):
+ * 1. The Aging Crisis - Hero ($1T+ cost)
+ * 2. Trillion-Dollar Diseases
+ * 3. Healthspan vs Lifespan Gap
+ * 4. US Demographics - Silver Tsunami
+ * 5. Cost Reality - Medical Inflation
+ * 6. The Opportunity - Biotech Solution
+ * 7. Global Aging Wave - Hero (2B people)
+ * 8. Demographic Statistics
+ * 9. Science at Inflection Point
+ * 10. The Longevity Economy
+ * 11. Exit Potential - Hero
+ * 12. IPO Path
+ * 13. M&A Path
+ * 14. Market Growth Projection
+ * 15. Deal Structure Example
+ * 16. Closing - The Opportunity
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
 
-// Import narrative section components
-import AgingPopulation from '@sections/narratives/AgingPopulation.astro';
-import TheAgingCrisis from '@sections/narratives/TheAgingCrisis-v1.astro';
-import ExitPotential from '@sections/narratives/ExitPotential.astro';
+// Import all section components
+import T01AgingCrisisHero from '@layouts/sections/narratives/slides/thesis/T01-AgingCrisisHero.astro';
+import T02TrillionDollarDiseases from '@layouts/sections/narratives/slides/thesis/T02-TrillionDollarDiseases.astro';
+import T03HealthspanGap from '@layouts/sections/narratives/slides/thesis/T03-HealthspanGap.astro';
+import T04USDemographics from '@layouts/sections/narratives/slides/thesis/T04-USDemographics.astro';
+import T05CostReality from '@layouts/sections/narratives/slides/thesis/T05-CostReality.astro';
+import T06BiotechOpportunity from '@layouts/sections/narratives/slides/thesis/T06-BiotechOpportunity.astro';
+import T07GlobalAgingHero from '@layouts/sections/narratives/slides/thesis/T07-GlobalAgingHero.astro';
+import T08DemographicStats from '@layouts/sections/narratives/slides/thesis/T08-DemographicStats.astro';
+import T09ScienceInflection from '@layouts/sections/narratives/slides/thesis/T09-ScienceInflection.astro';
+import T10LongevityEconomy from '@layouts/sections/narratives/slides/thesis/T10-LongevityEconomy.astro';
+import T11ExitPotentialHero from '@layouts/sections/narratives/slides/thesis/T11-ExitPotentialHero.astro';
+import T12IPOPath from '@layouts/sections/narratives/slides/thesis/T12-IPOPath.astro';
+import T13MAPath from '@layouts/sections/narratives/slides/thesis/T13-MAPath.astro';
+import T14MarketGrowth from '@layouts/sections/narratives/slides/thesis/T14-MarketGrowth.astro';
+import T15DealStructure from '@layouts/sections/narratives/slides/thesis/T15-DealStructure.astro';
+import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.astro';
 ---
 
-<BaseThemeLayout title="Messages - Design System" mode="dark">
-
-\
-  <!-- The Aging Crisis Section -->
-  <div class="variant-section">
-    <div class="variant-label">The Aging Crisis: The Problem We're Solving</div>
-    <TheAgingCrisis />
-  </div>
-
-  <!-- Aging Population Section -->
-  <div class="variant-section">
-    <div class="variant-label">Aging Population: The Longevity Opportunity</div>
-    <AgingPopulation />
-  </div>
-
-  <!-- Exit Potential Section -->
-  <div class="variant-section">
-    <div class="variant-label">Exit Potential: IPOs & M&A</div>
-    <ExitPotential />
-  </div>
-
+<BaseThemeLayout title="Thesis - Reassembled" mode="dark">
+  <PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true} hintDuration={3000}>
+    <T01AgingCrisisHero />
+    <T02TrillionDollarDiseases />
+    <T03HealthspanGap />
+    <T04USDemographics />
+    <T05CostReality />
+    <T06BiotechOpportunity />
+    <T07GlobalAgingHero />
+    <T08DemographicStats />
+    <T09ScienceInflection />
+    <T10LongevityEconomy />
+    <T11ExitPotentialHero />
+    <T12IPOPath />
+    <T13MAPath />
+    <T14MarketGrowth />
+    <T15DealStructure />
+    <T16Closing />
+  </PageAsDeckWrapper>
 </BaseThemeLayout>
 
 <style>
-  .variant-section {
-    position: relative;
-    border-bottom: 1px solid var(--color-border);
+  /* ==========================================================================
+     REVEAL ANIMATION SYSTEM
+     ========================================================================== */
+  :global(.reveal-item) {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
   }
 
-  .variant-label {
+  :global(.reveal-item[data-reveal="fade-up"]) {
+    transform: translateY(40px);
+  }
+
+  :global(.reveal-item[data-reveal="slide-right"]) {
+    transform: translateX(-60px);
+  }
+
+  :global(.reveal-item[data-reveal="slide-left"]) {
+    transform: translateX(60px);
+  }
+
+  :global(.reveal-item[data-reveal="scale-up"]) {
+    transform: scale(0.85);
+  }
+
+  :global(.reveal-item.revealed) {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* ==========================================================================
+     SLIDE BASE STRUCTURE
+     ========================================================================== */
+  :global(.slide) {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+
+  :global(.slide-gradient) {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 50;
+    inset: 0;
+    z-index: 0;
+  }
+
+  :global(.slide-content) {
+    position: relative;
+    z-index: 10;
+    max-width: 72rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  :global(.slide-content-center) {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ==========================================================================
+     TYPOGRAPHY
+     ========================================================================== */
+  :global(.eyebrow) {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  :global(.headline) {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    max-width: 48rem;
+  }
+
+  :global(.statement) {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 32rem;
+    margin-top: 2rem;
+  }
+
+  :global(.section-title) {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  :global(.section-title-centered) {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  :global(.section-body) {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    max-width: 36rem;
+  }
+
+  /* ==========================================================================
+     BADGES
+     ========================================================================== */
+  :global(.badge) {
+    display: inline-block;
     padding: 0.5rem 1rem;
-    background: var(--color-muted);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-muted-foreground);
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+  }
+
+  /* ==========================================================================
+     DARK MODE (DEFAULT)
+     ========================================================================== */
+  :global([data-mode="dark"]) :global(.slide) {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient) {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-shift) {
+    background: radial-gradient(ellipse 80% 50% at 70% 50%, rgba(102, 67, 226, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-red) {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(239, 68, 68, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-amber) {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(251, 191, 36, 0.08), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-purple) {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(102, 67, 226, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-green) {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(52, 211, 153, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.eyebrow) {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) :global(.headline),
+  :global([data-mode="dark"]) :global(.section-title),
+  :global([data-mode="dark"]) :global(.section-title-centered) {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) :global(.statement),
+  :global([data-mode="dark"]) :global(.section-body) {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) :global(.badge) {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-red) {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-amber) {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-purple) {
+    color: var(--color-lilac);
+    border-color: rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-lilac) {
+    color: var(--color-lilac);
+    border-color: rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-green) {
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.3);
   }
 </style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    var revealItems = document.querySelectorAll('.deck-wrapper .reveal-item');
+
+    var observer = new IntersectionObserver(
+      function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var target = entry.target;
+            var delay = parseInt(target.style.getPropertyValue('--delay') || '0', 10);
+            setTimeout(function() {
+              target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    revealItems.forEach(function(item) {
+      observer.observe(item);
+    });
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

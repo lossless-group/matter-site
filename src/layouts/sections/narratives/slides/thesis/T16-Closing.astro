@@ -14,55 +14,118 @@ const { id = 'closing' } = Astro.props;
   <div class="slide-gradient slide-gradient-green"></div>
   <div class="slide-content slide-content-center">
     <p class="eyebrow reveal-item" data-reveal="fade-up" style="--delay: 0ms;">The Opportunity</p>
-    <h2 class="headline reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Exits Don't Require Full Lifespan Extension</h2>
-    <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
+    <h2 class="headline headline-smaller reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Exits Happen For Credible Gains</h2>
+    <p class="statement statement-emphasized reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
       Credible age-related disease indications are sufficient for pharma-scale exits
     </p>
-    <div class="closing-points">
-      <div class="closing-point reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
-        <span class="closing-icon">🎯</span>
-        <p>Target validated aging pathways with clear clinical endpoints</p>
+    <div class="closing-cards">
+      <div class="closing-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="closing-card-icon">🎯</span>
+        <p class="closing-card-text">Target validated aging pathways with clear clinical endpoints</p>
       </div>
-      <div class="closing-point reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
-        <span class="closing-icon">📊</span>
-        <p>Biomarker-driven approaches enable faster proof-of-concept</p>
+      <div class="closing-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+        <span class="closing-card-icon">📊</span>
+        <p class="closing-card-text">Biomarker-driven approaches enable faster proof-of-concept</p>
       </div>
-      <div class="closing-point reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
-        <span class="closing-icon">💰</span>
-        <p>Pharma acquirers value platform technologies across multiple indications</p>
+      <div class="closing-card reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
+        <span class="closing-card-icon">💰</span>
+        <p class="closing-card-text">Pharma acquirers value platform technologies across multiple indications</p>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  .closing-points {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 3rem;
+  /* Smaller headline */
+  .headline-smaller {
+    font-size: 2.25rem !important;
   }
 
-  .closing-point {
+  @media (min-width: 768px) {
+    .headline-smaller {
+      font-size: 2.75rem !important;
+    }
+  }
+
+  /* Emphasized subheader */
+  .statement-emphasized {
+    font-size: 1.5rem !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    max-width: 48rem !important;
+  }
+
+  :global([data-mode="dark"]) .statement-emphasized {
+    color: rgba(249, 250, 251, 0.95) !important;
+  }
+
+  :global([data-mode="light"]) .statement-emphasized {
+    color: rgba(17, 24, 39, 0.95) !important;
+  }
+
+  /* Card grid layout */
+  .closing-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+    width: 100%;
+    max-width: 72rem;
+  }
+
+  @media (max-width: 900px) {
+    .closing-cards {
+      grid-template-columns: 1fr;
+      max-width: 28rem;
+    }
+  }
+
+  /* Individual card styling */
+  .closing-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    max-width: 16rem;
+    padding: 2rem 1.5rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .closing-icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+  .closing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
 
-  .closing-point p {
-    font-size: 0.9375rem;
-    line-height: 1.5;
+  :global([data-mode="light"]) .closing-card {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
-  :global([data-mode="dark"]) .closing-point p {
-    color: rgba(249, 250, 251, 0.7);
+  :global([data-mode="light"]) .closing-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .closing-card-icon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .closing-card-text {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  :global([data-mode="dark"]) .closing-card-text {
+    color: rgba(249, 250, 251, 0.9);
+  }
+
+  :global([data-mode="light"]) .closing-card-text {
+    color: rgba(17, 24, 39, 0.85);
   }
 </style>

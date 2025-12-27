@@ -1,0 +1,60 @@
+---
+/**
+ * Design System: Messages Showcase
+ *
+ * A page for iterating on different slide messages and data visualizations.
+ * Displays section components that present key fund messaging.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+
+// Import narrative section components
+import AgingPopulation from '@sections/narratives/AgingPopulation.astro';
+import TheAgingCrisis from '@sections/narratives/TheAgingCrisis-v1.astro';
+import ExitPotential from '@sections/narratives/ExitPotential.astro';
+---
+
+<BaseThemeLayout title="Messages - Design System" mode="dark">
+
+\
+  <!-- The Aging Crisis Section -->
+  <div class="variant-section">
+    <div class="variant-label">The Aging Crisis: The Problem We're Solving</div>
+    <TheAgingCrisis />
+  </div>
+
+  <!-- Aging Population Section -->
+  <div class="variant-section">
+    <div class="variant-label">Aging Population: The Longevity Opportunity</div>
+    <AgingPopulation />
+  </div>
+
+  <!-- Exit Potential Section -->
+  <div class="variant-section">
+    <div class="variant-label">Exit Potential: IPOs & M&A</div>
+    <ExitPotential />
+  </div>
+
+</BaseThemeLayout>
+
+<style>
+  .variant-section {
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .variant-label {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
+  }
+</style>

@@ -1,13 +1,21 @@
 ---
 /**
  * Thesis Section 11: Exit Potential - Hero
- * Two paths to liquidity
+ * Two paths to liquidity with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'exit-potential' } = Astro.props;
+
+// Citation data for exit potential statistics
+const citations = {
+  patentpc: { index: 1, hexCode: 'kh56wu', title: 'Longevity Biotech Market Growth: How Fast Is Anti-Aging Science Advancing', url: 'https://patentpc.com/blog/longevity-biotech-market-growth-how-fast-is-anti-aging-science-advancing-new-stats', source: 'PatentPC', publishedDate: '2025-11-14' },
+  spherical: { index: 2, hexCode: 's0d2yp', title: 'Top 10 Global Companies in Anti-aging Therapeutics Market 2025', url: 'https://www.sphericalinsights.com/blogs/top-10-global-companies-in-anti-aging-therapeutics-market-2025-strategic-overview-future-trends-2024-2035', source: 'Spherical Insights', publishedDate: '2025-08-19' },
+};
 ---
 
 <section class="slide slide-exit-hero" id={id}>
@@ -21,15 +29,15 @@ const { id = 'exit-potential' } = Astro.props;
     <div class="hero-stats">
       <div class="hero-stat reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
         <span class="hero-stat-number">$2B+</span>
-        <span class="hero-stat-label">Longevity IPOs in 2023</span>
+        <span class="hero-stat-label">Longevity IPOs in 2023<InlineCitation {...citations.patentpc} /></span>
       </div>
       <div class="hero-stat reveal-item" data-reveal="scale-up" style="--delay: 500ms;">
         <span class="hero-stat-number">17.9%</span>
-        <span class="hero-stat-label">Anti-aging Market CAGR</span>
+        <span class="hero-stat-label">Anti-aging Market CAGR<InlineCitation {...citations.spherical} /></span>
       </div>
       <div class="hero-stat reveal-item" data-reveal="scale-up" style="--delay: 600ms;">
         <span class="hero-stat-number">$5B+</span>
-        <span class="hero-stat-label">Startup Funding in 2023</span>
+        <span class="hero-stat-label">Startup Funding in 2023<InlineCitation {...citations.patentpc} /></span>
       </div>
     </div>
   </div>

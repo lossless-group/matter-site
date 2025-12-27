@@ -1,13 +1,23 @@
 ---
 /**
  * Thesis Section 13: M&A Path
- * Big pharma acquisition path
+ * Big pharma acquisition path with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'ma-path' } = Astro.props;
+
+// Citation data for M&A path statistics
+const citations = {
+  spherical: { index: 1, hexCode: 's0d2yp', title: 'Top 10 Global Companies in Anti-aging Therapeutics Market 2025', url: 'https://www.sphericalinsights.com/blogs/top-10-global-companies-in-anti-aging-therapeutics-market-2025-strategic-overview-future-trends-2024-2035', source: 'Spherical Insights', publishedDate: '2025-08-19' },
+  wellington: { index: 2, hexCode: 'ct5ss8', title: 'Biotech IPOs in 2025', url: 'https://www.wellington.com/en/insights/biotech-ipos-in-2025', source: 'Wellington Management', publishedDate: '2024-08-22' },
+  labiotech: { index: 3, hexCode: '4729z2', title: '13 anti-aging biotech companies leading longevity in 2025', url: 'https://www.labiotech.eu/best-biotech/anti-aging-biotech-companies/', source: 'Labiotech', publishedDate: '2025-10-27' },
+  patentpc: { index: 4, hexCode: 'kh56wu', title: 'Longevity Biotech Market Growth: How Fast Is Anti-Aging Science Advancing', url: 'https://patentpc.com/blog/longevity-biotech-market-growth-how-fast-is-anti-aging-science-advancing-new-stats', source: 'PatentPC', publishedDate: '2025-11-14' },
+};
 ---
 
 <section class="slide slide-ma" id={id}>
@@ -21,19 +31,19 @@ const { id = 'ma-path' } = Astro.props;
     <div class="path-points">
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
         <h4>Massive Market Growth</h4>
-        <p>Global anti-aging therapeutics projected to grow from $5.7B (2024) to $34.6B by 2035.</p>
+        <p>Global anti-aging therapeutics projected to grow from $5.7B (2024) to $34.6B by 2035.<InlineCitation {...citations.spherical} /></p>
       </div>
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
         <h4>M&A as Core Return Driver</h4>
-        <p>Institutional investors expect continued M&A as pharma uses acquisitions to access innovative platforms.</p>
+        <p>Institutional investors expect continued M&A as pharma uses acquisitions to access innovative platforms.<InlineCitation {...citations.wellington} /></p>
       </div>
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
         <h4>Strategic Fit</h4>
-        <p>Longevity mechanisms intersect with existing pharma markets—cardiometabolic, oncology, ophthalmology.</p>
+        <p>Longevity mechanisms intersect with existing pharma markets—cardiometabolic, oncology, ophthalmology.<InlineCitation {...citations.labiotech} /></p>
       </div>
       <div class="path-point reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
         <h4>VC Capital Precursor</h4>
-        <p>Longevity VC funds raised over $3B in 2023, seeding future acquisition targets.</p>
+        <p>Longevity VC funds raised over $3B in 2023, seeding future acquisition targets.<InlineCitation {...citations.patentpc} /></p>
       </div>
     </div>
   </div>

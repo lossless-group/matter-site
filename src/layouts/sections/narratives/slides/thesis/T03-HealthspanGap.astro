@@ -1,13 +1,25 @@
 ---
 /**
  * Thesis Section 3: Healthspan vs Lifespan Gap
- * Visual bar comparison showing 15-year gap
+ * Visual bar comparison showing 15-year gap with citation
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'healthspan-gap' } = Astro.props;
+
+// Citation for healthspan gap data
+const citation = {
+  index: 1,
+  hexCode: 'k9m6ww',
+  title: 'How heavy is the medical expense burden among the older adults',
+  url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10313336/',
+  source: 'NIH/PMC',
+  publishedDate: '2023-06-16',
+};
 ---
 
 <section class="slide slide-gap" id={id}>
@@ -39,7 +51,7 @@ const { id = 'healthspan-gap' } = Astro.props;
       <div class="gap-callout reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
         <span class="gap-number">15</span>
         <span class="gap-unit">years</span>
-        <p class="gap-description">Years living with chronic disease, disability, or frailty</p>
+        <p class="gap-description">Years living with chronic disease, disability, or frailty<InlineCitation {...citation} /></p>
       </div>
     </div>
   </div>

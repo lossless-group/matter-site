@@ -1,13 +1,22 @@
 ---
 /**
  * Thesis Section 8: Demographic Statistics
- * Global aging trend statistics
+ * Global aging trend statistics with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'demo-stats' } = Astro.props;
+
+// Citation data for global demographic statistics
+const citations = {
+  helpage: { index: 1, hexCode: '1ucdcd', title: 'Population ageing: Navigating the demographic shift', url: 'https://www.helpage.org/news/population-ageing-navigating-the-demographic-shift/', source: 'HelpAge International', publishedDate: '2024-07-11' },
+  nia: { index: 2, hexCode: 'xs9htq', title: "World's older population grows dramatically", url: 'https://www.nia.nih.gov/news/worlds-older-population-grows-dramatically', source: 'NIH/NIA', publishedDate: '2016-03-28' },
+  statista: { index: 3, hexCode: '3lhrqq', title: 'Chart: Aging Populations', url: 'https://www.statista.com/chart/29345/countries-and-territories-with-the-highest-share-of-people-aged-65-and-older/', source: 'Statista', publishedDate: '2025-07-07' },
+};
 ---
 
 <section class="slide slide-demo-stats" id={id}>
@@ -20,22 +29,22 @@ const { id = 'demo-stats' } = Astro.props;
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
         <span class="stat-number">2.1B</span>
         <span class="stat-label">People 60+ by 2050</span>
-        <p>The UN projects the global population aged 60+ will roughly double by 2050.</p>
+        <p>The UN projects the global population aged 60+ will roughly double by 2050.<InlineCitation {...citations.helpage} /></p>
       </div>
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
         <span class="stat-number">1.6B</span>
         <span class="stat-label">People 65+ by 2050</span>
-        <p>Population aged 65+ expected to reach around 1.6 billion.</p>
+        <p>Population aged 65+ expected to reach around 1.6 billion.<InlineCitation {...citations.nia} /></p>
       </div>
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
         <span class="stat-number">3×</span>
         <span class="stat-label">Growth in 80+</span>
-        <p>The "oldest old" (80+) will more than triple to 447M by 2050.</p>
+        <p>The "oldest old" (80+) will more than triple to 447M by 2050.<InlineCitation {...citations.nia} /></p>
       </div>
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
         <span class="stat-number">1 in 4</span>
         <span class="stat-label">Asians over 60</span>
-        <p>In Asia, one in four people will be over 60 by 2050.</p>
+        <p>In Asia, one in four people will be over 60 by 2050.<InlineCitation {...citations.statista} /></p>
       </div>
     </div>
   </div>

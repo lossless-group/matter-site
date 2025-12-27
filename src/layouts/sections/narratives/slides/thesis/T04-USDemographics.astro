@@ -1,13 +1,21 @@
 ---
 /**
  * Thesis Section 4: US Demographics - Silver Tsunami
- * Demographic statistics grid
+ * Demographic statistics grid with inline citations
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'demographics' } = Astro.props;
+
+// Citation data for US demographic statistics
+const citations = {
+  americans: { index: 1, hexCode: 'vw99oj', title: 'Why Health Care Costs Are Rising in 2025', url: 'https://watkinsinsurancegroup.com/blog/why-health-care-costs-are-rising-in-2025/', source: 'Watkins Insurance Group', publishedDate: '2025-01-30' },
+  by2040: { index: 2, hexCode: 'alyqs4', title: 'Key Drivers of 2025 Health Care Cost Increases', url: 'https://parrottbenefitgroup.com/key-drivers-of-2025-health-care-cost-increases/', source: 'Parrott Benefit Group', publishedDate: '2024-11-22' },
+};
 ---
 
 <section class="slide slide-demographics" id={id}>
@@ -20,22 +28,22 @@ const { id = 'demographics' } = Astro.props;
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 300ms;">
         <span class="stat-number">55M+</span>
         <span class="stat-label">Americans 65+</span>
-        <p>Already over 55 million Americans aged 65 or older today.</p>
+        <p>Already over 55 million Americans aged 65 or older today.<InlineCitation {...citations.americans} /></p>
       </div>
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
         <span class="stat-number">80M</span>
         <span class="stat-label">By 2040</span>
-        <p>Projected 65+ population will reach almost 80 million.</p>
+        <p>Projected 65+ population will reach almost 80 million.<InlineCitation {...citations.by2040} /></p>
       </div>
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
         <span class="stat-number">20%</span>
         <span class="stat-label">of Population</span>
-        <p>1 in 5 Americans will be 65+ by 2030.</p>
+        <p>1 in 5 Americans will be 65+ by 2030.<InlineCitation {...citations.by2040} /></p>
       </div>
       <div class="stat-card reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
         <span class="stat-number">5×</span>
         <span class="stat-label">Cost Multiplier</span>
-        <p>Per-person spending for 65+ is 5× higher than for children.</p>
+        <p>Per-person spending for 65+ is 5× higher than for children.<InlineCitation {...citations.by2040} /></p>
       </div>
     </div>
   </div>

@@ -1,13 +1,25 @@
 ---
 /**
  * Thesis Section 14: Market Growth Projection
- * $5.7B to $34.6B growth visual
+ * $5.7B to $34.6B growth visual with inline citation
  */
+import InlineCitation from '@components/citations/InlineCitation.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'market-growth' } = Astro.props;
+
+// Citation for market growth projection
+const citation = {
+  index: 1,
+  hexCode: 's0d2yp',
+  title: 'Top 10 Global Companies in Anti-aging Therapeutics Market 2025',
+  url: 'https://www.sphericalinsights.com/blogs/top-10-global-companies-in-anti-aging-therapeutics-market-2025-strategic-overview-future-trends-2024-2035',
+  source: 'Spherical Insights',
+  publishedDate: '2025-08-19',
+};
 ---
 
 <section class="slide slide-growth" id={id}>
@@ -31,7 +43,7 @@ const { id = 'market-growth' } = Astro.props;
         <span class="growth-year">2035</span>
       </div>
     </div>
-    <p class="growth-citation reveal-item" data-reveal="fade-up" style="--delay: 500ms;">Global anti-aging therapeutics market projection</p>
+    <p class="growth-citation reveal-item" data-reveal="fade-up" style="--delay: 500ms;">Global anti-aging therapeutics market projection<InlineCitation {...citation} /></p>
   </div>
 </section>
 
