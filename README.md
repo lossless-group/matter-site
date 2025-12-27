@@ -2,15 +2,21 @@
 
 ![Dark Matter Trademark](https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Dark-Matter--Dark-Mode.svg)
 
-## Version 0.2.0 as of December 26, 2025
+## Version 0.2.2 as of December 27, 2025
 
-**New in 0.2.0:**
-- New layer of authentication for confidential access, users can now use their email and the site can either verify it against a list of sanctioned emails, or collect the email and grant them temporary or limited access.
+**New in 0.2.2:**
+- Complete Open Graph and SEO infrastructure for messaging-first sharing
+- Dynamic OG image generation with satori + resvg at `/api/og`
+- JSON-LD structured data (WebSite, InvestmentFund, Article schemas)
+- Collection-specific OG defaults for consistent sharing across page types
+- Platform-optimized meta tags (WhatsApp, iMessage, LinkedIn, Slack, Discord, Twitter)
+
+**v0.2.0 (Dec 26):**
+- New layer of authentication for confidential access
 - Modular slide deck architecture with 33 extracted section components
-- Build out of Three.js visual components based on brand assets, including Mitochondria, Cells, Human Body, Graph Networks, and other abstract shapes.
+- Three.js visual components (Mitochondria, Cells, Human Body, Graph Networks)
 - PageAsDeckWrapper layout with double-click and keyboard navigation
 - Citation system with hex-code identifiers and hover popovers
-- Date formatting utility (`@lib/dates`) for ISO → display conversion
 - Strategy and thesis narrative pages rebuilt as composable slides
 
 **v0.1.0 (Dec 13):** Confidential access, portfolio/pipeline pages, investment memo rendering.
@@ -242,6 +248,100 @@ if (isNocoDBConfigured()) {
   const companies = await getPortfolioCompanies();
 }
 ```
+
+---
+
+## 🔗 Open Graph & SEO System
+
+The site implements a comprehensive Open Graph and SEO system optimized for messaging-first sharing. When links are shared via iMessage, WhatsApp, LinkedIn, or Slack, rich previews are generated automatically.
+
+### Configuration
+
+Centralized in `src/config/seo.ts`:
+
+```typescript
+export const SITE_SEO: SiteSEO = {
+  siteName: 'Dark Matter',
+  siteUrl: 'https://matter-site.vercel.app',
+  defaultTitle: 'Dark Matter | Bio Longevity Fund',
+  defaultDescription: 'Investing in the science of longevity...',
+  defaultImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+  themeColor: '#0f0f23',
+  locale: 'en_US',
+};
+```
+
+### Collection Defaults
+
+Each page type has default OG settings:
+
+```typescript
+import { COLLECTION_DEFAULTS } from '@config/seo';
+
+// Available collections: thesis, strategy, portfolio, pipeline,
+//                        memos, slides, changelog, team, dataroom
+
+<BaseThemeLayout
+  title="Investment Strategy"
+  meta={{
+    title: 'Investment Strategy',
+    description: COLLECTION_DEFAULTS.strategy.description,
+    image: COLLECTION_DEFAULTS.strategy.image,
+    type: COLLECTION_DEFAULTS.strategy.type,
+  }}
+>
+```
+
+### Dynamic OG Image Generation
+
+Server-side image generation at `/api/og`:
+
+```
+GET /api/og?title=My+Title&description=...&category=Blog&author=Name
+```
+
+Returns a 1200x630 PNG with Dark Matter branding. Uses satori + resvg with bundled Inter font.
+
+### JSON-LD Structured Data
+
+Schema.org builders for Google rich results:
+
+```typescript
+import { buildWebSiteSchema, buildInvestmentFundSchema } from '@utils/structured-data';
+
+const schemas = [
+  buildWebSiteSchema(siteUrl),
+  buildInvestmentFundSchema({ siteUrl, focusAreas: ['Longevity Science'] }),
+];
+
+<BoilerPlateHTML jsonLd={schemas}>
+```
+
+Available builders: `buildWebSiteSchema`, `buildOrganizationSchema`, `buildInvestmentFundSchema`, `buildArticleSchema`, `buildPersonSchema`, `buildBreadcrumbSchema`.
+
+### Platform Optimization
+
+Character limits enforced for cross-platform compatibility:
+- **Title:** 60 characters
+- **Description:** 155 characters
+- **Site name:** 30 characters
+
+All image URLs are converted to absolute HTTPS (required by WhatsApp, iMessage).
+
+### File Structure
+
+```
+src/
+├── config/seo.ts           # SITE_SEO, COLLECTION_DEFAULTS
+├── utils/
+│   ├── og.ts               # buildOgMeta(), buildCanonical()
+│   └── structured-data.ts  # JSON-LD schema builders
+└── pages/api/og.ts         # Dynamic image endpoint
+```
+
+### Blueprint Reference
+
+See `context-v/Maintain-an-Elegant-Open-Graph-System.md` for the complete specification.
 
 ---
 
