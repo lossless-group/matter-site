@@ -12,7 +12,12 @@
       "Bash(pnpm build:*)",
       "WebFetch(domain:www.better-auth.com)",
       "Bash(mkdir:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nwip\\(open-graph\\): first step in setting up dynamic open graph system\n\nImplements core OG/SEO infrastructure per context-v/Maintain-an-Elegant-Open-Graph-System.md blueprint.\n\nAdded:\n- src/config/seo.ts: Site defaults, types, character limits, collection defaults\n- src/utils/og.ts: buildOgMeta\\(\\), buildCanonical\\(\\), ensureAbsoluteUrl\\(\\) helpers\n- src/utils/structured-data.ts: JSON-LD builders for WebSite, Organization, Article, Person, Breadcrumb, InvestmentFund schemas\n\nModified:\n- astro.config.mjs: Added site URL \\(env var with staging fallback\\)\n- BoilerPlateHTML.astro: Added meta, jsonLd, noIndex props; renders OG tags, canonical, JSON-LD\n- BaseThemeLayout.astro: Same OG/SEO integration\n\nEvery page now automatically gets:\n- Full Open Graph tags \\(title, description, image, url, type, site_name, locale\\)\n- Twitter Card tags \\(summary_large_image\\)\n- Image dimensions and alt text\n- Theme color for Discord embeds\n- Canonical URL\n- Optional JSON-LD structured data slot\n\nNext: Create default OG images, add JSON-LD to key pages, test with validators.\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(file:*)",
+      "Bash(identify:*)",
+      "Bash(sips:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
