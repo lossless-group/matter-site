@@ -1,6 +1,7 @@
 ---
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import { getPortfolioCompanies, isNocoDBConfigured } from '@lib/nocodb';
+import { COLLECTION_DEFAULTS } from '@config/seo';
 
 // Fallback to static JSON if NocoDB is not configured
 import staticPortfolioData from '@content/portfolio/portfolio-companies.json';
@@ -25,7 +26,15 @@ const lpCommitments = portfolioData.filter(c => c.category === 'lp');
 const allCompanies = portfolioData;
 ---
 
-<BaseThemeLayout title="Portfolio | Dark Matter" description="Our portfolio of investments and fund commitments">
+<BaseThemeLayout
+  title="Portfolio | Dark Matter"
+  meta={{
+    title: 'Portfolio',
+    description: COLLECTION_DEFAULTS.portfolio.description,
+    image: COLLECTION_DEFAULTS.portfolio.image,
+    type: COLLECTION_DEFAULTS.portfolio.type,
+  }}
+>
   <section class="px-6 py-16">
     <div class="max-w-6xl mx-auto">
       <!-- Header -->

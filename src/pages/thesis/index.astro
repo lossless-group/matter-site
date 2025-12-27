@@ -27,6 +27,7 @@
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
+import { COLLECTION_DEFAULTS } from '@config/seo';
 
 // Import all section components
 import T01AgingCrisisHero from '@layouts/sections/narratives/slides/thesis/T01-AgingCrisisHero.astro';
@@ -47,7 +48,16 @@ import T15DealStructure from '@layouts/sections/narratives/slides/thesis/T15-Dea
 import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.astro';
 ---
 
-<BaseThemeLayout title="Thesis - Reassembled" mode="dark">
+<BaseThemeLayout
+  title="Investment Thesis | Dark Matter Bio Longevity Fund"
+  mode="dark"
+  meta={{
+    title: 'Investment Thesis',
+    description: COLLECTION_DEFAULTS.thesis.description,
+    image: COLLECTION_DEFAULTS.thesis.image,
+    type: COLLECTION_DEFAULTS.thesis.type,
+  }}
+>
   <PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true} hintDuration={3000}>
     <T01AgingCrisisHero />
     <T02TrillionDollarDiseases />

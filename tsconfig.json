@@ -5,6 +5,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@config/*": ["src/config/*"],
       "@layouts/*": ["src/layouts/*"],
       "@icons/*": ["public/icons/*"],
       "@sections/*": ["src/layouts/sections/*"],

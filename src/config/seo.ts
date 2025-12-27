@@ -41,24 +41,71 @@ export const CHAR_LIMITS = {
 } as const;
 
 // Collection-specific defaults
+// Each collection can have a default image and OG type
+// Pages can override via frontmatter `shareImage` or `meta` prop
 export const COLLECTION_DEFAULTS = {
-  memos: {
+  // Core pages
+  thesis: {
     image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
-    type: 'article' as const,
-  },
-  team: {
-    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
-    type: 'profile' as const,
-  },
-  slides: {
-    image: '/share-banners/shareBanner__Dark-Matter-Bio_Market-Maps.webp',
     type: 'website' as const,
+    description: 'The Dark Matter investment thesis for longevity science.',
+  },
+  strategy: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'website' as const,
+    description: 'Our investment strategy for the longevity economy.',
+  },
+  portfolio: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'website' as const,
+    description: 'Companies backed by Dark Matter Bio Longevity Fund.',
   },
   pipeline: {
     image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
     type: 'website' as const,
+    description: 'Investment pipeline and deal flow.',
+  },
+  // Content collections
+  memos: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'article' as const,
+    description: 'Research and investment memos from Dark Matter.',
+  },
+  slides: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Market-Maps.webp',
+    type: 'website' as const,
+    description: 'Presentation decks and market maps.',
+  },
+  changelog: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'article' as const,
+    description: 'Updates and changes to Dark Matter.',
+  },
+  // People
+  team: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'profile' as const,
+    description: 'The team behind Dark Matter Bio Longevity Fund.',
+  },
+  // Internal (noIndex)
+  dataroom: {
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    type: 'website' as const,
+    description: 'Investor data room.',
+    noIndex: true,
   },
 } as const;
+
+// Type for collection keys
+export type CollectionKey = keyof typeof COLLECTION_DEFAULTS;
+
+// Helper to get collection defaults with fallback
+export function getCollectionDefaults(collection: string) {
+  return COLLECTION_DEFAULTS[collection as CollectionKey] ?? {
+    image: SITE_SEO.defaultImage,
+    type: 'website' as const,
+  };
+}
 
 /**
  * Site-wide SEO defaults

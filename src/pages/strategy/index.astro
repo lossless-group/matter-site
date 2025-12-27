@@ -29,6 +29,7 @@
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
+import { COLLECTION_DEFAULTS } from '@config/seo';
 
 // Import all section components
 import S01WhyNowHero from '@layouts/sections/narratives/slides/strategy/S01-WhyNowHero.astro';
@@ -51,7 +52,16 @@ import S17CheckSizes from '@layouts/sections/narratives/slides/strategy/S17-Chec
 import S18LPBenefits from '@layouts/sections/narratives/slides/strategy/S18-LPBenefits.astro';
 ---
 
-<BaseThemeLayout title="Strategy - Reassembled" mode="dark">
+<BaseThemeLayout
+  title="Investment Strategy | Dark Matter Bio Longevity Fund"
+  mode="dark"
+  meta={{
+    title: 'Investment Strategy',
+    description: COLLECTION_DEFAULTS.strategy.description,
+    image: COLLECTION_DEFAULTS.strategy.image,
+    type: COLLECTION_DEFAULTS.strategy.type,
+  }}
+>
   <PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true} hintDuration={3000}>
     <S01WhyNowHero />
     <S02TimingWindow />
