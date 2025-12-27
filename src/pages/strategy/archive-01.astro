@@ -1,0 +1,56 @@
+---
+/**
+ * Design System: Messages Showcase
+ *
+ * A page for iterating on different slide messages and data visualizations.
+ * Displays section components that present key fund messaging.
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+
+// Import narrative section components
+import WhyNowWhyUsV5 from '@sections/narratives/WhyNowWhyUs-v5.astro';
+import DarkMatterDifferentiation from '@sections/narratives/DarkMatterDifferentiation-v1.astro';
+import FundPortfolioConstructionDetails from '@sections/narratives/FundPortfolioConstructionDetails.astro';
+---
+
+<BaseThemeLayout title="Messages - Design System" mode="dark">
+  <div class="variant-section">
+    <div class="variant-label">Why Now Why Us</div>
+    <WhyNowWhyUsV5 />
+  </div>
+
+  <!-- Dark Matter Differentiation Section -->
+  <div class="variant-section">
+    <div class="variant-label">Our Differentiation: Why Dark Matter</div>
+    <DarkMatterDifferentiation />
+  </div>
+
+  <!-- Fund Portfolio Construction Section -->
+  <div class="variant-section">
+    <div class="variant-label">Fund Strategy: Portfolio Construction</div>
+    <FundPortfolioConstructionDetails />
+  </div>
+</BaseThemeLayout>
+
+<style>
+  .variant-section {
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .variant-label {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    padding: 0.5rem 1rem;
+    background: var(--color-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted-foreground);
+  }
+</style>

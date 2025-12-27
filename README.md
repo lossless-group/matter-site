@@ -5,7 +5,9 @@
 ## Version 0.2.0 as of December 26, 2025
 
 **New in 0.2.0:**
+- New layer of authentication for confidential access, users can now use their email and the site can either verify it against a list of sanctioned emails, or collect the email and grant them temporary or limited access.
 - Modular slide deck architecture with 33 extracted section components
+- Build out of Three.js visual components based on brand assets, including Mitochondria, Cells, Human Body, Graph Networks, and other abstract shapes.
 - PageAsDeckWrapper layout with double-click and keyboard navigation
 - Citation system with hex-code identifiers and hover popovers
 - Date formatting utility (`@lib/dates`) for ISO → display conversion
@@ -103,9 +105,21 @@ Three.js opens the door to:
 
 ---
 
-## 🎴 Slide Deck Architecture
+## 🎴 Slide Deck and SlideShow Architecture
 
 The strategy and thesis narrative pages use a modular slide deck architecture. Each section is extracted into its own reusable component, enabling presentation-style viewing and custom deck compositions.
+
+### Reveal.js Library enables presentation-style navigation
+
+The Reveal.js library is used to enable presentation-style navigation. It provides a set of tools for creating and managing presentations, including:
+
+- **Navigation:** Double-click upper half → previous section, Double-click lower half → next section
+- **Keyboard:** Arrow keys, Page Up/Down, Home/End
+- **Section indicator:** Shows current/total in bottom-right
+
+Reveal presentations are available at `slides/` directory and url.
+
+However, the Reveal.js library is not used for the main site. Instead, the `PageAsDeckWrapper` layout is used to enable presentation-style navigation while preserving smooth scrolling.
 
 ### PageAsDeckWrapper
 

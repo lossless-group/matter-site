@@ -1,56 +1,450 @@
 ---
 /**
- * Design System: Messages Showcase
+ * Strategy: Reassembled Edition
  *
- * A page for iterating on different slide messages and data visualizations.
- * Displays section components that present key fund messaging.
+ * This page imports all the extracted section components to verify
+ * they work together correctly. Each section is a discrete slide
+ * that can be used independently in presentations or reassembled
+ * in different configurations.
+ *
+ * Sections (18 total):
+ * 1. Why Now, Why Us - Opening Hook
+ * 2. The Timing Window - Bioscience Convergence
+ * 3. Data as Sense Organ - Health as Live Data
+ * 4. Our Unfair Advantage - Trusted Networks
+ * 5. Our Differentiation - Hero
+ * 6. Five Pillars Overview
+ * 7. Deep Scientific Expertise (Pillar 1)
+ * 8. Proprietary Deal Flow (Pillar 2)
+ * 9. Jigsaw Portfolio (Pillar 3) - NEW
+ * 10. Longevity Leader Network (Pillar 4)
+ * 11. IP-Protected Solutions (Pillar 5)
+ * 12. The Team
+ * 13. Fund Strategy - Hero
+ * 14. Economics & Alignment
+ * 15. Stage Allocation
+ * 16. Geographic Focus
+ * 17. Check Sizes & Follow-on
+ * 18. LP Benefits & Closing
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import PageAsDeckWrapper from '@layouts/PageAsDeckWrapper.astro';
 
-// Import narrative section components
-import WhyNowWhyUsV5 from '@sections/narratives/WhyNowWhyUs-v5.astro';
-import DarkMatterDifferentiation from '@sections/narratives/DarkMatterDifferentiation-v1.astro';
-import FundPortfolioConstructionDetails from '@sections/narratives/FundPortfolioConstructionDetails.astro';
+// Import all section components
+import S01WhyNowHero from '@layouts/sections/narratives/slides/strategy/S01-WhyNowHero.astro';
+import S02TimingWindow from '@layouts/sections/narratives/slides/strategy/S02-TimingWindow.astro';
+import S03DataAsSenseOrgan from '@layouts/sections/narratives/slides/strategy/S03-DataAsSenseOrgan.astro';
+import S04UnfairAdvantage from '@layouts/sections/narratives/slides/strategy/S04-UnfairAdvantage.astro';
+import S05DifferentiationHero from '@layouts/sections/narratives/slides/strategy/S05-DifferentiationHero.astro';
+import S06FivePillarsOverview from '@layouts/sections/narratives/slides/strategy/S06-FivePillarsOverview.astro';
+import S07ScientificExpertise from '@layouts/sections/narratives/slides/strategy/S07-ScientificExpertise.astro';
+import S08ProprietaryDealFlow from '@layouts/sections/narratives/slides/strategy/S08-ProprietaryDealFlow.astro';
+import S09JigsawPortfolio from '@layouts/sections/narratives/slides/strategy/S09-JigsawPortfolio.astro';
+import S10LongevityNetwork from '@layouts/sections/narratives/slides/strategy/S10-LongevityNetwork.astro';
+import S11IPProtected from '@layouts/sections/narratives/slides/strategy/S11-IPProtected.astro';
+import S12Team from '@layouts/sections/narratives/slides/strategy/S12-Team.astro';
+import S13FundStrategyHero from '@layouts/sections/narratives/slides/strategy/S13-FundStrategyHero.astro';
+import S14Economics from '@layouts/sections/narratives/slides/strategy/S14-Economics.astro';
+import S15StageAllocation from '@layouts/sections/narratives/slides/strategy/S15-StageAllocation.astro';
+import S16GeographicFocus from '@layouts/sections/narratives/slides/strategy/S16-GeographicFocus.astro';
+import S17CheckSizes from '@layouts/sections/narratives/slides/strategy/S17-CheckSizes.astro';
+import S18LPBenefits from '@layouts/sections/narratives/slides/strategy/S18-LPBenefits.astro';
 ---
 
-<BaseThemeLayout title="Messages - Design System" mode="dark">
-  <div class="variant-section">
-    <div class="variant-label">Why Now Why Us</div>
-    <WhyNowWhyUsV5 />
-  </div>
-
-  <!-- Dark Matter Differentiation Section -->
-  <div class="variant-section">
-    <div class="variant-label">Our Differentiation: Why Dark Matter</div>
-    <DarkMatterDifferentiation />
-  </div>
-
-  <!-- Fund Portfolio Construction Section -->
-  <div class="variant-section">
-    <div class="variant-label">Fund Strategy: Portfolio Construction</div>
-    <FundPortfolioConstructionDetails />
-  </div>
+<BaseThemeLayout title="Strategy - Reassembled" mode="dark">
+  <PageAsDeckWrapper enableScrollSnap={true} showNavigationHints={true} hintDuration={3000}>
+    <S01WhyNowHero />
+    <S02TimingWindow />
+    <S03DataAsSenseOrgan />
+    <S04UnfairAdvantage />
+    <S05DifferentiationHero />
+    <S06FivePillarsOverview />
+    <S07ScientificExpertise />
+    <S08ProprietaryDealFlow />
+    <S09JigsawPortfolio />
+    <S10LongevityNetwork />
+    <S11IPProtected />
+    <S12Team />
+    <S13FundStrategyHero />
+    <S14Economics />
+    <S15StageAllocation />
+    <S16GeographicFocus />
+    <S17CheckSizes />
+    <S18LPBenefits />
+  </PageAsDeckWrapper>
 </BaseThemeLayout>
 
 <style>
-  .variant-section {
-    position: relative;
-    border-bottom: 1px solid var(--color-border);
+  /* ==========================================================================
+     REVEAL ANIMATION SYSTEM
+     ========================================================================== */
+  :global(.reveal-item) {
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: var(--delay, 0ms);
   }
 
-  .variant-label {
+  :global(.reveal-item[data-reveal="fade-up"]) {
+    transform: translateY(40px);
+  }
+
+  :global(.reveal-item[data-reveal="slide-right"]) {
+    transform: translateX(-60px);
+  }
+
+  :global(.reveal-item[data-reveal="slide-left"]) {
+    transform: translateX(60px);
+  }
+
+  :global(.reveal-item[data-reveal="scale-up"]) {
+    transform: scale(0.85);
+  }
+
+  :global(.reveal-item.revealed) {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+
+  /* ==========================================================================
+     SLIDE BASE STRUCTURE
+     ========================================================================== */
+  :global(.slide) {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+
+  :global(.slide-gradient) {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 50;
+    inset: 0;
+    z-index: 0;
+  }
+
+  :global(.slide-content) {
+    position: relative;
+    z-index: 10;
+    max-width: 72rem;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  :global(.slide-content-center) {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  :global(.slide-content-split) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  :global(.slide-content-pillar) {
+    max-width: 48rem;
+  }
+
+  /* ==========================================================================
+     TYPOGRAPHY
+     ========================================================================== */
+  :global(.eyebrow) {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  :global(.headline) {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+
+  :global(.statement) {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 32rem;
+    margin-top: 2rem;
+  }
+
+  :global(.section-title) {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  :global(.section-title-centered) {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  :global(.section-body) {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ==========================================================================
+     BADGES
+     ========================================================================== */
+  :global(.badge) {
+    display: inline-block;
     padding: 0.5rem 1rem;
-    background: var(--color-muted);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border-radius: 9999px;
+    margin-bottom: 1rem;
+  }
+
+  /* ==========================================================================
+     SPLIT NUMBER SECTIONS
+     ========================================================================== */
+  :global(.split-number) {
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  :global(.split-content) {
+    padding-top: 1rem;
+  }
+
+  :global(.bullet-list) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  :global(.bullet-list li) {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  :global(.bullet-list li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+  }
+
+  /* ==========================================================================
+     PILLAR SECTIONS
+     ========================================================================== */
+  :global(.pillar-header) {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  :global(.pillar-icon-large) {
+    font-size: 3rem;
+  }
+
+  :global(.pillar-title) {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  :global(.pillar-subtitle) {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  :global(.pillar-bullets) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  :global(.pillar-bullets li) {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  :global(.pillar-bullets li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.625rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+  }
+
+  /* ==========================================================================
+     METRICS & STATS
+     ========================================================================== */
+  :global(.stat-accent) {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding-left: 1rem;
+    margin-top: 3rem;
+    border-left: 2px solid;
+  }
+
+  :global(.stat-number) {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 700;
+  }
+
+  :global(.stat-label) {
+    font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--color-muted-foreground);
+    line-height: 1.3;
+  }
+
+  /* ==========================================================================
+     DARK MODE (DEFAULT)
+     ========================================================================== */
+  :global([data-mode="dark"]) :global(.slide) {
+    background: var(--color-void);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient) {
+    background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(102, 67, 226, 0.12), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-shift) {
+    background: radial-gradient(ellipse 80% 50% at 70% 50%, rgba(102, 67, 226, 0.1), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-purple) {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(102, 67, 226, 0.2), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.slide-gradient-blue) {
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(59, 130, 246, 0.15), transparent 70%);
+  }
+
+  :global([data-mode="dark"]) :global(.eyebrow) {
+    color: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) :global(.headline),
+  :global([data-mode="dark"]) :global(.section-title),
+  :global([data-mode="dark"]) :global(.section-title-centered) {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) :global(.statement),
+  :global([data-mode="dark"]) :global(.section-body) {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) :global(.stat-accent) {
+    border-color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="dark"]) :global(.stat-number) {
+    color: var(--color-marjorelle-purple);
+  }
+
+  :global([data-mode="dark"]) :global(.stat-label) {
+    color: rgba(249, 250, 251, 0.6);
+  }
+
+  :global([data-mode="dark"]) :global(.badge) {
+    color: var(--color-marjorelle-purple);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-green) {
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-purple) {
+    color: var(--color-lilac);
+    border-color: rgba(156, 133, 223, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.badge-cyan) {
+    color: #22d3ee;
+    border-color: rgba(34, 211, 238, 0.3);
+  }
+
+  :global([data-mode="dark"]) :global(.split-number) {
+    color: rgba(102, 67, 226, 0.2);
+  }
+
+  :global([data-mode="dark"]) :global(.bullet-list li::before),
+  :global([data-mode="dark"]) :global(.pillar-bullets li::before) {
+    background: var(--color-lilac);
+  }
+
+  :global([data-mode="dark"]) :global(.bullet-list li),
+  :global([data-mode="dark"]) :global(.pillar-bullets li) {
+    color: rgba(249, 250, 251, 0.7);
+  }
+
+  :global([data-mode="dark"]) :global(.pillar-title) {
+    color: var(--color-alabaster);
+  }
+
+  :global([data-mode="dark"]) :global(.pillar-subtitle) {
+    color: var(--color-lilac);
   }
 </style>
+
+<script>
+  // Intersection Observer for scroll reveals
+  function initScrollReveal() {
+    var revealItems = document.querySelectorAll('.deck-wrapper .reveal-item');
+
+    var observer = new IntersectionObserver(
+      function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var target = entry.target;
+            var delay = parseInt(target.style.getPropertyValue('--delay') || '0', 10);
+            setTimeout(function() {
+              target.classList.add('revealed');
+            }, delay);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    revealItems.forEach(function(item) {
+      observer.observe(item);
+    });
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+  // Handle Astro view transitions
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

@@ -1,56 +1,144 @@
 ---
 /**
- * Strategy Section 11: The Team
- * Team-enabled advantages
+ * Strategy Section 12: The Team
+ * Team-enabled advantages with team member cards
  */
+import TeamMemberCard from '@components/team/TeamMemberCard--Micro.astro';
+
 interface Props {
   id?: string;
 }
 
 const { id = 'team' } = Astro.props;
+
+// Team member data
+const team = [
+  {
+    name: "Mark Moline",
+    role: "Managing Partner",
+    description: "Translates scientific narratives into investment-grade theses.",
+    image: "/photos/headshot__Mark-Moline.jpeg",
+  },
+  {
+    name: "Skinner Layne",
+    role: "Founding Partner",
+    description: "Builds structures that bridge scientific discovery with institutional LP expectations.",
+    image: "/photos/headshot__Skinner-Layne.png",
+  },
+  {
+    name: "Michael Staton",
+    role: "Venture Operations",
+    description: "Implements state-of-the-art infrastructure for venture capital.",
+    image: "/photos/headshotOf__Michael-Staton.jpeg",
+  },
+  {
+    name: "Thomas Vu",
+    role: "Founding Partner",
+    description: "Scaling products from early validation to mass adoption.",
+    image: "/photos/headshotOf__Thomas-Vu.jpeg",
+  },
+  {
+    name: "Anthony Borquez",
+    role: "Commercialization",
+    description: "Driving user acquisition, partnerships, and go-to-market execution.",
+    image: "/photos/headshotOf__Anthony-Borquez.jpeg",
+  },
+];
 ---
 
 <section class="slide slide-team" id={id}>
   <div class="slide-gradient slide-gradient-purple"></div>
   <div class="slide-content slide-content-center">
     <span class="badge badge-green reveal-item" data-reveal="fade-up" style="--delay: 0ms;">The Team</span>
-    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Team-Enabled Advantages</h2>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">A Team That Speaks Both Lab and Late-Stage Capital</h2>
     <p class="statement reveal-item" data-reveal="fade-up" style="--delay: 200ms;">Our differentiation is not theoretical—it's embedded in who we are</p>
-    <div class="team-summary reveal-item" data-reveal="scale-up" style="--delay: 400ms;">
-      <p class="closing-line">A Team That Speaks Both Lab and Late-Stage Capital</p>
-      <p class="closing-sub">Scientific depth meets investment discipline</p>
+
+    <!-- Team Member Grid -->
+    <div class="team-grid">
+      {team.map((member, index) => (
+        <div class="reveal-item" data-reveal="fade-up" style={`--delay: ${300 + index * 100}ms;`}>
+          <TeamMemberCard
+            name={member.name}
+            role={member.role}
+            description={member.description}
+            image={member.image}
+          />
+        </div>
+      ))}
     </div>
   </div>
 </section>
 
 <style>
-  .team-summary {
-    margin-top: 3rem;
-    padding: 2rem;
-    border-radius: 1rem;
-    text-align: center;
+  /* Override slide padding for team slide */
+  .slide-team {
+    padding: 2rem 1.5rem;
   }
 
-  .closing-line {
-    font-size: 1.5rem;
-    font-weight: 700;
+  .slide-team .slide-content {
+    max-width: 80rem;
+  }
+
+  .slide-team .section-title-centered {
+    font-size: clamp(1.5rem, 3vw, 2rem);
     margin-bottom: 0.5rem;
   }
 
-  .closing-sub {
-    font-size: 1.125rem;
+  .slide-team .statement {
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
   }
 
-  :global([data-mode="dark"]) .team-summary {
-    background: rgba(15, 9, 35, 0.8);
-    border: 1px solid rgba(52, 211, 153, 0.2);
+  /* Team Grid Layout */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    width: 100%;
+    margin-top: 1rem;
   }
 
-  :global([data-mode="dark"]) .closing-line {
-    color: var(--color-alabaster);
+  @media (max-width: 1200px) {
+    .team-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
-  :global([data-mode="dark"]) .closing-sub {
-    color: rgba(249, 250, 251, 0.7);
+  @media (max-width: 768px) {
+    .team-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Make cards more compact for slide context */
+  .team-grid :global(.team-card-micro .micro-inner) {
+    padding: 1rem;
+  }
+
+  .team-grid :global(.team-card-micro .micro-avatar) {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .team-grid :global(.team-card-micro .micro-name) {
+    font-size: 0.9375rem;
+  }
+
+  .team-grid :global(.team-card-micro .micro-role) {
+    font-size: 0.625rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .team-grid :global(.team-card-micro .micro-description) {
+    font-size: 0.75rem;
+    line-height: 1.4;
   }
 </style>

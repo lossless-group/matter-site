@@ -11,7 +11,8 @@
       "WebFetch(domain:docs.nocodb.com)",
       "Bash(pnpm build:*)",
       "WebFetch(domain:www.better-auth.com)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []
