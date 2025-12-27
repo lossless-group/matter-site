@@ -1,0 +1,30 @@
+---
+/**
+ * Strategy Section 9: Jigsaw Portfolio
+ * Portfolio synergies and whole-market approach
+ */
+interface Props {
+  id?: string;
+}
+
+const { id = 'jigsaw' } = Astro.props;
+---
+
+<section class="slide slide-pillar slide-pillar-jigsaw" id={id}>
+  <div class="slide-gradient slide-gradient-purple"></div>
+  <div class="slide-content slide-content-pillar">
+    <div class="pillar-header reveal-item" data-reveal="fade-up" style="--delay: 0ms;">
+      <span class="pillar-icon-large">🧩</span>
+      <div>
+        <h2 class="pillar-title">Jigsaw Portfolio</h2>
+        <p class="pillar-subtitle">Pieces that fit together into a bigger picture.</p>
+      </div>
+    </div>
+    <ul class="pillar-bullets">
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Portfolio companies that learn from, partner with, or become customers of each other—multiplying value across the fund</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 200ms;">LPs seek whole-market answers to complex problems and large-scale opportunities; individual companies rarely deliver that alone—our portfolio, collectively, can</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 300ms;">Deep domain expertise, innovator networks, and information flows let us see pieces connect before others do</li>
+      <li class="reveal-item" data-reveal="fade-up" style="--delay: 400ms;">Few firms combine both the sophisticated vision of the big picture and the tactical ability to execute —- we confidently do.</li>
+    </ul>
+  </div>
+</section>

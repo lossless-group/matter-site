@@ -1,6 +1,6 @@
 ---
 /**
- * Strategy Section 6: Four Pillars Overview
+ * Strategy Section 6: Five Pillars Overview
  * Competitive advantages grid
  */
 interface Props {
@@ -14,7 +14,7 @@ const { id = 'pillars' } = Astro.props;
   <div class="slide-gradient"></div>
   <div class="slide-content">
     <span class="badge reveal-item" data-reveal="fade-up" style="--delay: 0ms;">Competitive Advantages</span>
-    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Four Pillars of Differentiation</h2>
+    <h2 class="section-title-centered reveal-item" data-reveal="fade-up" style="--delay: 100ms;">Five Pillars of Differentiation</h2>
     <div class="pillars-grid">
       <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 200ms;">
         <span class="pillar-icon">🧬</span>
@@ -25,10 +25,14 @@ const { id = 'pillars' } = Astro.props;
         <span class="pillar-name">Deal Flow</span>
       </div>
       <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 400ms;">
+        <span class="pillar-icon">🧩</span>
+        <span class="pillar-name">Jigsaw Portfolio</span>
+      </div>
+      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
         <span class="pillar-icon">🌐</span>
         <span class="pillar-name">Network</span>
       </div>
-      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 500ms;">
+      <div class="pillar-preview reveal-item" data-reveal="fade-up" style="--delay: 600ms;">
         <span class="pillar-icon">🛡️</span>
         <span class="pillar-name">IP Protection</span>
       </div>
@@ -39,12 +43,18 @@ const { id = 'pillars' } = Astro.props;
 <style>
   .pillars-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 1.5rem;
     margin-top: 2rem;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
+    .pillars-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
     .pillars-grid {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -55,7 +65,7 @@ const { id = 'pillars' } = Astro.props;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    padding: 2rem;
+    padding: 2rem 1rem;
     border-radius: 1rem;
     text-align: center;
   }
@@ -65,7 +75,7 @@ const { id = 'pillars' } = Astro.props;
   }
 
   .pillar-name {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
