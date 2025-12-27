@@ -43,19 +43,19 @@ export const CHAR_LIMITS = {
 // Collection-specific defaults
 export const COLLECTION_DEFAULTS = {
   memos: {
-    image: '/og/og-memos-default.jpg',
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
     type: 'article' as const,
   },
   team: {
-    image: '/og/og-team-default.jpg',
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
     type: 'profile' as const,
   },
   slides: {
-    image: '/og/og-slides-default.jpg',
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Market-Maps.webp',
     type: 'website' as const,
   },
   pipeline: {
-    image: '/og/og-pipeline-default.jpg',
+    image: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
     type: 'website' as const,
   },
 } as const;
@@ -71,8 +71,8 @@ export const SITE_SEO: SiteSEO = {
   siteUrl: import.meta.env.SITE || 'https://matter-site.vercel.app',
   defaultTitle: 'Dark Matter | Bio Longevity Fund',
   defaultDescription: 'Investing in the science of longevity. Dark Matter backs breakthrough companies extending human healthspan.',
-  defaultImage: '/og/og-default.jpg',
-  defaultImageAlt: 'Dark Matter Bio Longevity Fund',
+  defaultImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+  defaultImageAlt: 'Dark Matter Bio Longevity Fund - Investing in the science of longevity',
   twitterHandle: undefined, // Add when available: '@darkmatterbio'
   linkedInCompany: undefined, // Add when available
   themeColor: '#0f0f23', // Dark Matter brand dark

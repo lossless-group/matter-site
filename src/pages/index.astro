@@ -1,12 +1,32 @@
 ---
 import BaseThemeLayout from '../layouts/BaseThemeLayout.astro';
 import DarkMatterHeroDefault from '../components/basics/heros/DarkMatterHero--Default.astro';
+import { buildWebSiteSchema, buildInvestmentFundSchema } from '../utils/structured-data';
+import { SITE_SEO } from '../config/seo';
+
+// Build JSON-LD schemas for homepage
+const siteUrl = (Astro.site?.toString() || SITE_SEO.siteUrl).replace(/\/$/, '');
+const schemas = [
+  buildWebSiteSchema(siteUrl),
+  buildInvestmentFundSchema({
+    siteUrl,
+    logo: `${siteUrl}/trademarks/brandMark__Dark-Matter--Light-Mode.svg`,
+    focusAreas: [
+      'Longevity Science',
+      'Healthspan Extension',
+      'Biotechnology',
+      'Aging Research',
+      'Regenerative Medicine',
+    ],
+  }),
+];
 ---
 
 <BaseThemeLayout
-  title="Dark Matter"
-  description="A thesis-driven, Matter-themed surface for why now and why Dark Matter."
+  title="Dark Matter | Bio Longevity Fund"
+  description="Investing in the science of longevity. Dark Matter backs breakthrough companies extending human healthspan."
   mode="dark"
+  jsonLd={schemas}
 >
   <DarkMatterHeroDefault />
 </BaseThemeLayout>
