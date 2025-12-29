@@ -1,0 +1,197 @@
+---
+/**
+ * SlideShow--FundStrategy.astro
+ *
+ * Reveal.js presentation version of the Strategy page.
+ * Repurposes the same S01-S18 section components from strategy/index.astro
+ * but rendered as a navigable slide deck instead of a scroll-based page.
+ *
+ * Sections (18 total):
+ * 1. Why Now, Why Us - Opening Hook
+ * 2. The Timing Window - Bioscience Convergence
+ * 3. Data as Sense Organ - Health as Live Data
+ * 4. Our Unfair Advantage - Trusted Networks
+ * 5. Our Differentiation - Hero
+ * 6. Five Pillars Overview
+ * 7. Deep Scientific Expertise (Pillar 1)
+ * 8. Proprietary Deal Flow (Pillar 2)
+ * 9. Jigsaw Portfolio (Pillar 3)
+ * 10. Longevity Leader Network (Pillar 4)
+ * 11. IP-Protected Solutions (Pillar 5)
+ * 12. The Team
+ * 13. Fund Strategy - Hero
+ * 14. Economics & Alignment
+ * 15. Stage Allocation
+ * 16. Geographic Focus
+ * 17. Check Sizes & Follow-on
+ * 18. LP Benefits & Closing
+ */
+
+// Import all strategy section components
+import S01WhyNowHero from '@layouts/sections/narratives/slides/strategy/S01-WhyNowHero.astro';
+import S02TimingWindow from '@layouts/sections/narratives/slides/strategy/S02-TimingWindow.astro';
+import S03DataAsSenseOrgan from '@layouts/sections/narratives/slides/strategy/S03-DataAsSenseOrgan.astro';
+import S04UnfairAdvantage from '@layouts/sections/narratives/slides/strategy/S04-UnfairAdvantage.astro';
+import S05DifferentiationHero from '@layouts/sections/narratives/slides/strategy/S05-DifferentiationHero.astro';
+import S06FivePillarsOverview from '@layouts/sections/narratives/slides/strategy/S06-FivePillarsOverview.astro';
+import S07ScientificExpertise from '@layouts/sections/narratives/slides/strategy/S07-ScientificExpertise.astro';
+import S08ProprietaryDealFlow from '@layouts/sections/narratives/slides/strategy/S08-ProprietaryDealFlow.astro';
+import S09JigsawPortfolio from '@layouts/sections/narratives/slides/strategy/S09-JigsawPortfolio.astro';
+import S10LongevityNetwork from '@layouts/sections/narratives/slides/strategy/S10-LongevityNetwork.astro';
+import S11IPProtected from '@layouts/sections/narratives/slides/strategy/S11-IPProtected.astro';
+import S12Team from '@layouts/sections/narratives/slides/strategy/S12-Team.astro';
+import S13FundStrategyHero from '@layouts/sections/narratives/slides/strategy/S13-FundStrategyHero.astro';
+import S14Economics from '@layouts/sections/narratives/slides/strategy/S14-Economics.astro';
+import S15StageAllocation from '@layouts/sections/narratives/slides/strategy/S15-StageAllocation.astro';
+import S16GeographicFocus from '@layouts/sections/narratives/slides/strategy/S16-GeographicFocus.astro';
+import S17CheckSizes from '@layouts/sections/narratives/slides/strategy/S17-CheckSizes.astro';
+import S18LPBenefits from '@layouts/sections/narratives/slides/strategy/S18-LPBenefits.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Fund Strategy',
+  description = 'Our differentiated approach to longevity investing: five pillars, fund mechanics, and LP alignment.',
+} = Astro.props;
+---
+
+<!-- Each section component outputs a <section> element for Reveal.js -->
+<S01WhyNowHero />
+<S02TimingWindow />
+<S03DataAsSenseOrgan />
+<S04UnfairAdvantage />
+<S05DifferentiationHero />
+<S06FivePillarsOverview />
+<S07ScientificExpertise />
+<S08ProprietaryDealFlow />
+<S09JigsawPortfolio />
+<S10LongevityNetwork />
+<S11IPProtected />
+<S12Team />
+<S13FundStrategyHero />
+<S14Economics />
+<S15StageAllocation />
+<S16GeographicFocus />
+<S17CheckSizes />
+<S18LPBenefits />
+
+<style is:global>
+  /* ==========================================================================
+     REVEAL.JS OVERRIDES FOR STRATEGY SECTIONS
+     The strategy sections were designed for scroll-snap pages. This adapts them
+     to work within Reveal.js's viewport-managed slides.
+     ========================================================================== */
+
+  /* Override min-height: 100vh from strategy sections for Reveal.js */
+  .reveal .slides .slide {
+    min-height: auto !important;
+    height: 100% !important;
+    scroll-snap-align: unset !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure slide content fills the Reveal container properly */
+  .reveal .slides .slide-content {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  /* Adjust padding for Reveal.js viewport */
+  .reveal .slides .slide {
+    padding: 1.5rem 2rem !important;
+  }
+
+  /* Scale down large typography for presentation format */
+  .reveal .slides .headline {
+    font-size: clamp(2rem, 6vw, 3.5rem) !important;
+  }
+
+  .reveal .slides .split-number {
+    font-size: clamp(3rem, 8vw, 5rem) !important;
+  }
+
+  /* Ensure gradients work in Reveal.js context */
+  .reveal .slides .slide-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Make sure reveal-item animations still work */
+  .reveal .slides .reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Adjust split content layout for smaller viewport */
+  .reveal .slides .slide-content-split {
+    gap: 2rem !important;
+  }
+
+  /* Scale pillar sections for presentation */
+  .reveal .slides .pillar-icon-large {
+    font-size: 2.5rem !important;
+  }
+
+  .reveal .slides .pillar-header {
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Adjust stat sections */
+  .reveal .slides .stat-accent {
+    margin-top: 2rem !important;
+  }
+
+  .reveal .slides .stat-number {
+    font-size: clamp(2rem, 4vw, 2.5rem) !important;
+  }
+
+  /* Fragment-based reveal for Reveal.js (optional enhancement) */
+  .reveal .slides .reveal-item.fragment {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal .slides .reveal-item.fragment.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  // Initialize reveal animations when slide becomes active
+  // This replaces the IntersectionObserver from the scroll-based page
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof Reveal !== 'undefined') {
+      Reveal.on('slidechanged', (event: any) => {
+        const currentSlide = event.currentSlide;
+        if (currentSlide) {
+          // Reveal all items on the current slide
+          const items = currentSlide.querySelectorAll('.reveal-item');
+          items.forEach((item: Element, index: number) => {
+            setTimeout(() => {
+              item.classList.add('revealed');
+            }, index * 100);
+          });
+        }
+      });
+
+      // Trigger for initial slide
+      const firstSlide = document.querySelector('.reveal .slides > section');
+      if (firstSlide) {
+        const items = firstSlide.querySelectorAll('.reveal-item');
+        items.forEach((item: Element, index: number) => {
+          setTimeout(() => {
+            item.classList.add('revealed');
+          }, index * 100 + 500);
+        });
+      }
+    }
+  });
+</script>

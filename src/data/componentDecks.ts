@@ -55,6 +55,17 @@ export const componentDecks: Record<string, ComponentDeck> = {
     tags: ['thesis', 'investment', 'longevity'],
     type: 'component',
   },
+  'fund-strategy': {
+    title: 'Fund Strategy',
+    description: 'Our differentiated approach: five pillars, fund mechanics, team, and LP alignment.',
+    component: 'SlideShowFundStrategy',
+    author: 'Dark Matter',
+    date: '2025-12-29',
+    coverImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    shareImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    tags: ['strategy', 'fund', 'pillars'],
+    type: 'component',
+  },
 };
 
 /**

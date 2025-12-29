@@ -17,6 +17,7 @@ import { markdownDecks, getMarkdownDeckBySlug } from '../../data/markdownDecks';
 import SlideShowDarkMatterThesis from '@components/slides/astro-decks/dark-matter-thesis/SlideShow--DarkMatterThesis.astro';
 import SlideShowFundIntro from '@components/slides/astro-decks/fund-intro/SlideShow--FundIntro.astro';
 import SlideShowInvestmentThesis from '@components/slides/astro-decks/investment-thesis/SlideShow--InvestmentThesis.astro';
+import SlideShowFundStrategy from '@components/slides/astro-decks/fund-strategy/SlideShow--FundStrategy.astro';
 
 // Force static generation for this page
 export const prerender = true;
@@ -69,6 +70,13 @@ const { type, deck, markdownContent } = Astro.props;
     description={deck.description}
   >
     <SlideShowInvestmentThesis />
+  </OneSlideDeck>
+) : type === 'component' && deck?.component === 'SlideShowFundStrategy' ? (
+  <OneSlideDeck
+    title={deck.title}
+    description={deck.description}
+  >
+    <SlideShowFundStrategy />
   </OneSlideDeck>
 ) : type === 'component' && deck ? (
   <!-- Fallback for unknown component decks -->
