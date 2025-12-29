@@ -93,12 +93,6 @@ const {
     overflow: visible !important;
   }
 
-  /* Ensure slide content fills the Reveal container properly */
-  .reveal .slides .slide-content {
-    max-width: 90%;
-    margin: 0 auto;
-  }
-
   /* Adjust padding for Reveal.js viewport */
   .reveal .slides .slide {
     padding: 1.5rem 2rem !important;
@@ -161,6 +155,21 @@ const {
   .reveal .slides .reveal-item.fragment.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* ==========================================================================
+     STAGE ALLOCATION BAR FIX
+     The stage bar needs explicit width since fit-content would shrink it.
+     Override to use full-width content for this visual slide.
+     ========================================================================== */
+  .reveal .slides .slide-stages .slide-content {
+    width: 100% !important;
+    max-width: 800px;
+  }
+
+  .reveal .slides .stage-bar-container {
+    width: 100%;
+    min-width: 500px;
   }
 </style>
 

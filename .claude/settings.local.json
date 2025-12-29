@@ -18,7 +18,8 @@
       "Bash(identify:*)",
       "Bash(sips:*)",
       "Bash(cat:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git fetch:*)"
     ],
     "deny": [],
     "ask": []

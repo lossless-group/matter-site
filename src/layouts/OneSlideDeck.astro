@@ -182,6 +182,73 @@ const { title = "Presentation", description = "" } = Astro.props;
     box-sizing: border-box;
   }
 
+  /* ==========================================================================
+     SLIDE STRUCTURE - Matching scroll-based presentations
+     These styles mirror strategy/index.astro and thesis/index.astro
+     ========================================================================== */
+
+  /* Base slide uses flexbox centering */
+  .reveal .slides .slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Content container - centered with max-width */
+  .reveal .slides .slide-content {
+    position: relative;
+    z-index: 10;
+    max-width: 56rem;  /* Slightly smaller than scroll (72rem) for presentation */
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Centered content layout */
+  .reveal .slides .slide-content-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Split layout (number + content grid) */
+  .reveal .slides .slide-content-split {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Pillar sections */
+  .reveal .slides .slide-content-pillar {
+    max-width: 44rem;
+  }
+
+  /* Split number styling */
+  .reveal .slides .split-number {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .reveal .slides .split-content {
+    padding-top: 0.5rem;
+  }
+
+  /* Split number colors by theme mode */
+  [data-theme="matter"][data-mode="dark"] .reveal .slides .split-number {
+    color: rgba(102, 67, 226, 0.2);
+  }
+
+  [data-theme="matter"][data-mode="light"] .reveal .slides .split-number {
+    color: rgba(102, 67, 226, 0.15);
+  }
+
+  [data-theme="matter"][data-mode="vibrant"] .reveal .slides .split-number {
+    color: rgba(102, 67, 226, 0.3);
+    text-shadow: 0 0 40px rgba(102, 67, 226, 0.3);
+  }
+
   /* ========================================
      Adaptive Typography - scales with viewport
      ======================================== */
