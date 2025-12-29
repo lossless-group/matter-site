@@ -1,0 +1,167 @@
+---
+/**
+ * SlideShow--InvestmentThesis.astro
+ *
+ * Reveal.js presentation version of the Investment Thesis page.
+ * Repurposes the same T01-T16 section components from thesis/index.astro
+ * but rendered as a navigable slide deck instead of a scroll-based page.
+ *
+ * Sections (16 total):
+ * 1. The Aging Crisis - Hero ($1T+ cost)
+ * 2. Trillion-Dollar Diseases
+ * 3. Healthspan vs Lifespan Gap
+ * 4. US Demographics - Silver Tsunami
+ * 5. Cost Reality - Medical Inflation
+ * 6. The Opportunity - Biotech Solution
+ * 7. Global Aging Wave - Hero (2B people)
+ * 8. Demographic Statistics
+ * 9. Science at Inflection Point
+ * 10. The Longevity Economy
+ * 11. Exit Potential - Hero
+ * 12. IPO Path
+ * 13. M&A Path
+ * 14. Market Growth Projection
+ * 15. Deal Structure Example
+ * 16. Closing - The Opportunity
+ */
+
+// Import all thesis section components
+import T01AgingCrisisHero from '@layouts/sections/narratives/slides/thesis/T01-AgingCrisisHero.astro';
+import T02TrillionDollarDiseases from '@layouts/sections/narratives/slides/thesis/T02-TrillionDollarDiseases.astro';
+import T03HealthspanGap from '@layouts/sections/narratives/slides/thesis/T03-HealthspanGap.astro';
+import T04USDemographics from '@layouts/sections/narratives/slides/thesis/T04-USDemographics.astro';
+import T05CostReality from '@layouts/sections/narratives/slides/thesis/T05-CostReality.astro';
+import T06BiotechOpportunity from '@layouts/sections/narratives/slides/thesis/T06-BiotechOpportunity.astro';
+import T07GlobalAgingHero from '@layouts/sections/narratives/slides/thesis/T07-GlobalAgingHero.astro';
+import T08DemographicStats from '@layouts/sections/narratives/slides/thesis/T08-DemographicStats.astro';
+import T09ScienceInflection from '@layouts/sections/narratives/slides/thesis/T09-ScienceInflection.astro';
+import T10LongevityEconomy from '@layouts/sections/narratives/slides/thesis/T10-LongevityEconomy.astro';
+import T11ExitPotentialHero from '@layouts/sections/narratives/slides/thesis/T11-ExitPotentialHero.astro';
+import T12IPOPath from '@layouts/sections/narratives/slides/thesis/T12-IPOPath.astro';
+import T13MAPath from '@layouts/sections/narratives/slides/thesis/T13-MAPath.astro';
+import T14MarketGrowth from '@layouts/sections/narratives/slides/thesis/T14-MarketGrowth.astro';
+import T15DealStructure from '@layouts/sections/narratives/slides/thesis/T15-DealStructure.astro';
+import T16Closing from '@layouts/sections/narratives/slides/thesis/T16-Closing.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Investment Thesis',
+  description = 'The case for investing in longevity science and the biotech revolution.',
+} = Astro.props;
+---
+
+<!-- Each section component outputs a <section> element for Reveal.js -->
+<T01AgingCrisisHero />
+<T02TrillionDollarDiseases />
+<T03HealthspanGap />
+<T04USDemographics />
+<T05CostReality />
+<T06BiotechOpportunity />
+<T07GlobalAgingHero />
+<T08DemographicStats />
+<T09ScienceInflection />
+<T10LongevityEconomy />
+<T11ExitPotentialHero />
+<T12IPOPath />
+<T13MAPath />
+<T14MarketGrowth />
+<T15DealStructure />
+<T16Closing />
+
+<style is:global>
+  /* ==========================================================================
+     REVEAL.JS OVERRIDES FOR THESIS SECTIONS
+     The thesis sections were designed for scroll-snap pages. This adapts them
+     to work within Reveal.js's viewport-managed slides.
+     ========================================================================== */
+
+  /* Override min-height: 100vh from thesis sections for Reveal.js */
+  .reveal .slides .slide {
+    min-height: auto !important;
+    height: 100% !important;
+    scroll-snap-align: unset !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure slide content fills the Reveal container properly */
+  .reveal .slides .slide-content {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  /* Adjust padding for Reveal.js viewport */
+  .reveal .slides .slide {
+    padding: 1.5rem 2rem !important;
+  }
+
+  /* Scale down large typography for presentation format */
+  .reveal .slides .headline {
+    font-size: clamp(2rem, 6vw, 3.5rem) !important;
+  }
+
+  .reveal .slides .big-cost-number {
+    font-size: clamp(3rem, 10vw, 6rem) !important;
+  }
+
+  /* Ensure gradients work in Reveal.js context */
+  .reveal .slides .slide-gradient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Make sure reveal-item animations still work */
+  .reveal .slides .reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Fragment-based reveal for Reveal.js (optional enhancement) */
+  .reveal .slides .reveal-item.fragment {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal .slides .reveal-item.fragment.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  // Initialize reveal animations when slide becomes active
+  // This replaces the IntersectionObserver from the scroll-based page
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof Reveal !== 'undefined') {
+      Reveal.on('slidechanged', (event: any) => {
+        const currentSlide = event.currentSlide;
+        if (currentSlide) {
+          // Reveal all items on the current slide
+          const items = currentSlide.querySelectorAll('.reveal-item');
+          items.forEach((item: Element, index: number) => {
+            setTimeout(() => {
+              item.classList.add('revealed');
+            }, index * 100);
+          });
+        }
+      });
+
+      // Trigger for initial slide
+      const firstSlide = document.querySelector('.reveal .slides > section');
+      if (firstSlide) {
+        const items = firstSlide.querySelectorAll('.reveal-item');
+        items.forEach((item: Element, index: number) => {
+          setTimeout(() => {
+            item.classList.add('revealed');
+          }, index * 100 + 500);
+        });
+      }
+    }
+  });
+</script>

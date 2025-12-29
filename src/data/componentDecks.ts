@@ -44,6 +44,17 @@ export const componentDecks: Record<string, ComponentDeck> = {
     shareImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
     type: 'component',
   },
+  'investment-thesis': {
+    title: 'Investment Thesis',
+    description: 'The case for investing in longevity science: aging crisis, market opportunity, and exit potential.',
+    component: 'SlideShowInvestmentThesis',
+    author: 'Dark Matter',
+    date: '2025-12-29',
+    coverImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    shareImage: '/share-banners/shareBanner__Dark-Matter-Bio_Longevity-Fund-II.webp',
+    tags: ['thesis', 'investment', 'longevity'],
+    type: 'component',
+  },
 };
 
 /**
