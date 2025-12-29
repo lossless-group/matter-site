@@ -25,6 +25,8 @@ export interface ShareMetaInput {
   imageAlt?: string;
   url?: string;
   type?: 'website' | 'article' | 'profile' | 'product' | string;
+  /** Category badge for dynamic OG images (e.g., 'Thesis', 'Strategy', 'Reference') */
+  category?: string;
   // Article-specific (for blog posts, memos, news)
   publishedTime?: string;
   modifiedTime?: string;

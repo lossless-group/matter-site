@@ -6,6 +6,10 @@
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 
+// Page metadata for OG tags (image auto-generated via /api/og)
+const pageTitle = 'Design System';
+const pageDescription = 'Reusable components, patterns, and visual styles for Dark Matter sites.';
+
 // Define design system pages with metadata
 const pages = [
   {
@@ -76,7 +80,14 @@ const categories = pages.reduce((acc, page) => {
 const categoryOrder = ['Components', 'Sections', 'Themes', 'Effects', 'Reference'];
 ---
 
-<BaseThemeLayout title="Design System | Dark Matter">
+<BaseThemeLayout
+  title="Design System | Dark Matter"
+  meta={{
+    title: pageTitle,
+    description: pageDescription,
+    category: 'Reference',
+  }}
+>
   <main class="design-system-hub">
     <!-- Header -->
     <header class="hub-header">

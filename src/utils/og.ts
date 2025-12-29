@@ -35,8 +35,65 @@ export function ensureAbsoluteUrl(url: string, siteUrl?: string): string {
 }
 
 /**
+ * Formats an ISO date string for OG image display (e.g., "Dec 2025")
+ */
+function formatDateForOg(isoDate: string): string {
+  try {
+    const date = new Date(isoDate);
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Parameters for dynamic OG image generation
+ */
+export interface DynamicOgImageParams {
+  title: string;
+  description?: string;
+  category?: string;
+  author?: string;
+  date?: string;
+}
+
+/**
+ * Builds a URL to the dynamic OG image endpoint.
+ * Use this when you want a dynamically generated image with the page's
+ * title and description rendered into the Dark Matter branded template.
+ *
+ * @param params - Title, description, category, author, date
+ * @param siteUrl - Base URL (defaults to SITE_SEO.siteUrl)
+ * @returns Absolute URL to /api/og with query params
+ *
+ * @example
+ * const ogImage = buildDynamicOgImageUrl({
+ *   title: 'Design System',
+ *   description: 'Component documentation',
+ *   category: 'Reference'
+ * });
+ * // => https://matter-site.vercel.app/api/og?title=Design+System&description=...
+ */
+export function buildDynamicOgImageUrl(params: DynamicOgImageParams, siteUrl?: string): string {
+  const base = siteUrl || SITE_SEO.siteUrl;
+  const url = new URL('/api/og', base);
+
+  url.searchParams.set('title', params.title);
+  if (params.description) url.searchParams.set('description', params.description);
+  if (params.category) url.searchParams.set('category', params.category);
+  if (params.author) url.searchParams.set('author', params.author);
+  if (params.date) url.searchParams.set('date', params.date);
+
+  return url.toString();
+}
+
+/**
  * Builds Open Graph and Twitter meta tags from input.
- * Falls back to site defaults for any missing values.
+ *
+ * Image resolution order:
+ * 1. Explicit `image` in input (opt-out/override path)
+ * 2. Auto-generated dynamic image via /api/og (when title is provided)
+ * 3. Site default static image (fallback)
  *
  * @param input - Page-specific metadata overrides
  * @param siteUrl - Optional site URL override (usually from Astro.site)
@@ -47,8 +104,34 @@ export function buildOgMeta(input: ShareMetaInput = {}, siteUrl?: string): MetaT
 
   const title = truncate(input.title ?? SITE_SEO.defaultTitle, CHAR_LIMITS.title);
   const description = truncate(input.description ?? SITE_SEO.defaultDescription, CHAR_LIMITS.description);
-  const image = ensureAbsoluteUrl(input.image ?? SITE_SEO.defaultImage, baseUrl);
-  const imageAlt = input.imageAlt ?? SITE_SEO.defaultImageAlt;
+
+  // Image resolution: explicit override → dynamic generation → site default
+  let image: string;
+  let imageAlt: string;
+
+  if (input.image) {
+    // Explicit image provided (opt-out path) - use it directly
+    image = ensureAbsoluteUrl(input.image, baseUrl);
+    imageAlt = input.imageAlt ?? SITE_SEO.defaultImageAlt;
+  } else if (input.title) {
+    // Title provided but no image - auto-generate dynamic OG image
+    image = buildDynamicOgImageUrl(
+      {
+        title: input.title,
+        description: input.description,
+        category: input.category,
+        author: input.author,
+        date: input.publishedTime ? formatDateForOg(input.publishedTime) : undefined,
+      },
+      baseUrl
+    );
+    imageAlt = `${title} - Dark Matter`;
+  } else {
+    // No title or image - use site default
+    image = ensureAbsoluteUrl(SITE_SEO.defaultImage, baseUrl);
+    imageAlt = SITE_SEO.defaultImageAlt;
+  }
+
   const url = input.url ? ensureAbsoluteUrl(input.url, baseUrl) : undefined;
   const type = input.type ?? 'website';
 
