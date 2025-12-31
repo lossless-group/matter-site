@@ -20,7 +20,8 @@
       "Bash(cat:*)",
       "Bash(git commit:*)",
       "Bash(git fetch:*)",
-      "WebFetch(domain:shiki.style)"
+      "WebFetch(domain:shiki.style)",
+      "WebFetch(domain:mermaid.js.org)"
     ],
     "deny": [],
     "ask": []

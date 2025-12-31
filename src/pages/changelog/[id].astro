@@ -15,6 +15,41 @@ import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeShiki from '@shikijs/rehype';
 import rehypeStringify from 'rehype-stringify';
+import { visit } from 'unist-util-visit';
+
+/**
+ * Custom rehype plugin to extract mermaid blocks BEFORE Shiki processes them.
+ * Converts <pre><code class="language-mermaid">...</code></pre>
+ * to <pre class="mermaid">...</pre> which Shiki won't recognize.
+ */
+function rehypeMermaidPre() {
+  return (tree: any) => {
+    visit(tree, 'element', (node: any) => {
+      if (
+        node.tagName === 'pre' &&
+        node.children?.[0]?.tagName === 'code'
+      ) {
+        const codeNode = node.children[0];
+        const classList = codeNode.properties?.className || [];
+
+        // Check if this is a mermaid code block
+        const isMermaid = classList.some((c: string) =>
+          c === 'language-mermaid' || c === 'mermaid'
+        );
+
+        if (isMermaid) {
+          // Extract the raw mermaid code
+          const mermaidCode = codeNode.children?.[0]?.value || '';
+
+          // Replace with <pre class="mermaid">code</pre>
+          // This format won't match rehypeShiki's selector
+          node.properties = { className: ['mermaid'] };
+          node.children = [{ type: 'text', value: mermaidCode }];
+        }
+      }
+    });
+  };
+}
 
 // Get the ID from the URL
 const { id } = Astro.params;
@@ -38,10 +73,12 @@ if (!entry) {
 const { data, body } = entry;
 
 // Process markdown to HTML with Shiki syntax highlighting
+// Note: rehypeMermaidPre runs BEFORE rehypeShiki to extract mermaid blocks
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
   .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeMermaidPre) // Extract mermaid before Shiki processes code blocks
   .use(rehypeShiki, {
     themes: {
       light: 'github-light',
