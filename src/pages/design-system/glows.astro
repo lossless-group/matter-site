@@ -9,6 +9,7 @@ import HeroGlowEventHorizon from '@components/flare/HeroGlow--EventHorizon.astro
 import HeroGlowQuarteredRing from '@components/flare/HeroGlow--QuarteredRing.astro';
 import HeroGlowPerpendicularArcs from '@components/flare/HeroGlow--PerpendicularArcs.astro';
 import HeroGlowNucleusPulse from '@components/flare/HeroGlow--NucleusPulse.astro';
+import HeroGlowOrbitalCosmos from '@components/flare/HeroGlow--OrbitalCosmos.astro';
 ---
 
 <BaseThemeLayout
@@ -35,6 +36,8 @@ import HeroGlowNucleusPulse from '@components/flare/HeroGlow--NucleusPulse.astro
       <a href="#perpendicular-arcs" class="hover:text-(--color-lilac) transition-colors">Perpendicular Arcs</a>
       <span>|</span>
       <a href="#nucleus-pulse" class="hover:text-(--color-lilac) transition-colors">Nucleus Pulse</a>
+      <span>|</span>
+      <a href="#orbital-cosmos" class="hover:text-(--color-lilac) transition-colors">Orbital Cosmos</a>
     </div>
   </section>
 
@@ -500,6 +503,99 @@ import HeroGlowNucleusPulse from '@components/flare/HeroGlow--NucleusPulse.astro
       <div class="text-center">
         <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
           <HeroGlowNucleusPulse
+            size="100%"
+            height="100%"
+            animate={false}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HeroGlow Orbital Cosmos -->
+  <section id="orbital-cosmos" class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) relative overflow-hidden">
+    <div class="absolute inset-0">
+      <HeroGlowOrbitalCosmos size="100%" height="100%" />
+    </div>
+
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+        HeroGlow--OrbitalCosmos
+      </h2>
+      <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md mx-auto">
+        Dramatic cosmic hero with rotating orbital rings and floating nodes.
+        Extracted from "Orbital Cosmos" hero variant.
+      </p>
+    </div>
+  </section>
+
+  <!-- Orbital Cosmos Variants -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      Orbital Cosmos Variants
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Different colors, speeds, and custom node labels.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowOrbitalCosmos size="100%" height="100%" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Default (Purple)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowOrbitalCosmos
+            size="100%"
+            height="100%"
+            primaryColor="#00d4ff"
+            glowColor="#0099cc"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowOrbitalCosmos
+            size="100%"
+            height="100%"
+            primaryColor="#f472b6"
+            glowColor="#ec4899"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Pink variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowOrbitalCosmos
+            size="100%"
+            height="100%"
+            nodeLabels={['Alpha', 'Beta', 'Gamma', 'Delta']}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Custom labels (hover nodes)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowOrbitalCosmos
+            size="100%"
+            height="100%"
+            animationSpeed={3}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Fast animation (3x)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowOrbitalCosmos
             size="100%"
             height="100%"
             animate={false}

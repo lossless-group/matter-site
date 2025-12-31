@@ -1,0 +1,302 @@
+---
+/**
+ * HeroGlow--OrbitalCosmos
+ *
+ * A dramatic cosmic hero effect with rotating orbital rings and floating nodes.
+ * Extracted from WhyNowWhyUs-v4 "Orbital Cosmos" variant.
+ *
+ * Features:
+ * - 3 rotating orbital rings at different sizes/speeds
+ * - 4 floating orbital nodes with pulse effects and labels
+ * - Central nucleus glow
+ * - Respects prefers-reduced-motion
+ */
+
+interface Props {
+  /** Container size - can be any CSS value */
+  size?: string;
+  /** Container height - if different from size */
+  height?: string;
+  /** Enable animations */
+  animate?: boolean;
+  /** Animation speed multiplier (1 = normal) */
+  animationSpeed?: number;
+  /** Primary color for rings and nodes */
+  primaryColor?: string;
+  /** Glow color for nucleus */
+  glowColor?: string;
+  /** Show node labels on hover */
+  showLabels?: boolean;
+  /** Custom labels for the 4 nodes */
+  nodeLabels?: [string, string, string, string];
+  /** Nucleus glow opacity (0-1) */
+  glowOpacity?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '100%',
+  height,
+  animate = true,
+  animationSpeed = 1,
+  primaryColor = '#6643e2',
+  glowColor = '#6643e2',
+  showLabels = true,
+  nodeLabels = ['Bioscience', 'Data', 'Longevity', 'Founders'],
+  glowOpacity = 0.6,
+  class: className = '',
+} = Astro.props;
+
+const containerId = `orbital-cosmos-${Math.random().toString(36).slice(2, 9)}`;
+const containerHeight = height || size;
+---
+
+<div
+  id={containerId}
+  class:list={['orbital-cosmos-container', className]}
+  style={`
+    width: ${size};
+    height: ${containerHeight};
+    --primary-color: ${primaryColor};
+    --glow-color: ${glowColor};
+    --glow-opacity: ${glowOpacity};
+    --animation-speed: ${animationSpeed};
+  `}
+  data-animate={animate}
+  data-show-labels={showLabels}
+>
+  <!-- Orbital rings -->
+  <div class="orbital-system">
+    <div class="orbit orbit-1"></div>
+    <div class="orbit orbit-2"></div>
+    <div class="orbit orbit-3"></div>
+
+    <!-- Floating orbital nodes -->
+    <div class="orbital-node node-1" data-label={nodeLabels[0]}>
+      <span class="node-pulse"></span>
+    </div>
+    <div class="orbital-node node-2" data-label={nodeLabels[1]}>
+      <span class="node-pulse"></span>
+    </div>
+    <div class="orbital-node node-3" data-label={nodeLabels[2]}>
+      <span class="node-pulse"></span>
+    </div>
+    <div class="orbital-node node-4" data-label={nodeLabels[3]}>
+      <span class="node-pulse"></span>
+    </div>
+  </div>
+
+  <!-- Central nucleus glow -->
+  <div class="nucleus-glow"></div>
+
+  <!-- Content slot -->
+  <div class="orbital-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .orbital-cosmos-container {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Orbital system container */
+  .orbital-system {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Orbital rings */
+  .orbit {
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+    border-radius: 50%;
+    box-shadow:
+      0 0 20px color-mix(in srgb, var(--primary-color) 15%, transparent),
+      inset 0 0 20px color-mix(in srgb, var(--primary-color) 10%, transparent);
+  }
+
+  .orbit-1 {
+    width: 40%;
+    aspect-ratio: 1;
+    max-width: 500px;
+  }
+
+  .orbit-2 {
+    width: 60%;
+    aspect-ratio: 1;
+    max-width: 750px;
+    opacity: 0.8;
+  }
+
+  .orbit-3 {
+    width: 85%;
+    aspect-ratio: 1;
+    max-width: 1000px;
+    opacity: 0.5;
+  }
+
+  /* Animations */
+  [data-animate="true"] .orbit-1 {
+    animation: orbit-rotate calc(90s / var(--animation-speed)) linear infinite;
+  }
+
+  [data-animate="true"] .orbit-2 {
+    animation: orbit-rotate calc(120s / var(--animation-speed)) linear infinite reverse;
+  }
+
+  [data-animate="true"] .orbit-3 {
+    animation: orbit-rotate calc(180s / var(--animation-speed)) linear infinite;
+  }
+
+  @keyframes orbit-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Orbital nodes */
+  .orbital-node {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    box-shadow:
+      0 0 15px var(--primary-color),
+      0 0 30px color-mix(in srgb, var(--primary-color) 50%, transparent);
+    pointer-events: auto;
+  }
+
+  .orbital-node::after {
+    content: attr(data-label);
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 12px);
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+  }
+
+  [data-show-labels="true"] .orbital-node:hover::after {
+    opacity: 1;
+  }
+
+  .node-pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid var(--primary-color);
+  }
+
+  [data-animate="true"] .node-pulse {
+    animation: pulse calc(2s / var(--animation-speed)) ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+
+  /* Node positions and floating animations */
+  .node-1 { top: 20%; left: 15%; }
+  .node-2 { top: 35%; right: 20%; }
+  .node-3 { bottom: 30%; left: 25%; }
+  .node-4 { bottom: 20%; right: 15%; }
+
+  [data-animate="true"] .node-1 {
+    animation: float-1 calc(8s / var(--animation-speed)) ease-in-out infinite;
+  }
+  [data-animate="true"] .node-2 {
+    animation: float-2 calc(10s / var(--animation-speed)) ease-in-out infinite;
+  }
+  [data-animate="true"] .node-3 {
+    animation: float-3 calc(12s / var(--animation-speed)) ease-in-out infinite;
+  }
+  [data-animate="true"] .node-4 {
+    animation: float-4 calc(9s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  @keyframes float-1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(20px, -15px); }
+  }
+  @keyframes float-2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-15px, 20px); }
+  }
+  @keyframes float-3 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(25px, 10px); }
+  }
+  @keyframes float-4 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-20px, -20px); }
+  }
+
+  /* Nucleus glow */
+  .nucleus-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(
+      circle,
+      var(--glow-color) 0%,
+      color-mix(in srgb, var(--glow-color) 60%, transparent) 30%,
+      color-mix(in srgb, var(--glow-color) 20%, transparent) 50%,
+      transparent 70%
+    );
+    filter: blur(60px);
+    opacity: var(--glow-opacity);
+    pointer-events: none;
+  }
+
+  [data-animate="true"] .nucleus-glow {
+    animation: glow-pulse calc(4s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: var(--glow-opacity);
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: calc(var(--glow-opacity) * 1.3);
+    }
+  }
+
+  /* Content overlay */
+  .orbital-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .orbit,
+    .orbital-node,
+    .node-pulse,
+    .nucleus-glow {
+      animation: none !important;
+    }
+  }
+</style>
