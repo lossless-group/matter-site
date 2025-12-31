@@ -12,14 +12,38 @@ import ImageAbstractChromosome from '@components/flare/ImageAbstract--Chromosome
 ---
 
 <BaseThemeLayout
-  title="Flare Components Demo | Dark Matter"
-  description="Demo page for Dark Matter visual flare components"
+  title="Flare Components | Dark Matter"
+  description="Three.js particle visualizations and abstract imagery for Dark Matter"
   mode="dark"
 >
-  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
-    <h1 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
-      ImageAbstract--Orb
+  <!-- Page Header -->
+  <section class="flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h1 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+      Flare Components
     </h1>
+    <p class="text-(--color-lilac)/70 mb-8 text-center max-w-lg">
+      Three.js particle visualizations and abstract imagery for Dark Matter.
+    </p>
+    <div class="flex gap-6 text-sm">
+      <a
+        href="/design-system/glows"
+        class="text-(--color-lilac) hover:text-(--color-alabaster) transition-colors"
+      >
+        See Hero Glow Effects →
+      </a>
+      <a
+        href="/design-system"
+        class="text-(--color-alabaster)/50 hover:text-(--color-alabaster) transition-colors"
+      >
+        ← Design System
+      </a>
+    </div>
+  </section>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      ImageAbstract--Orb
+    </h2>
     <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
       Three.js particle sphere with central void. Hover to see subtle movement.
     </p>

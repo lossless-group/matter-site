@@ -1,0 +1,431 @@
+---
+/**
+ * Hero Glow Effects Demo
+ * CSS-based animated glow effects for hero sections
+ */
+import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import HeroGlowAnimatedOrbs from '@components/flare/HeroGlow--AnimatedOrbs.astro';
+import HeroGlowEventHorizon from '@components/flare/HeroGlow--EventHorizon.astro';
+import HeroGlowQuarteredRing from '@components/flare/HeroGlow--QuarteredRing.astro';
+import HeroGlowPerpendicularArcs from '@components/flare/HeroGlow--PerpendicularArcs.astro';
+---
+
+<BaseThemeLayout
+  title="Hero Glow Effects | Dark Matter"
+  description="CSS-based animated glow effects for hero sections"
+  mode="dark"
+>
+  <!-- Page Header -->
+  <section class="flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h1 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+      Hero Glow Effects
+    </h1>
+    <p class="text-(--color-lilac)/70 mb-8 text-center max-w-lg">
+      Pure CSS animated glow effects for hero backgrounds. No JavaScript or WebGL required.
+      Inspired by ascentivelab.com.
+    </p>
+    <div class="flex gap-4 text-sm text-(--color-alabaster)/50 flex-wrap justify-center">
+      <a href="#animated-orbs" class="hover:text-(--color-lilac) transition-colors">Animated Orbs</a>
+      <span>|</span>
+      <a href="#event-horizon" class="hover:text-(--color-lilac) transition-colors">Event Horizon</a>
+      <span>|</span>
+      <a href="#quartered-ring" class="hover:text-(--color-lilac) transition-colors">Quartered Ring</a>
+      <span>|</span>
+      <a href="#perpendicular-arcs" class="hover:text-(--color-lilac) transition-colors">Perpendicular Arcs</a>
+    </div>
+  </section>
+
+  <!-- HeroGlow Animated Orbs -->
+  <section id="animated-orbs" class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) relative overflow-hidden">
+    <div class="absolute inset-0">
+      <HeroGlowAnimatedOrbs size="100%" height="100%" />
+    </div>
+
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+        HeroGlow--AnimatedOrbs
+      </h2>
+      <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md mx-auto">
+        Animated gradient orbs with soft blur glow effect.
+        Perfect for dreamy hero backgrounds.
+      </p>
+    </div>
+  </section>
+
+  <!-- Animated Orbs Variants -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      Animated Orbs Variants
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Different color combinations and animation speeds.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+      <div class="text-center">
+        <div class="relative w-full h-[250px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4">
+          <HeroGlowAnimatedOrbs size="100%" height="100%" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Default (Magenta/Purple)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[250px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4">
+          <HeroGlowAnimatedOrbs
+            size="100%"
+            height="100%"
+            primaryColor="#00d4ff"
+            secondaryColor="#0099cc"
+            accentColor="#006699"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan/Blue variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[250px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4">
+          <HeroGlowAnimatedOrbs
+            size="100%"
+            height="100%"
+            primaryColor="#34d399"
+            secondaryColor="#059669"
+            accentColor="#047857"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Green/Teal variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[250px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4">
+          <HeroGlowAnimatedOrbs
+            size="100%"
+            height="100%"
+            primaryColor="#fbbf24"
+            secondaryColor="#f59e0b"
+            accentColor="#d97706"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Orange/Gold variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[250px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4">
+          <HeroGlowAnimatedOrbs
+            size="100%"
+            height="100%"
+            animationSpeed={2.5}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Fast animation (2.5x)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[250px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4">
+          <HeroGlowAnimatedOrbs
+            size="100%"
+            height="100%"
+            animate={false}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HeroGlow Event Horizon -->
+  <section id="event-horizon" class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) relative overflow-hidden">
+    <div class="absolute inset-0">
+      <HeroGlowEventHorizon size="100%" height="100%" />
+    </div>
+
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+        HeroGlow--EventHorizon
+      </h2>
+      <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md mx-auto">
+        Black hole / event horizon effect with glowing arc segments
+        surrounding an empty dark center.
+      </p>
+    </div>
+  </section>
+
+  <!-- Event Horizon Variants -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      Event Horizon Variants
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Different color combinations and void sizes.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowEventHorizon size="100%" height="100%" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Default (Magenta/Purple)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowEventHorizon
+            size="100%"
+            height="100%"
+            primaryColor="#00d4ff"
+            secondaryColor="#0066cc"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan/Blue variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowEventHorizon
+            size="100%"
+            height="100%"
+            primaryColor="#ff6b35"
+            secondaryColor="#ff3d00"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Orange/Red (Interstellar)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowEventHorizon
+            size="100%"
+            height="100%"
+            voidSize={0.45}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Large void (0.45)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowEventHorizon
+            size="100%"
+            height="100%"
+            voidSize={0.15}
+            intensity={1.3}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Small void, high intensity</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowEventHorizon
+            size="100%"
+            height="100%"
+            animate={false}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HeroGlow Quartered Ring -->
+  <section id="quartered-ring" class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) relative overflow-hidden">
+    <div class="absolute inset-0">
+      <HeroGlowQuarteredRing size="100%" height="100%" />
+    </div>
+
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+        HeroGlow--QuarteredRing
+      </h2>
+      <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md mx-auto">
+        Glowing ring split into 4 arc segments at ~22.5° and ~157.5°.
+        Two arcs closer to center, two further out.
+      </p>
+    </div>
+  </section>
+
+  <!-- Quartered Ring Variants -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      Quartered Ring Variants
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Different color combinations for the quartered ring effect.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowQuarteredRing size="100%" height="100%" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Default (Purple)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowQuarteredRing
+            size="100%"
+            height="100%"
+            primaryColor="#22d3ee"
+            secondaryColor="#0891b2"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan/Teal variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowQuarteredRing
+            size="100%"
+            height="100%"
+            primaryColor="#f472b6"
+            secondaryColor="#ec4899"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Pink/Magenta variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowQuarteredRing
+            size="100%"
+            height="100%"
+            primaryColor="#4ade80"
+            secondaryColor="#22c55e"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Green variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowQuarteredRing
+            size="100%"
+            height="100%"
+            intensity={1.4}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">High intensity (1.4x)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowQuarteredRing
+            size="100%"
+            height="100%"
+            animate={false}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HeroGlow Perpendicular Arcs -->
+  <section id="perpendicular-arcs" class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) relative overflow-hidden">
+    <div class="absolute inset-0">
+      <HeroGlowPerpendicularArcs size="100%" height="100%" />
+    </div>
+
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+        HeroGlow--PerpendicularArcs
+      </h2>
+      <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md mx-auto">
+        Thin glowing arcs arranged perpendicular to each other.
+        Top/bottom and left/right pairs at different radii.
+      </p>
+    </div>
+  </section>
+
+  <!-- Perpendicular Arcs Variants -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      Perpendicular Arcs Variants
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Different thicknesses and color combinations.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowPerpendicularArcs size="100%" height="100%" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Default (Purple)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowPerpendicularArcs
+            size="100%"
+            height="100%"
+            thickness={0.02}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Ultra thin (0.02)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowPerpendicularArcs
+            size="100%"
+            height="100%"
+            thickness={0.08}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Thicker (0.08)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowPerpendicularArcs
+            size="100%"
+            height="100%"
+            primaryColor="#22d3ee"
+            secondaryColor="#0891b2"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan/Teal variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowPerpendicularArcs
+            size="100%"
+            height="100%"
+            primaryColor="#f472b6"
+            secondaryColor="#fb923c"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Pink/Orange variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
+          <HeroGlowPerpendicularArcs
+            size="100%"
+            height="100%"
+            animate={false}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation links -->
+  <section class="flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) gap-4">
+    <a
+      href="/design-system/flare"
+      class="text-(--color-lilac) hover:text-(--color-alabaster) transition-colors"
+    >
+      See Flare Components →
+    </a>
+    <a
+      href="/design-system"
+      class="text-(--color-alabaster)/50 hover:text-(--color-alabaster) transition-colors text-sm"
+    >
+      ← Back to Design System
+    </a>
+  </section>
+</BaseThemeLayout>

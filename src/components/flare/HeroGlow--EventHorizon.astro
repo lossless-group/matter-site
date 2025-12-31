@@ -1,0 +1,342 @@
+---
+/**
+ * HeroGlow--EventHorizon
+ *
+ * Black hole / event horizon effect with glowing arc segments
+ * surrounding an empty dark center. Multiple overlapping partial
+ * rings create depth and an ethereal glow effect.
+ *
+ * Inspired by ascentivelab.com hero - the effect of light bending
+ * around a gravitational singularity with very gradual, soft fading.
+ */
+
+interface Props {
+  /** Container size - can be any CSS value */
+  size?: string;
+  /** Container height - if different from size */
+  height?: string;
+  /** Enable animations */
+  animate?: boolean;
+  /** Animation speed multiplier (1 = normal) */
+  animationSpeed?: number;
+  /** Primary glow color */
+  primaryColor?: string;
+  /** Secondary glow color */
+  secondaryColor?: string;
+  /** Size of the dark center void (0-1, relative to container) */
+  voidSize?: number;
+  /** Overall intensity/opacity of the glow */
+  intensity?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '100%',
+  height,
+  animate = true,
+  animationSpeed = 1,
+  primaryColor = '#df7afe',
+  secondaryColor = '#814ac8',
+  voidSize = 0.25,
+  intensity = 1,
+  class: className = '',
+} = Astro.props;
+
+const containerId = `event-horizon-${Math.random().toString(36).slice(2, 9)}`;
+const containerHeight = height || size;
+---
+
+<div
+  id={containerId}
+  class:list={['event-horizon-container', className]}
+  style={`
+    width: ${size};
+    height: ${containerHeight};
+    --primary-color: ${primaryColor};
+    --secondary-color: ${secondaryColor};
+    --void-size: ${voidSize};
+    --intensity: ${intensity};
+    --animation-speed: ${animationSpeed};
+  `}
+  data-animate={animate}
+>
+  <!-- Layered glow arcs with extreme gradual fade -->
+  <div class="glow-arc arc-1"></div>
+  <div class="glow-arc arc-2"></div>
+  <div class="glow-arc arc-3"></div>
+  <div class="glow-arc arc-4"></div>
+  <div class="glow-arc arc-5"></div>
+
+  <!-- Very soft inner fade to black - multiple layers for smoothness -->
+  <div class="void-fade void-fade-1"></div>
+  <div class="void-fade void-fade-2"></div>
+  <div class="void-fade void-fade-3"></div>
+
+  <!-- Content slot -->
+  <div class="horizon-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .event-horizon-container {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Base glow arc styling - very soft gradients */
+  .glow-arc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  /* Arc 1 - Largest, most diffuse outer glow */
+  .arc-1 {
+    width: 110%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 260deg,
+      transparent 0deg,
+      color-mix(in srgb, var(--primary-color) 5%, transparent) 20deg,
+      color-mix(in srgb, var(--primary-color) 25%, transparent) 50deg,
+      color-mix(in srgb, var(--primary-color) 40%, transparent) 80deg,
+      color-mix(in srgb, var(--primary-color) 25%, transparent) 110deg,
+      color-mix(in srgb, var(--primary-color) 5%, transparent) 140deg,
+      transparent 160deg,
+      transparent 360deg
+    );
+    filter: blur(80px);
+    opacity: calc(0.8 * var(--intensity));
+  }
+
+  /* Arc 2 - Secondary large arc, offset position */
+  .arc-2 {
+    width: 100%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 80deg,
+      transparent 0deg,
+      color-mix(in srgb, var(--secondary-color) 5%, transparent) 15deg,
+      color-mix(in srgb, var(--secondary-color) 20%, transparent) 45deg,
+      color-mix(in srgb, var(--secondary-color) 35%, transparent) 75deg,
+      color-mix(in srgb, var(--secondary-color) 20%, transparent) 105deg,
+      color-mix(in srgb, var(--secondary-color) 5%, transparent) 135deg,
+      transparent 155deg,
+      transparent 360deg
+    );
+    filter: blur(70px);
+    opacity: calc(0.7 * var(--intensity));
+  }
+
+  /* Arc 3 - Medium inner arc with brighter core */
+  .arc-3 {
+    width: 85%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 180deg,
+      transparent 0deg,
+      color-mix(in srgb, var(--primary-color) 8%, transparent) 25deg,
+      color-mix(in srgb, var(--primary-color) 30%, transparent) 55deg,
+      color-mix(in srgb, var(--primary-color) 50%, transparent) 85deg,
+      color-mix(in srgb, var(--primary-color) 30%, transparent) 115deg,
+      color-mix(in srgb, var(--primary-color) 8%, transparent) 145deg,
+      transparent 170deg,
+      transparent 360deg
+    );
+    filter: blur(55px);
+    opacity: calc(0.75 * var(--intensity));
+  }
+
+  /* Arc 4 - Smaller accent arc */
+  .arc-4 {
+    width: 75%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 320deg,
+      transparent 0deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 20deg,
+      color-mix(in srgb, var(--secondary-color) 25%, transparent) 50deg,
+      color-mix(in srgb, var(--primary-color) 35%, transparent) 80deg,
+      color-mix(in srgb, var(--secondary-color) 25%, transparent) 110deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 140deg,
+      transparent 165deg,
+      transparent 360deg
+    );
+    filter: blur(45px);
+    opacity: calc(0.6 * var(--intensity));
+  }
+
+  /* Arc 5 - Inner rim glow, brightest near the void edge */
+  .arc-5 {
+    width: 65%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 30deg,
+      transparent 0deg,
+      color-mix(in srgb, var(--primary-color) 15%, transparent) 30deg,
+      color-mix(in srgb, var(--primary-color) 40%, transparent) 70deg,
+      color-mix(in srgb, var(--primary-color) 15%, transparent) 110deg,
+      transparent 140deg,
+      transparent 200deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 230deg,
+      color-mix(in srgb, var(--secondary-color) 25%, transparent) 270deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 310deg,
+      transparent 340deg,
+      transparent 360deg
+    );
+    filter: blur(35px);
+    opacity: calc(0.65 * var(--intensity));
+  }
+
+  /* Void fade layers - very gradual fade to black center */
+  .void-fade {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* Outermost fade - very soft, large area */
+  .void-fade-1 {
+    width: calc(var(--void-size) * 280%);
+    aspect-ratio: 1;
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.8) 15%,
+      rgba(0, 0, 0, 0.5) 30%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.05) 70%,
+      transparent 100%
+    );
+    z-index: 2;
+  }
+
+  /* Middle fade - medium density */
+  .void-fade-2 {
+    width: calc(var(--void-size) * 200%);
+    aspect-ratio: 1;
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.9) 20%,
+      rgba(0, 0, 0, 0.6) 40%,
+      rgba(0, 0, 0, 0.2) 65%,
+      transparent 100%
+    );
+    z-index: 3;
+  }
+
+  /* Core void - solid black center with soft edge */
+  .void-fade-3 {
+    width: calc(var(--void-size) * 120%);
+    aspect-ratio: 1;
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 1) 40%,
+      rgba(0, 0, 0, 0.85) 60%,
+      rgba(0, 0, 0, 0.4) 80%,
+      transparent 100%
+    );
+    z-index: 4;
+  }
+
+  /* Animations - slow, subtle drift */
+  [data-animate="true"] .arc-1 {
+    animation: drift-slow calc(35s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  [data-animate="true"] .arc-2 {
+    animation: drift-medium calc(40s / var(--animation-speed)) ease-in-out infinite reverse;
+  }
+
+  [data-animate="true"] .arc-3 {
+    animation: drift-slow calc(30s / var(--animation-speed)) ease-in-out infinite;
+    animation-delay: -10s;
+  }
+
+  [data-animate="true"] .arc-4 {
+    animation: drift-medium calc(28s / var(--animation-speed)) ease-in-out infinite;
+    animation-delay: -5s;
+  }
+
+  [data-animate="true"] .arc-5 {
+    animation: drift-fast calc(22s / var(--animation-speed)) ease-in-out infinite reverse;
+  }
+
+  @keyframes drift-slow {
+    0%, 100% {
+      transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    25% {
+      transform: translate(-50%, -50%) rotate(8deg) scale(1.02);
+    }
+    50% {
+      transform: translate(-50%, -50%) rotate(-4deg) scale(0.98);
+    }
+    75% {
+      transform: translate(-50%, -50%) rotate(6deg) scale(1.01);
+    }
+  }
+
+  @keyframes drift-medium {
+    0%, 100% {
+      transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    33% {
+      transform: translate(-50%, -50%) rotate(-12deg) scale(1.03);
+    }
+    66% {
+      transform: translate(-50%, -50%) rotate(10deg) scale(0.97);
+    }
+  }
+
+  @keyframes drift-fast {
+    0%, 100% {
+      transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    20% {
+      transform: translate(-50%, -50%) rotate(10deg) scale(1.04);
+    }
+    40% {
+      transform: translate(-50%, -50%) rotate(-6deg) scale(0.96);
+    }
+    60% {
+      transform: translate(-50%, -50%) rotate(8deg) scale(1.02);
+    }
+    80% {
+      transform: translate(-50%, -50%) rotate(-10deg) scale(0.98);
+    }
+  }
+
+  /* Content overlay */
+  .horizon-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .glow-arc {
+      animation: none !important;
+    }
+  }
+</style>

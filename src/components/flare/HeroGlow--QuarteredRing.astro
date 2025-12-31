@@ -1,0 +1,293 @@
+---
+/**
+ * HeroGlow--QuarteredRing
+ *
+ * Glowing ring split into 4 arc segments, with pairs of arcs
+ * at different radii creating an ethereal offset effect.
+ *
+ * Inspired by ascentivelab.com - the ring is quartered with splits
+ * at approximately 22.5° and 157.5° (and their opposites).
+ * Two arcs sit closer to center, two sit further out.
+ */
+
+interface Props {
+  /** Container size - can be any CSS value */
+  size?: string;
+  /** Container height - if different from size */
+  height?: string;
+  /** Enable animations */
+  animate?: boolean;
+  /** Animation speed multiplier (1 = normal) */
+  animationSpeed?: number;
+  /** Primary glow color */
+  primaryColor?: string;
+  /** Secondary glow color (for inner arcs) */
+  secondaryColor?: string;
+  /** Overall intensity/opacity of the glow */
+  intensity?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '100%',
+  height,
+  animate = true,
+  animationSpeed = 1,
+  primaryColor = '#c084fc',  // Lighter purple for the glow
+  secondaryColor = '#a855f7', // Slightly different purple
+  intensity = 1,
+  class: className = '',
+} = Astro.props;
+
+const containerId = `quartered-ring-${Math.random().toString(36).slice(2, 9)}`;
+const containerHeight = height || size;
+---
+
+<div
+  id={containerId}
+  class:list={['quartered-ring-container', className]}
+  style={`
+    width: ${size};
+    height: ${containerHeight};
+    --primary-color: ${primaryColor};
+    --secondary-color: ${secondaryColor};
+    --intensity: ${intensity};
+    --animation-speed: ${animationSpeed};
+  `}
+  data-animate={animate}
+>
+  <!-- Outer ring arcs (top-right and bottom-left quadrants) -->
+  <div class="ring-arc outer-arc arc-top-right"></div>
+  <div class="ring-arc outer-arc arc-bottom-left"></div>
+
+  <!-- Inner ring arcs (top-left and bottom-right quadrants) - slightly closer to center -->
+  <div class="ring-arc inner-arc arc-top-left"></div>
+  <div class="ring-arc inner-arc arc-bottom-right"></div>
+
+  <!-- Soft ambient glow behind everything -->
+  <div class="ambient-glow"></div>
+
+  <!-- Content slot -->
+  <div class="ring-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .quartered-ring-container {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Base ring arc styling */
+  .ring-arc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+    /* Ring is created with border, not fill */
+    background: transparent;
+  }
+
+  /* Outer arcs - larger radius, top-right and bottom-left */
+  .outer-arc {
+    width: 85%;
+    aspect-ratio: 1;
+    /* Thick gradient border effect using box-shadow */
+    box-shadow:
+      0 0 60px 20px var(--primary-color),
+      0 0 100px 40px color-mix(in srgb, var(--primary-color) 50%, transparent),
+      0 0 140px 60px color-mix(in srgb, var(--primary-color) 25%, transparent),
+      inset 0 0 60px 20px var(--primary-color),
+      inset 0 0 100px 40px color-mix(in srgb, var(--primary-color) 50%, transparent);
+    border: 2px solid color-mix(in srgb, var(--primary-color) 60%, transparent);
+    opacity: calc(0.6 * var(--intensity));
+  }
+
+  /* Inner arcs - smaller radius, top-left and bottom-right */
+  .inner-arc {
+    width: 75%;
+    aspect-ratio: 1;
+    box-shadow:
+      0 0 50px 15px var(--secondary-color),
+      0 0 80px 30px color-mix(in srgb, var(--secondary-color) 50%, transparent),
+      0 0 120px 50px color-mix(in srgb, var(--secondary-color) 25%, transparent),
+      inset 0 0 50px 15px var(--secondary-color),
+      inset 0 0 80px 30px color-mix(in srgb, var(--secondary-color) 50%, transparent);
+    border: 2px solid color-mix(in srgb, var(--secondary-color) 60%, transparent);
+    opacity: calc(0.5 * var(--intensity));
+  }
+
+  /* Top-right arc: visible from ~22.5° to ~157.5° */
+  .arc-top-right {
+    transform: translate(-50%, -50%) translate(3%, -3%);
+    clip-path: polygon(
+      50% 50%,
+      /* Start at ~22.5° */
+      92% 8%,
+      100% 20%,
+      100% 50%,
+      100% 80%,
+      /* End at ~157.5° */
+      92% 92%,
+      50% 50%
+    );
+  }
+
+  /* Bottom-left arc: visible from ~202.5° to ~337.5° */
+  .arc-bottom-left {
+    transform: translate(-50%, -50%) translate(-3%, 3%);
+    clip-path: polygon(
+      50% 50%,
+      /* Start at ~202.5° */
+      8% 92%,
+      0% 80%,
+      0% 50%,
+      0% 20%,
+      /* End at ~337.5° */
+      8% 8%,
+      50% 50%
+    );
+  }
+
+  /* Top-left arc: visible from ~157.5° to ~202.5° */
+  .arc-top-left {
+    transform: translate(-50%, -50%) translate(-2%, -2%);
+    clip-path: polygon(
+      50% 50%,
+      /* Arc from ~112.5° to ~202.5° (upper-left quadrant) */
+      8% 8%,
+      0% 20%,
+      0% 50%,
+      8% 92%,
+      50% 50%
+    );
+  }
+
+  /* Bottom-right arc: visible from ~337.5° to ~22.5° */
+  .arc-bottom-right {
+    transform: translate(-50%, -50%) translate(2%, 2%);
+    clip-path: polygon(
+      50% 50%,
+      /* Arc from ~292.5° to ~22.5° (lower-right quadrant) */
+      92% 92%,
+      100% 80%,
+      100% 50%,
+      92% 8%,
+      50% 50%
+    );
+  }
+
+  /* Soft ambient glow */
+  .ambient-glow {
+    position: absolute;
+    width: 100%;
+    aspect-ratio: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--primary-color) 15%, transparent) 20%,
+      color-mix(in srgb, var(--secondary-color) 8%, transparent) 40%,
+      transparent 70%
+    );
+    filter: blur(40px);
+    opacity: calc(0.5 * var(--intensity));
+    pointer-events: none;
+  }
+
+  /* Animations */
+  [data-animate="true"] .arc-top-right {
+    animation: drift-outer-1 calc(30s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  [data-animate="true"] .arc-bottom-left {
+    animation: drift-outer-2 calc(32s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  [data-animate="true"] .arc-top-left {
+    animation: drift-inner-1 calc(28s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  [data-animate="true"] .arc-bottom-right {
+    animation: drift-inner-2 calc(26s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  [data-animate="true"] .ambient-glow {
+    animation: pulse-ambient calc(20s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  @keyframes drift-outer-1 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(3%, -3%) rotate(0deg);
+    }
+    50% {
+      transform: translate(-50%, -50%) translate(4%, -4%) rotate(5deg);
+    }
+  }
+
+  @keyframes drift-outer-2 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(-3%, 3%) rotate(0deg);
+    }
+    50% {
+      transform: translate(-50%, -50%) translate(-4%, 4%) rotate(-5deg);
+    }
+  }
+
+  @keyframes drift-inner-1 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(-2%, -2%) rotate(0deg);
+    }
+    50% {
+      transform: translate(-50%, -50%) translate(-3%, -1%) rotate(-3deg);
+    }
+  }
+
+  @keyframes drift-inner-2 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(2%, 2%) rotate(0deg);
+    }
+    50% {
+      transform: translate(-50%, -50%) translate(3%, 1%) rotate(3deg);
+    }
+  }
+
+  @keyframes pulse-ambient {
+    0%, 100% {
+      opacity: calc(0.5 * var(--intensity));
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: calc(0.6 * var(--intensity));
+      transform: translate(-50%, -50%) scale(1.02);
+    }
+  }
+
+  /* Content overlay */
+  .ring-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .ring-arc,
+    .ambient-glow {
+      animation: none !important;
+    }
+  }
+</style>

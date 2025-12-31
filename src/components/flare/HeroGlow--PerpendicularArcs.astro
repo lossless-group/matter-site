@@ -1,0 +1,303 @@
+---
+/**
+ * HeroGlow--PerpendicularArcs
+ *
+ * Thin glowing arc segments arranged perpendicular to each other.
+ * One set at top/bottom, another at left/right, creating a
+ * cross-like ring pattern with soft glow.
+ *
+ * Inspired by ascentivelab.com - thinner arcs than QuarteredRing
+ * with perpendicular arrangement.
+ */
+
+interface Props {
+  /** Container size - can be any CSS value */
+  size?: string;
+  /** Container height - if different from size */
+  height?: string;
+  /** Enable animations */
+  animate?: boolean;
+  /** Animation speed multiplier (1 = normal) */
+  animationSpeed?: number;
+  /** Primary glow color (vertical arcs) */
+  primaryColor?: string;
+  /** Secondary glow color (horizontal arcs) */
+  secondaryColor?: string;
+  /** Ring thickness as proportion of radius (0.02 = very thin, 0.1 = thick) */
+  thickness?: number;
+  /** Overall intensity/opacity of the glow */
+  intensity?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '100%',
+  height,
+  animate = true,
+  animationSpeed = 1,
+  primaryColor = '#c084fc',
+  secondaryColor = '#a855f7',
+  thickness = 0.04,
+  intensity = 1,
+  class: className = '',
+} = Astro.props;
+
+const containerId = `perpendicular-arcs-${Math.random().toString(36).slice(2, 9)}`;
+const containerHeight = height || size;
+---
+
+<div
+  id={containerId}
+  class:list={['perpendicular-arcs-container', className]}
+  style={`
+    width: ${size};
+    height: ${containerHeight};
+    --primary-color: ${primaryColor};
+    --secondary-color: ${secondaryColor};
+    --thickness: ${thickness};
+    --intensity: ${intensity};
+    --animation-speed: ${animationSpeed};
+  `}
+  data-animate={animate}
+>
+  <!-- SVG-based thin arcs for precise control -->
+  <svg class="arcs-svg" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <!-- Blur filter for glow -->
+      <filter id={`${containerId}-glow`} x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="4" result="blur1"/>
+        <feGaussianBlur stdDeviation="8" result="blur2"/>
+        <feGaussianBlur stdDeviation="12" result="blur3"/>
+        <feMerge>
+          <feMergeNode in="blur3"/>
+          <feMergeNode in="blur2"/>
+          <feMergeNode in="blur1"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- Gradient for primary arcs (top/bottom) -->
+      <linearGradient id={`${containerId}-grad-primary`} x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style={`stop-color: ${primaryColor}; stop-opacity: 0`}/>
+        <stop offset="20%" style={`stop-color: ${primaryColor}; stop-opacity: 0.6`}/>
+        <stop offset="50%" style={`stop-color: ${primaryColor}; stop-opacity: 1`}/>
+        <stop offset="80%" style={`stop-color: ${primaryColor}; stop-opacity: 0.6`}/>
+        <stop offset="100%" style={`stop-color: ${primaryColor}; stop-opacity: 0`}/>
+      </linearGradient>
+
+      <!-- Gradient for secondary arcs (left/right) -->
+      <linearGradient id={`${containerId}-grad-secondary`} x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style={`stop-color: ${secondaryColor}; stop-opacity: 0`}/>
+        <stop offset="20%" style={`stop-color: ${secondaryColor}; stop-opacity: 0.6`}/>
+        <stop offset="50%" style={`stop-color: ${secondaryColor}; stop-opacity: 1`}/>
+        <stop offset="80%" style={`stop-color: ${secondaryColor}; stop-opacity: 0.6`}/>
+        <stop offset="100%" style={`stop-color: ${secondaryColor}; stop-opacity: 0`}/>
+      </linearGradient>
+    </defs>
+
+    <!-- Outer ring group - top and bottom arcs -->
+    <g class="arc-group outer-arcs" filter={`url(#${containerId}-glow)`}>
+      <!-- Top arc (roughly -60° to 60° from top) -->
+      <path
+        class="arc arc-top"
+        d="M 100 15
+           A 85 85 0 0 1 185 100"
+        fill="none"
+        stroke={`url(#${containerId}-grad-primary)`}
+        stroke-width={thickness * 200}
+        stroke-linecap="round"
+      />
+      <!-- Bottom arc -->
+      <path
+        class="arc arc-bottom"
+        d="M 100 185
+           A 85 85 0 0 1 15 100"
+        fill="none"
+        stroke={`url(#${containerId}-grad-primary)`}
+        stroke-width={thickness * 200}
+        stroke-linecap="round"
+      />
+    </g>
+
+    <!-- Inner ring group - left and right arcs (perpendicular, slightly smaller) -->
+    <g class="arc-group inner-arcs" filter={`url(#${containerId}-glow)`}>
+      <!-- Right arc -->
+      <path
+        class="arc arc-right"
+        d="M 175 100
+           A 75 75 0 0 1 100 175"
+        fill="none"
+        stroke={`url(#${containerId}-grad-secondary)`}
+        stroke-width={thickness * 200}
+        stroke-linecap="round"
+      />
+      <!-- Left arc -->
+      <path
+        class="arc arc-left"
+        d="M 25 100
+           A 75 75 0 0 1 100 25"
+        fill="none"
+        stroke={`url(#${containerId}-grad-secondary)`}
+        stroke-width={thickness * 200}
+        stroke-linecap="round"
+      />
+    </g>
+  </svg>
+
+  <!-- Extra CSS glow layers for more diffusion -->
+  <div class="glow-layer glow-outer"></div>
+  <div class="glow-layer glow-inner"></div>
+
+  <!-- Content slot -->
+  <div class="arcs-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .perpendicular-arcs-container {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arcs-svg {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    opacity: var(--intensity);
+  }
+
+  .arc-group {
+    transform-origin: 100px 100px;
+  }
+
+  .arc {
+    opacity: 0.9;
+  }
+
+  /* Extra glow layers */
+  .glow-layer {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .glow-outer {
+    width: 80%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 0deg,
+      color-mix(in srgb, var(--primary-color) 15%, transparent) 0deg,
+      transparent 45deg,
+      color-mix(in srgb, var(--secondary-color) 12%, transparent) 90deg,
+      transparent 135deg,
+      color-mix(in srgb, var(--primary-color) 15%, transparent) 180deg,
+      transparent 225deg,
+      color-mix(in srgb, var(--secondary-color) 12%, transparent) 270deg,
+      transparent 315deg,
+      color-mix(in srgb, var(--primary-color) 15%, transparent) 360deg
+    );
+    filter: blur(40px);
+    opacity: calc(0.5 * var(--intensity));
+  }
+
+  .glow-inner {
+    width: 60%;
+    aspect-ratio: 1;
+    background: conic-gradient(
+      from 45deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 0deg,
+      transparent 45deg,
+      color-mix(in srgb, var(--primary-color) 8%, transparent) 90deg,
+      transparent 135deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 180deg,
+      transparent 225deg,
+      color-mix(in srgb, var(--primary-color) 8%, transparent) 270deg,
+      transparent 315deg,
+      color-mix(in srgb, var(--secondary-color) 10%, transparent) 360deg
+    );
+    filter: blur(25px);
+    opacity: calc(0.4 * var(--intensity));
+  }
+
+  /* Animations */
+  [data-animate="true"] .outer-arcs {
+    animation: rotate-outer calc(40s / var(--animation-speed)) linear infinite;
+  }
+
+  [data-animate="true"] .inner-arcs {
+    animation: rotate-inner calc(35s / var(--animation-speed)) linear infinite reverse;
+  }
+
+  [data-animate="true"] .glow-outer {
+    animation: pulse-outer calc(20s / var(--animation-speed)) ease-in-out infinite;
+  }
+
+  [data-animate="true"] .glow-inner {
+    animation: pulse-inner calc(15s / var(--animation-speed)) ease-in-out infinite reverse;
+  }
+
+  @keyframes rotate-outer {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes rotate-inner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse-outer {
+    0%, 100% {
+      opacity: calc(0.5 * var(--intensity));
+      transform: scale(1);
+    }
+    50% {
+      opacity: calc(0.6 * var(--intensity));
+      transform: scale(1.03);
+    }
+  }
+
+  @keyframes pulse-inner {
+    0%, 100% {
+      opacity: calc(0.4 * var(--intensity));
+      transform: scale(1);
+    }
+    50% {
+      opacity: calc(0.5 * var(--intensity));
+      transform: scale(1.02);
+    }
+  }
+
+  /* Content overlay */
+  .arcs-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .arc-group,
+    .glow-layer {
+      animation: none !important;
+    }
+  }
+</style>

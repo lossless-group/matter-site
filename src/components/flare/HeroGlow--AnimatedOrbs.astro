@@ -1,0 +1,303 @@
+---
+/**
+ * HeroGlow--AnimatedOrbs
+ *
+ * Animated gradient orbs effect inspired by ascentivelab.com
+ * Creates a dreamy, floating glow effect with multiple blurred gradient spheres
+ * that slowly drift and pulse. Perfect for hero backgrounds.
+ *
+ * Features:
+ * - Multiple animated gradient orbs with configurable colors
+ * - Smooth floating/drifting animation
+ * - Heavy blur for soft glow effect
+ * - GPU-accelerated with will-change and transform
+ * - Fully responsive
+ */
+
+interface OrbConfig {
+  /** Color of the orb (hex or CSS color) */
+  color: string;
+  /** Size relative to container (0-1) */
+  size: number;
+  /** Starting X position (0-1, 0=left, 1=right) */
+  x: number;
+  /** Starting Y position (0-1, 0=top, 1=bottom) */
+  y: number;
+  /** Animation delay in seconds */
+  delay?: number;
+  /** Animation duration in seconds */
+  duration?: number;
+  /** Blur amount in pixels */
+  blur?: number;
+  /** Opacity (0-1) */
+  opacity?: number;
+}
+
+interface Props {
+  /** Container size - can be any CSS value */
+  size?: string;
+  /** Container height - if different from size */
+  height?: string;
+  /** Enable animations */
+  animate?: boolean;
+  /** Animation speed multiplier (1 = normal) */
+  animationSpeed?: number;
+  /** Custom orb configurations - overrides defaults */
+  orbs?: OrbConfig[];
+  /** Primary color for default orbs */
+  primaryColor?: string;
+  /** Secondary color for default orbs */
+  secondaryColor?: string;
+  /** Accent color for default orbs */
+  accentColor?: string;
+  /** Overall opacity multiplier */
+  opacity?: number;
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '100%',
+  height,
+  animate = true,
+  animationSpeed = 1,
+  orbs: customOrbs,
+  primaryColor = '#df7afe',  // Magenta/pink
+  secondaryColor = '#814ac8', // Purple
+  accentColor = '#6643e2',    // Deep purple (Dark Matter brand)
+  opacity = 1,
+  class: className = '',
+} = Astro.props;
+
+// Default orb configuration creates a balanced, dreamy effect
+const defaultOrbs: OrbConfig[] = [
+  // Large primary orb - upper left, slow drift
+  {
+    color: primaryColor,
+    size: 0.6,
+    x: 0.2,
+    y: 0.3,
+    delay: 0,
+    duration: 20,
+    blur: 80,
+    opacity: 0.6,
+  },
+  // Medium secondary orb - lower right, medium drift
+  {
+    color: secondaryColor,
+    size: 0.5,
+    x: 0.7,
+    y: 0.6,
+    delay: 2,
+    duration: 25,
+    blur: 70,
+    opacity: 0.5,
+  },
+  // Small accent orb - center, faster drift
+  {
+    color: accentColor,
+    size: 0.35,
+    x: 0.5,
+    y: 0.4,
+    delay: 4,
+    duration: 15,
+    blur: 60,
+    opacity: 0.4,
+  },
+  // Extra large background glow - very slow
+  {
+    color: secondaryColor,
+    size: 0.8,
+    x: 0.4,
+    y: 0.5,
+    delay: 1,
+    duration: 30,
+    blur: 120,
+    opacity: 0.25,
+  },
+];
+
+const orbConfigs = customOrbs || defaultOrbs;
+const containerId = `hero-glow-${Math.random().toString(36).slice(2, 9)}`;
+const containerHeight = height || size;
+---
+
+<div
+  id={containerId}
+  class:list={['hero-glow-container', className]}
+  style={`width: ${size}; height: ${containerHeight}; --animation-speed: ${animationSpeed}; --global-opacity: ${opacity};`}
+  data-animate={animate}
+>
+  {orbConfigs.map((orb, index) => {
+    const orbSize = `${orb.size * 100}%`;
+    const orbX = `${orb.x * 100}%`;
+    const orbY = `${orb.y * 100}%`;
+    const blur = orb.blur ?? 80;
+    const orbOpacity = orb.opacity ?? 0.5;
+    const duration = (orb.duration ?? 20) / animationSpeed;
+    const delay = orb.delay ?? 0;
+
+    return (
+      <div
+        class="glow-orb"
+        style={`
+          --orb-color: ${orb.color};
+          --orb-size: ${orbSize};
+          --orb-x: ${orbX};
+          --orb-y: ${orbY};
+          --orb-blur: ${blur}px;
+          --orb-opacity: ${orbOpacity};
+          --orb-duration: ${duration}s;
+          --orb-delay: ${delay}s;
+          --orb-index: ${index};
+        `}
+        data-orb-index={index}
+      />
+    );
+  })}
+
+  <!-- Optional slot for content overlay -->
+  <div class="glow-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .hero-glow-container {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .glow-orb {
+    position: absolute;
+    width: var(--orb-size);
+    aspect-ratio: 1;
+    left: var(--orb-x);
+    top: var(--orb-y);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle at center,
+      var(--orb-color) 0%,
+      color-mix(in srgb, var(--orb-color) 60%, transparent) 30%,
+      color-mix(in srgb, var(--orb-color) 20%, transparent) 60%,
+      transparent 80%
+    );
+    filter: blur(var(--orb-blur));
+    opacity: calc(var(--orb-opacity) * var(--global-opacity));
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  /* Animation keyframes - each orb gets a unique path */
+  [data-animate="true"] .glow-orb[data-orb-index="0"] {
+    animation: drift-0 var(--orb-duration) ease-in-out var(--orb-delay) infinite;
+  }
+
+  [data-animate="true"] .glow-orb[data-orb-index="1"] {
+    animation: drift-1 var(--orb-duration) ease-in-out var(--orb-delay) infinite;
+  }
+
+  [data-animate="true"] .glow-orb[data-orb-index="2"] {
+    animation: drift-2 var(--orb-duration) ease-in-out var(--orb-delay) infinite;
+  }
+
+  [data-animate="true"] .glow-orb[data-orb-index="3"] {
+    animation: drift-3 var(--orb-duration) ease-in-out var(--orb-delay) infinite;
+  }
+
+  /* Additional orbs (4-7) for custom configurations */
+  [data-animate="true"] .glow-orb[data-orb-index="4"] {
+    animation: drift-0 var(--orb-duration) ease-in-out var(--orb-delay) infinite reverse;
+  }
+
+  [data-animate="true"] .glow-orb[data-orb-index="5"] {
+    animation: drift-1 var(--orb-duration) ease-in-out var(--orb-delay) infinite reverse;
+  }
+
+  [data-animate="true"] .glow-orb[data-orb-index="6"] {
+    animation: drift-2 var(--orb-duration) ease-in-out var(--orb-delay) infinite reverse;
+  }
+
+  [data-animate="true"] .glow-orb[data-orb-index="7"] {
+    animation: drift-3 var(--orb-duration) ease-in-out var(--orb-delay) infinite reverse;
+  }
+
+  @keyframes drift-0 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(-50%, -50%) translate(8%, -12%) scale(1.05);
+    }
+    50% {
+      transform: translate(-50%, -50%) translate(-5%, 8%) scale(0.95);
+    }
+    75% {
+      transform: translate(-50%, -50%) translate(10%, 5%) scale(1.02);
+    }
+  }
+
+  @keyframes drift-1 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    }
+    25% {
+      transform: translate(-50%, -50%) translate(-10%, 6%) scale(0.98);
+    }
+    50% {
+      transform: translate(-50%, -50%) translate(12%, -8%) scale(1.03);
+    }
+    75% {
+      transform: translate(-50%, -50%) translate(-8%, -10%) scale(1);
+    }
+  }
+
+  @keyframes drift-2 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(-50%, -50%) translate(15%, 10%) scale(1.08);
+    }
+    66% {
+      transform: translate(-50%, -50%) translate(-12%, -5%) scale(0.92);
+    }
+  }
+
+  @keyframes drift-3 {
+    0%, 100% {
+      transform: translate(-50%, -50%) translate(0, 0) scale(1);
+    }
+    20% {
+      transform: translate(-50%, -50%) translate(-6%, 8%) scale(1.02);
+    }
+    40% {
+      transform: translate(-50%, -50%) translate(8%, -4%) scale(0.98);
+    }
+    60% {
+      transform: translate(-50%, -50%) translate(-4%, -10%) scale(1.04);
+    }
+    80% {
+      transform: translate(-50%, -50%) translate(6%, 6%) scale(0.96);
+    }
+  }
+
+  /* Content overlay */
+  .glow-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .glow-orb {
+      animation: none !important;
+    }
+  }
+</style>
