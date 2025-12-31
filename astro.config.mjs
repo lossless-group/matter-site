@@ -14,6 +14,17 @@ export default defineConfig({
   site: process.env.SITE_URL || 'https://matter-site.vercel.app',
   output: 'server',  // Enable SSR for authentication and protected routes
   adapter: vercel(),
+  markdown: {
+    shikiConfig: {
+      // Dual themes to match matter-theme light/dark modes
+      themes: {
+        light: 'github-light',
+        dark: 'tokyo-night',
+      },
+      // Wrap long lines instead of horizontal scroll
+      wrap: true,
+    },
+  },
   vite: {
     plugins: vitePlugins,
     resolve: {

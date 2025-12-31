@@ -82,3 +82,28 @@ body {
   color: var(--color-foreground, var(--color-alabaster));
   font-family: var(--font-family-primary);
 }
+
+/* Shiki dual-theme switching for code blocks */
+[data-theme="matter"][data-mode="light"] .shiki,
+[data-theme="matter"][data-mode="light"] .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+[data-theme="matter"][data-mode="dark"] .shiki,
+[data-theme="matter"][data-mode="dark"] .shiki span,
+[data-theme="matter"][data-mode="vibrant"] .shiki,
+[data-theme="matter"][data-mode="vibrant"] .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* Code block base styling */
+pre.shiki {
+  padding: 1rem;
+  border-radius: var(--border-radius-lg);
+  overflow-x: auto;
+  font-family: var(--font-family-mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}

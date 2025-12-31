@@ -12,6 +12,7 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
+import rehypeShiki from '@shikijs/rehype';
 import rehypeStringify from 'rehype-stringify';
 
 // Get the ID from the URL
@@ -35,11 +36,17 @@ if (!entry) {
 
 const { data, body } = entry;
 
-// Process markdown to HTML
+// Process markdown to HTML with Shiki syntax highlighting
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
   .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeShiki, {
+    themes: {
+      light: 'github-light',
+      dark: 'tokyo-night',
+    },
+  })
   .use(rehypeStringify, { allowDangerousHtml: true });
 
 const htmlContent = String(await processor.process(body || ''));
