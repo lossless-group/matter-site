@@ -8,6 +8,7 @@ import HeroGlowAnimatedOrbs from '@components/flare/HeroGlow--AnimatedOrbs.astro
 import HeroGlowEventHorizon from '@components/flare/HeroGlow--EventHorizon.astro';
 import HeroGlowQuarteredRing from '@components/flare/HeroGlow--QuarteredRing.astro';
 import HeroGlowPerpendicularArcs from '@components/flare/HeroGlow--PerpendicularArcs.astro';
+import HeroGlowNucleusPulse from '@components/flare/HeroGlow--NucleusPulse.astro';
 ---
 
 <BaseThemeLayout
@@ -32,6 +33,8 @@ import HeroGlowPerpendicularArcs from '@components/flare/HeroGlow--Perpendicular
       <a href="#quartered-ring" class="hover:text-(--color-lilac) transition-colors">Quartered Ring</a>
       <span>|</span>
       <a href="#perpendicular-arcs" class="hover:text-(--color-lilac) transition-colors">Perpendicular Arcs</a>
+      <span>|</span>
+      <a href="#nucleus-pulse" class="hover:text-(--color-lilac) transition-colors">Nucleus Pulse</a>
     </div>
   </section>
 
@@ -403,6 +406,100 @@ import HeroGlowPerpendicularArcs from '@components/flare/HeroGlow--Perpendicular
       <div class="text-center">
         <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black">
           <HeroGlowPerpendicularArcs
+            size="100%"
+            height="100%"
+            animate={false}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Static (no animation)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HeroGlow Nucleus Pulse -->
+  <section id="nucleus-pulse" class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void) relative overflow-hidden">
+    <div class="absolute inset-0">
+      <HeroGlowNucleusPulse size="100%" height="100%" glowSize="500px" />
+    </div>
+
+    <div class="relative z-10 text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold text-(--color-alabaster) mb-4">
+        HeroGlow--NucleusPulse
+      </h2>
+      <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md mx-auto">
+        Simple pulsing radial glow centered behind content.
+        Extracted from the "Orbital Cosmos" hero section.
+      </p>
+    </div>
+  </section>
+
+  <!-- Nucleus Pulse Variants -->
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 py-20 bg-(--color-void)">
+    <h2 class="text-3xl sm:text-4xl font-bold text-(--color-alabaster) mb-4">
+      Nucleus Pulse Variants
+    </h2>
+    <p class="text-(--color-lilac)/70 mb-12 text-center max-w-md">
+      Different colors, sizes, and blur amounts.
+    </p>
+
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl w-full">
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowNucleusPulse size="100%" height="100%" />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Default (Purple)</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowNucleusPulse
+            size="100%"
+            height="100%"
+            color="#00d4ff"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Cyan variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowNucleusPulse
+            size="100%"
+            height="100%"
+            color="#f472b6"
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Pink variant</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowNucleusPulse
+            size="100%"
+            height="100%"
+            glowSize="400px"
+            blur={100}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Large & extra blurry</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowNucleusPulse
+            size="100%"
+            height="100%"
+            glowSize="150px"
+            blur={30}
+            opacity={0.9}
+          />
+        </div>
+        <p class="text-sm text-(--color-alabaster)/60">Small & tight</p>
+      </div>
+
+      <div class="text-center">
+        <div class="relative w-full h-[300px] rounded-xl overflow-hidden border border-(--color-lilac)/20 mb-4 bg-black flex items-center justify-center">
+          <HeroGlowNucleusPulse
             size="100%"
             height="100%"
             animate={false}
