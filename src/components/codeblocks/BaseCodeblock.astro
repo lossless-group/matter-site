@@ -192,22 +192,21 @@ const { code, lang = 'text' } = Astro.props;
     opacity: 0.8;
   }
 
-  /* Light mode adjustments */
+  /* Light mode adjustments - keep code blocks dark for contrast */
   :global([data-mode="light"]) .codeblock-container {
-    border-color: var(--color-border, rgba(0, 0, 0, 0.1));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   }
 
   :global([data-mode="light"]) .codeblock-header {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+    background: rgba(0, 0, 0, 0.6);
   }
 
   :global([data-mode="light"]) .codeblock-content {
-    background: #fafafa;
+    background: #1a1b26; /* tokyo-night background */
   }
 
   :global([data-mode="light"]) .copy-button {
-    color: var(--color-foreground, #050516);
+    color: var(--color-foreground, #F9FAFB);
   }
 </style>
