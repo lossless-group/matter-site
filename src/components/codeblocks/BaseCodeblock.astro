@@ -1,0 +1,213 @@
+---
+/**
+ * BaseCodeblock.astro
+ *
+ * Base component for rendering code blocks with syntax highlighting and copy button.
+ * Uses Astro's built-in <Code /> component which leverages Shiki.
+ * Styled to match the matter-theme design system.
+ *
+ * @component
+ * @example
+ * <BaseCodeblock code="console.log('hello')" lang="js" />
+ */
+
+import { Code } from 'astro/components';
+
+interface Props {
+  code: string;
+  lang?: string;
+}
+
+const { code, lang = 'text' } = Astro.props;
+---
+
+<div class="codeblock-container">
+  <div class="codeblock-header">
+    <span class="codeblock-language">{lang}</span>
+    <button class="copy-button" aria-label="Copy code to clipboard">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span class="copy-label">Copy</span>
+    </button>
+  </div>
+
+  <div class="codeblock-content">
+    <Code code={code} lang={lang as any} theme="tokyo-night" />
+  </div>
+
+  <slot />
+</div>
+
+<script>
+  // Find all copy buttons and add click handlers
+  document.querySelectorAll('.codeblock-container .copy-button').forEach(button => {
+    button.addEventListener('click', async () => {
+      const container = button.closest('.codeblock-container');
+      if (!container) return;
+
+      const codeElement = container.querySelector('pre code');
+      if (!codeElement) return;
+
+      try {
+        await navigator.clipboard.writeText(codeElement.textContent || '');
+        button.classList.add('copied');
+        const label = button.querySelector('.copy-label');
+        if (label) label.textContent = 'Copied!';
+
+        setTimeout(() => {
+          button.classList.remove('copied');
+          if (label) label.textContent = 'Copy';
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+  });
+</script>
+
+<style>
+  .codeblock-container {
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: var(--border-radius-lg, 0.5rem);
+    overflow: hidden;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .codeblock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-family: var(--font-family-mono, monospace);
+    font-size: 0.65rem;
+    min-height: 1.5rem;
+  }
+
+  .codeblock-language {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-lilac, #9C85DF);
+    letter-spacing: 0.08em;
+    opacity: 0.8;
+  }
+
+  .copy-button {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: transparent;
+    border: none;
+    color: var(--color-foreground, #F9FAFB);
+    opacity: 0.4;
+    cursor: pointer;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+    font-family: var(--font-family-mono, monospace);
+    font-size: 0.6rem;
+  }
+
+  .copy-button svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .copy-button:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .copy-button.copied {
+    color: var(--color-lilac, #9C85DF);
+    opacity: 1;
+  }
+
+  .copy-label {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .copy-label {
+      display: inline;
+    }
+  }
+
+  /* Code content area */
+  .codeblock-content {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--color-surface, #111827);
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  /* Override Shiki pre/code styles */
+  .codeblock-content :global(pre) {
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    font-family: var(--font-family-mono, monospace);
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .codeblock-content :global(code) {
+    font-family: inherit;
+    font-size: inherit;
+    background: transparent !important;
+  }
+
+  /* Hide any duplicate language indicators from Shiki */
+  .codeblock-content :global(pre::before),
+  .codeblock-content :global(code::before),
+  .codeblock-content :global(.shiki::before) {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* Scrollbar styling */
+  .codeblock-content::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .codeblock-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .codeblock-content::-webkit-scrollbar-thumb {
+    background: var(--color-lilac, #9C85DF);
+    opacity: 0.5;
+    border-radius: 4px;
+  }
+
+  .codeblock-content::-webkit-scrollbar-thumb:hover {
+    opacity: 0.8;
+  }
+
+  /* Light mode adjustments */
+  :global([data-mode="light"]) .codeblock-container {
+    border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  :global([data-mode="light"]) .codeblock-header {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+  }
+
+  :global([data-mode="light"]) .codeblock-content {
+    background: #fafafa;
+  }
+
+  :global([data-mode="light"]) .copy-button {
+    color: var(--color-foreground, #050516);
+  }
+</style>

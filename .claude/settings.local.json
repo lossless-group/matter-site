@@ -19,7 +19,8 @@
       "Bash(sips:*)",
       "Bash(cat:*)",
       "Bash(git commit:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "WebFetch(domain:shiki.style)"
     ],
     "deny": [],
     "ask": []

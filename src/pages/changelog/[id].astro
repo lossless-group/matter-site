@@ -7,6 +7,7 @@
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import ClaudeTrademark from '@components/icons/ClaudeTrademark.astro';
+import CodeblockWrapper from '@components/codeblocks/CodeblockWrapper.astro';
 import { getCollection } from 'astro:content';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
@@ -46,6 +47,8 @@ const processor = unified()
       light: 'github-light',
       dark: 'tokyo-night',
     },
+    // Add language as data attribute for the wrapper to detect
+    addLanguageClass: true,
   })
   .use(rehypeStringify, { allowDangerousHtml: true });
 
@@ -132,7 +135,9 @@ const categoryStyle = categoryColors[data.category || ''] || categoryColors.Feat
       </header>
 
       <!-- Content -->
-      <div class="entry-content prose" set:html={htmlContent} />
+      <CodeblockWrapper>
+        <div class="entry-content prose" set:html={htmlContent} />
+      </CodeblockWrapper>
 
       <!-- Footer -->
       <footer class="entry-footer">
