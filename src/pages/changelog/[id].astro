@@ -7,7 +7,7 @@
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
 import ClaudeTrademark from '@components/icons/ClaudeTrademark.astro';
-import CodeblockWrapper from '@components/codeblocks/CodeblockWrapper.astro';
+import ContentEnhancer from '@components/content/ContentEnhancer.astro';
 import { getCollection } from 'astro:content';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
@@ -135,9 +135,9 @@ const categoryStyle = categoryColors[data.category || ''] || categoryColors.Feat
       </header>
 
       <!-- Content -->
-      <CodeblockWrapper>
+      <ContentEnhancer>
         <div class="entry-content prose" set:html={htmlContent} />
-      </CodeblockWrapper>
+      </ContentEnhancer>
 
       <!-- Footer -->
       <footer class="entry-footer">

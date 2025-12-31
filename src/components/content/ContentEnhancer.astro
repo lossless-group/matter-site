@@ -1,0 +1,344 @@
+---
+/**
+ * ContentEnhancer.astro
+ *
+ * Wraps HTML content and enhances:
+ * - Code blocks: Adds compact header with language label and copy button
+ * - Mermaid diagrams: Renders ```mermaid blocks as diagrams
+ *
+ * Combines functionality of CodeblockWrapper and MermaidWrapper
+ * into a single component for markdown content.
+ *
+ * @component
+ * @example
+ * <ContentEnhancer>
+ *   <div set:html={htmlContent} />
+ * </ContentEnhancer>
+ */
+
+interface Props {
+  /** Enable code block enhancement */
+  enhanceCodeblocks?: boolean;
+  /** Enable Mermaid diagram rendering */
+  enableMermaid?: boolean;
+  /** Mermaid theme */
+  mermaidTheme?: 'dark' | 'default' | 'neutral' | 'forest' | 'base';
+}
+
+const {
+  enhanceCodeblocks = true,
+  enableMermaid = true,
+  mermaidTheme = 'dark',
+} = Astro.props;
+---
+
+<div class="content-enhanced" data-enhance-code={enhanceCodeblocks} data-enable-mermaid={enableMermaid}>
+  <slot />
+</div>
+
+<script define:vars={{ mermaidTheme, enhanceCodeblocks, enableMermaid }}>
+  const container = document.querySelector('.content-enhanced');
+  if (!container) throw new Error('ContentEnhancer: container not found');
+
+  // ─────────────────────────────────────────────────────────────
+  // Code Block Enhancement
+  // ─────────────────────────────────────────────────────────────
+  function enhanceCodeblocks() {
+    if (!enhanceCodeblocks) return;
+
+    container.querySelectorAll('pre').forEach((pre) => {
+      // Skip mermaid blocks
+      if (pre.classList.contains('mermaid')) return;
+      // Skip if already enhanced
+      if (pre.closest('.codeblock-container')) return;
+
+      // Detect language
+      const code = pre.querySelector('code');
+      let lang = 'text';
+
+      if (code?.dataset?.language) {
+        lang = code.dataset.language;
+      } else if (pre.dataset?.language) {
+        lang = pre.dataset.language;
+      } else if (code) {
+        const langClass = Array.from(code.classList).find((c) => c.startsWith('language-'));
+        if (langClass) lang = langClass.replace('language-', '');
+      }
+
+      // Skip mermaid (will be handled separately)
+      if (lang === 'mermaid') {
+        pre.classList.add('mermaid');
+        if (code) pre.textContent = code.textContent;
+        return;
+      }
+
+      // Create wrapper
+      const wrapper = document.createElement('div');
+      wrapper.className = 'codeblock-container';
+      wrapper.innerHTML = `
+        <div class="codeblock-header">
+          <span class="codeblock-language">${lang}</span>
+          <button class="copy-button" aria-label="Copy code to clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="copy-label">Copy</span>
+          </button>
+        </div>
+        <div class="codeblock-content"></div>
+      `;
+
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.querySelector('.codeblock-content')?.appendChild(pre);
+
+      // Copy functionality
+      const copyBtn = wrapper.querySelector('.copy-button');
+      copyBtn?.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.textContent || '');
+          copyBtn.classList.add('copied');
+          const label = copyBtn.querySelector('.copy-label');
+          if (label) label.textContent = 'Copied!';
+          setTimeout(() => {
+            copyBtn.classList.remove('copied');
+            if (label) label.textContent = 'Copy';
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Mermaid Diagram Rendering
+  // ─────────────────────────────────────────────────────────────
+  function initMermaid() {
+    if (!enableMermaid) return;
+
+    // Check if there are any mermaid blocks
+    const mermaidBlocks = container.querySelectorAll('pre.mermaid, pre code.language-mermaid');
+    if (mermaidBlocks.length === 0) return;
+
+    // Convert language-mermaid code blocks
+    container.querySelectorAll('pre code.language-mermaid').forEach((code) => {
+      const pre = code.parentElement;
+      if (pre && pre.tagName === 'PRE') {
+        pre.textContent = code.textContent;
+        pre.classList.add('mermaid');
+        pre.classList.remove('shiki');
+      }
+    });
+
+    // Load and initialize Mermaid
+    import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+      .then(({ default: mermaid }) => {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: mermaidTheme,
+          securityLevel: 'loose',
+          themeVariables: mermaidTheme === 'dark' ? {
+            primaryColor: '#6643e2',
+            primaryTextColor: '#F9FAFB',
+            primaryBorderColor: '#9C85DF',
+            lineColor: '#9C85DF',
+            secondaryColor: '#1a1b26',
+            tertiaryColor: '#0F0923',
+            background: '#0F0923',
+            mainBkg: '#1a1b26',
+            nodeBorder: '#9C85DF',
+            clusterBkg: '#1a1b26',
+            clusterBorder: '#6643e2',
+            titleColor: '#F9FAFB',
+            edgeLabelBackground: '#1a1b26',
+            textColor: '#F9FAFB',
+          } : {},
+        });
+
+        mermaid.run({
+          querySelector: '.content-enhanced pre.mermaid',
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to load Mermaid:', err);
+      });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Initialize
+  // ─────────────────────────────────────────────────────────────
+  function init() {
+    enhanceCodeblocks();
+    initMermaid();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+
+<style is:global>
+  /* ─────────────────────────────────────────────────────────────
+   * Code Block Styles
+   * ───────────────────────────────────────────────────────────── */
+  .content-enhanced .codeblock-container {
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: var(--border-radius-lg, 0.5rem);
+    overflow: hidden;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .content-enhanced .codeblock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-family: var(--font-family-mono, monospace);
+    font-size: 0.65rem;
+    min-height: 1.5rem;
+  }
+
+  .content-enhanced .codeblock-language {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-lilac, #9C85DF);
+    letter-spacing: 0.08em;
+    opacity: 0.8;
+  }
+
+  .content-enhanced .copy-button {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: transparent;
+    border: none;
+    color: var(--color-foreground, #F9FAFB);
+    opacity: 0.4;
+    cursor: pointer;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    transition: all 0.15s ease;
+    font-family: var(--font-family-mono, monospace);
+    font-size: 0.6rem;
+  }
+
+  .content-enhanced .copy-button:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .content-enhanced .copy-button.copied {
+    color: var(--color-lilac, #9C85DF);
+    opacity: 1;
+  }
+
+  .content-enhanced .copy-label {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .content-enhanced .copy-label {
+      display: inline;
+    }
+  }
+
+  .content-enhanced .codeblock-content {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--color-surface, #111827);
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  .content-enhanced .codeblock-content pre {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .content-enhanced .codeblock-content pre code {
+    font-family: var(--font-family-mono, monospace);
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+   * Mermaid Diagram Styles
+   * ───────────────────────────────────────────────────────────── */
+  .content-enhanced pre.mermaid {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--color-surface, #111827);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-lg, 0.5rem);
+    overflow-x: auto;
+    text-align: center;
+  }
+
+  /* Hide raw mermaid code while rendering */
+  .content-enhanced pre.mermaid:not([data-processed="true"]) {
+    color: transparent;
+    min-height: 100px;
+  }
+
+  .content-enhanced pre.mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+   * Light Mode - Keep dark backgrounds for contrast
+   * ───────────────────────────────────────────────────────────── */
+  :global([data-mode="light"]) .content-enhanced .codeblock-container {
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  :global([data-mode="light"]) .content-enhanced .codeblock-header {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  :global([data-mode="light"]) .content-enhanced .codeblock-content {
+    background: #1a1b26;
+  }
+
+  :global([data-mode="light"]) .content-enhanced .copy-button {
+    color: #F9FAFB;
+  }
+
+  :global([data-mode="light"]) .content-enhanced pre.mermaid {
+    background: #1a1b26;
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Scrollbar styling */
+  .content-enhanced .codeblock-content::-webkit-scrollbar,
+  .content-enhanced pre.mermaid::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+
+  .content-enhanced .codeblock-content::-webkit-scrollbar-track,
+  .content-enhanced pre.mermaid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .content-enhanced .codeblock-content::-webkit-scrollbar-thumb,
+  .content-enhanced pre.mermaid::-webkit-scrollbar-thumb {
+    background: var(--color-lilac, #9C85DF);
+    opacity: 0.3;
+    border-radius: 3px;
+  }
+</style>

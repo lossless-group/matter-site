@@ -1,0 +1,111 @@
+---
+/**
+ * MermaidDiagram.astro
+ *
+ * Renders Mermaid diagrams using the client-side JavaScript API.
+ * Uses the dark theme by default to match matter-theme aesthetics.
+ *
+ * @component
+ * @example
+ * <MermaidDiagram>
+ *   graph TD
+ *     A[Start] --> B[Process]
+ *     B --> C[End]
+ * </MermaidDiagram>
+ *
+ * @example
+ * <MermaidDiagram chart={`
+ *   sequenceDiagram
+ *     Alice->>Bob: Hello
+ *     Bob->>Alice: Hi
+ * `} />
+ */
+
+interface Props {
+  /** Diagram code (alternative to using slot) */
+  chart?: string;
+  /** Mermaid theme: 'dark' | 'default' | 'neutral' | 'forest' | 'base' */
+  theme?: 'dark' | 'default' | 'neutral' | 'forest' | 'base';
+  /** Optional title for accessibility */
+  title?: string;
+}
+
+const { chart, theme = 'dark', title } = Astro.props;
+---
+
+<div class="mermaid-container" role="img" aria-label={title || 'Diagram'}>
+  {chart ? (
+    <pre class="mermaid">{chart}</pre>
+  ) : (
+    <pre class="mermaid"><slot /></pre>
+  )}
+</div>
+
+<script define:vars={{ theme }}>
+  // Initialize Mermaid on first component load
+  if (!window.__mermaidInitialized) {
+    window.__mermaidInitialized = true;
+
+    // Import and initialize Mermaid
+    import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+      .then(({ default: mermaid }) => {
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: theme,
+          securityLevel: 'loose',
+          // Custom theme variables for matter-theme integration
+          themeVariables: theme === 'dark' ? {
+            primaryColor: '#6643e2',
+            primaryTextColor: '#F9FAFB',
+            primaryBorderColor: '#9C85DF',
+            lineColor: '#9C85DF',
+            secondaryColor: '#1a1b26',
+            tertiaryColor: '#0F0923',
+            background: '#0F0923',
+            mainBkg: '#1a1b26',
+            nodeBorder: '#9C85DF',
+            clusterBkg: '#1a1b26',
+            clusterBorder: '#6643e2',
+            titleColor: '#F9FAFB',
+            edgeLabelBackground: '#1a1b26',
+            textColor: '#F9FAFB',
+          } : {},
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to load Mermaid:', err);
+      });
+  }
+</script>
+
+<style>
+  .mermaid-container {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--color-surface, #111827);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-lg, 0.5rem);
+    overflow-x: auto;
+  }
+
+  .mermaid-container pre.mermaid {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    text-align: center;
+  }
+
+  /* Center the rendered SVG */
+  .mermaid-container :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Light mode adjustments - keep diagram container dark for consistency */
+  :global([data-mode="light"]) .mermaid-container {
+    background: #1a1b26;
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+</style>

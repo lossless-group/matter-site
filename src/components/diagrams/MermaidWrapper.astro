@@ -1,0 +1,140 @@
+---
+/**
+ * MermaidWrapper.astro
+ *
+ * Wraps HTML content and initializes Mermaid to render any
+ * <pre class="mermaid"> or ```mermaid code blocks.
+ *
+ * Use alongside or instead of CodeblockWrapper for content
+ * that may contain Mermaid diagrams.
+ *
+ * @component
+ * @example
+ * <MermaidWrapper>
+ *   <div set:html={htmlContent} />
+ * </MermaidWrapper>
+ */
+
+interface Props {
+  /** Mermaid theme: 'dark' | 'default' | 'neutral' | 'forest' | 'base' */
+  theme?: 'dark' | 'default' | 'neutral' | 'forest' | 'base';
+}
+
+const { theme = 'dark' } = Astro.props;
+---
+
+<div class="mermaid-wrapper">
+  <slot />
+</div>
+
+<script define:vars={{ theme }}>
+  // Convert code blocks with language-mermaid to mermaid class
+  function prepareMermaidBlocks() {
+    const wrapper = document.querySelector('.mermaid-wrapper');
+    if (!wrapper) return;
+
+    // Find code blocks that should be mermaid diagrams
+    // Pattern 1: <pre><code class="language-mermaid">
+    wrapper.querySelectorAll('pre code.language-mermaid').forEach((code) => {
+      const pre = code.parentElement;
+      if (pre && pre.tagName === 'PRE') {
+        // Move content to pre and add mermaid class
+        pre.textContent = code.textContent;
+        pre.classList.add('mermaid');
+        pre.classList.remove('shiki'); // Remove shiki styling if present
+      }
+    });
+
+    // Pattern 2: Already has <pre class="mermaid">
+    // These are ready to go
+
+    // Pattern 3: <pre data-language="mermaid">
+    wrapper.querySelectorAll('pre[data-language="mermaid"]').forEach((pre) => {
+      pre.classList.add('mermaid');
+      pre.classList.remove('shiki');
+      // Get just the text content without code wrapper
+      const code = pre.querySelector('code');
+      if (code) {
+        pre.textContent = code.textContent;
+      }
+    });
+  }
+
+  // Initialize Mermaid
+  function initMermaid() {
+    import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')
+      .then(({ default: mermaid }) => {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: theme,
+          securityLevel: 'loose',
+          themeVariables: theme === 'dark' ? {
+            primaryColor: '#6643e2',
+            primaryTextColor: '#F9FAFB',
+            primaryBorderColor: '#9C85DF',
+            lineColor: '#9C85DF',
+            secondaryColor: '#1a1b26',
+            tertiaryColor: '#0F0923',
+            background: '#0F0923',
+            mainBkg: '#1a1b26',
+            nodeBorder: '#9C85DF',
+            clusterBkg: '#1a1b26',
+            clusterBorder: '#6643e2',
+            titleColor: '#F9FAFB',
+            edgeLabelBackground: '#1a1b26',
+            textColor: '#F9FAFB',
+          } : {},
+        });
+
+        // Prepare blocks first
+        prepareMermaidBlocks();
+
+        // Then run mermaid
+        mermaid.run({
+          querySelector: '.mermaid-wrapper .mermaid',
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to load Mermaid:', err);
+      });
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMermaid);
+  } else {
+    initMermaid();
+  }
+</script>
+
+<style is:global>
+  /* Style mermaid containers within the wrapper */
+  .mermaid-wrapper pre.mermaid {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: var(--color-surface, #111827);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-lg, 0.5rem);
+    overflow-x: auto;
+    text-align: center;
+  }
+
+  /* Hide raw mermaid code while rendering */
+  .mermaid-wrapper pre.mermaid:not([data-processed="true"]) {
+    color: transparent;
+    min-height: 100px;
+  }
+
+  /* Center the rendered SVG */
+  .mermaid-wrapper pre.mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Light mode - keep dark background for consistency with code blocks */
+  :global([data-mode="light"]) .mermaid-wrapper pre.mermaid {
+    background: #1a1b26;
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+</style>
