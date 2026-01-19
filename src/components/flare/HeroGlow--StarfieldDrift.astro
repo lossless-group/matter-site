@@ -1,0 +1,287 @@
+---
+/**
+ * HeroGlow--StarfieldDrift
+ *
+ * A starfield effect with particles scattered randomly, all drifting toward the center,
+ * like looking backward through a Star Wars hyperspace window.
+ *
+ * Features:
+ * - Multiple layers of star particles at different speeds
+ * - Stars scattered randomly throughout, drifting toward center
+ * - Varying sizes and opacities for depth
+ * - Transparent background (overlay only)
+ * - Respects prefers-reduced-motion
+ *
+ * Inspired by: ascentivelab.com hero animation
+ */
+
+interface Props {
+  /** Container size - can be any CSS value */
+  size?: string;
+  /** Container height - if different from size */
+  height?: string;
+  /** Enable animations */
+  animate?: boolean;
+  /** Animation speed multiplier (1 = normal, higher = faster) */
+  animationSpeed?: number;
+  /** Star color */
+  starColor?: string;
+  /** Density: 'sparse' | 'normal' | 'dense' */
+  density?: 'sparse' | 'normal' | 'dense';
+  /** Additional CSS classes */
+  class?: string;
+}
+
+const {
+  size = '100%',
+  height,
+  animate = true,
+  animationSpeed = 1,
+  starColor = '#ffffff',
+  density = 'normal',
+  class: className = '',
+} = Astro.props;
+
+const containerId = `starfield-drift-${Math.random().toString(36).slice(2, 9)}`;
+const containerHeight = height || size;
+---
+
+<div
+  id={containerId}
+  class:list={['starfield-drift-container', `density-${density}`, className]}
+  style={`
+    width: ${size};
+    height: ${containerHeight};
+    --star-color: ${starColor};
+    --animation-speed: ${animationSpeed};
+  `}
+  data-animate={animate}
+>
+  <!-- Star layers - each layer has different speed, size, and animation offset -->
+  <div class="star-layer layer-1"></div>
+  <div class="star-layer layer-2"></div>
+  <div class="star-layer layer-3"></div>
+  <div class="star-layer layer-4"></div>
+  <div class="star-layer layer-5"></div>
+  <div class="star-layer layer-6"></div>
+
+  <!-- Content slot -->
+  <div class="starfield-content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .starfield-drift-container {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Star layer base */
+  .star-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transform-origin: center center;
+  }
+
+  /* Layer 1 - Scattered randomly, larger stars */
+  .layer-1 {
+    background-image:
+      radial-gradient(2px 2px at 23% 18%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 67% 34%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(2px 2px at 41% 72%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 82% 56%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(2px 2px at 15% 81%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 58% 12%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(2px 2px at 91% 23%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 34% 45%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(2px 2px at 76% 88%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 8% 52%, var(--star-color) 50%, transparent 100%);
+    opacity: 0.85;
+  }
+
+  /* Layer 2 - Different positions, medium stars */
+  .layer-2 {
+    background-image:
+      radial-gradient(1.5px 1.5px at 47% 28%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 18% 63%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 73% 15%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 29% 84%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 86% 41%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 52% 67%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 11% 32%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 64% 91%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 38% 8%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 95% 73%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 6% 19%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 79% 52%, var(--star-color) 50%, transparent 100%);
+    opacity: 0.7;
+  }
+
+  /* Layer 3 - Small stars scattered */
+  .layer-3 {
+    background-image:
+      radial-gradient(1px 1px at 33% 41%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 71% 22%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 14% 76%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 88% 58%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 45% 93%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 62% 7%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 27% 35%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 83% 81%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 9% 47%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 56% 64%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 39% 16%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 94% 29%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 21% 88%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(1px 1px at 68% 45%, var(--star-color) 50%, transparent 100%);
+    opacity: 0.6;
+  }
+
+  /* Layer 4 - Tiny distant stars */
+  .layer-4 {
+    background-image:
+      radial-gradient(0.5px 0.5px at 54% 33%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 19% 58%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 77% 71%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 42% 14%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 91% 86%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 31% 67%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 66% 39%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 8% 24%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 85% 12%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 48% 82%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 23% 46%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 72% 93%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 37% 5%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 96% 51%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 12% 78%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 59% 27%, var(--star-color) 50%, transparent 100%);
+    opacity: 0.45;
+  }
+
+  /* Layer 5 - Extra tiny, more scattered */
+  .layer-5 {
+    background-image:
+      radial-gradient(0.5px 0.5px at 16% 42%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 63% 18%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 35% 79%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 81% 34%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 7% 91%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 49% 56%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 92% 68%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 28% 23%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 74% 84%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 41% 37%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 87% 9%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 22% 61%, var(--star-color) 50%, transparent 100%);
+    opacity: 0.35;
+  }
+
+  /* Layer 6 - Faintest layer */
+  .layer-6 {
+    background-image:
+      radial-gradient(0.5px 0.5px at 44% 52%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 78% 26%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 13% 69%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 56% 88%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 89% 43%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 31% 11%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 67% 75%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 4% 38%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 52% 96%, var(--star-color) 50%, transparent 100%),
+      radial-gradient(0.5px 0.5px at 83% 17%, var(--star-color) 50%, transparent 100%);
+    opacity: 0.25;
+  }
+
+  /* Density variants */
+  .density-sparse .layer-4,
+  .density-sparse .layer-5,
+  .density-sparse .layer-6 {
+    display: none;
+  }
+
+  .density-normal .layer-5,
+  .density-normal .layer-6 {
+    display: none;
+  }
+
+  /* Animations - each layer has different timing and offset for organic feel */
+  [data-animate="true"] .layer-1 {
+    animation: drift-inward calc(15s / var(--animation-speed)) linear infinite;
+  }
+
+  [data-animate="true"] .layer-2 {
+    animation: drift-inward calc(18s / var(--animation-speed)) linear infinite;
+    animation-delay: calc(-6s / var(--animation-speed));
+  }
+
+  [data-animate="true"] .layer-3 {
+    animation: drift-inward calc(22s / var(--animation-speed)) linear infinite;
+    animation-delay: calc(-11s / var(--animation-speed));
+  }
+
+  [data-animate="true"] .layer-4 {
+    animation: drift-inward calc(28s / var(--animation-speed)) linear infinite;
+    animation-delay: calc(-4s / var(--animation-speed));
+  }
+
+  [data-animate="true"] .layer-5 {
+    animation: drift-inward calc(35s / var(--animation-speed)) linear infinite;
+    animation-delay: calc(-17s / var(--animation-speed));
+  }
+
+  [data-animate="true"] .layer-6 {
+    animation: drift-inward calc(42s / var(--animation-speed)) linear infinite;
+    animation-delay: calc(-25s / var(--animation-speed));
+  }
+
+  /* Single unified drift animation - scale from large to small toward center */
+  @keyframes drift-inward {
+    0% {
+      transform: scale(2);
+      opacity: 0;
+    }
+    5% {
+      opacity: var(--layer-opacity, 0.6);
+    }
+    85% {
+      opacity: calc(var(--layer-opacity, 0.6) * 0.5);
+    }
+    100% {
+      transform: scale(0.1);
+      opacity: 0;
+    }
+  }
+
+  /* Set layer-specific opacities */
+  .layer-1 { --layer-opacity: 0.85; }
+  .layer-2 { --layer-opacity: 0.7; }
+  .layer-3 { --layer-opacity: 0.6; }
+  .layer-4 { --layer-opacity: 0.45; }
+  .layer-5 { --layer-opacity: 0.35; }
+  .layer-6 { --layer-opacity: 0.25; }
+
+  /* Content overlay */
+  .starfield-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .star-layer {
+      animation: none !important;
+      transform: scale(1);
+    }
+  }
+</style>

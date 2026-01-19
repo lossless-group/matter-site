@@ -21,7 +21,8 @@
       "Bash(git commit:*)",
       "Bash(git fetch:*)",
       "WebFetch(domain:shiki.style)",
-      "WebFetch(domain:mermaid.js.org)"
+      "WebFetch(domain:mermaid.js.org)",
+      "WebFetch(domain:ascentivelab.com)"
     ],
     "deny": [],
     "ask": []

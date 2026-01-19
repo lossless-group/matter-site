@@ -1,0 +1,33 @@
+---
+import FlarePageLayout from '@layouts/FlarePageLayout.astro';
+import StarfieldDrift from '@components/flare/HeroGlow--StarfieldDrift.astro';
+---
+
+<FlarePageLayout
+  title="Starfield Drift"
+  description="Distant stars drifting from the edges toward the center, like reverse hyperspace."
+  currentSlug="starfield-drift"
+>
+  <StarfieldDrift size="100%" height="100%" density="dense" animationSpeed={2} />
+
+  <div slot="variants" class="grid gap-6 sm:grid-cols-3 mt-8">
+    <div class="text-center">
+      <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-(--color-lilac)/20 mb-3">
+        <StarfieldDrift size="100%" height="100%" density="normal" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Normal density</p>
+    </div>
+    <div class="text-center">
+      <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-(--color-lilac)/20 mb-3">
+        <StarfieldDrift size="100%" height="100%" density="sparse" starColor="#9C85DF" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Sparse + Lilac</p>
+    </div>
+    <div class="text-center">
+      <div class="relative w-full aspect-video rounded-lg overflow-hidden border border-(--color-lilac)/20 mb-3">
+        <StarfieldDrift size="100%" height="100%" animate={false} density="dense" />
+      </div>
+      <p class="text-sm text-(--color-alabaster)/60">Static (dense)</p>
+    </div>
+  </div>
+</FlarePageLayout>
