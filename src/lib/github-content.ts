@@ -829,13 +829,23 @@ export async function fetchMemoBySlug(
   let result: GitHubContentResult | null = null;
 
   if (useLocal) {
-    // Local mode: read from orchestrator deals directory
+    // Local mode: try orchestrator deals directory first, then fallback to local markdown-memos
     result = await fetchLocalMemoContent(slug, baseDir);
+    if (!result) {
+      console.log(`[github-content:local] Trying fallback to src/content/markdown-memos/`);
+      result = await fetchLocalContent(slug);
+    }
   } else {
     // GitHub mode: derive path from slug or use explicit path
     const path = githubPath || deriveGitHubPathFromSlug(slug, baseDir);
     console.log(`[github-content] Fetching from derived path: ${path}`);
     result = await fetchGitHubContent({ path });
+
+    // Fallback to local markdown-memos if GitHub fetch fails (for development/testing)
+    if (!result) {
+      console.log(`[github-content] GitHub fetch failed, trying local fallback`);
+      result = await fetchLocalContent(slug);
+    }
   }
 
   if (!result) {

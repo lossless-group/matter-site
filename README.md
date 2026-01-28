@@ -615,6 +615,39 @@ To reduce GitHub API calls:
 - **Content cache**: 5 minutes TTL
 - **Latest memo cache**: 10 minutes TTL
 
+### Markdown Rendering Pipeline
+
+Memos use the same full-featured markdown pipeline as changelog entries:
+
+- **GitHub Flavored Markdown** — Tables, strikethrough, task lists
+- **Shiki syntax highlighting** — Dual themes (github-light/tokyo-night)
+- **Mermaid diagrams** — Rendered client-side with Dark Matter theming
+- **ContentEnhancer** — Code block headers with copy buttons
+
+### Citation Support
+
+Memos support the hex-code citation system. Add citations to frontmatter:
+
+```yaml
+---
+title: Investment Memo
+company: Acme Corp
+citations:
+  mkt001:
+    title: "Market Analysis Report 2024"
+    url: "https://example.com/report"
+    source: "Gartner"
+    publishedDate: "2024-06-15"
+  tech002:
+    title: "Technology Trends"
+    url: "https://example.com/tech"
+    source: "MIT Technology Review"
+    publishedDate: "2024-03-22"
+---
+```
+
+Citations are automatically rendered as a Sources section at the bottom of the memo.
+
 ### Local Development Mode
 
 When `GITHUB_CONTENT_PAT` is not set (or `MEMO_DISCOVERY_LOCAL=true`), the system reads from:
@@ -630,10 +663,17 @@ This allows testing memo rendering without GitHub API access.
 ```
 src/
 ├── lib/
-│   └── github-content.ts    # Core fetching logic, version discovery, caching
+│   ├── github-content.ts    # Core fetching logic, version discovery, caching
+│   └── citations/
+│       └── types.ts         # Citation system types and helpers
 ├── pages/
 │   └── memos/
 │       └── [slug].astro     # SSR page that renders memos
+├── components/
+│   ├── content/
+│   │   └── ContentEnhancer.astro  # Code block and Mermaid enhancement
+│   └── citations/
+│       └── InlineCitation.astro   # Hover popover citation marker
 └── content/
     └── markdown-memos/      # Local fallback files for testing
 ```

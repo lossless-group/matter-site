@@ -6,18 +6,139 @@
  * When GITHUB_CONTENT_PAT is not configured, falls back to local files
  * in src/content/markdown-memos/ for testing.
  *
+ * Uses the same markdown pipeline as changelog with:
+ * - Shiki syntax highlighting
+ * - Mermaid diagram support
+ * - Citation system integration
+ *
  * Required env vars for production:
  * - GITHUB_CONTENT_PAT
  * - GITHUB_CONTENT_OWNER (defaults to "lossless-group")
  * - GITHUB_CONTENT_REPO (defaults to "dark-matter-secure-data")
  */
 import BaseThemeLayout from '@layouts/BaseThemeLayout.astro';
+import ContentEnhancer from '@components/content/ContentEnhancer.astro';
+import InlineCitation from '@components/citations/InlineCitation.astro';
 import { fetchMemoBySlug, isLocalDemoMode } from '@lib/github-content';
+import { buildCitationIndex, citationsToArray, type CitationReference, type IndexedCitation } from '@lib/citations/types';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
+import rehypeShiki from '@shikijs/rehype';
 import rehypeStringify from 'rehype-stringify';
+import { visit } from 'unist-util-visit';
+
+/**
+ * Custom rehype plugin to extract mermaid blocks BEFORE Shiki processes them.
+ * Converts <pre><code class="language-mermaid">...</code></pre>
+ * to <pre class="mermaid">...</pre> which Shiki won't recognize.
+ */
+function rehypeMermaidPre() {
+  return (tree: any) => {
+    visit(tree, 'element', (node: any) => {
+      if (
+        node.tagName === 'pre' &&
+        node.children?.[0]?.tagName === 'code'
+      ) {
+        const codeNode = node.children[0];
+        const classList = codeNode.properties?.className || [];
+
+        // Check if this is a mermaid code block
+        const isMermaid = classList.some((c: string) =>
+          c === 'language-mermaid' || c === 'mermaid'
+        );
+
+        if (isMermaid) {
+          // Extract the raw mermaid code
+          const mermaidCode = codeNode.children?.[0]?.value || '';
+
+          // Replace with <pre class="mermaid">code</pre>
+          // This format won't match rehypeShiki's selector
+          node.properties = { className: ['mermaid'] };
+          node.children = [{ type: 'text', value: mermaidCode }];
+        }
+      }
+    });
+  };
+}
+
+/**
+ * Custom rehype plugin to rewrite image URLs to use the memo-image API proxy.
+ * Handles various path formats:
+ * - io/dark-matter/deals/... -> /api/memo-image/deals/...
+ * - ./deck-screenshots/... -> /api/memo-image/deals/{company}/outputs/{version}/deck-screenshots/...
+ * - Absolute URLs are left unchanged
+ */
+function rehypeMemoImages(memoSlug: string) {
+  return (tree: any) => {
+    visit(tree, 'element', (node: any) => {
+      if (node.tagName === 'img' && node.properties?.src) {
+        const src = node.properties.src as string;
+
+        // Skip absolute URLs and data URIs
+        if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
+          return;
+        }
+
+        // Skip if already pointing to our API
+        if (src.startsWith('/api/memo-image/')) {
+          return;
+        }
+
+        let newSrc = src;
+
+        // Pattern 1: io/dark-matter/deals/... -> /api/memo-image/deals/...
+        if (src.startsWith('io/dark-matter/')) {
+          newSrc = '/api/memo-image/' + src.replace('io/dark-matter/', '');
+        }
+        // Pattern 2: ../inputs/... or ./deck-screenshots/... (relative to memo location)
+        // These need to be resolved relative to the memo's directory in the repo
+        else if (src.startsWith('./') || src.startsWith('../')) {
+          // Extract company and version from slug (e.g., "6-ExoLux-v0.0.2" or "ExoLux-v0.0.2-draft")
+          const numberedMatch = memoSlug.match(/^\d+-(.+?)-(v\d+\.\d+\.\d+)$/);
+          const dottedMatch = memoSlug.match(/^(.+?)-(v\d+\.\d+\.\d+)(-.*)?$/);
+
+          let company = '';
+          let version = '';
+
+          if (numberedMatch) {
+            company = numberedMatch[1];
+            version = numberedMatch[2];
+          } else if (dottedMatch) {
+            company = dottedMatch[1];
+            version = dottedMatch[2];
+          }
+
+          if (company && version) {
+            // Base path for the memo's directory
+            const basePath = `deals/${company}/outputs/${company}-${version}`;
+
+            // Resolve relative path
+            if (src.startsWith('./')) {
+              newSrc = `/api/memo-image/${basePath}/${src.slice(2)}`;
+            } else if (src.startsWith('../')) {
+              // Go up one level from outputs/{version}/ to outputs/ or to company root
+              const parentPath = `deals/${company}`;
+              newSrc = `/api/memo-image/${parentPath}/${src.replace(/^\.\.\//, '')}`;
+            }
+          }
+        }
+        // Pattern 3: Just a path like "deals/..." -> /api/memo-image/deals/...
+        else if (src.startsWith('deals/')) {
+          newSrc = '/api/memo-image/' + src;
+        }
+        // Pattern 4: Any other relative path - try to resolve it
+        else if (!src.startsWith('/')) {
+          // Assume it's relative to deals/ directory
+          newSrc = '/api/memo-image/deals/' + src;
+        }
+
+        node.properties.src = newSrc;
+      }
+    });
+  };
+}
 
 // This page must be SSR to fetch at runtime and protect content
 export const prerender = false;
@@ -52,11 +173,37 @@ if (!memo) {
 
 const { frontmatter: data, body } = memo;
 
-// Process markdown to HTML
+// Build citation index if citations are present in frontmatter
+// Citations in frontmatter should be: citations: { hexCode: { title, url, source, ... } }
+const citationsData = data?.citations as Record<string, CitationReference> | undefined;
+let citationIndex: Map<string, IndexedCitation> = new Map();
+let citationsArray: IndexedCitation[] = [];
+
+if (citationsData) {
+  const citationsList = Object.entries(citationsData).map(([hexCode, citation]) => ({
+    ...citation,
+    hexCode,
+  }));
+  citationIndex = buildCitationIndex(citationsList);
+  citationsArray = citationsToArray(citationIndex);
+}
+
+// Process markdown to HTML with Shiki syntax highlighting
+// Note: rehypeMermaidPre runs BEFORE rehypeShiki to extract mermaid blocks
 const processor = unified()
   .use(remarkParse)
   .use(remarkGfm)
   .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeMermaidPre) // Extract mermaid before Shiki processes code blocks
+  .use(rehypeMemoImages, slug) // Rewrite image URLs to use the memo-image API proxy
+  .use(rehypeShiki, {
+    themes: {
+      light: 'github-light',
+      dark: 'tokyo-night',
+    },
+    // Add language as data attribute for the wrapper to detect
+    addLanguageClass: true,
+  })
   .use(rehypeStringify, { allowDangerousHtml: true });
 
 const htmlContent = String(await processor.process(body));
@@ -131,7 +278,39 @@ const htmlContent = String(await processor.process(body));
       </header>
 
       <!-- Memo Content -->
-      <div class="memo-content prose prose-invert max-w-none" set:html={htmlContent} />
+      <ContentEnhancer enableMermaid={true} enhanceCodeblocks={true}>
+        <div class="memo-content prose prose-invert max-w-none" set:html={htmlContent} />
+      </ContentEnhancer>
+
+      <!-- Sources Section (if citations exist) -->
+      {citationsArray.length > 0 && (
+        <section class="memo-sources mt-12 pt-8 border-t border-border/30">
+          <h2 class="text-xl font-semibold mb-4 text-foreground/90">Sources</h2>
+          <ol class="sources-list space-y-3 text-sm">
+            {citationsArray.map((citation) => (
+              <li class="source-item flex gap-3">
+                <span class="source-index text-foreground/40 font-mono">[{citation.index}]</span>
+                <div class="source-details">
+                  <a
+                    href={citation.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="source-title text-primary hover:underline"
+                  >
+                    {citation.title}
+                  </a>
+                  {citation.source && (
+                    <span class="source-name text-foreground/50 ml-2">— {citation.source}</span>
+                  )}
+                  {citation.publishedDate && (
+                    <span class="source-date text-foreground/40 ml-2 text-xs">({citation.publishedDate})</span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       <!-- Back Link -->
       <footer class="mt-16 pt-8 border-t border-border/20">
