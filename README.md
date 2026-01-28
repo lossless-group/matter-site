@@ -528,6 +528,118 @@ Emails from these domains bypass approval workflows and get instant access.
 
 ---
 
+## 📄 Investment Memo System (GitHub Content Fetcher)
+
+The site fetches investment memos from a **private GitHub repository** at runtime (SSR), keeping confidential content out of static builds. This allows memos to be updated in GitHub without redeploying the site.
+
+### Configuration
+
+Required environment variables:
+
+```bash
+# Fine-grained PAT with read-only Contents access to the private repo
+GITHUB_CONTENT_PAT=github_pat_xxxx
+
+# Optional: Override defaults
+GITHUB_CONTENT_OWNER=lossless-group        # Default
+GITHUB_CONTENT_REPO=dark-matter-secure-data # Default
+GITHUB_CONTENT_BRANCH=main                  # Default
+
+# Local development: read from orchestrator directory instead of GitHub
+MEMO_DISCOVERY_LOCAL=true
+```
+
+### How It Works
+
+1. **URL → Slug**: `/memos/[slug].astro` receives a slug like `MitrixBio-v0.0.2-draft`
+2. **Auth Check**: Requires `universal_portfolio_access` cookie (set via `/portfolio-gate`)
+3. **Fetch**: The slug is parsed to derive the GitHub path and fetch the markdown content
+
+### GitHub Repository Structure
+
+Memos are organized in a versioned directory structure:
+
+```
+deals/
+├── MitrixBio/
+│   └── outputs/
+│       ├── MitrixBio-v0.0.1/
+│       │   └── MitrixBio-v0.0.1-draft.md
+│       └── MitrixBio-v0.0.2/
+│           └── MitrixBio-v0.0.2-draft.md
+├── Aito/
+│   └── outputs/
+│       └── Aito-v0.0.2/
+│           └── Aito-v0.0.2-draft.md
+└── RavenGraph/
+    └── outputs/
+        └── RavenGraph-v0.0.3/
+            └── 6-RavenGraph-v0.0.3.md
+```
+
+### Slug → Path Derivation
+
+The system handles multiple slug formats:
+
+| Slug Format | Derived GitHub Path |
+|-------------|---------------------|
+| `Aito-v002-draft` (URL-safe) | `deals/Aito/outputs/Aito-v0.0.2/Aito-v0.0.2-draft.md` |
+| `Class5-Global-v0.0.2-draft` (dotted) | `deals/Class5-Global/outputs/Class5-Global-v0.0.2/Class5-Global-v0.0.2-draft.md` |
+| `6-RavenGraph-v0.0.3` (numbered) | `deals/RavenGraph/outputs/RavenGraph-v0.0.3/6-RavenGraph-v0.0.3.md` |
+
+### Latest Version Discovery
+
+When you need the "latest" memo for a company (e.g., for portfolio links), the system:
+
+1. Lists `deals/{CompanyName}/outputs/` directory
+2. Finds all version directories (e.g., `MitrixBio-v0.0.1`, `MitrixBio-v0.0.2`)
+3. Parses and sorts versions semantically (v0.0.2 > v0.0.1)
+4. Looks inside the latest version directory for the draft file
+5. Returns the slug of the highest-versioned memo
+
+```typescript
+import { getLatestMemoSlug, resolveLatestMemos } from '@lib/github-content';
+
+// Get latest for one company
+const slug = await getLatestMemoSlug('MitrixBio');
+// Returns: "MitrixBio-v0.0.2-draft"
+
+// Batch resolve for multiple companies
+const memos = await resolveLatestMemos(['MitrixBio', 'Aito', 'RavenGraph']);
+// Returns: Map { 'MitrixBio' => 'MitrixBio-v0.0.2-draft', ... }
+```
+
+### Caching
+
+To reduce GitHub API calls:
+- **Content cache**: 5 minutes TTL
+- **Latest memo cache**: 10 minutes TTL
+
+### Local Development Mode
+
+When `GITHUB_CONTENT_PAT` is not set (or `MEMO_DISCOVERY_LOCAL=true`), the system reads from:
+
+```
+/Users/mpstaton/code/lossless-monorepo/ai-labs/investment-memo-orchestrator/io/dark-matter/deals/
+```
+
+This allows testing memo rendering without GitHub API access.
+
+### File Structure
+
+```
+src/
+├── lib/
+│   └── github-content.ts    # Core fetching logic, version discovery, caching
+├── pages/
+│   └── memos/
+│       └── [slug].astro     # SSR page that renders memos
+└── content/
+    └── markdown-memos/      # Local fallback files for testing
+```
+
+---
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:

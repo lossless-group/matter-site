@@ -22,17 +22,33 @@
     "memoCompanyKey": "Encellin"
   },
   {
-    "conventionalName": "ExoLux Tech",
+    "conventionalName": "ExoLux Regenerative Skin Care",
     "logoLightMode": "/trademarks/trademark__ExoLux--Light-Mode.svg",
     "logoDarkMode": "/trademarks/trademark__ExoLux--Dark-Mode.svg",
-    "urlToCompanySite": "https://exoluxtech.com/",
-    "blurbShortTxt": "Designs and manufactures medical robotics systems and high-precision components for healthcare facilities. Core products include surgical robotics for minimally invasive procedures, rehabilitation robots with adaptive AI, and diagnostic robotics for early detection.",
+    "urlToCompanySite": "https://exo-lux.com/",
+    "blurbShortTxt": "ExoLux products include the latest in regenerative skin care. They firm, plump, restore, and nourish all skin types. ExoLux delivers immediate results and has no side effects.",
     "stage": "due-diligence",
-    "sector": "medical robotics",
+    "sector": "Regenerative Medicine",
     "listOfPeopleData": [],
-    "memoCompanyKey": null
+    "memoCompanyKey": "ExoLux"
   },
   {
+    "conventionalName": "Freecurve AI",
+    "logoLightMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Freecurve--Dark-Mode.png",
+    "logoDarkMode": "https://ik.imagekit.io/xvpgfijuw/Dark-Matter-Embeds/trademark__Freecurve--Dark-Mode.png",
+    "urlToCompanySite": "https://www.freecurve.ai/",
+    "blurbShortTxt": "AI focused on molecule and materials discovery and development that dramatically accelerates drug development.",
+    "stage": "initial-review",
+    "sector": "AI molecule discovery",
+    "listOfPeopleData": [
+      {
+        "name": "Dr. Michael Levitt",
+        "role": "Founding Advisor"
+      }
+    ],
+    "memoCompanyKey": "Freecurve"
+  },
+    {
     "conventionalName": "Fortem Neuroscience",
     "logoLightMode": "/portfolio/logos/placeholder-light.svg",
     "logoDarkMode": "/portfolio/logos/placeholder-dark.svg",
