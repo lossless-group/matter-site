@@ -16,8 +16,16 @@ const companyKeys = pipelineData
   .map(c => c.memoCompanyKey)
   .filter((key): key is string => key !== null);
 
+console.log(`[confidential] Resolving memos for ${companyKeys.length} companies:`, companyKeys);
+
 // Resolve latest memo slugs for all companies (runs in parallel)
 const memoSlugs = await resolveLatestMemos(companyKeys);
+
+// Log results for debugging
+console.log(`[confidential] Memo resolution results:`);
+for (const [company, slug] of memoSlugs) {
+  console.log(`  - ${company}: ${slug || 'NOT FOUND'}`);
+}
 
 // Enhance pipeline data with resolved memo slugs
 const enhancedPipelineData = pipelineData.map(company => ({

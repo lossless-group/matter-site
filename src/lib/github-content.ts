@@ -55,7 +55,7 @@ function getConfig() {
   return {
     pat,
     owner: import.meta.env.GITHUB_CONTENT_OWNER || 'lossless-group',
-    repo: import.meta.env.GITHUB_CONTENT_REPO || 'dark-matter-secure-data',
+    repo: import.meta.env.GITHUB_CONTENT_REPO || 'dark-matter-private-data',
     branch: import.meta.env.GITHUB_CONTENT_BRANCH || 'main',
     // Use local fallback for content fetching when PAT is not configured
     useLocalFallback: !pat || pat === '',

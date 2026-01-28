@@ -542,7 +542,7 @@ GITHUB_CONTENT_PAT=github_pat_xxxx
 
 # Optional: Override defaults
 GITHUB_CONTENT_OWNER=lossless-group        # Default
-GITHUB_CONTENT_REPO=dark-matter-secure-data # Default
+GITHUB_CONTENT_REPO=dark-matter-private-data # Default
 GITHUB_CONTENT_BRANCH=main                  # Default
 
 # Local development: read from orchestrator directory instead of GitHub

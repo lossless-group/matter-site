@@ -45,7 +45,7 @@ export const GET: APIRoute = async ({ params, cookies }) => {
   // Get GitHub config
   const pat = import.meta.env.GITHUB_CONTENT_PAT;
   const owner = import.meta.env.GITHUB_CONTENT_OWNER || 'lossless-group';
-  const repo = import.meta.env.GITHUB_CONTENT_REPO || 'dark-matter-secure-data';
+  const repo = import.meta.env.GITHUB_CONTENT_REPO || 'dark-matter-private-data';
   const branch = import.meta.env.GITHUB_CONTENT_BRANCH || 'main';
 
   if (!pat) {
