@@ -82,7 +82,7 @@ for (const [path, importFn] of Object.entries(standalonePages)) {
 }
 
 // 3. Load markdown decks
-const markdownDecks = getAllMarkdownDecks();
+const markdownDecks = await getAllMarkdownDecks();
 for (const deck of markdownDecks) {
   presentations.push({
     title: deck.title || deck.slug,

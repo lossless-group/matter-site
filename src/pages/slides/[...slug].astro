@@ -11,7 +11,7 @@
 import OneSlideDeck from '@layouts/OneSlideDeck.astro';
 import MarkdownSlideDeck from '@layouts/MarkdownSlideDeck.astro';
 import { getComponentDeck, getAllComponentDecks } from '../../data/componentDecks';
-import { markdownDecks, getMarkdownDeckBySlug } from '../../data/markdownDecks';
+import { getMarkdownDecksMap } from '../../data/markdownDecks';
 
 // Import component decks
 import SlideShowDarkMatterThesis from '@components/slides/astro-decks/dark-matter-thesis/SlideShow--DarkMatterThesis.astro';
@@ -36,6 +36,7 @@ export async function getStaticPaths() {
   }
 
   // Add markdown deck paths
+  const markdownDecks = await getMarkdownDecksMap();
   for (const [slug, deck] of Object.entries(markdownDecks)) {
     paths.push({
       params: { slug },
@@ -79,7 +80,7 @@ const { type, deck, markdownContent } = Astro.props;
     <SlideShowFundStrategy />
   </OneSlideDeck>
 ) : type === 'component' && deck ? (
-  <!-- Fallback for unknown component decks -->
+  /* Fallback for unknown component decks */
   <OneSlideDeck
     title={deck.title}
     description={deck.description}
