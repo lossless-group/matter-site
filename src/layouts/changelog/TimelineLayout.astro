@@ -7,6 +7,7 @@
  */
 import ClaudeTrademark from '@components/icons/ClaudeTrademark.astro';
 import type { CollectionEntry } from 'astro:content';
+import { resolveEntryDate } from '@lib/dates/resolveEntryDate';
 
 interface Props {
   entries: CollectionEntry<'changelog'>[];
@@ -47,7 +48,7 @@ function getCategoryStyle(category?: string) {
         <!-- Entries -->
         <div class="entries-list">
           {monthEntries.map((entry) => {
-            const date = new Date(entry.data.date);
+            const date = (resolveEntryDate(entry.data, entry.id) ?? new Date(NaN));
             const dayStr = date.toLocaleDateString('en-US', { day: 'numeric', weekday: 'short' });
             const style = getCategoryStyle(entry.data.category);
 

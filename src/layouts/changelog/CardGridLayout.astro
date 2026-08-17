@@ -6,6 +6,7 @@
  * visual previews, category filters, and hover interactions.
  */
 import type { CollectionEntry } from 'astro:content';
+import { resolveEntryDate } from '@lib/dates/resolveEntryDate';
 
 interface Props {
   entries: CollectionEntry<'changelog'>[];
@@ -74,7 +75,7 @@ function formatDate(date: Date) {
             <!-- Card Content -->
             <div class="card-content">
               <div class="card-header">
-                <time class="card-date">{formatDate(new Date(entry.data.date))}</time>
+                <time class="card-date">{formatDate((resolveEntryDate(entry.data, entry.id) ?? new Date(NaN)))}</time>
                 {entry.data.category && (
                   <span class="card-category">{entry.data.category}</span>
                 )}

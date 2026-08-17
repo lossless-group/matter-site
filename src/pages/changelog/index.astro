@@ -13,14 +13,15 @@ import CardGridLayout from '@layouts/changelog/CardGridLayout.astro';
 import ReleasesLayout from '@layouts/changelog/ReleasesLayout.astro';
 import ChangelogViewToggler from '@components/ui/ChangelogViewToggler.astro';
 import { getCollection } from 'astro:content';
+import { resolveEntryDate, entryDateMs, hasEntryDate } from '@lib/dates/resolveEntryDate';
 
 // Get all changelog entries sorted by date (newest first)
 // Within the same date, sort by suffix descending (_04 before _01)
 const allEntries = await getCollection('changelog');
 const sortedEntries = allEntries
-  .filter(entry => entry.data.title && entry.data.date)
+  .filter(entry => entry.data.title && hasEntryDate(entry.data, entry.id))
   .sort((a, b) => {
-    const dateCompare = new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+    const dateCompare = entryDateMs(b.data, b.id) - entryDateMs(a.data, a.id);
     if (dateCompare !== 0) return dateCompare;
     // Same date - sort by ID descending (higher suffix first)
     return b.id.localeCompare(a.id);
@@ -29,7 +30,7 @@ const sortedEntries = allEntries
 // Group by month/year for Timeline view
 type GroupedEntries = Record<string, typeof sortedEntries>;
 const groupedByMonth: GroupedEntries = sortedEntries.reduce((acc, entry) => {
-  const date = new Date(entry.data.date);
+  const date = (resolveEntryDate(entry.data, entry.id) ?? new Date(NaN));
   const key = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
   if (!acc[key]) acc[key] = [];
   acc[key].push(entry);

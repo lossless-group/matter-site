@@ -16,6 +16,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeShiki from '@shikijs/rehype';
 import rehypeStringify from 'rehype-stringify';
 import { visit } from 'unist-util-visit';
+import { resolveEntryDate } from '@lib/dates/resolveEntryDate';
 
 /**
  * Custom rehype plugin to extract mermaid blocks BEFORE Shiki processes them.
@@ -92,7 +93,7 @@ const processor = unified()
 const htmlContent = String(await processor.process(body || ''));
 
 // Format date
-const date = new Date(data.date);
+const date = (resolveEntryDate(data, entry?.id) ?? new Date(NaN));
 const formattedDate = date.toLocaleDateString('en-US', {
   weekday: 'long',
   year: 'numeric',

@@ -14,7 +14,23 @@ import { glob } from 'astro/loaders';
 export const changelogSchema = z.object({
   // Required fields
   title: z.string(),
-  date: z.coerce.date(),
+
+  // Dates — every spelling optional + nullable.
+  // `date` is the legacy key this site was built on; the tree-wide frontmatter
+  // standard renames it to the editorial pair below. Requiring `date` is what
+  // made that rename a build-breaking change, so nothing date-shaped is
+  // required now — renderers resolve one through the fallback chain in
+  // src/lib/dates/resolveEntryDate.ts. A missing or typo'd date renders
+  // nothing rather than failing the build.
+  date: z.coerce.date().nullable().optional(),
+  date_authored_initial_draft: z.coerce.date().nullable().optional(),
+  date_authored_current_draft: z.coerce.date().nullable().optional(),
+  date_created: z.coerce.date().nullable().optional(),
+  date_modified: z.coerce.date().nullable().optional(),
+
+  // Editorial — recorded so the keys round-trip through the standard.
+  publish: z.boolean().optional(),
+  lede: z.string().optional(),
 
   // Optional metadata
   authors: z.array(z.string()).optional(),

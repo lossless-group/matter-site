@@ -13,14 +13,15 @@ import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+import { resolveEntryDate, entryDateMs, hasEntryDate } from '@lib/dates/resolveEntryDate';
 
 // Get only RELEASE entries (from releases/ folder), sorted by date (newest first)
 // Within the same date, sort by suffix descending (_04 before _01)
 const allEntries = await getCollection('changelog');
 const sortedEntries = allEntries
-  .filter(entry => entry.data.title && entry.data.date && entry.id.startsWith('releases/'))
+  .filter(entry => entry.data.title && hasEntryDate(entry.data, entry.id) && entry.id.startsWith('releases/'))
   .sort((a, b) => {
-    const dateCompare = new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+    const dateCompare = entryDateMs(b.data, b.id) - entryDateMs(a.data, a.id);
     if (dateCompare !== 0) return dateCompare;
     // Same date - sort by ID descending (higher suffix first)
     return b.id.localeCompare(a.id);
@@ -68,7 +69,7 @@ const entriesWithPreviews = await Promise.all(
 
 // Generate release versions
 function getVersionTag(entry: typeof sortedEntries[0], index: number) {
-  const date = new Date(entry.data.date);
+  const date = (resolveEntryDate(entry.data, entry.id) ?? new Date(NaN));
   const dateStr = date.toISOString().split('T')[0].replace(/-/g, '.');
   return `v${dateStr}.${sortedEntries.length - index}`;
 }
@@ -140,7 +141,7 @@ function formatRelativeDate(date: Date): string {
     <div class="releases-container max-w-5xl mx-auto px-6 pb-24">
       {entriesWithPreviews.map((entry, index) => {
         const isLatest = index === 0;
-        const date = new Date(entry.data.date);
+        const date = (resolveEntryDate(entry.data, entry.id) ?? new Date(NaN));
         const version = getVersionTag(entry, index);
         const label = categoryLabels[entry.data.category || ''] || categoryLabels.Feature;
 
