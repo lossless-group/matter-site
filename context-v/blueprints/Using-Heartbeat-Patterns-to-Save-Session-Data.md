@@ -20,6 +20,7 @@ tags:
   - NocoDB
   - Analytics
   - Blueprint
+type: Blueprints
 ---
 # Using Heartbeat Patterns to Save Session Data
 

@@ -19,6 +19,7 @@ tags:
   - Person-Card
   - Component-Inventory
   - Stub
+type: Specs
 ---
 Managed through a Markdown file system for easy content management, including using YAML frontmatter for data.
 

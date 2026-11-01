@@ -20,6 +20,7 @@ tags:
   - Component-Pattern
   - Header
   - Blueprint
+type: Blueprints
 ---
 # Jumbotron Popdown Patterns
 

@@ -20,6 +20,7 @@ tags:
   - Astro-Knots
   - Layout
   - Porting
+type: Specs
 ---
 # Dark Matter Site Specification
 
