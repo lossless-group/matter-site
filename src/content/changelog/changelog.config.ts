@@ -2,7 +2,8 @@
  * Changelog Content Collection Config
  *
  * Points to the changelog directory OUTSIDE of src/
- * The changelog is managed as a separate git submodule.
+ * The changelog is a plain folder in this repo (it was a separate
+ * submodule, changelog_matter-site, until 2026-11-01).
  *
  * Directory: ../../../changelog (relative to src/content/)
  * Actual path: <project-root>/changelog/
