@@ -10,6 +10,7 @@ date_modified: 2025-12-04
 date_authored_initial_draft: 2025-12-04
 date_authored_current_draft: 2025-12-04
 date_authored_final_draft:
+date_first_published: 2025-12-04
 authors:
   - Michael Staton
 at_semantic_version: 0.0.1.0

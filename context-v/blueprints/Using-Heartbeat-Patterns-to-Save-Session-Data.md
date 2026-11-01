@@ -13,7 +13,7 @@ date_authored_final_draft:
 authors:
   - Michael Staton
 at_semantic_version: 0.0.1.0
-status: Shipped
+status: Reference
 tags:
   - Session-Tracking
   - Heartbeat-Pattern
