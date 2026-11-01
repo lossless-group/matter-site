@@ -13,12 +13,11 @@ date_authored_final_draft:
 authors:
   - Michael Staton
 at_semantic_version: 0.0.1.0
-status: Draft
+status: Stale
 tags:
   - Team-Page
   - Person-Card
   - Component-Inventory
-  - Stub
 type: Specs
 ---
 Managed through a Markdown file system for easy content management, including using YAML frontmatter for data.
